@@ -4,8 +4,11 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../data/seed.dart';
+import 'views/bands_view.dart';
 import 'views/chain_view.dart';
 import 'views/clock_view.dart';
+import 'views/month_view.dart';
+import 'views/week_view.dart';
 import 'widgets/month_header.dart';
 import 'widgets/span_bar.dart';
 import 'widgets/view_switcher.dart';
@@ -24,6 +27,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   static final DateTime _now = DateTime(2026, 7, 27, 9, 41);
 
   CalendarView _view = CalendarView.day;
+  MonthMode _monthMode = MonthMode.chips;
   DayReading _reading = DayReading.chain;
   DateTime _selected = Seed.today;
 
@@ -44,7 +48,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
           dayReading: _view == CalendarView.day ? _reading : null,
           onReadingChanged: (r) => setState(() => _reading = r),
         ),
-        if (_view == CalendarView.day || _view == CalendarView.bands)
+        if (_view == CalendarView.day)
           WeekStrip(
             week: _week,
             selected: _selected,
@@ -52,11 +56,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
             onSelect: (d) => setState(() => _selected = d),
           ),
         ViewSwitcher(value: _view, onChanged: (v) => setState(() => _view = v)),
-        SpanBars(
-          events: Seed.spans,
-          today: _selected,
-          inheritance: inheritance,
-        ),
+        if (_view != CalendarView.week && _view != CalendarView.month)
+          SpanBars(
+            events: Seed.spans,
+            today: _selected,
+            inheritance: inheritance,
+          ),
         Expanded(child: _body(events, inheritance)),
       ],
     );
@@ -73,6 +78,27 @@ class _CalendarScreenState extends State<CalendarScreen> {
           events: events,
           inheritance: inheritance,
           now: _now,
+        ),
+      CalendarView.month => MonthView(
+          month: _selected,
+          eventsOf: Seed.eventsOn,
+          spans: Seed.spans,
+          inheritance: inheritance,
+          today: Seed.today,
+          mode: _monthMode,
+        ),
+      CalendarView.week => WeekView(
+          week: _week,
+          eventsOf: Seed.eventsOn,
+          spans: Seed.spans,
+          inheritance: inheritance,
+          today: Seed.today,
+        ),
+      CalendarView.bands => BandsView(
+          days: List.generate(10, (i) => _selected.add(Duration(days: i))),
+          eventsOf: Seed.eventsOn,
+          inheritance: inheritance,
+          today: Seed.today,
         ),
       _ => const _Placeholder(),
     };

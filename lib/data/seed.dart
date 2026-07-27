@@ -129,6 +129,89 @@ class Seed {
     ),
   ];
 
+  /// События соседних дней — для ленты дней и недели.
+  /// Ключ: день июля, для августа отрицательное смещение не нужно, там свои.
+  static final Map<DateTime, List<VEvent>> byDay = {
+    DateTime(2026, 7, 27): dayEvents,
+    DateTime(2026, 7, 28): [
+      VEvent(id: 'e28-1', calendarId: 'c-day', title: 'Подъём', iconName: 'alarm',
+          start: _at(28, 7, 30), end: _at(28, 7, 45)),
+      VEvent(id: 'e28-2', calendarId: 'c-study', subcategoryId: 's-exam',
+          title: 'Экзамен', iconName: 'exam', start: _at(28, 11), end: _at(28, 13)),
+      VEvent(id: 'e28-3', calendarId: 'c-home', title: 'Кофе', iconName: 'coffee',
+          color: amber, start: _at(28, 15), end: _at(28, 16)),
+    ],
+    DateTime(2026, 7, 29): [
+      VEvent(id: 'e29-1', calendarId: 'c-sport', subcategoryId: 's-gym',
+          title: 'Зал', iconName: 'fitness', start: _at(29, 8), end: _at(29, 9, 30)),
+      VEvent(id: 'e29-2', calendarId: 'c-work', title: 'Планёрка', iconName: 'groups',
+          start: _at(29, 12), end: _at(29, 13)),
+      VEvent(id: 'e29-3', calendarId: 'c-sport', subcategoryId: 's-pool',
+          title: 'Бассейн', iconName: 'pool', start: _at(29, 19), end: _at(29, 20, 30)),
+    ],
+    DateTime(2026, 7, 30): [
+      VEvent(id: 'e30-1', calendarId: 'c-work', title: 'Планёрка', iconName: 'groups',
+          start: _at(30, 10), end: _at(30, 11, 30)),
+      VEvent(id: 'e30-2', calendarId: 'c-study', subcategoryId: 's-eng',
+          title: 'Английский', iconName: 'school', start: _at(30, 16), end: _at(30, 17),
+          recurrenceLabel: 'по пн и чт'),
+    ],
+    DateTime(2026, 7, 31): [
+      VEvent(id: 'e31-1', calendarId: 'c-home', title: 'Обед с Ниной',
+          iconName: 'restaurant', start: _at(31, 13), end: _at(31, 14)),
+      VEvent(id: 'e31-2', calendarId: 'c-sport', subcategoryId: 's-pool',
+          title: 'Бассейн', iconName: 'pool', start: _at(31, 19), end: _at(31, 20, 30)),
+    ],
+    DateTime(2026, 8, 1): [
+      VEvent(id: 'e81-1', calendarId: 'c-sport', subcategoryId: 's-pool',
+          title: 'Бассейн', iconName: 'pool',
+          start: DateTime(2026, 8, 1, 11), end: DateTime(2026, 8, 1, 12, 30)),
+    ],
+    // Пустой день оставлен намеренно: лента должна честно говорить, что он
+    // пустой, а не притворяться занятой.
+    DateTime(2026, 8, 2): [],
+  };
+
+  static List<VEvent> eventsOn(DateTime day) {
+    final key = DateTime(day.year, day.month, day.day);
+    final exact = byDay[key];
+    if (exact != null) return exact;
+    return _generated(key);
+  }
+
+  /// Остальные дни месяца заполняются детерминированно, по номеру дня.
+  /// Случайность здесь недопустима: снимок экрана должен совпадать между
+  /// прогонами, иначе сверять его с макетом бессмысленно.
+  static final Map<DateTime, List<VEvent>> _cache = {};
+
+  static List<VEvent> _generated(DateTime day) {
+    return _cache.putIfAbsent(day, () {
+      const plan = <List<(String, String, String, int, int)>>[
+        [('c-work', 'Планёрка', 'groups', 10, 90), ('c-home', 'Завтрак', 'coffee', 9, 30)],
+        [('c-study', 'Английский', 'school', 16, 60), ('c-work', 'Планёрка', 'groups', 11, 60)],
+        [('c-sport', 'Зарядка', 'fitness', 8, 45)],
+        [('c-study', 'Английский', 'school', 16, 60), ('c-home', 'Обед', 'restaurant', 13, 60),
+         ('c-sport', 'Бассейн', 'pool', 19, 90)],
+        [('c-work', 'Планёрка', 'groups', 10, 90), ('c-home', 'Обед', 'restaurant', 13, 60)],
+        [('c-sport', 'Бассейн', 'pool', 11, 90)],
+        [],
+      ];
+      final row = plan[(day.day + day.month) % plan.length];
+      return [
+        for (var i = 0; i < row.length; i++)
+          VEvent(
+            id: 'gen-${day.month}-${day.day}-$i',
+            calendarId: row[i].$1,
+            title: row[i].$2,
+            iconName: row[i].$3,
+            start: DateTime(day.year, day.month, day.day, row[i].$4),
+            end: DateTime(day.year, day.month, day.day, row[i].$4)
+                .add(Duration(minutes: row[i].$5)),
+          ),
+      ];
+    });
+  }
+
   /// События длиннее суток: у них своё место над таймлайном.
   static final List<VEvent> spans = [
     VEvent(
