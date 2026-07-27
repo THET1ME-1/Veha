@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../data/seed.dart';
+import '../access/access_screen.dart';
 import '../calendar/calendar_screen.dart';
+import '../calendars/calendars_screen.dart';
 import '../calendar/widgets/month_header.dart';
 
 /// Оболочка приложения: нижняя навигация на четыре раздела.
@@ -69,8 +72,35 @@ class _HomeShellState extends State<HomeShell> {
 
   Widget _page() => switch (_tab) {
         0 => const CalendarScreen(),
+        1 => CalendarsScreen(inheritance: Seed.inheritance),
+        2 => AccessScreen(keys: demoKeys),
         _ => _Stub(label: _labels(context)[_tab]),
       };
+
+  /// Демонстрационные ключи: серверного слоя ещё нет, но экран должен быть
+  /// собран и сверен с макетом до него.
+  static const demoKeys = [
+    AccessKey(
+      name: 'Claude · планировщик',
+      prefix: 'cal_a8f3k2 · · · · · ·',
+      scopes: [('Личное', false), ('Учёба', true), ('Спорт', false)],
+      lastUsed: 'Работал 12 минут назад',
+      expires: 'до 30 сентября',
+    ),
+    AccessKey(
+      name: 'Домашний ассистент',
+      prefix: 'cal_7z1qm4 · · · · · ·',
+      scopes: [('Дом', false), ('Бессрочно', false)],
+      lastUsed: 'Работал вчера в 21:03',
+    ),
+    AccessKey(
+      name: 'Пробный ключ',
+      prefix: 'отозван 24 июля',
+      scopes: [],
+      lastUsed: '',
+      revoked: true,
+    ),
+  ];
 }
 
 class _Stub extends StatelessWidget {

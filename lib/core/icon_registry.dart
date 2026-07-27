@@ -43,6 +43,10 @@ class VehaIcons {
     'clock': Symbols.schedule_rounded,
     'flag': Symbols.flag_rounded,
     'wand': Symbols.auto_fix_high_rounded,
+    'add': Symbols.add_rounded,
+    'key': Symbols.key_rounded,
+    'chevron': Symbols.chevron_right_rounded,
+    'link': Symbols.link_rounded,
   };
 
   /// Иконка по имени. Неизвестное имя — точка, а не крэш: база может приехать

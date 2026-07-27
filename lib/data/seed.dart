@@ -223,6 +223,12 @@ class Seed {
       isAllDay: true,
       start: DateTime(2026, 7, 16),
       end: DateTime(2026, 8, 14),
+      location: 'Бассейн на Дачия',
+      fields: const [
+        VFieldValue(fieldId: 'f-left', value: '18 дней'),
+        VFieldValue(fieldId: 'f-visits', value: '7 из 12'),
+        VFieldValue(fieldId: 'f-card', value: '4417-08'),
+      ],
     ),
     VEvent(
       id: 'e-course',
@@ -236,6 +242,25 @@ class Seed {
     ),
   ];
 
+  /// Экзамен с заметками — для экрана события и четвёртого уровня цвета.
+  static final VEvent exam = VEvent(
+    id: 'e-exam',
+    calendarId: 'c-study',
+    subcategoryId: 's-exam',
+    title: 'Экзамен по грамматике',
+    iconName: 'exam',
+    start: _at(28, 11),
+    end: _at(28, 13),
+    fields: const [VFieldValue(fieldId: 'f-room', value: '204-б')],
+  );
+
+  static const examNotes = <VNote>[
+    VNote(id: 'n1', eventId: 'e-exam', text: 'Паспорт и допуск, без них не пустят', color: clay),
+    VNote(id: 'n2', eventId: 'e-exam', text: 'Повторить времена и согласование', sortOrder: 1),
+    VNote(id: 'n3', eventId: 'e-exam', text: 'Прийти за 20 минут, аудиторию могут поменять', sortOrder: 2),
+    VNote(id: 'n4', eventId: 'e-exam', text: 'После — забрать вещи из 312-го', color: amber, sortOrder: 3),
+  ];
+
   static const fields = <VFieldDef>[
     VFieldDef(id: 'f-repeat', name: 'Повтор', type: VFieldType.text, iconName: 'repeat', isBuiltIn: true, showInCard: true, sortOrder: 0),
     VFieldDef(id: 'f-room', name: 'Кабинет', type: VFieldType.text, iconName: 'door', calendarId: 'c-study', showInCard: true, sortOrder: 1),
@@ -243,5 +268,13 @@ class Seed {
     VFieldDef(id: 'f-pass', name: 'Абонемент', type: VFieldType.number, iconName: 'ticket', calendarId: 'c-study', sortOrder: 3),
     VFieldDef(id: 'f-paid', name: 'Оплачено', type: VFieldType.checkbox, iconName: 'toggle', calendarId: 'c-study', sortOrder: 4),
     VFieldDef(id: 'f-place', name: 'Место', type: VFieldType.text, iconName: 'place', isBuiltIn: true, sortOrder: 5),
+    // Свои поля «Спорта»: в «Учёбу» они не приходят — номер карты уроку
+    // английского не нужен.
+    VFieldDef(id: 'f-left', name: 'Осталось', type: VFieldType.text, iconName: 'clock', calendarId: 'c-sport', showInCard: true, sortOrder: 0),
+    VFieldDef(id: 'f-visits', name: 'Посещений', type: VFieldType.text, iconName: 'ticket', calendarId: 'c-sport', showInCard: true, sortOrder: 1),
+    VFieldDef(id: 'f-card', name: 'Номер карты', type: VFieldType.number, iconName: 'number', calendarId: 'c-sport', sortOrder: 2),
+    VFieldDef(id: 'f-coach', name: 'Тренер', type: VFieldType.person, iconName: 'person', calendarId: 'c-sport', sortOrder: 3),
+    VFieldDef(id: 'f-link', name: 'Ссылка на встречу', type: VFieldType.url, iconName: 'cloud', calendarId: 'c-work', showInCard: true, sortOrder: 0),
+    VFieldDef(id: 'f-project', name: 'Проект', type: VFieldType.text, iconName: 'work', calendarId: 'c-work', sortOrder: 1),
   ];
 }
