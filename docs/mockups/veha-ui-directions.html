@@ -348,6 +348,44 @@ section{padding:56px 0 8px}
 .chain-note .off2{padding-left:36px}
 .chain-note .off3{padding-left:54px}
 
+/* ---------- повторение ---------- */
+.presets{display:flex;gap:7px;flex-wrap:wrap;padding:2px 20px 14px}
+.presets span{background:var(--surface-container-high);border-radius:999px;padding:8px 14px;
+  font-size:12.5px;font-weight:600;color:var(--on-surface-variant)}
+.presets span.on{background:var(--primary-container);color:var(--on-primary-container)}
+.everyrow{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:14px 15px}
+.everyrow .lb{font-size:14.5px;font-weight:600}
+.everyrow .lb small{display:block;font-size:11.5px;color:var(--on-surface-variant);font-weight:500;margin-top:2px}
+.stepper{display:flex;align-items:center;gap:4px;background:var(--surface-container-high);
+  border-radius:999px;padding:4px}
+.stepper b{width:32px;height:32px;border-radius:999px;background:var(--surface-container-highest);
+  display:flex;align-items:center;justify-content:center;color:var(--on-surface)}
+.stepper b svg{width:15px;height:15px}
+.stepper .n{font-family:'Unbounded';font-weight:700;font-size:15px;min-width:26px;text-align:center;
+  font-variant-numeric:tabular-nums}
+.dowpick{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:4px 15px 15px}
+.dowpick span{aspect-ratio:1;border-radius:999px;background:var(--surface-container-high);
+  display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;
+  color:var(--on-surface-variant)}
+.dowpick span.on{background:var(--primary);color:var(--on-primary)}
+.opt{display:grid;grid-template-columns:1fr 24px;gap:12px;align-items:center;padding:13px 15px}
+.opt .ot{font-size:14px;font-weight:600}
+.opt .od{font-size:11.5px;color:var(--on-surface-variant);margin-top:2px;line-height:1.4}
+.opt.on{background:var(--secondary-container);color:var(--on-secondary-container)}
+.opt.on .od{color:var(--on-secondary-container);opacity:.8}
+.opt .tick2{width:24px;height:24px;border-radius:999px;background:var(--primary);
+  display:flex;align-items:center;justify-content:center;color:var(--on-primary)}
+.opt .tick2 svg{width:14px;height:14px}
+.dates{display:flex;gap:7px;flex-wrap:wrap;padding:6px 20px 0}
+.dates span{background:var(--surface-container-high);border-radius:999px;padding:7px 12px;
+  font-size:12px;font-weight:600;color:var(--on-surface-variant);font-variant-numeric:tabular-nums}
+.dates span.first{background:var(--secondary-container);color:var(--on-secondary-container)}
+.nlp{margin:0 20px 14px;background:var(--surface-container-high);border-radius:20px;padding:13px 15px;
+  display:grid;grid-template-columns:20px 1fr;gap:11px;align-items:center}
+.nlp svg{width:20px;height:20px;color:var(--primary)}
+.nlp .t{font-size:13.5px;font-weight:600}
+.nlp .d{font-size:11.5px;color:var(--on-surface-variant);margin-top:2px}
+
 /* ---------- пикер произвольного цвета ---------- */
 .prev{margin:0 20px 14px;border-radius:26px;padding:18px;display:grid;
   grid-template-columns:1fr auto;gap:12px;align-items:center}
@@ -391,22 +429,29 @@ section{padding:56px 0 8px}
 .hero .sub{font-size:13px;font-weight:500;opacity:.85;margin-top:6px;font-variant-numeric:tabular-nums}
 .hero .prog{height:6px;border-radius:99px;background:color-mix(in srgb,var(--efg) 18%,transparent);margin-top:14px;overflow:hidden}
 .hero .prog i{display:block;height:100%;background:var(--efg);opacity:.75;border-radius:99px}
-.detail{padding:14px 18px 0;display:flex;flex-direction:column;gap:6px}
-.drow{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;padding:11px 13px;
-  background:var(--surface-container-low);border-radius:20px}
-.drow .di{width:34px;height:34px;border-radius:999px;background:var(--surface-container);
+/* один блок на список: строки внутри, разделитель — тонкая заливка, не бордер */
+.detail{padding:14px 20px 0}
+.blk{background:var(--surface-container-low);border-radius:26px;overflow:hidden}
+.blk + .blk{margin-top:10px}
+.blk-cap{font-size:11px;font-weight:700;color:var(--on-surface-variant);letter-spacing:.06em;
+  padding:16px 4px 8px}
+.sep{height:1px;background:color-mix(in srgb,var(--outline-variant) 55%,transparent);margin-left:66px}
+.drow{display:grid;grid-template-columns:36px 1fr auto;gap:13px;align-items:center;padding:13px 15px}
+.drow .di{width:36px;height:36px;border-radius:999px;background:var(--surface-container-high);
   display:flex;align-items:center;justify-content:center;color:var(--on-surface-variant)}
-.drow .di svg{width:17px;height:17px}
+.drow .di svg{width:18px;height:18px}
 .drow .k{font-size:11.5px;color:var(--on-surface-variant);font-weight:600}
 .drow .v{font-size:14.5px;font-weight:600;margin-top:1px}
+.drow .chev{color:var(--outline)}
+.drow .chev svg{width:17px;height:17px}
+.drow .cnt2{font-size:12.5px;color:var(--on-surface-variant);font-weight:600}
 .oncard{font-size:10px;font-weight:700;color:var(--on-primary-container);background:var(--primary-container);
   border-radius:999px;padding:3px 8px;white-space:nowrap}
-.fieldedit{padding:8px 18px;display:flex;flex-direction:column;gap:9px}
-.frow{background:var(--surface-container-low);border-radius:20px;padding:12px 14px;display:grid;
-  grid-template-columns:32px 1fr 44px;gap:11px;align-items:center}
-.frow .fi{width:32px;height:32px;border-radius:999px;background:var(--surface-container-high);
+.fieldedit{padding:8px 20px}
+.frow{padding:12px 15px;display:grid;grid-template-columns:36px 1fr 46px;gap:13px;align-items:center}
+.frow .fi{width:36px;height:36px;border-radius:999px;background:var(--surface-container-high);
   display:flex;align-items:center;justify-content:center;color:var(--on-surface-variant)}
-.frow .fi svg{width:16px;height:16px}
+.frow .fi svg{width:17px;height:17px}
 .frow .fn{font-size:14.5px;font-weight:600}
 .frow .ft{font-size:11.5px;color:var(--on-surface-variant);margin-top:1px}
 .frow .built{font-size:10px;font-weight:700;color:var(--on-surface-variant);
@@ -416,8 +461,10 @@ section{padding:56px 0 8px}
   background:var(--outline)}
 .sw.on{background:var(--primary)}
 .sw.on::after{left:auto;right:4px;top:4px;width:20px;height:20px;background:var(--on-primary)}
-.addfield{background:var(--surface-container);border-radius:20px;padding:14px;display:flex;align-items:center;
-  justify-content:center;gap:9px;color:var(--primary);font-weight:700;font-size:14px}
+.addfield{padding:14px 15px;display:grid;grid-template-columns:36px 1fr;gap:13px;align-items:center;
+  color:var(--primary);font-weight:700;font-size:14px}
+.addfield .fi{width:36px;height:36px;border-radius:999px;background:var(--surface-container-high);
+  display:flex;align-items:center;justify-content:center}
 .addfield svg{width:18px;height:18px}
 .types{display:flex;gap:6px;flex-wrap:wrap;padding:10px 18px 0}
 .types span{background:var(--surface-container-high);border-radius:999px;padding:6px 12px;font-size:11.5px;
@@ -490,6 +537,9 @@ section{padding:56px 0 8px}
 <symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18.5h10a4 4 0 0 0 .4-8 5.5 5.5 0 0 0-10.6-.9A3.9 3.9 0 0 0 7 18.5Z"/><path d="m9.5 14 1.8 1.8 3.4-3.6"/></symbol>
 <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5h2M4 12h2M4 17.5h2M9.5 6.5H20M9.5 12H20M9.5 17.5H20"/></symbol>
 <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></symbol>
+<symbol id="i-wand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 20 9.5-9.5M15.5 8.5 18 6M6.5 4.5 7 7l2.5.5L7 8l-.5 2.5L6 8l-2.5-.5L6 7l.5-2.5ZM17.5 12l.4 1.8 1.8.4-1.8.4-.4 1.8-.4-1.8-1.8-.4 1.8-.4.4-1.8Z"/><path d="m13.5 10.5 3-3"/></symbol>
+<symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 21V4M5.5 5h11l-2 3.5 2 3.5h-11"/></symbol>
 <symbol id="i-dropper" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m14.5 5.5 4 4M16.5 3.5a2.8 2.8 0 0 1 4 4l-2 2-4-4 2-2ZM14.5 9.5 5 19v0h4l9.5-9.5"/></symbol>
 <symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></symbol>
 <symbol id="i-check-s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7"/></symbol>
@@ -1186,17 +1236,17 @@ section{padding:56px 0 8px}
 <!-- ============ 04 СВОИ ПОЛЯ ============ -->
 <section>
   <div class="sec-head"><span class="num">04</span><h2>Свои поля события</h2></div>
-  <p class="sec-lede">Ни один календарь не даёт положить в событие кабинет, преподавателя или номер
-  абонемента. Здесь пользователь заводит поле любого типа и сам решает, какие три видны в свёрнутой
-  карточке. Встроенные поля лежат в том же списке: шва между «что было в приложении» и «что я завёл»
-  нет.</p>
+  <p class="sec-lede">Поля живут на группе, а не на всех событиях сразу: номер карты нужен абонементу
+  и не нужен уроку английского. Каждая группа держит свой набор и свою видимость, а общие поля
+  лежат отдельно и достаются всем. Списки собраны в один блок — строка за строкой, без карточки
+  вокруг каждой.</p>
 
   <div class="rail">
 
     <div class="slot-c">
       <h3>Событие целиком</h3>
-      <p class="cap">Три поля с плашкой «в карточке» — это те, что видны в таймлайне.
-      Остальные живут здесь и попадают в поиск наравне с названием.</p>
+      <p class="cap">Один блок вместо семи карточек. Плашка «в карточке» отмечает поля, которые видны
+      в таймлайне; остальные живут здесь и <b>попадают в поиск</b> наравне с названием.</p>
       <div class="phone" data-scheme>
         <div class="statusbar"><b>9:41</b><span class="dots"><i></i><i></i><i></i></span></div>
         <div class="body" style="padding-top:14px">
@@ -1206,36 +1256,39 @@ section{padding:56px 0 8px}
             <div class="sub">понедельник, 27 июля · 16:00 – 17:00</div>
           </div>
           <div class="detail">
-            <div class="drow">
-              <div class="di"><svg><use href="#i-repeat"/></svg></div>
-              <div><div class="k">Повтор</div><div class="v">По понедельникам и четвергам</div></div>
-              <span class="oncard">в карточке</span>
-            </div>
-            <div class="drow">
-              <div class="di"><svg><use href="#i-door"/></svg></div>
-              <div><div class="k">Кабинет</div><div class="v">312</div></div>
-              <span class="oncard">в карточке</span>
-            </div>
-            <div class="drow">
-              <div class="di"><svg><use href="#i-person"/></svg></div>
-              <div><div class="k">Преподаватель</div><div class="v">Мария Л.</div></div>
-              <span class="oncard">в карточке</span>
-            </div>
-            <div class="drow">
-              <div class="di"><svg><use href="#i-ticket"/></svg></div>
-              <div><div class="k">Абонемент</div><div class="v">№ 4417 · осталось 9 занятий</div></div>
-            </div>
-            <div class="drow">
-              <div class="di"><svg><use href="#i-pin"/></svg></div>
-              <div><div class="k">Место</div><div class="v">Языковой центр, Бэнулеску-Бодони 45</div></div>
-            </div>
-            <div class="drow">
-              <div class="di"><svg><use href="#i-bell"/></svg></div>
-              <div><div class="k">Напоминание</div><div class="v">За 30 минут</div></div>
-            </div>
-            <div class="drow">
-              <div class="di"><svg><use href="#i-cal"/></svg></div>
-              <div><div class="k">Календарь</div><div class="v">Учёба</div></div>
+            <div class="blk">
+              <div class="drow">
+                <div class="di"><svg><use href="#i-repeat"/></svg></div>
+                <div><div class="k">Повтор</div><div class="v">Каждые 2 недели, пн и чт</div></div>
+                <span class="oncard">в карточке</span>
+              </div>
+              <div class="sep"></div>
+              <div class="drow">
+                <div class="di"><svg><use href="#i-door"/></svg></div>
+                <div><div class="k">Кабинет</div><div class="v">312</div></div>
+                <span class="oncard">в карточке</span>
+              </div>
+              <div class="sep"></div>
+              <div class="drow">
+                <div class="di"><svg><use href="#i-person"/></svg></div>
+                <div><div class="k">Преподаватель</div><div class="v">Мария Л.</div></div>
+                <span class="oncard">в карточке</span>
+              </div>
+              <div class="sep"></div>
+              <div class="drow">
+                <div class="di"><svg><use href="#i-pin"/></svg></div>
+                <div><div class="k">Место</div><div class="v">Языковой центр, Бэнулеску-Бодони 45</div></div>
+              </div>
+              <div class="sep"></div>
+              <div class="drow">
+                <div class="di"><svg><use href="#i-bell"/></svg></div>
+                <div><div class="k">Напоминание</div><div class="v">За 30 минут</div></div>
+              </div>
+              <div class="sep"></div>
+              <div class="drow">
+                <div class="di"><svg><use href="#i-cal"/></svg></div>
+                <div><div class="k">Календарь и ветка</div><div class="v">Учёба · Английский</div></div>
+              </div>
             </div>
           </div>
         </div>
@@ -1249,55 +1302,123 @@ section{padding:56px 0 8px}
     </div>
 
     <div class="slot-c">
-      <h3>Редактор полей</h3>
-      <p class="cap">Поля живут на типе события: завёл «Занятие» — кабинет и преподаватель появились
-      у всех занятий разом. Тумблер решает, попадает ли поле в свёрнутую карточку.</p>
+      <h3>Поля по группам</h3>
+      <p class="cap">Верхний уровень редактора. У каждой группы свой набор и своя видимость;
+      общие поля достаются всем событиям. <b>Номер карты не приходит в «Учёбу»</b>.</p>
       <div class="phone" data-scheme>
         <div class="statusbar"><b>9:41</b><span class="dots"><i></i><i></i><i></i></span></div>
-        <div class="apphead">
-          <h1 style="font-size:27px">Поля</h1>
+        <div class="apphead"><h1 style="font-size:27px">Поля</h1>
           <div style="font-size:12.5px;color:var(--on-surface-variant);margin-top:5px">
-            Тип события «Занятие» · в карточке 3 из 3</div>
+            Наборы полей по группам событий</div>
+        </div>
+        <div class="body" style="padding-top:14px">
+          <div class="detail" style="padding-top:0">
+            <div class="blk-cap">ОБЩИЕ ДЛЯ ВСЕХ</div>
+            <div class="blk">
+              <div class="drow">
+                <div class="di"><svg><use href="#i-text"/></svg></div>
+                <div><div class="v">Общие поля</div><div class="k">Место, напоминание, повтор</div></div>
+                <span class="cnt2">3 поля</span>
+              </div>
+            </div>
+
+            <div class="blk-cap">ГРУППЫ</div>
+            <div class="blk">
+              <div class="drow c-plum">
+                <div class="di" style="background:var(--ebg);color:var(--efg)"><svg><use href="#i-school"/></svg></div>
+                <div><div class="v">Учёба</div><div class="k">Кабинет, преподаватель, абонемент, оплачено</div></div>
+                <span class="cnt2">4</span>
+              </div>
+              <div class="sep"></div>
+              <div class="drow c-moss">
+                <div class="di" style="background:var(--ebg);color:var(--efg)"><svg><use href="#i-fit"/></svg></div>
+                <div><div class="v">Спорт</div><div class="k">Номер карты, посещений, тренер</div></div>
+                <span class="cnt2">3</span>
+              </div>
+              <div class="sep"></div>
+              <div class="drow c-ocean">
+                <div class="di" style="background:var(--ebg);color:var(--efg)"><svg><use href="#i-team"/></svg></div>
+                <div><div class="v">Работа</div><div class="k">Ссылка на встречу, проект</div></div>
+                <span class="cnt2">2</span>
+              </div>
+              <div class="sep"></div>
+              <div class="drow c-clay">
+                <div class="di" style="background:var(--ebg);color:var(--efg)"><svg><use href="#i-food"/></svg></div>
+                <div><div class="v">Личное</div><div class="k">Без своих полей</div></div>
+                <span class="chev"><svg><use href="#i-chev"/></svg></span>
+              </div>
+            </div>
+
+            <div class="blk" style="margin-top:10px">
+              <div class="addfield"><span class="fi"><svg><use href="#i-plus"/></svg></span>Создать группу полей</div>
+            </div>
+          </div>
+        </div>
+        <nav class="navbar">
+          <a><span class="ind"><svg><use href="#i-cal"/></svg></span>Календарь</a>
+          <a><span class="ind"><svg><use href="#i-list"/></svg></span>Список</a>
+          <a><span class="ind"><svg><use href="#i-key"/></svg></span>Доступ</a>
+          <a class="on"><span class="ind"><svg><use href="#i-tune"/></svg></span>Настройки</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="slot-c">
+      <h3>Поля группы «Учёба»</h3>
+      <p class="cap">Тумблер решает, попадает ли поле в свёрнутую карточку. Встроенные лежат в том же
+      списке — <b>шва между «было в приложении» и «я завёл» нет</b>.</p>
+      <div class="phone" data-scheme>
+        <div class="statusbar"><b>9:41</b><span class="dots"><i></i><i></i><i></i></span></div>
+        <div class="apphead"><h1 style="font-size:27px">Учёба</h1>
+          <div style="font-size:12.5px;color:var(--on-surface-variant);margin-top:5px">
+            4 своих поля · в карточке 3 из 3</div>
         </div>
         <div class="body" style="padding-top:12px">
           <div class="fieldedit">
-            <div class="frow">
-              <div class="fi"><svg><use href="#i-repeat"/></svg></div>
-              <div><div class="fn">Повтор<span class="built">встроенное</span></div><div class="ft">Правило повторения</div></div>
-              <div class="sw on"></div>
+            <div class="blk">
+              <div class="frow">
+                <div class="fi"><svg><use href="#i-repeat"/></svg></div>
+                <div><div class="fn">Повтор<span class="built">общее</span></div><div class="ft">Правило повторения</div></div>
+                <div class="sw on"></div>
+              </div>
+              <div class="sep"></div>
+              <div class="frow">
+                <div class="fi"><svg><use href="#i-door"/></svg></div>
+                <div><div class="fn">Кабинет</div><div class="ft">Текст</div></div>
+                <div class="sw on"></div>
+              </div>
+              <div class="sep"></div>
+              <div class="frow">
+                <div class="fi"><svg><use href="#i-person"/></svg></div>
+                <div><div class="fn">Преподаватель</div><div class="ft">Текст</div></div>
+                <div class="sw on"></div>
+              </div>
+              <div class="sep"></div>
+              <div class="frow">
+                <div class="fi"><svg><use href="#i-ticket"/></svg></div>
+                <div><div class="fn">Абонемент</div><div class="ft">Число</div></div>
+                <div class="sw"></div>
+              </div>
+              <div class="sep"></div>
+              <div class="frow">
+                <div class="fi"><svg><use href="#i-toggle"/></svg></div>
+                <div><div class="fn">Оплачено</div><div class="ft">Флажок</div></div>
+                <div class="sw"></div>
+              </div>
+              <div class="sep"></div>
+              <div class="frow">
+                <div class="fi"><svg><use href="#i-pin"/></svg></div>
+                <div><div class="fn">Место<span class="built">общее</span></div><div class="ft">Адрес</div></div>
+                <div class="sw"></div>
+              </div>
+              <div class="sep"></div>
+              <div class="addfield"><span class="fi"><svg><use href="#i-plus"/></svg></span>Добавить поле в «Учёбу»</div>
             </div>
-            <div class="frow">
-              <div class="fi"><svg><use href="#i-door"/></svg></div>
-              <div><div class="fn">Кабинет</div><div class="ft">Текст</div></div>
-              <div class="sw on"></div>
-            </div>
-            <div class="frow">
-              <div class="fi"><svg><use href="#i-person"/></svg></div>
-              <div><div class="fn">Преподаватель</div><div class="ft">Текст</div></div>
-              <div class="sw on"></div>
-            </div>
-            <div class="frow">
-              <div class="fi"><svg><use href="#i-ticket"/></svg></div>
-              <div><div class="fn">Абонемент</div><div class="ft">Число</div></div>
-              <div class="sw"></div>
-            </div>
-            <div class="frow">
-              <div class="fi"><svg><use href="#i-toggle"/></svg></div>
-              <div><div class="fn">Оплачено</div><div class="ft">Флажок</div></div>
-              <div class="sw"></div>
-            </div>
-            <div class="frow">
-              <div class="fi"><svg><use href="#i-pin"/></svg></div>
-              <div><div class="fn">Место<span class="built">встроенное</span></div><div class="ft">Адрес</div></div>
-              <div class="sw"></div>
-            </div>
-            <div class="addfield"><svg><use href="#i-plus"/></svg>Добавить поле</div>
           </div>
-          <div style="padding:14px 18px 0;font-size:11.5px;color:var(--on-surface-variant);font-weight:600">ТИП ДАННЫХ НОВОГО ПОЛЯ</div>
-          <div class="types">
+          <div style="padding:16px 20px 0;font-size:11px;font-weight:700;color:var(--on-surface-variant);letter-spacing:.06em">ТИП ДАННЫХ НОВОГО ПОЛЯ</div>
+          <div class="types" style="padding:8px 20px 0">
             <span class="on">Текст</span><span>Число</span><span>Дата</span><span>Время</span>
             <span>Длительность</span><span>Список</span><span>Флажок</span><span>Ссылка</span>
-            <span>Телефон</span><span>Человек</span><span>Деньги</span>
           </div>
         </div>
         <nav class="navbar">
@@ -1311,8 +1432,8 @@ section{padding:56px 0 8px}
 
     <div class="slot-c">
       <h3>Абонемент на 30 дней</h3>
-      <p class="cap">Событие длиннее суток не лезет в сетку часов, поэтому у него своё место:
-      полоса с прогрессом сверху во всех видах. Поля работают и здесь.</p>
+      <p class="cap">Своя группа — свои поля: номер карты и посещения. Событие длиннее суток
+      не лезет в сетку часов, поэтому у него <b>полоса с прогрессом</b> сверху во всех видах.</p>
       <div class="phone" data-scheme>
         <div class="statusbar"><b>9:41</b><span class="dots"><i></i><i></i><i></i></span></div>
         <div class="body" style="padding-top:14px">
@@ -1323,31 +1444,38 @@ section{padding:56px 0 8px}
             <div class="prog"><i style="width:40%"></i></div>
           </div>
           <div class="detail">
-            <div class="drow">
-              <div class="di"><svg><use href="#i-clock"/></svg></div>
-              <div><div class="k">Осталось</div><div class="v">18 дней</div></div>
-              <span class="oncard">в карточке</span>
-            </div>
-            <div class="drow">
-              <div class="di"><svg><use href="#i-ticket"/></svg></div>
-              <div><div class="k">Посещений</div><div class="v">7 из 12</div></div>
-              <span class="oncard">в карточке</span>
-            </div>
-            <div class="drow">
-              <div class="di"><svg><use href="#i-num"/></svg></div>
-              <div><div class="k">Номер карты</div><div class="v">4417-08</div></div>
-            </div>
-            <div class="drow">
-              <div class="di"><svg><use href="#i-pin"/></svg></div>
-              <div><div class="k">Место</div><div class="v">Бассейн на Дачия</div></div>
-            </div>
-            <div class="drow">
-              <div class="di"><svg><use href="#i-bell"/></svg></div>
-              <div><div class="k">Напомнить об окончании</div><div class="v">За 3 дня</div></div>
-            </div>
-            <div class="drow">
-              <div class="di"><svg><use href="#i-cal"/></svg></div>
-              <div><div class="k">Календарь</div><div class="v">Спорт</div></div>
+            <div class="blk">
+              <div class="drow">
+                <div class="di"><svg><use href="#i-clock"/></svg></div>
+                <div><div class="k">Осталось</div><div class="v">18 дней</div></div>
+                <span class="oncard">в карточке</span>
+              </div>
+              <div class="sep"></div>
+              <div class="drow">
+                <div class="di"><svg><use href="#i-ticket"/></svg></div>
+                <div><div class="k">Посещений</div><div class="v">7 из 12</div></div>
+                <span class="oncard">в карточке</span>
+              </div>
+              <div class="sep"></div>
+              <div class="drow">
+                <div class="di"><svg><use href="#i-num"/></svg></div>
+                <div><div class="k">Номер карты</div><div class="v">4417-08</div></div>
+              </div>
+              <div class="sep"></div>
+              <div class="drow">
+                <div class="di"><svg><use href="#i-pin"/></svg></div>
+                <div><div class="k">Место</div><div class="v">Бассейн на Дачия</div></div>
+              </div>
+              <div class="sep"></div>
+              <div class="drow">
+                <div class="di"><svg><use href="#i-bell"/></svg></div>
+                <div><div class="k">Напомнить об окончании</div><div class="v">За 3 дня</div></div>
+              </div>
+              <div class="sep"></div>
+              <div class="drow">
+                <div class="di"><svg><use href="#i-cal"/></svg></div>
+                <div><div class="k">Календарь и ветка</div><div class="v">Спорт · Бассейн</div></div>
+              </div>
             </div>
           </div>
         </div>
@@ -1363,9 +1491,162 @@ section{padding:56px 0 8px}
   </div>
 </section>
 
-<!-- ============ 05 ЦВЕТ НА ЧЕТЫРЁХ УРОВНЯХ ============ -->
+<!-- ============ 05 ПОВТОРЕНИЕ ============ -->
 <section>
-  <div class="sec-head"><span class="num">05</span><h2>Цвет на четырёх уровнях</h2></div>
+  <div class="sec-head"><span class="num">05</span><h2>Повторение</h2></div>
+  <p class="sec-lede">Тут ломаются все календари, поэтому правило собирается по частям, а внизу всегда
+  видны ближайшие даты — проверить себя, не дожидаясь следующего месяца. Кроме периодичности есть
+  поведение на выходных, исключения и правила по позиции вроде «последняя пятница месяца».</p>
+
+  <div class="rail">
+
+    <div class="slot-c">
+      <h3>Неделя и дни</h3>
+      <p class="cap">Пресеты закрывают девять случаев из десяти, остальное собирается ниже.
+      «Каждые 2 недели по пн и чт» — <b>то, что не умеет половина календарей</b>.</p>
+      <div class="phone" data-scheme>
+        <div class="statusbar"><b>9:41</b><span class="dots"><i></i><i></i><i></i></span></div>
+        <div class="apphead"><h1 style="font-size:27px">Повторение</h1></div>
+        <div class="body" style="padding-top:14px">
+          <div class="presets">
+            <span>Не повторять</span><span>Каждый день</span><span>По будням</span>
+            <span class="on">Своё правило</span>
+          </div>
+          <div class="detail" style="padding-top:0">
+            <div class="blk">
+              <div class="everyrow">
+                <div class="lb">Повторять каждые<small>Считается от первой даты</small></div>
+                <div class="stepper"><b><svg><use href="#i-minus"/></svg></b><span class="n">2</span><b><svg><use href="#i-plus"/></svg></b></div>
+              </div>
+              <div class="sep" style="margin-left:15px"></div>
+              <div class="everyrow">
+                <div class="lb">Единица</div>
+                <div class="presets" style="padding:0"><span>дня</span><span class="on">недели</span><span>месяца</span></div>
+              </div>
+              <div class="sep" style="margin-left:15px"></div>
+              <div style="padding:12px 15px 0;font-size:12px;font-weight:600;color:var(--on-surface-variant)">По дням недели</div>
+              <div class="dowpick">
+                <span class="on">пн</span><span>вт</span><span>ср</span><span class="on">чт</span>
+                <span>пт</span><span>сб</span><span>вс</span>
+              </div>
+            </div>
+
+            <div class="blk-cap">ЕСЛИ ВЫПАДАЕТ НА ВЫХОДНОЙ ИЛИ ПРАЗДНИК</div>
+            <div class="blk">
+              <div class="opt on">
+                <div><div class="ot">Оставить как есть</div></div>
+                <div class="tick2"><svg><use href="#i-check-s"/></svg></div>
+              </div>
+              <div class="sep" style="margin-left:15px"></div>
+              <div class="opt">
+                <div><div class="ot">Перенести на ближайший будний</div>
+                  <div class="od">Вперёд, если это не конец правила</div></div>
+              </div>
+              <div class="sep" style="margin-left:15px"></div>
+              <div class="opt">
+                <div><div class="ot">Пропустить этот раз</div></div>
+              </div>
+            </div>
+
+            <div class="blk-cap">БЛИЖАЙШИЕ ДАТЫ</div>
+          </div>
+          <div class="dates">
+            <span class="first">чт 30 июля</span><span>пн 10 авг</span><span>чт 13 авг</span>
+            <span>пн 24 авг</span><span>чт 27 авг</span><span>пн 7 сен</span>
+          </div>
+        </div>
+        <nav class="navbar">
+          <a class="on"><span class="ind"><svg><use href="#i-cal"/></svg></span>Календарь</a>
+          <a><span class="ind"><svg><use href="#i-list"/></svg></span>Список</a>
+          <a><span class="ind"><svg><use href="#i-key"/></svg></span>Доступ</a>
+          <a><span class="ind"><svg><use href="#i-tune"/></svg></span>Настройки</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="slot-c">
+      <h3>Месяц, год и исключения</h3>
+      <p class="cap">Правила по позиции («последняя пятница»), окончание ряда и пропуски конкретных дат.
+      Строка сверху принимает <b>обычный текст</b> и разбирает его в правило.</p>
+      <div class="phone" data-scheme>
+        <div class="statusbar"><b>9:41</b><span class="dots"><i></i><i></i><i></i></span></div>
+        <div class="apphead"><h1 style="font-size:27px">Повторение</h1></div>
+        <div class="body" style="padding-top:14px">
+          <div class="nlp">
+            <svg><use href="#i-wand"/></svg>
+            <div><div class="t">«каждую последнюю пятницу месяца»</div>
+              <div class="d">Разобрано в правило · нажмите, чтобы применить</div></div>
+          </div>
+          <div class="detail" style="padding-top:0">
+            <div class="blk-cap">ПРАВИЛО МЕСЯЦА</div>
+            <div class="blk">
+              <div class="opt">
+                <div><div class="ot">По числу</div><div class="od">27-го каждого месяца</div></div>
+              </div>
+              <div class="sep" style="margin-left:15px"></div>
+              <div class="opt on">
+                <div><div class="ot">По позиции</div><div class="od">Последняя пятница месяца</div></div>
+                <div class="tick2"><svg><use href="#i-check-s"/></svg></div>
+              </div>
+              <div class="sep" style="margin-left:15px"></div>
+              <div class="opt">
+                <div><div class="ot">Последний рабочий день</div><div class="od">С учётом праздников страны</div></div>
+              </div>
+            </div>
+
+            <div class="blk-cap">ОКОНЧАНИЕ</div>
+            <div class="blk">
+              <div class="opt">
+                <div><div class="ot">Никогда</div></div>
+              </div>
+              <div class="sep" style="margin-left:15px"></div>
+              <div class="opt on">
+                <div><div class="ot">После 12 повторов</div><div class="od">Осталось 9</div></div>
+                <div class="tick2"><svg><use href="#i-check-s"/></svg></div>
+              </div>
+              <div class="sep" style="margin-left:15px"></div>
+              <div class="opt">
+                <div><div class="ot">До даты</div><div class="od">Не выбрана</div></div>
+              </div>
+            </div>
+
+            <div class="blk-cap">ИСКЛЮЧЕНИЯ</div>
+            <div class="blk">
+              <div class="drow">
+                <div class="di"><svg><use href="#i-cal"/></svg></div>
+                <div><div class="v">Пропущенные даты</div><div class="k">4 и 11 августа</div></div>
+                <span class="chev"><svg><use href="#i-chev"/></svg></span>
+              </div>
+              <div class="sep"></div>
+              <div class="frow">
+                <div class="fi"><svg><use href="#i-flag"/></svg></div>
+                <div><div class="fn">Не повторять в праздники</div><div class="ft">Календарь праздников Молдовы</div></div>
+                <div class="sw on"></div>
+              </div>
+              <div class="sep"></div>
+              <div class="frow">
+                <div class="fi"><svg><use href="#i-clock"/></svg></div>
+                <div><div class="fn">Сдвигать вместе с первым</div><div class="ft">Перенос первой даты двигает весь ряд</div></div>
+                <div class="sw"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <nav class="navbar">
+          <a class="on"><span class="ind"><svg><use href="#i-cal"/></svg></span>Календарь</a>
+          <a><span class="ind"><svg><use href="#i-list"/></svg></span>Список</a>
+          <a><span class="ind"><svg><use href="#i-key"/></svg></span>Доступ</a>
+          <a><span class="ind"><svg><use href="#i-tune"/></svg></span>Настройки</a>
+        </nav>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ 06 ЦВЕТ НА ЧЕТЫРЁХ УРОВНЯХ ============ -->
+<section>
+  <div class="sec-head"><span class="num">06</span><h2>Цвет на четырёх уровнях</h2></div>
   <p class="sec-lede">Одного цвета на календарь мало: «Учёба» — это и английский, и экзамены, и глазом
   их надо различать, не заводя три календаря. Цвет живёт на четырёх уровнях, каждый следующий
   наследует предыдущий, пока не переопределён. В базе это <code>NULL</code> в поле цвета, а не
@@ -1633,9 +1914,9 @@ section{padding:56px 0 8px}
   </div>
 </section>
 
-<!-- ============ 06 ДОСТУП ============ -->
+<!-- ============ 07 ДОСТУП ============ -->
 <section>
-  <div class="sec-head"><span class="num">06</span><h2>Доступ для ИИ</h2></div>
+  <div class="sec-head"><span class="num">07</span><h2>Доступ для ИИ</h2></div>
   <p class="sec-lede">Ключ на каждого агента, права по календарям и журнал того, что этот ключ делал.
   Раздел появляется только при включённой синхронизации: до неё стучаться некуда, и приложение
   говорит это прямо.</p>
@@ -1760,9 +2041,9 @@ section{padding:56px 0 8px}
   </div>
 </section>
 
-<!-- ============ 07 СИСТЕМА ============ -->
+<!-- ============ 08 СИСТЕМА ============ -->
 <section>
-  <div class="sec-head"><span class="num">07</span><h2>Система</h2></div>
+  <div class="sec-head"><span class="num">08</span><h2>Система</h2></div>
   <p class="sec-lede">Схема сгенерирована из seed в material_color_utilities, тона событий — из
   тональных палитр HCT, шрифты подшиты из m3-dna.</p>
 
