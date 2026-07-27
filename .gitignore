@@ -1,0 +1,47 @@
+# Личные заметки — в репозиторий не уезжают
+CLAUDE.md
+CLAUDE.local.md
+
+# Ключи подписи
+*.jks
+*.keystore
+key.properties
+android/key.properties
+
+# Flutter / Dart
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.metadata
+pubspec.lock.bak
+**/doc/api/
+*.g.dart.bak
+
+# Сгенерированный drift
+# (файлы *.g.dart коммитим — так проще собирать без build_runner)
+
+# Android
+android/.gradle/
+android/local.properties
+android/app/debug/
+android/app/profile/
+android/app/release/
+android/captures/
+.cxx/
+*.iml
+
+# IDE
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Прочее
+*.apk
+*.aab
+*.log
+coverage/
