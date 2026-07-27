@@ -119,6 +119,7 @@ class VehaRepository {
             isAllDay: Value(e.isAllDay),
             color: Value(e.color?.toARGB32()),
             icon: Value(e.iconName),
+            rrule: Value(e.rrule),
             createdAt: now,
             updatedAt: now,
           ));
@@ -211,6 +212,7 @@ class VehaRepository {
               isAllDay: Value(e.isAllDay),
               color: Value(e.color?.toARGB32()),
               icon: Value(e.iconName),
+              rrule: Value(e.rrule),
               createdAt: now,
               updatedAt: now,
             ));
@@ -268,6 +270,8 @@ class VehaRepository {
         color: e.color == null ? null : Color(e.color!),
         iconName: e.icon,
         isAllDay: e.isAllDay,
+        rrule: e.rrule,
+        timezone: e.timezone,
         location: e.location,
       );
 
@@ -281,7 +285,8 @@ class VehaRepository {
         color: e.color,
         iconName: e.iconName,
         isAllDay: e.isAllDay,
-        recurrenceLabel: e.recurrenceLabel,
+        rrule: e.rrule,
+        timezone: e.timezone,
         location: e.location,
         fields: fields,
       );

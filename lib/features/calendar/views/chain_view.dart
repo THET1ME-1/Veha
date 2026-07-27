@@ -5,6 +5,7 @@ import '../../../core/event_colors.dart';
 import '../../../core/icon_registry.dart';
 import '../../../data/models.dart';
 import '../../../data/seed.dart';
+import '../../../domain/recurrence.dart';
 import '../../../l10n/app_localizations.dart';
 import '../widgets/month_header.dart';
 
@@ -188,14 +189,15 @@ class _When extends StatelessWidget {
       parts.add('$start – ${_hhmm(event.end)}');
       parts.add(_human(l, event.duration));
     }
-    if (event.recurrenceLabel != null) parts.add(event.recurrenceLabel!);
+    final repeat = recurrenceLabelOf(event);
+    if (repeat != null) parts.add(repeat);
 
     return Row(
       children: [
         Flexible(
           child: Text(parts.join(' · '), style: style, overflow: TextOverflow.ellipsis),
         ),
-        if (event.recurrenceLabel != null && event.duration.inMinutes <= 15) ...[
+        if (repeat != null && event.duration.inMinutes <= 15) ...[
           const SizedBox(width: 5),
           Icon(VehaIcons.byName('repeat'), size: 13, color: scheme.onSurfaceVariant),
         ],
@@ -364,5 +366,30 @@ class _NowLine extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+/// Подпись правила повторения на языке интерфейса.
+///
+/// Строится из RRULE каждый раз: правило меняется, а сохранённая строка
+/// осталась бы старой и врала бы про ряд.
+String? recurrenceLabelOf(VEvent e) {
+  if (e.rrule == null) return null;
+  try {
+    return Recurrence.describe(
+      e.rrule!,
+      weekdayNames: const [
+        'по понедельникам', 'по вторникам', 'по средам', 'по четвергам',
+        'по пятницам', 'по субботам', 'по воскресеньям',
+      ],
+      weekdayNominative: const [
+        'понедельник', 'вторник', 'среда', 'четверг',
+        'пятница', 'суббота', 'воскресенье',
+      ],
+    );
+  } on FormatException {
+    // Правило могло приехать с чужого устройства в неизвестном диалекте:
+    // событие показываем без подписи, но не роняем экран.
+    return null;
   }
 }

@@ -62,7 +62,8 @@ class VEvent {
     this.color,
     this.iconName,
     this.isAllDay = false,
-    this.recurrenceLabel,
+    this.rrule,
+    this.timezone = 'Europe/Chisinau',
     this.location,
     this.fields = const [],
   });
@@ -77,9 +78,14 @@ class VEvent {
   final String? iconName;
   final bool isAllDay;
 
-  /// Человеческое описание правила повторения: «по пн и чт».
-  /// Само правило живёт в RRULE, здесь только подпись для карточки.
-  final String? recurrenceLabel;
+  /// Правило повторения по RFC 5545. Подпись для карточки строится из него
+  /// на лету: хранить её отдельной строкой нельзя — правило поменяется,
+  /// а подпись останется старой и будет врать.
+  final String? rrule;
+
+  /// Пояс события, IANA. Нужен для абсолютного момента напоминания:
+  /// 16:00 в Кишинёве — разный UTC летом и зимой.
+  final String timezone;
   final String? location;
   final List<VFieldValue> fields;
 

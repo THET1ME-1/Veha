@@ -6,6 +6,7 @@ import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
 import '../../data/models.dart';
 import '../../data/seed.dart';
+import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
 import '../calendar/widgets/month_header.dart';
 import '../common/blocks.dart';
 
@@ -45,11 +46,12 @@ class EventScreen extends StatelessWidget {
       rows.add(row);
     }
 
-    if (event.recurrenceLabel != null) {
+    final repeat = recurrenceLabelOf(event);
+    if (repeat != null) {
       add(VRow(
         icon: 'repeat',
         label: 'Повтор',
-        value: event.recurrenceLabel,
+        value: repeat,
         trailing: const VTag('в карточке'),
       ));
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../domain/recurrence.dart';
 import 'models.dart';
 
 /// Демонстрационные данные ровно из макета: понедельник 27 июля 2026.
@@ -50,7 +51,7 @@ class Seed {
       iconName: 'alarm',
       start: _at(27, 7, 30),
       end: _at(27, 7, 45),
-      recurrenceLabel: 'каждый день',
+      rrule: 'FREQ=DAILY',
     ),
     VEvent(
       id: 'e-fit',
@@ -108,7 +109,7 @@ class Seed {
       iconName: 'school',
       start: _at(27, 16),
       end: _at(27, 17),
-      recurrenceLabel: 'по пн и чт',
+      rrule: Recurrence.weekly(interval: 2, weekdays: const {1, 4}),
       location: 'Языковой центр, Бэнулеску-Бодони 45',
       fields: const [
         VFieldValue(fieldId: 'f-room', value: '312'),
@@ -151,7 +152,7 @@ class Seed {
           start: _at(30, 10), end: _at(30, 11, 30)),
       VEvent(id: 'e30-2', calendarId: 'c-study', subcategoryId: 's-eng',
           title: 'Английский', iconName: 'school', start: _at(30, 16), end: _at(30, 17),
-          recurrenceLabel: 'по пн и чт'),
+          rrule: 'FREQ=WEEKLY;BYDAY=MO,TH'),
     ],
     DateTime(2026, 7, 31): [
       VEvent(id: 'e31-1', calendarId: 'c-home', title: 'Обед с Ниной',
