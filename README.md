@@ -4,14 +4,14 @@
 
 <br>
 
-[![License](https://img.shields.io/github/license/THET1ME-1/Veha?style=for-the-badge&color=7A3B32)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/THET1ME-1/Veha?style=for-the-badge&color=E0685C)](https://github.com/THET1ME-1/Veha/stargazers)
+[![License](https://img.shields.io/github/license/THET1ME-1/Veha?style=for-the-badge&color=00544A)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/THET1ME-1/Veha?style=for-the-badge&color=41CCB5)](https://github.com/THET1ME-1/Veha/stargazers)
 
 ![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)
 ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
-![Material 3](https://img.shields.io/badge/Material_3-Expressive-E0685C?style=for-the-badge)
-![Local first](https://img.shields.io/badge/Local_first-no_account_needed-7A3B32?style=for-the-badge)
+![Material 3](https://img.shields.io/badge/Material_3-Expressive-41CCB5?style=for-the-badge)
+![Local first](https://img.shields.io/badge/Local_first-no_account_needed-00544A?style=for-the-badge)
 
 **A local-first calendar for Android in Material 3 Expressive style** — works
 offline with no account, shares selected calendars when you want it to, and lets
