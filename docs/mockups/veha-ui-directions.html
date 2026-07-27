@@ -239,17 +239,24 @@ section{padding:56px 0 8px}
   margin:0 auto;border-radius:99px}
 .m-cell.today .n{background:var(--primary);color:var(--on-primary)}
 .m-cell.dim{opacity:.35}
-/* вариант 1 — полоса занятости */
-/* пустой день не рисует ничего: серая рельса под каждым числом — тот же мусор,
-   от которого уходили, только ровнее уложенный */
-.load{display:flex;height:6px;border-radius:99px;overflow:hidden;margin:7px 4px 0}
-.load i{display:block;height:100%}
-/* вариант 2 — чипы */
+/* режим 1 — чипы: иконка и короткое имя */
 .mchips{display:flex;flex-direction:column;gap:2px;margin-top:4px;align-items:stretch}
-.mchips span{background:var(--ebg);color:var(--efg);border-radius:6px;font-size:8.5px;font-weight:600;
-  padding:1.5px 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
+.mchips span{background:var(--ebg);color:var(--efg);border-radius:7px;font-size:8px;font-weight:700;
+  padding:2px 4px;display:flex;align-items:center;gap:3px;overflow:hidden;white-space:nowrap}
+.mchips span svg{width:9px;height:9px;flex:0 0 auto}
 .mchips b{font-size:8.5px;color:var(--on-surface-variant);font-weight:700;text-align:left;padding-left:4px}
-/* вариант 3 — тонированная ячейка */
+/* режим 1б — только иконки */
+/* без переноса: вторая строка иконок делает ячейки разной высоты и сетка «прыгает» */
+.micons{display:flex;flex-wrap:nowrap;gap:3px;justify-content:center;margin-top:5px}
+.micons span{width:16px;height:16px;border-radius:999px;background:var(--ebg);color:var(--efg);
+  display:flex;align-items:center;justify-content:center}
+.micons span svg{width:10px;height:10px}
+.micons b{font-size:8.5px;color:var(--on-surface-variant);font-weight:700;line-height:16px}
+/* превью режима в настройках */
+.pickopt .mini{width:34px;display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.mini .mchip{height:7px;border-radius:99px;background:var(--ebg);display:block}
+.mini .mtile{height:15px;border-radius:5px;background:var(--esoft);display:block}
+/* режим 2 — тонированная ячейка */
 .m-cell.tinted{background:var(--esoft)}
 .m-cell .cnt{font-size:10px;font-weight:700;color:var(--on-surface-variant);margin-top:5px;
   font-variant-numeric:tabular-nums}
@@ -340,6 +347,40 @@ section{padding:56px 0 8px}
 .chain-note .off{padding-left:18px}
 .chain-note .off2{padding-left:36px}
 .chain-note .off3{padding-left:54px}
+
+/* ---------- пикер произвольного цвета ---------- */
+.prev{margin:0 20px 14px;border-radius:26px;padding:18px;display:grid;
+  grid-template-columns:1fr auto;gap:12px;align-items:center}
+.prev .ph{font-family:'Unbounded';font-weight:700;font-size:22px;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums}
+.prev .pl{font-size:11.5px;font-weight:600;opacity:.85;margin-top:3px}
+.prev .save{background:color-mix(in srgb,var(--efg) 16%,transparent);border-radius:999px;
+  padding:9px 14px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px}
+.prev .save svg{width:15px;height:15px}
+.scaleblock{padding:0 20px 12px}
+.scaleblock .lbl{font-size:11px;font-weight:700;color:var(--on-surface-variant);
+  letter-spacing:.06em;margin-bottom:7px}
+.scale{display:grid;gap:5px}
+.scale.h12{grid-template-columns:repeat(12,1fr)}
+.scale.h8{grid-template-columns:repeat(8,1fr)}
+.scale i{aspect-ratio:1;border-radius:999px;display:block;position:relative}
+.scale i.sel::after{content:'';position:absolute;inset:30%;border-radius:99px;background:#fff}
+.hexrow{margin:2px 20px 14px;display:grid;grid-template-columns:1fr 52px;gap:9px}
+.hexfield{background:var(--surface-container-high);border-radius:18px;padding:13px 16px;
+  display:flex;align-items:center;gap:10px}
+.hexfield .hash{font-size:15px;font-weight:700;color:var(--on-surface-variant)}
+.hexfield .val{font-family:ui-monospace,Menlo,monospace;font-size:16px;font-weight:600;letter-spacing:.06em}
+.hexfield .caret{width:2px;height:19px;background:var(--primary);margin-left:1px}
+.dropper{background:var(--secondary-container);color:var(--on-secondary-container);border-radius:18px;
+  display:flex;align-items:center;justify-content:center}
+.dropper svg{width:21px;height:21px}
+.saved{padding:0 20px 10px}
+.saved .row{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin-top:8px}
+.saved .row i{aspect-ratio:1;border-radius:999px;display:block}
+.saved .row .add{aspect-ratio:1;border-radius:999px;background:var(--surface-container-high);
+  display:flex;align-items:center;justify-content:center;color:var(--primary)}
+.saved .row .add svg{width:16px;height:16px}
+.hint{margin:4px 20px 0;font-size:11.5px;color:var(--on-surface-variant);line-height:1.5}
 
 /* ---------- экран события и полей ---------- */
 .hero{margin:2px 18px 0;border-radius:30px;background:var(--ebg);color:var(--efg);padding:18px 18px 16px}
@@ -449,6 +490,8 @@ section{padding:56px 0 8px}
 <symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18.5h10a4 4 0 0 0 .4-8 5.5 5.5 0 0 0-10.6-.9A3.9 3.9 0 0 0 7 18.5Z"/><path d="m9.5 14 1.8 1.8 3.4-3.6"/></symbol>
 <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5h2M4 12h2M4 17.5h2M9.5 6.5H20M9.5 12H20M9.5 17.5H20"/></symbol>
 <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-dropper" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m14.5 5.5 4 4M16.5 3.5a2.8 2.8 0 0 1 4 4l-2 2-4-4 2-2ZM14.5 9.5 5 19v0h4l9.5-9.5"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></symbol>
 <symbol id="i-check-s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7"/></symbol>
 <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="4"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
 <symbol id="i-day" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="4"/><path d="M7.5 9.5h9M7.5 13.5h6"/></symbol>
@@ -973,17 +1016,18 @@ section{padding:56px 0 8px}
 
 <!-- ============ 03 МЕСЯЦ ============ -->
 <section>
-  <div class="sec-head"><span class="num">03</span><h2>Месяц: чем заменить россыпь точек</h2></div>
-  <p class="sec-lede">Мелкие кружки под числом отвергнуты — на плотном месяце это визуальный мусор,
-  по которому ничего не прочитать. Три замены, у каждой свой ответ на вопрос «что должен сообщать день».
-  Через все три идёт лента абонемента: так многодневное событие выглядит в месяце.</p>
+  <div class="sec-head"><span class="num">03</span><h2>Месяц: два режима</h2></div>
+  <p class="sec-lede">Россыпь мелких кружков отвергнута — на плотном месяце по ней ничего не прочитать.
+  Остаются два режима, и это не «выберите один навсегда», а переключатель в настройках: чипы отвечают
+  на вопрос <b>что именно</b> в этот день, тонированная ячейка — <b>чем занят</b> день.
+  Через оба идёт лента абонемента: так многодневное событие выглядит в месяце.</p>
 
   <div class="rail">
 
     <div class="slot-c">
-      <h3>А · Полоса занятости</h3>
-      <p class="cap">Одна лента под числом, сегменты по цветам календарей, длина — доля занятого
-      времени. Сообщает <b>насколько день забит</b>. Пустой день остаётся пустым.</p>
+      <h3>Чипы · иконка и текст</h3>
+      <p class="cap">Две-три подписи в ячейке, дальше «+N». Чип показывает иконку события и короткое
+      название; в настройках плотность переключается на <b>только иконку</b> или только текст.</p>
       <div class="phone" data-scheme>
         <div class="statusbar"><b>9:41</b><span class="dots"><i></i><i></i><i></i></span></div>
         <div class="apphead"><h1>Июль <em>2026</em></h1></div>
@@ -993,16 +1037,42 @@ section{padding:56px 0 8px}
         <div class="body">
           <div class="month">
             <div class="m-dow"><span>пн</span><span>вт</span><span>ср</span><span>чт</span><span>пт</span><span>сб</span><span>вс</span></div>
-            <div class="m-grid" data-month="load"></div>
+            <div class="m-grid" data-month="chips"></div>
+          </div>
+        </div>
+        <button class="fab"><svg><use href="#i-plus"/></svg></button>
+        <nav class="navbar">
+          <a class="on"><span class="ind"><svg><use href="#i-cal"/></svg></span>Календарь</a>
+          <a><span class="ind"><svg><use href="#i-list"/></svg></span>Список</a>
+          <a><span class="ind"><svg><use href="#i-key"/></svg></span>Доступ</a>
+          <a><span class="ind"><svg><use href="#i-tune"/></svg></span>Настройки</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="slot-c">
+      <h3>Чипы · только иконки</h3>
+      <p class="cap">Та же сетка на плотном месяце: в ячейку помещается до четырёх иконок,
+      день читается по цвету и знаку. <b>Названия уходят</b>, зато влезает вдвое больше.</p>
+      <div class="phone" data-scheme>
+        <div class="statusbar"><b>9:41</b><span class="dots"><i></i><i></i><i></i></span></div>
+        <div class="apphead"><h1>Июль <em>2026</em></h1></div>
+        <div class="segbar"><div class="sg">
+          <b>День</b><b>Дни</b><b>Неделя</b><b class="on"><svg><use href="#i-cal"/></svg>Месяц</b>
+        </div></div>
+        <div class="body">
+          <div class="month">
+            <div class="m-dow"><span>пн</span><span>вт</span><span>ср</span><span>чт</span><span>пт</span><span>сб</span><span>вс</span></div>
+            <div class="m-grid" data-month="icons"></div>
           </div>
           <div class="sheet">
             <div class="grab"></div>
             <h4>Понедельник, 27</h4>
-            <div class="sub">6 событий · занято 5 ч 45 мин</div>
+            <div class="sub">4 события · 5 ч 45 мин</div>
             <div class="tl" style="padding-top:4px">
               <div class="tl-row">
                 <div class="tl-time">10:00</div>
-                <div class="tl-rail"><div class="pill c-ocean" style="height:70px"><svg><use href="#i-team"/></svg></div><div class="link"></div></div>
+                <div class="tl-rail"><div class="pill c-ocean" style="height:66px"><svg><use href="#i-team"/></svg></div><div class="link"></div></div>
                 <div class="tl-body">
                   <div class="when">10:00 – 11:30 · 1 ч 30 мин</div>
                   <div class="name">Планёрка</div>
@@ -1029,35 +1099,9 @@ section{padding:56px 0 8px}
     </div>
 
     <div class="slot-c">
-      <h3>Б · Чипы с названиями</h3>
-      <p class="cap">Две-три подписи в ячейке, дальше «+N». Сообщает <b>что именно</b> в этот день.
-      Плата: на широком месяце текст режется до трёх букв.</p>
-      <div class="phone" data-scheme>
-        <div class="statusbar"><b>9:41</b><span class="dots"><i></i><i></i><i></i></span></div>
-        <div class="apphead"><h1>Июль <em>2026</em></h1></div>
-        <div class="segbar"><div class="sg">
-          <b>День</b><b>Дни</b><b>Неделя</b><b class="on"><svg><use href="#i-cal"/></svg>Месяц</b>
-        </div></div>
-        <div class="body">
-          <div class="month">
-            <div class="m-dow"><span>пн</span><span>вт</span><span>ср</span><span>чт</span><span>пт</span><span>сб</span><span>вс</span></div>
-            <div class="m-grid" data-month="chips"></div>
-          </div>
-        </div>
-        <button class="fab"><svg><use href="#i-plus"/></svg></button>
-        <nav class="navbar">
-          <a class="on"><span class="ind"><svg><use href="#i-cal"/></svg></span>Календарь</a>
-          <a><span class="ind"><svg><use href="#i-list"/></svg></span>Список</a>
-          <a><span class="ind"><svg><use href="#i-key"/></svg></span>Доступ</a>
-          <a><span class="ind"><svg><use href="#i-tune"/></svg></span>Настройки</a>
-        </nav>
-      </div>
-    </div>
-
-    <div class="slot-c">
-      <h3>В · Тонированная ячейка</h3>
-      <p class="cap">Фон дня красится тоном 95 преобладающего календаря, цифра справа — сколько событий.
-      Сообщает <b>чем занят</b> день. Самое спокойное решение из трёх.</p>
+      <h3>Тонированная ячейка</h3>
+      <p class="cap">Фон дня красится тоном преобладающего календаря, цифра снизу — сколько событий.
+      Самый спокойный режим: <b>месяц читается одним взглядом</b>, без чтения текста.</p>
       <div class="phone" data-scheme>
         <div class="statusbar"><b>9:41</b><span class="dots"><i></i><i></i><i></i></span></div>
         <div class="apphead"><h1>Июль <em>2026</em></h1></div>
@@ -1076,6 +1120,62 @@ section{padding:56px 0 8px}
           <a><span class="ind"><svg><use href="#i-list"/></svg></span>Список</a>
           <a><span class="ind"><svg><use href="#i-key"/></svg></span>Доступ</a>
           <a><span class="ind"><svg><use href="#i-tune"/></svg></span>Настройки</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="slot-c">
+      <h3>Переключение режима</h3>
+      <p class="cap">Оба режима живут в настройках вида, а не выбираются раз и навсегда при первом
+      запуске. Плотность чипа — там же, третьей строкой.</p>
+      <div class="phone" data-scheme>
+        <div class="statusbar"><b>9:41</b><span class="dots"><i></i><i></i><i></i></span></div>
+        <div class="apphead"><h1 style="font-size:27px">Вид месяца</h1></div>
+        <div class="body" style="padding-top:14px">
+          <div class="pickopt on">
+            <div class="mini">
+              <span class="mchip c-ocean"></span><span class="mchip c-plum"></span>
+              <span class="mchip c-moss"></span><span class="mchip c-amber"></span>
+            </div>
+            <div><div class="pn">Чипы с названиями</div><div class="pd">Видно, что именно в этот день</div></div>
+            <div class="mark"><svg><use href="#i-check-s"/></svg></div>
+          </div>
+          <div class="pickopt">
+            <div class="mini">
+              <span class="mtile c-ocean"></span><span class="mtile c-plum"></span>
+              <span class="mtile c-moss"></span><span class="mtile c-amber"></span>
+            </div>
+            <div><div class="pn">Тонированные ячейки</div><div class="pd">Видно, чем занят день</div></div>
+          </div>
+
+          <div class="scaleblock" style="padding:14px 20px 8px"><div class="lbl">ПЛОТНОСТЬ ЧИПА</div></div>
+          <div class="types" style="padding:0 20px">
+            <span class="on">Иконка и текст</span><span>Только иконка</span><span>Только текст</span>
+          </div>
+
+          <div class="fieldedit" style="padding-top:18px">
+            <div class="frow">
+              <div class="fi"><svg><use href="#i-num"/></svg></div>
+              <div><div class="fn">Событий в ячейке</div><div class="ft">Дальше сворачивать в «+N»</div></div>
+              <div style="font-family:'Unbounded';font-weight:700;font-size:15px">3</div>
+            </div>
+            <div class="frow">
+              <div class="fi"><svg><use href="#i-ticket"/></svg></div>
+              <div><div class="fn">Лента многодневных</div><div class="ft">Абонементы, отпуска, курсы</div></div>
+              <div class="sw on"></div>
+            </div>
+            <div class="frow">
+              <div class="fi"><svg><use href="#i-cal"/></svg></div>
+              <div><div class="fn">Номера недель</div><div class="ft">Колонка слева от сетки</div></div>
+              <div class="sw"></div>
+            </div>
+          </div>
+        </div>
+        <nav class="navbar">
+          <a><span class="ind"><svg><use href="#i-cal"/></svg></span>Календарь</a>
+          <a><span class="ind"><svg><use href="#i-list"/></svg></span>Список</a>
+          <a><span class="ind"><svg><use href="#i-key"/></svg></span>Доступ</a>
+          <a class="on"><span class="ind"><svg><use href="#i-tune"/></svg></span>Настройки</a>
         </nav>
       </div>
     </div>
@@ -1419,9 +1519,21 @@ section{padding:56px 0 8px}
             <i style="background:#41CCB5"></i><i style="background:#3B7DD8" class="sel"></i>
             <i style="background:#4C9A5B"></i><i style="background:#E0A93B"></i>
             <i style="background:#8E5CC4"></i><i style="background:#B4694A"></i>
-            <i style="background:#D9527E"></i><i style="background:#5B8DEF"></i>
-            <i style="background:#2FA894"></i><i style="background:#C0863E"></i>
-            <i style="background:#7C5CC4"></i><i style="background:#A03D5C"></i>
+          </div>
+          <div class="saved" style="padding-top:12px">
+            <div class="scaleblock" style="padding:0"><div class="lbl">МОИ ЦВЕТА</div></div>
+            <div class="row" style="margin-top:0">
+              <i style="background:#0F7B6C"></i><i style="background:#C2410C"></i>
+              <i style="background:#7C3AED"></i><i style="background:#BE123C"></i>
+              <i style="background:#0369A1"></i><i style="background:#4D7C0F"></i>
+              <i style="background:#A16207"></i>
+              <span class="add"><svg><use href="#i-plus"/></svg></span>
+            </div>
+          </div>
+          <div class="pickopt" style="margin-top:12px">
+            <div class="pc" style="background:#41CCB5"></div>
+            <div><div class="pn">Свой цвет из пикера</div><div class="pd">Оттенок, насыщенность, hex, пипетка</div></div>
+            <div style="color:var(--on-surface-variant)"><svg style="width:18px;height:18px"><use href="#i-chev"/></svg></div>
           </div>
           <div class="chain-note">
             <div class="step"><i style="background:#EFDBFF"></i><b>Учёба</b><span>слива</span></div>
@@ -1433,6 +1545,81 @@ section{padding:56px 0 8px}
             Перекрасите «Учёбу» — сменят цвет все ветки и события, где стоит наследование.
             «Экзамены» и заметка про паспорт останутся как есть.
           </div>
+        </div>
+        <nav class="navbar">
+          <a class="on"><span class="ind"><svg><use href="#i-cal"/></svg></span>Календарь</a>
+          <a><span class="ind"><svg><use href="#i-list"/></svg></span>Список</a>
+          <a><span class="ind"><svg><use href="#i-key"/></svg></span>Доступ</a>
+          <a><span class="ind"><svg><use href="#i-tune"/></svg></span>Настройки</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="slot-c">
+      <h3>Свой цвет</h3>
+      <p class="cap">Ряды дискретные, а не радуга-градиент: те же <b>заливки</b>, что и везде.
+      Бесконечность даёт hex-поле и пипетка, а решётка HCT закрывает быстрый выбор.</p>
+      <div class="phone" data-scheme>
+        <div class="statusbar"><b>9:41</b><span class="dots"><i></i><i></i><i></i></span></div>
+        <div class="apphead"><h1 style="font-size:27px">Свой цвет</h1></div>
+        <div class="body" style="padding-top:14px">
+
+          <div class="prev c-mint" style="background:#41CCB5;color:#00201B">
+            <div><div class="ph">#41CCB5</div><div class="pl">Оттенок 182° · насыщенность 46 · светлота 74</div></div>
+            <div class="save"><svg><use href="#i-plus"/></svg>В мои</div>
+          </div>
+
+          <div class="scaleblock">
+            <div class="lbl">ОТТЕНОК</div>
+            <div class="scale h12">
+              <i style="background:#D4698E"></i><i style="background:#D96972"></i><i style="background:#D96B55"></i>
+              <i style="background:#D57038"></i><i style="background:#CC7619"></i><i style="background:#BD7F00"></i>
+              <i style="background:#AC8600"></i><i style="background:#998D00"></i><i style="background:#829420"></i>
+              <i style="background:#66993C"></i><i style="background:#449D56"></i><i style="background:#039F6E"></i>
+            </div>
+            <div class="scale h12" style="margin-top:5px">
+              <i style="background:#009D87" class="sel"></i><i style="background:#009C9A"></i><i style="background:#009AAB"></i>
+              <i style="background:#0098BC"></i><i style="background:#0094D2"></i><i style="background:#428FDD"></i>
+              <i style="background:#6488E2"></i><i style="background:#8082E2"></i><i style="background:#977BDD"></i>
+              <i style="background:#AC75D1"></i><i style="background:#BD6FBF"></i><i style="background:#CA6BA9"></i>
+            </div>
+          </div>
+
+          <div class="scaleblock">
+            <div class="lbl">НАСЫЩЕННОСТЬ</div>
+            <div class="scale h8">
+              <i style="background:#898C8A"></i><i style="background:#818E8A"></i><i style="background:#77918A"></i>
+              <i style="background:#6B938A"></i><i style="background:#5E968A"></i><i style="background:#4D988A"></i>
+              <i style="background:#359B8A"></i><i style="background:#009D8A" class="sel"></i>
+            </div>
+          </div>
+
+          <div class="scaleblock">
+            <div class="lbl">СВЕТЛОТА</div>
+            <div class="scale h8">
+              <i style="background:#003C34"></i><i style="background:#00564A"></i><i style="background:#007062"></i>
+              <i style="background:#008C7A"></i><i style="background:#2DA794"></i><i style="background:#50C3AE"></i>
+              <i style="background:#74E5CF" class="sel"></i><i style="background:#A2FFEB"></i>
+            </div>
+          </div>
+
+          <div class="hexrow">
+            <div class="hexfield"><span class="hash">#</span><span class="val">41CCB5</span><span class="caret"></span></div>
+            <div class="dropper"><svg><use href="#i-dropper"/></svg></div>
+          </div>
+
+          <div class="saved">
+            <div class="lbl" style="font-size:11px;font-weight:700;color:var(--on-surface-variant);letter-spacing:.06em">ПОСЛЕДНИЕ</div>
+            <div class="row">
+              <i style="background:#41CCB5"></i><i style="background:#0F7B6C"></i>
+              <i style="background:#C2410C"></i><i style="background:#7C3AED"></i>
+              <i style="background:#BE123C"></i><i style="background:#0369A1"></i>
+              <i style="background:#4D7C0F"></i><i style="background:#A16207"></i>
+            </div>
+          </div>
+          <div class="hint">Пипетка берёт цвет с обоев или скриншота. Сохранённые живут в «Моих цветах»
+          и доступны из любого пикера в приложении.</div>
+
         </div>
         <nav class="navbar">
           <a class="on"><span class="ind"><svg><use href="#i-cal"/></svg></span>Календарь</a>
@@ -1645,7 +1832,7 @@ section{padding:56px 0 8px}
   const PAL = ['c-ocean','c-plum','c-moss','c-amber','c-clay','c-mint'];
   const T90 = {'c-ocean':'#D6E3FF','c-plum':'#EFDBFF','c-moss':'#A3F5AD',
                'c-amber':'#FFDEA8','c-clay':'#FFDBCE','c-mint':'#75F8E0'};
-  // занятость дней июля: [доля часов, календари по убыванию]
+  // события дней июля: [_, календари по убыванию значимости]
   const DAYS = {
     1:[.25,['c-ocean','c-amber']],       2:[.4,['c-plum','c-ocean','c-moss']],
     3:[.15,['c-clay']],                  6:[.55,['c-ocean','c-plum','c-moss','c-amber']],
@@ -1661,8 +1848,10 @@ section{padding:56px 0 8px}
     29:[.3,['c-moss','c-mint']],         30:[.5,['c-plum','c-ocean','c-amber']],
     31:[.35,['c-clay','c-mint']]
   };
-  const NAMES = {'c-ocean':'Планёрка','c-plum':'Английский','c-moss':'Зарядка',
-                 'c-amber':'Завтрак','c-clay':'Обед','c-mint':'Бассейн'};
+  const NAMES = {'c-ocean':'План.','c-plum':'Англ.','c-moss':'Зар.',
+                 'c-amber':'Завтр.','c-clay':'Обед','c-mint':'Басс.'};
+  const ICONS = {'c-ocean':'i-team','c-plum':'i-school','c-moss':'i-fit',
+                 'c-amber':'i-cup','c-clay':'i-food','c-mint':'i-pool'};
 
   function cells(){
     const out = [];
@@ -1677,55 +1866,43 @@ section{padding:56px 0 8px}
       const cls = ['m-cell', c.dim?'dim':'', (c.n===27&&!c.dim)?'today':''].filter(Boolean);
       const d = c.dim ? null : DAYS[c.n];
       let inner = '';
-      let style = '';
 
-      if(mode==='load'){
-        if(d){
-          const [share, cals] = d;
-          const segs = cals.map(cal=>{
-            const w = (share*100)/cals.length;
-            return `<i style="width:${w}%;background:${T90[cal]}"></i>`;
-          }).join('');
-          inner = `<div class="load">${segs}</div>`;
-        }
+      if(mode==='chips' && d){
+        const cals = d[1];
+        const shown = cals.slice(0,2).map(cal=>
+          `<span class="${cal}"><svg><use href="#${ICONS[cal]}"/></svg>${NAMES[cal]}</span>`).join('');
+        const more = cals.length>2 ? `<b>+${cals.length-2}</b>` : '';
+        inner = `<div class="mchips">${shown}${more}</div>`;
       }
 
-      if(mode==='chips'){
-        if(d){
-          const [, cals] = d;
-          const shown = cals.slice(0,2).map(cal=>
-            `<span class="${cal}">${NAMES[cal]}</span>`).join('');
-          const more = cals.length>2 ? `<b>+${cals.length-2}</b>` : '';
-          inner = `<div class="mchips">${shown}${more}</div>`;
-        }
+      if(mode==='icons' && d){
+        const cals = d[1];
+        const shown = cals.slice(0,3).map(cal=>
+          `<span class="${cal}"><svg><use href="#${ICONS[cal]}"/></svg></span>`).join('');
+        const more = cals.length>3 ? `<b>+${cals.length-3}</b>` : '';
+        inner = `<div class="micons">${shown}${more}</div>`;
       }
 
-      if(mode==='tint'){
-        if(d){
-          const [, cals] = d;
-          cls.push('tinted', cals[0]);
-          inner = `<div class="cnt">${cals.length}</div>`;
-        }
+      if(mode==='tint' && d){
+        cls.push('tinted', d[1][0]);
+        inner = `<div class="cnt">${d[1].length}</div>`;
       }
 
-      return `<div class="${cls.join(' ')}"${style}><div class="n">${c.n}</div>${inner}</div>`;
+      return `<div class="${cls.join(' ')}"><div class="n">${c.n}</div>${inner}</div>`;
     });
 
-    // лента абонемента: 16 июля — 14 августа, в июле видна с 16-го числа
-    const grid_html = html.join('');
-    grid.innerHTML = grid_html;
+    grid.innerHTML = html.join('');
 
-    // вставляем полосу многодневного события после недели, где он начинается
+    // лента абонемента: 16 июля — 14 августа
     const rows = grid.querySelectorAll('.m-cell');
-    const startIdx = 2 + 15;                      // 16 июля
+    const startIdx = 2 + 15;
     const rowStart = Math.floor(startIdx/7)*7;
+    const offset = startIdx - rowStart;
     const strip = document.createElement('div');
     strip.className = 'mstrip';
-    strip.style.gridColumn = 'span 7';
-    const offset = startIdx - rowStart;
     strip.innerHTML =
       `<div style="grid-column:1 / ${offset+1}"></div>` +
-      `<div class="seg start c-mint" style="grid-column:${offset+1} / 8;background:#75F8E0;color:#00201B">Абонемент в бассейн →</div>`;
+      `<div class="seg start" style="grid-column:${offset+1} / 8;background:#75F8E0;color:#00201B">Абонемент в бассейн →</div>`;
     rows[rowStart+6].after(strip);
   }
 
