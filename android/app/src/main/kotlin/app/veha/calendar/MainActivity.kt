@@ -1,4 +1,4 @@
-package app.veha.veha
+package app.veha.calendar
 
 import io.flutter.embedding.android.FlutterActivity
 
