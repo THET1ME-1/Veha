@@ -77,10 +77,7 @@ class Seed {
       iconName: 'groups',
       start: _at(27, 10),
       end: _at(27, 11, 30),
-      fields: const [
-        VFieldValue(fieldId: 'f-people', value: '4'),
-        VFieldValue(fieldId: 'f-calendar', value: 'Работа'),
-      ],
+      fields: const [VFieldValue(fieldId: 'f-people', value: '4')],
     ),
     // Накладка на планёрку: пересечения — самое хрупкое место раскладки,
     // и в данных для сверки оно должно быть.
@@ -268,6 +265,7 @@ class Seed {
     VFieldDef(id: 'f-pass', name: 'Абонемент', type: VFieldType.number, iconName: 'ticket', calendarId: 'c-study', sortOrder: 3),
     VFieldDef(id: 'f-paid', name: 'Оплачено', type: VFieldType.checkbox, iconName: 'toggle', calendarId: 'c-study', sortOrder: 4),
     VFieldDef(id: 'f-place', name: 'Место', type: VFieldType.text, iconName: 'place', isBuiltIn: true, sortOrder: 5),
+    VFieldDef(id: 'f-people', name: 'Участники', type: VFieldType.number, iconName: 'person', isBuiltIn: true, showInCard: true, sortOrder: 6),
     // Свои поля «Спорта»: в «Учёбу» они не приходят — номер карты уроку
     // английского не нужен.
     VFieldDef(id: 'f-left', name: 'Осталось', type: VFieldType.text, iconName: 'clock', calendarId: 'c-sport', showInCard: true, sortOrder: 0),

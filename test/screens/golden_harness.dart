@@ -1,13 +1,19 @@
 import 'dart:convert';
+import 'dart:ffi' show DynamicLibrary;
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:m3_dna/theme/app_theme.dart';
 import 'package:veha/core/brand.dart';
+import 'package:drift/native.dart';
+import 'package:sqlite3/open.dart' as sqlite_open;
+import 'package:veha/data/db/database.dart';
+import 'package:veha/data/providers.dart';
 import 'package:veha/l10n/app_localizations.dart';
 
 /// Снимок экрана без эмулятора.
@@ -18,6 +24,7 @@ import 'package:veha/l10n/app_localizations.dart';
 Future<void> loadAppFonts() async {
   TestWidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('ru');
+  _useSystemSqlite();
   for (final family in const ['Unbounded', 'Onest']) {
     final loader = FontLoader(family)
       ..addFont(rootBundle.load('assets/fonts/$family.ttf'));
@@ -27,12 +34,15 @@ Future<void> loadAppFonts() async {
   // экран с макетом бессмысленно. Ассеты чужого пакета в тестовый бандл не
   // попадают, поэтому файл читается прямо из кеша пакетов.
   final iconFont = _packageFile(
-      'material_symbols_icons', 'lib/fonts/MaterialSymbolsRounded.ttf');
+    'material_symbols_icons',
+    'lib/fonts/MaterialSymbolsRounded.ttf',
+  );
   if (iconFont != null) {
     // У IconData из пакета есть fontPackage, поэтому Flutter ищет семейство
     // под именем «packages/<пакет>/<семейство>» — под ним и регистрируем.
-    final icons = FontLoader('packages/material_symbols_icons/MaterialSymbolsRounded')
-      ..addFont(Future.value(iconFont.readAsBytesSync().buffer.asByteData()));
+    final icons = FontLoader(
+      'packages/material_symbols_icons/MaterialSymbolsRounded',
+    )..addFont(Future.value(iconFont.readAsBytesSync().buffer.asByteData()));
     await icons.load();
   }
 }
@@ -72,21 +82,35 @@ Future<void> pumpScreen(
     ..devicePixelRatio = 2;
   addTearDown(tester.view.reset);
 
+  // База в памяти вместо файла: экраны в тестах проходят тот же путь
+  // «база → репозиторий → виджет», что и в приложении.
+  final db = VehaDatabase(NativeDatabase.memory());
+  addTearDown(db.close);
+
   await tester.pumpWidget(
-    MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: brightness == Brightness.light
-          ? AppTheme.light(VehaBrand.seed, vibrant: VehaBrand.vibrantByDefault)
-          : AppTheme.dark(VehaBrand.seed, vibrant: VehaBrand.vibrantByDefault),
-      locale: locale,
-      supportedLocales: L.supportedLocales,
-      localizationsDelegates: const [
-        L.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      home: child,
+    ProviderScope(
+      overrides: [databaseProvider.overrideWithValue(db)],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: brightness == Brightness.light
+            ? AppTheme.light(
+                VehaBrand.seed,
+                vibrant: VehaBrand.vibrantByDefault,
+              )
+            : AppTheme.dark(
+                VehaBrand.seed,
+                vibrant: VehaBrand.vibrantByDefault,
+              ),
+        locale: locale,
+        supportedLocales: L.supportedLocales,
+        localizationsDelegates: const [
+          L.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        home: child,
+      ),
     ),
   );
   await tester.pumpAndSettle();
@@ -100,4 +124,25 @@ Future<void> shoot(WidgetTester tester, String name) async {
     find.byType(MaterialApp),
     matchesGoldenFile('shots/$name.png'),
   );
+}
+
+/// drift ищет `libsqlite3.so`, а в дистрибутивах лежит `libsqlite3.so.0`
+/// без симлинка. Пакет `sqlite3_flutter_libs` работает только внутри
+/// приложения, поэтому в тестах указываем библиотеку явно.
+void _useSystemSqlite() {
+  if (!Platform.isLinux) return;
+  sqlite_open.open.overrideFor(sqlite_open.OperatingSystem.linux, () {
+    for (final name in const [
+      'libsqlite3.so',
+      'libsqlite3.so.0',
+      '/usr/lib/x86_64-linux-gnu/libsqlite3.so.0',
+    ]) {
+      try {
+        return DynamicLibrary.open(name);
+      } on ArgumentError {
+        continue;
+      }
+    }
+    throw StateError('libsqlite3 не найдена');
+  });
 }

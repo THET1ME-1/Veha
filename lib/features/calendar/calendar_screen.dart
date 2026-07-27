@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/models.dart';
+import '../../data/providers.dart';
 import '../../data/seed.dart';
 import 'views/bands_view.dart';
 import 'views/chain_view.dart';
@@ -12,14 +14,14 @@ import 'widgets/span_bar.dart';
 import 'widgets/view_switcher.dart';
 import 'widgets/week_strip.dart';
 
-class CalendarScreen extends StatefulWidget {
+class CalendarScreen extends ConsumerStatefulWidget {
   const CalendarScreen({super.key});
 
   @override
-  State<CalendarScreen> createState() => _CalendarScreenState();
+  ConsumerState<CalendarScreen> createState() => _CalendarScreenState();
 }
 
-class _CalendarScreenState extends State<CalendarScreen> {
+class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   /// Демонстрационное «сейчас»: сид собран на 27 июля 2026, и линия должна
   /// стоять там же, где на макете.
   static final DateTime _now = DateTime(2026, 7, 27, 9, 41);
@@ -36,8 +38,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final inheritance = Seed.inheritance;
-    final events = Seed.dayEvents;
+    // Пока база отдаёт первую порцию, экран показывает каркас без событий:
+    // спиннер на пять секунд открытого календаря — худшее, что можно сделать.
+    final inheritance =
+        ref.watch(inheritanceProvider).valueOrNull ?? Seed.inheritance;
+    final day = ref.watch(dayProvider(_selected)).valueOrNull;
+    final events = day?.timed ?? const <VEvent>[];
+    final spans = day?.spans ?? const <VEvent>[];
 
     return Column(
       children: [
@@ -56,16 +63,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
         ViewSwitcher(value: _view, onChanged: (v) => setState(() => _view = v)),
         if (_view != CalendarView.week && _view != CalendarView.month)
           SpanBars(
-            events: Seed.spans,
+            events: spans,
             today: _selected,
             inheritance: inheritance,
           ),
-        Expanded(child: _body(events, inheritance)),
+        Expanded(child: _body(events, inheritance, spans)),
       ],
     );
   }
 
-  Widget _body(List<VEvent> events, Inheritance inheritance) {
+  Widget _body(List<VEvent> events, Inheritance inheritance,
+      List<VEvent> spans) {
     return switch (_view) {
       CalendarView.day when _reading == DayReading.chain => ChainView(
           events: events,
@@ -80,7 +88,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       CalendarView.month => MonthView(
           month: _selected,
           eventsOf: Seed.eventsOn,
-          spans: Seed.spans,
+          spans: spans,
           inheritance: inheritance,
           today: Seed.today,
           mode: _monthMode,
@@ -88,7 +96,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       CalendarView.week => WeekView(
           week: _week,
           eventsOf: Seed.eventsOn,
-          spans: Seed.spans,
+          spans: spans,
           inheritance: inheritance,
           today: Seed.today,
         ),
