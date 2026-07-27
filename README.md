@@ -54,9 +54,14 @@ an agent: pick which calendars it sees, read or write for each, set an expiry,
 revoke in one tap. Every action the token takes is written to a log you can read.
 Google Calendar does not show you what a third-party app actually did. Veha does.
 
-**Timeline as a chain.** The day is a vertical chain of full-radius pills with
-icons, each with a completion checkbox — half calendar, half tracker. The week is
-seven columns of pills sized by duration.
+**Your own fields.** No calendar lets you put a room number, a teacher or a
+membership ID on an event. Veha does: define a field of any type, then choose
+which ones show on the collapsed card. Built-in fields sit in the same list, so
+there is no seam between what ships and what you added.
+
+**Two readings of a day.** A chain of full-radius pills for "what do I have
+today", and a proportional clock for "when am I free". The week is seven columns
+of pills sized by duration.
 
 ### Stack
 
@@ -109,9 +114,14 @@ seed, строит из него тональную палитру HCT и рис
 задать срок и отозвать в один тап. Всё, что ключ делал, пишется в журнал. Google
 Calendar не показывает, что именно творило стороннее приложение. Veha показывает.
 
-**Таймлайн-цепочка.** День — вертикальная цепочка пилюль с иконками, у каждой
-чекбокс выполнения: наполовину календарь, наполовину трекер. Неделя — семь
-колонок пилюль, высота по длительности.
+**Свои поля.** Ни один календарь не даёт положить в событие кабинет,
+преподавателя или номер абонемента. Veha даёт: заводите поле любого типа и сами
+решаете, какие видны в свёрнутой карточке. Встроенные поля лежат в том же
+списке, шва между «что было в приложении» и «что я завёл» нет.
+
+**Два прочтения дня.** Цепочка пилюль отвечает на вопрос «что у меня сегодня»,
+пропорциональная шкала — «когда я свободен». Неделя — семь колонок пилюль,
+высота по длительности.
 
 ### Стек
 
