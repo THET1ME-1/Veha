@@ -45,3 +45,6 @@ android/captures/
 *.aab
 *.log
 coverage/
+
+# Снимки экранов для сверки с макетом — генерируются локально
+test/screens/shots/

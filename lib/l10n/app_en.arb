@@ -1,0 +1,22 @@
+{
+  "@@locale": "en",
+  "navCalendar": "Calendar",
+  "navList": "List",
+  "navAccess": "Access",
+  "navSettings": "Settings",
+  "viewDay": "Day",
+  "viewDays": "Days",
+  "viewWeek": "Week",
+  "viewMonth": "Month",
+  "readingClock": "Clock",
+  "readingChain": "Chain",
+  "viewNotBuilt": "This view is not built yet",
+  "newEvent": "New event",
+  "today": "today",
+  "nothingPlanned": "Nothing planned",
+  "durationMinutes": "{minutes} min",
+  "durationHours": "{hours} h",
+  "durationHoursMinutes": "{hours} h {minutes} min",
+  "spanDayOf": "day {current} of {total}",
+  "spanUntil": "until {date}"
+}

@@ -1,0 +1,22 @@
+{
+  "@@locale": "ro",
+  "navCalendar": "Calendar",
+  "navList": "Listă",
+  "navAccess": "Acces",
+  "navSettings": "Setări",
+  "viewDay": "Zi",
+  "viewDays": "Zile",
+  "viewWeek": "Săptămână",
+  "viewMonth": "Lună",
+  "readingClock": "Ceas",
+  "readingChain": "Lanț",
+  "viewNotBuilt": "Vizualizarea nu este gata",
+  "newEvent": "Eveniment nou",
+  "today": "azi",
+  "nothingPlanned": "Nimic planificat",
+  "durationMinutes": "{minutes} min",
+  "durationHours": "{hours} h",
+  "durationHoursMinutes": "{hours} h {minutes} min",
+  "spanDayOf": "ziua {current} din {total}",
+  "spanUntil": "până la {date}"
+}

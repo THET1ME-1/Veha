@@ -1,0 +1,22 @@
+{
+  "@@locale": "pl",
+  "navCalendar": "Kalendarz",
+  "navList": "Lista",
+  "navAccess": "Dostęp",
+  "navSettings": "Ustawienia",
+  "viewDay": "Dzień",
+  "viewDays": "Dni",
+  "viewWeek": "Tydzień",
+  "viewMonth": "Miesiąc",
+  "readingClock": "Zegar",
+  "readingChain": "Łańcuch",
+  "viewNotBuilt": "Ten widok nie jest gotowy",
+  "newEvent": "Nowe wydarzenie",
+  "today": "dziś",
+  "nothingPlanned": "Nic nie zaplanowano",
+  "durationMinutes": "{minutes} min",
+  "durationHours": "{hours} godz.",
+  "durationHoursMinutes": "{hours} godz. {minutes} min",
+  "spanDayOf": "{current}. z {total}",
+  "spanUntil": "do {date}"
+}

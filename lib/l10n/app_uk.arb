@@ -1,0 +1,22 @@
+{
+  "@@locale": "uk",
+  "navCalendar": "Календар",
+  "navList": "Список",
+  "navAccess": "Доступ",
+  "navSettings": "Налаштування",
+  "viewDay": "День",
+  "viewDays": "Дні",
+  "viewWeek": "Тиждень",
+  "viewMonth": "Місяць",
+  "readingClock": "Годинник",
+  "readingChain": "Ланцюжок",
+  "viewNotBuilt": "Вигляд ще не зібрано",
+  "newEvent": "Нова подія",
+  "today": "сьогодні",
+  "nothingPlanned": "Нічого не заплановано",
+  "durationMinutes": "{minutes} хв",
+  "durationHours": "{hours} год",
+  "durationHoursMinutes": "{hours} год {minutes} хв",
+  "spanDayOf": "{current}-й із {total}",
+  "spanUntil": "до {date}"
+}

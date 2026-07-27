@@ -1,0 +1,110 @@
+{
+  "@@locale": "ru",
+  "navCalendar": "Календарь",
+  "@navCalendar": {
+    "description": "navCalendar"
+  },
+  "navList": "Список",
+  "@navList": {
+    "description": "navList"
+  },
+  "navAccess": "Доступ",
+  "@navAccess": {
+    "description": "navAccess"
+  },
+  "navSettings": "Настройки",
+  "@navSettings": {
+    "description": "navSettings"
+  },
+  "viewDay": "День",
+  "@viewDay": {
+    "description": "viewDay"
+  },
+  "viewDays": "Дни",
+  "@viewDays": {
+    "description": "viewDays"
+  },
+  "viewWeek": "Неделя",
+  "@viewWeek": {
+    "description": "viewWeek"
+  },
+  "viewMonth": "Месяц",
+  "@viewMonth": {
+    "description": "viewMonth"
+  },
+  "readingClock": "Часы",
+  "@readingClock": {
+    "description": "readingClock"
+  },
+  "readingChain": "Цепочка",
+  "@readingChain": {
+    "description": "readingChain"
+  },
+  "viewNotBuilt": "Вид ещё не собран",
+  "@viewNotBuilt": {
+    "description": "viewNotBuilt"
+  },
+  "newEvent": "Новое событие",
+  "@newEvent": {
+    "description": "newEvent"
+  },
+  "today": "сегодня",
+  "@today": {
+    "description": "today"
+  },
+  "nothingPlanned": "Ничего не запланировано",
+  "@nothingPlanned": {
+    "description": "nothingPlanned"
+  },
+  "durationMinutes": "{minutes} мин",
+  "@durationMinutes": {
+    "description": "durationMinutes",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHours": "{hours} ч",
+  "@durationHours": {
+    "description": "durationHours",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHoursMinutes": "{hours} ч {minutes} мин",
+  "@durationHoursMinutes": {
+    "description": "durationHoursMinutes",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "spanDayOf": "{current}-й из {total}",
+  "@spanDayOf": {
+    "description": "spanDayOf",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "spanUntil": "до {date}",
+  "@spanUntil": {
+    "description": "spanUntil",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  }
+}

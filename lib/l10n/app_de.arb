@@ -1,0 +1,22 @@
+{
+  "@@locale": "de",
+  "navCalendar": "Kalender",
+  "navList": "Liste",
+  "navAccess": "Zugriff",
+  "navSettings": "Einstellungen",
+  "viewDay": "Tag",
+  "viewDays": "Tage",
+  "viewWeek": "Woche",
+  "viewMonth": "Monat",
+  "readingClock": "Uhr",
+  "readingChain": "Kette",
+  "viewNotBuilt": "Diese Ansicht fehlt noch",
+  "newEvent": "Neuer Termin",
+  "today": "heute",
+  "nothingPlanned": "Nichts geplant",
+  "durationMinutes": "{minutes} Min.",
+  "durationHours": "{hours} Std.",
+  "durationHoursMinutes": "{hours} Std. {minutes} Min.",
+  "spanDayOf": "Tag {current} von {total}",
+  "spanUntil": "bis {date}"
+}
