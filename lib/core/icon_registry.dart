@@ -45,6 +45,7 @@ class VehaIcons {
     'wand': Symbols.auto_fix_high_rounded,
     'add': Symbols.add_rounded,
     'key': Symbols.key_rounded,
+    'dropper': Symbols.colorize_rounded,
     'chevron': Symbols.chevron_right_rounded,
     'link': Symbols.link_rounded,
   };
