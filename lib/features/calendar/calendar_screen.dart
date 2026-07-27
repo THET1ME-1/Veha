@@ -5,6 +5,7 @@ import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../data/seed.dart';
 import 'views/chain_view.dart';
+import 'views/clock_view.dart';
 import 'widgets/month_header.dart';
 import 'widgets/span_bar.dart';
 import 'widgets/view_switcher.dart';
@@ -18,6 +19,10 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
+  /// Демонстрационное «сейчас»: сид собран на 27 июля 2026, и линия должна
+  /// стоять там же, где на макете.
+  static final DateTime _now = DateTime(2026, 7, 27, 9, 41);
+
   CalendarView _view = CalendarView.day;
   DayReading _reading = DayReading.chain;
   DateTime _selected = Seed.today;
@@ -62,7 +67,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
       CalendarView.day when _reading == DayReading.chain => ChainView(
           events: events,
           inheritance: inheritance,
-          now: DateTime(2026, 7, 27, 9, 41),
+          now: _now,
+        ),
+      CalendarView.day => ClockView(
+          events: events,
+          inheritance: inheritance,
+          now: _now,
         ),
       _ => const _Placeholder(),
     };

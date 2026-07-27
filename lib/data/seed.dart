@@ -82,6 +82,18 @@ class Seed {
         VFieldValue(fieldId: 'f-calendar', value: 'Работа'),
       ],
     ),
+    // Накладка на планёрку: пересечения — самое хрупкое место раскладки,
+    // и в данных для сверки оно должно быть.
+    VEvent(
+      id: 'e-lesson',
+      calendarId: 'c-study',
+      subcategoryId: 's-eng',
+      title: 'Урок',
+      iconName: 'school',
+      start: _at(27, 10, 30),
+      end: _at(27, 11, 30),
+      fields: const [VFieldValue(fieldId: 'f-room', value: '312')],
+    ),
     VEvent(
       id: 'e-lunch',
       calendarId: 'c-home',
