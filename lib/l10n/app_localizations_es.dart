@@ -973,4 +973,51 @@ class LEs extends L {
 
   @override
   String get syncDisconnectHint => 'Los datos se quedan en el dispositivo';
+
+  @override
+  String get accessNeedsSync =>
+      'Las claves aparecen al activar la sincronización';
+
+  @override
+  String get accessNoKeys => 'Ninguna clave';
+
+  @override
+  String get accessLoading => 'Cargando…';
+
+  @override
+  String get accessKeyName => 'Nombre del agente';
+
+  @override
+  String get accessScopesHint =>
+      'Qué calendarios ve la clave y dónde puede escribir';
+
+  @override
+  String get accessReadOnly => 'Solo lectura';
+
+  @override
+  String get accessWrite => 'Lectura y escritura';
+
+  @override
+  String get accessKeyOnce => 'La clave se muestra una vez';
+
+  @override
+  String get accessKeyOnceHint =>
+      'Cópiala ahora en tu agente: en el servidor solo queda un hash y la cadena no se puede recuperar.';
+
+  @override
+  String accessLastUsed(String when) {
+    return 'Usada $when';
+  }
+
+  @override
+  String get accessNeverUsed => 'Aún sin usar';
+
+  @override
+  String get accessRevoked => 'Revocada';
+
+  @override
+  String get accessLog => 'Registro';
+
+  @override
+  String get accessLogEmpty => 'La clave aún no ha tocado nada';
 }

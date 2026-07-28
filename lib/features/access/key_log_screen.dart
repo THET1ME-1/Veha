@@ -1,132 +1,111 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../core/brand.dart';
+import '../../core/icon_registry.dart';
+import '../../data/settings.dart';
+import '../../l10n/app_localizations.dart';
+import '../../services/sync_api.dart';
 import '../calendar/widgets/month_header.dart';
-
-/// Чем закончился вызов инструмента.
-enum LogResult { ok, denied, needsConfirm }
-
-class LogEntry {
-  const LogEntry({
-    required this.time,
-    required this.tool,
-    required this.detail,
-    required this.result,
-  });
-
-  final String time;
-
-  /// Имя MCP-инструмента: `list_events`, `create_event`.
-  final String tool;
-  final String detail;
-  final LogResult result;
-}
+import '../common/blocks.dart';
+import '../settings/sync_rows.dart' show syncApiFactoryProvider;
 
 /// Журнал ключа: что и когда агент делал.
 ///
-/// То, что превращает опасную фичу в аргумент. В Google Calendar не видно,
+/// То, что превращает опасную фичу в аргумент. В чужих календарях не видно,
 /// что именно творило стороннее приложение, — здесь видно, включая отказы.
-class KeyLogScreen extends StatelessWidget {
-  const KeyLogScreen({
-    super.key,
-    required this.keyName,
-    required this.keyPrefix,
-    required this.days,
-  });
+class KeyLogScreen extends ConsumerWidget {
+  const KeyLogScreen({super.key, required this.keyId, required this.keyName});
 
+  final String keyId;
   final String keyName;
-  final String keyPrefix;
-
-  /// Записи, сгруппированные по дню: «Сегодня», «Вчера» и так далее.
-  final List<(String, List<LogEntry>)> days;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
+    final l = L.of(context);
+    final entries = ref.watch(keyLogProvider(keyId));
 
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(
-          VehaInsets.screen, 6, VehaInsets.screen, 120),
-      children: [
-        Text(
-          keyName,
-          style: TextStyle(
-            fontFamily: AppFonts.display,
-            fontSize: 28,
-            letterSpacing: -0.9,
-            fontWeight: FontWeight.w800,
-            color: scheme.onSurface,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          keyPrefix,
-          style: TextStyle(
-            fontFamily: AppFonts.body,
-            fontSize: 12.5,
-            fontWeight: FontWeight.w500,
-            color: scheme.onSurfaceVariant,
-            fontFeatures: const [FontFeature.tabularFigures()],
-          ),
-        ),
-        for (final (title, entries) in days) ...[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(4, 18, 4, 8),
-            child: Text(
-              title.toUpperCase(),
-              style: TextStyle(
-                fontFamily: AppFonts.body,
-                fontSize: 11.5,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.7,
-                color: scheme.onSurfaceVariant,
-              ),
+    return Scaffold(
+      appBar:
+          AppBar(toolbarHeight: 56, leading: vBack(context), leadingWidth: 60),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(
+            VehaInsets.screen, 0, VehaInsets.screen, 120),
+        children: [
+          Text(
+            keyName,
+            style: TextStyle(
+              fontFamily: AppFonts.display,
+              fontSize: 28,
+              letterSpacing: -0.9,
+              fontWeight: FontWeight.w800,
+              color: scheme.onSurface,
             ),
           ),
-          for (final e in entries) ...[
-            _Entry(entry: e),
-            const SizedBox(height: 6),
-          ],
+          const SizedBox(height: 12),
+          entries.when(
+            loading: () => _Note(text: l.accessLoading),
+            error: (e, _) => _Note(text: '${l.syncFailed}: $e'),
+            data: (rows) => rows.isEmpty
+                ? _Note(text: l.accessLogEmpty)
+                : VBlock(
+                    children: [
+                      for (var i = 0; i < rows.length; i++) ...[
+                        if (i > 0) const VSep(inset: 15),
+                        _Entry(entry: rows[i]),
+                      ],
+                    ],
+                  ),
+          ),
         ],
-      ],
+      ),
     );
   }
 }
 
+/// Журнал с сервера. Семейство по ключу: экран открыт ровно для одного.
+final keyLogProvider =
+    FutureProvider.family<List<KeyAction>, String>((ref, keyId) async {
+  final settings = ref.watch(syncSettingsProvider);
+  if (!settings.connected) return const [];
+  return ref
+      .read(syncApiFactoryProvider)(settings.url)
+      .tokenLog(settings.token, keyId);
+});
+
 class _Entry extends StatelessWidget {
   const _Entry({required this.entry});
 
-  final LogEntry entry;
+  final KeyAction entry;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final denied = entry.result != 'ok';
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: ShapeDecoration(
-        color: scheme.surfaceContainerLow,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(18)),
-        ),
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 11),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 46,
-            child: Text(
-              entry.time,
-              style: TextStyle(
-                fontFamily: AppFonts.body,
-                fontSize: 11.5,
-                fontWeight: FontWeight.w600,
-                color: scheme.onSurfaceVariant,
-                fontFeatures: const [FontFeature.tabularFigures()],
-              ),
+          Container(
+            width: 34,
+            height: 34,
+            alignment: Alignment.center,
+            decoration: ShapeDecoration(
+              color:
+                  denied ? scheme.errorContainer : scheme.surfaceContainerHigh,
+              shape: const CircleBorder(),
+            ),
+            child: Icon(
+              VehaIcons.byName(_iconOf(entry.action)),
+              size: 16,
+              color: denied ? scheme.onErrorContainer : scheme.onSurfaceVariant,
             ),
           ),
-          const SizedBox(width: 11),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,19 +114,17 @@ class _Entry extends StatelessWidget {
                   entry.tool,
                   style: TextStyle(
                     fontFamily: AppFonts.body,
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.2,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
                     color: scheme.onSurface,
                   ),
                 ),
-                const SizedBox(height: 2),
                 Text(
-                  entry.detail,
+                  DateFormat('d MMMM, HH:mm', locale)
+                      .format(DateTime.fromMillisecondsSinceEpoch(entry.at)),
                   style: TextStyle(
                     fontFamily: AppFonts.body,
-                    fontSize: 12,
-                    height: 1.45,
+                    fontSize: 11.5,
                     fontWeight: FontWeight.w500,
                     color: scheme.onSurfaceVariant,
                   ),
@@ -155,52 +132,38 @@ class _Entry extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 10),
-          _Pin(result: entry.result),
+          VTag(entry.result, accent: !denied),
         ],
       ),
     );
   }
+
+  /// Иконка по действию: читал, завёл, поправил, удалил.
+  static String _iconOf(String action) => switch (action) {
+        'create' => 'add',
+        'update' => 'pencil',
+        'delete' => 'trash',
+        _ => 'eye',
+      };
 }
 
-class _Pin extends StatelessWidget {
-  const _Pin({required this.result});
+class _Note extends StatelessWidget {
+  const _Note({required this.text});
 
-  final LogResult result;
+  final String text;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final (label, bg, fg) = switch (result) {
-      LogResult.ok => (
-          'ок',
-          scheme.secondaryContainer,
-          scheme.onSecondaryContainer
-        ),
-      LogResult.denied => (
-          'отказ',
-          scheme.errorContainer,
-          scheme.onErrorContainer
-        ),
-      // Удаление требует подтверждения: первый вызов только показывает,
-      // что будет удалено, и ждёт второго.
-      LogResult.needsConfirm => (
-          'стоп',
-          scheme.errorContainer,
-          scheme.onErrorContainer
-        ),
-    };
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
-      decoration: ShapeDecoration(color: bg, shape: const StadiumBorder()),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16),
       child: Text(
-        label,
+        text,
         style: TextStyle(
           fontFamily: AppFonts.body,
-          fontSize: 10.5,
-          fontWeight: FontWeight.w700,
-          color: fg,
+          fontSize: 13.5,
+          fontWeight: FontWeight.w500,
+          color: scheme.onSurfaceVariant,
         ),
       ),
     );

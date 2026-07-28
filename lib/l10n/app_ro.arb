@@ -1201,5 +1201,66 @@
   "syncDisconnectHint": "Datele rămân pe dispozitiv",
   "@syncDisconnectHint": {
     "description": "syncDisconnectHint"
+  },
+  "accessNeedsSync": "Cheile apar când pornești sincronizarea",
+  "@accessNeedsSync": {
+    "description": "accessNeedsSync"
+  },
+  "accessNoKeys": "Nicio cheie",
+  "@accessNoKeys": {
+    "description": "accessNoKeys"
+  },
+  "accessLoading": "Se încarcă…",
+  "@accessLoading": {
+    "description": "accessLoading"
+  },
+  "accessKeyName": "Numele agentului",
+  "@accessKeyName": {
+    "description": "accessKeyName"
+  },
+  "accessScopesHint": "Ce calendare vede cheia și unde poate scrie",
+  "@accessScopesHint": {
+    "description": "accessScopesHint"
+  },
+  "accessReadOnly": "Doar citire",
+  "@accessReadOnly": {
+    "description": "accessReadOnly"
+  },
+  "accessWrite": "Citire și scriere",
+  "@accessWrite": {
+    "description": "accessWrite"
+  },
+  "accessKeyOnce": "Cheia se arată o singură dată",
+  "@accessKeyOnce": {
+    "description": "accessKeyOnce"
+  },
+  "accessKeyOnceHint": "Copiaz-o acum în agent: pe server a rămas doar un hash, iar șirul nu poate fi recuperat.",
+  "@accessKeyOnceHint": {
+    "description": "accessKeyOnceHint"
+  },
+  "accessLastUsed": "A lucrat {when}",
+  "@accessLastUsed": {
+    "description": "accessLastUsed",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "accessNeverUsed": "Încă nefolosită",
+  "@accessNeverUsed": {
+    "description": "accessNeverUsed"
+  },
+  "accessRevoked": "Revocată",
+  "@accessRevoked": {
+    "description": "accessRevoked"
+  },
+  "accessLog": "Jurnal",
+  "@accessLog": {
+    "description": "accessLog"
+  },
+  "accessLogEmpty": "Cheia nu a atins nimic încă",
+  "@accessLogEmpty": {
+    "description": "accessLogEmpty"
   }
 }

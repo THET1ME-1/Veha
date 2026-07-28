@@ -985,4 +985,51 @@ class LUk extends L {
 
   @override
   String get syncDisconnectHint => 'Дані залишаться на пристрої';
+
+  @override
+  String get accessNeedsSync =>
+      'Ключі з’являться, коли ввімкнете синхронізацію';
+
+  @override
+  String get accessNoKeys => 'Жодного ключа';
+
+  @override
+  String get accessLoading => 'Завантажую…';
+
+  @override
+  String get accessKeyName => 'Ім’я агента';
+
+  @override
+  String get accessScopesHint =>
+      'Які календарі бачить ключ і де йому можна писати';
+
+  @override
+  String get accessReadOnly => 'Лише читання';
+
+  @override
+  String get accessWrite => 'Читання й запис';
+
+  @override
+  String get accessKeyOnce => 'Ключ показується один раз';
+
+  @override
+  String get accessKeyOnceHint =>
+      'Скопіюйте його в агента зараз: на сервері лишився тільки хеш, і відновити рядок нізвідки.';
+
+  @override
+  String accessLastUsed(String when) {
+    return 'Працював $when';
+  }
+
+  @override
+  String get accessNeverUsed => 'Ще не працював';
+
+  @override
+  String get accessRevoked => 'Відкликано';
+
+  @override
+  String get accessLog => 'Журнал';
+
+  @override
+  String get accessLogEmpty => 'Ключ поки нічого не чіпав';
 }

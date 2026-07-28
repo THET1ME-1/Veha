@@ -1201,5 +1201,66 @@
   "syncDisconnectHint": "The data stays on the device",
   "@syncDisconnectHint": {
     "description": "syncDisconnectHint"
+  },
+  "accessNeedsSync": "Keys appear once you turn on sync",
+  "@accessNeedsSync": {
+    "description": "accessNeedsSync"
+  },
+  "accessNoKeys": "No keys yet",
+  "@accessNoKeys": {
+    "description": "accessNoKeys"
+  },
+  "accessLoading": "Loading…",
+  "@accessLoading": {
+    "description": "accessLoading"
+  },
+  "accessKeyName": "Agent name",
+  "@accessKeyName": {
+    "description": "accessKeyName"
+  },
+  "accessScopesHint": "Which calendars the key sees and where it may write",
+  "@accessScopesHint": {
+    "description": "accessScopesHint"
+  },
+  "accessReadOnly": "Read only",
+  "@accessReadOnly": {
+    "description": "accessReadOnly"
+  },
+  "accessWrite": "Read and write",
+  "@accessWrite": {
+    "description": "accessWrite"
+  },
+  "accessKeyOnce": "The key is shown once",
+  "@accessKeyOnce": {
+    "description": "accessKeyOnce"
+  },
+  "accessKeyOnceHint": "Copy it into your agent now: only a hash is stored on the server, and the string cannot be recovered.",
+  "@accessKeyOnceHint": {
+    "description": "accessKeyOnceHint"
+  },
+  "accessLastUsed": "Used {when}",
+  "@accessLastUsed": {
+    "description": "accessLastUsed",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "accessNeverUsed": "Not used yet",
+  "@accessNeverUsed": {
+    "description": "accessNeverUsed"
+  },
+  "accessRevoked": "Revoked",
+  "@accessRevoked": {
+    "description": "accessRevoked"
+  },
+  "accessLog": "Log",
+  "@accessLog": {
+    "description": "accessLog"
+  },
+  "accessLogEmpty": "The key has not touched anything yet",
+  "@accessLogEmpty": {
+    "description": "accessLogEmpty"
   }
 }

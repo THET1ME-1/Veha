@@ -40,6 +40,24 @@ class _FakeApi implements SyncApi {
 
   @override
   Future<String> pairCode(String token) async => 'ABC123';
+
+  @override
+  Future<List<AgentKey>> tokens(String token) async => const [];
+
+  @override
+  Future<AgentKeyCreated> createToken(
+    String token, {
+    required String name,
+    required List<KeyScope> scopes,
+    int? expiresAt,
+  }) async =>
+      const AgentKeyCreated(id: 'k', token: 'cal_x');
+
+  @override
+  Future<void> revokeToken(String token, String id) async {}
+
+  @override
+  Future<List<KeyAction>> tokenLog(String token, String id) async => const [];
 }
 
 void main() {

@@ -1201,5 +1201,66 @@
   "syncDisconnectHint": "Dane zostaną na urządzeniu",
   "@syncDisconnectHint": {
     "description": "syncDisconnectHint"
+  },
+  "accessNeedsSync": "Klucze pojawią się po włączeniu synchronizacji",
+  "@accessNeedsSync": {
+    "description": "accessNeedsSync"
+  },
+  "accessNoKeys": "Brak kluczy",
+  "@accessNoKeys": {
+    "description": "accessNoKeys"
+  },
+  "accessLoading": "Wczytuję…",
+  "@accessLoading": {
+    "description": "accessLoading"
+  },
+  "accessKeyName": "Nazwa agenta",
+  "@accessKeyName": {
+    "description": "accessKeyName"
+  },
+  "accessScopesHint": "Które kalendarze widzi klucz i gdzie może pisać",
+  "@accessScopesHint": {
+    "description": "accessScopesHint"
+  },
+  "accessReadOnly": "Tylko odczyt",
+  "@accessReadOnly": {
+    "description": "accessReadOnly"
+  },
+  "accessWrite": "Odczyt i zapis",
+  "@accessWrite": {
+    "description": "accessWrite"
+  },
+  "accessKeyOnce": "Klucz pokazuje się raz",
+  "@accessKeyOnce": {
+    "description": "accessKeyOnce"
+  },
+  "accessKeyOnceHint": "Skopiuj go teraz do agenta: na serwerze został tylko skrót, a ciągu nie da się odzyskać.",
+  "@accessKeyOnceHint": {
+    "description": "accessKeyOnceHint"
+  },
+  "accessLastUsed": "Działał {when}",
+  "@accessLastUsed": {
+    "description": "accessLastUsed",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "accessNeverUsed": "Jeszcze nieużywany",
+  "@accessNeverUsed": {
+    "description": "accessNeverUsed"
+  },
+  "accessRevoked": "Odwołany",
+  "@accessRevoked": {
+    "description": "accessRevoked"
+  },
+  "accessLog": "Dziennik",
+  "@accessLog": {
+    "description": "accessLog"
+  },
+  "accessLogEmpty": "Klucz jeszcze niczego nie ruszał",
+  "@accessLogEmpty": {
+    "description": "accessLogEmpty"
   }
 }

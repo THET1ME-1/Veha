@@ -986,4 +986,51 @@ class LPl extends L {
 
   @override
   String get syncDisconnectHint => 'Dane zostaną na urządzeniu';
+
+  @override
+  String get accessNeedsSync =>
+      'Klucze pojawią się po włączeniu synchronizacji';
+
+  @override
+  String get accessNoKeys => 'Brak kluczy';
+
+  @override
+  String get accessLoading => 'Wczytuję…';
+
+  @override
+  String get accessKeyName => 'Nazwa agenta';
+
+  @override
+  String get accessScopesHint =>
+      'Które kalendarze widzi klucz i gdzie może pisać';
+
+  @override
+  String get accessReadOnly => 'Tylko odczyt';
+
+  @override
+  String get accessWrite => 'Odczyt i zapis';
+
+  @override
+  String get accessKeyOnce => 'Klucz pokazuje się raz';
+
+  @override
+  String get accessKeyOnceHint =>
+      'Skopiuj go teraz do agenta: na serwerze został tylko skrót, a ciągu nie da się odzyskać.';
+
+  @override
+  String accessLastUsed(String when) {
+    return 'Działał $when';
+  }
+
+  @override
+  String get accessNeverUsed => 'Jeszcze nieużywany';
+
+  @override
+  String get accessRevoked => 'Odwołany';
+
+  @override
+  String get accessLog => 'Dziennik';
+
+  @override
+  String get accessLogEmpty => 'Klucz jeszcze niczego nie ruszał';
 }

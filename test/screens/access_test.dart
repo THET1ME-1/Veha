@@ -9,34 +9,14 @@ import 'golden_harness.dart';
 void main() {
   setUpAll(loadAppFonts);
 
+  // Без синхронизации ключей нет и быть не может: календарь, который живёт
+  // только на телефоне, снаружи недоступен.
   testWidgets('Доступ для ИИ', (tester) async {
     await pumpScreen(
       tester,
-      const Scaffold(body: SafeArea(child: AccessScreen(keys: demoAccessKeys))),
+      const Scaffold(body: SafeArea(child: AccessScreen())),
     );
     await shoot(tester, 'access');
   });
 }
 
-const demoAccessKeys = [
-  AccessKey(
-    name: 'Claude · планировщик',
-    prefix: 'cal_a8f3k2 · · · · · ·',
-    scopes: [('Личное', false), ('Учёба', true), ('Спорт', false)],
-    lastUsed: 'Работал 12 минут назад',
-    expires: 'до 30 сентября',
-  ),
-  AccessKey(
-    name: 'Домашний ассистент',
-    prefix: 'cal_7z1qm4 · · · · · ·',
-    scopes: [('Дом', false), ('Бессрочно', false)],
-    lastUsed: 'Работал вчера в 21:03',
-  ),
-  AccessKey(
-    name: 'Пробный ключ',
-    prefix: 'отозван 24 июля',
-    scopes: [],
-    lastUsed: '',
-    revoked: true,
-  ),
-];

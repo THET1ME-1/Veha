@@ -22,6 +22,74 @@ abstract class SyncApi {
 
   /// Приём изменений после курсора.
   Future<PullResult> pull(String token, int since);
+
+  /// Ключи агентов, заведённые этим человеком.
+  Future<List<AgentKey>> tokens(String token);
+
+  /// Новый ключ. Строка возвращается один раз — дальше её негде взять.
+  Future<AgentKeyCreated> createToken(
+    String token, {
+    required String name,
+    required List<KeyScope> scopes,
+    int? expiresAt,
+  });
+
+  Future<void> revokeToken(String token, String id);
+
+  /// Журнал: что и когда ключ трогал.
+  Future<List<KeyAction>> tokenLog(String token, String id);
+}
+
+/// Ключ агента в списке. Самой строки тут нет и быть не может.
+class AgentKey {
+  const AgentKey({
+    required this.id,
+    required this.name,
+    required this.prefix,
+    this.expiresAt,
+    this.lastUsedAt,
+    this.revokedAt,
+  });
+
+  final String id;
+  final String name;
+  final String prefix;
+  final int? expiresAt;
+  final int? lastUsedAt;
+  final int? revokedAt;
+
+  bool get revoked => revokedAt != null;
+}
+
+class AgentKeyCreated {
+  const AgentKeyCreated({required this.id, required this.token});
+
+  final String id;
+
+  /// Показывается человеку один раз: на сервере остался только хеш.
+  final String token;
+}
+
+class KeyScope {
+  const KeyScope({required this.calendarId, required this.canWrite});
+
+  final String calendarId;
+  final bool canWrite;
+}
+
+/// Строка журнала.
+class KeyAction {
+  const KeyAction({
+    required this.at,
+    required this.tool,
+    required this.action,
+    required this.result,
+  });
+
+  final int at;
+  final String tool;
+  final String action;
+  final String result;
 }
 
 class DeviceCredentials {
@@ -129,6 +197,84 @@ class HttpSyncApi implements SyncApi {
       cursor: (body['cursor'] as num).toInt(),
       changes: changes,
     );
+  }
+
+  @override
+  Future<List<AgentKey>> tokens(String token) async {
+    final response =
+        await _client.get(_uri('/api/v1/tokens'), headers: _headers(token));
+    final list = _decodeList(response);
+    return [
+      for (final row in list)
+        AgentKey(
+          id: row['id'] as String,
+          name: row['name'] as String,
+          prefix: row['prefix'] as String,
+          expiresAt: (row['expires_at'] as num?)?.toInt(),
+          lastUsedAt: (row['last_used_at'] as num?)?.toInt(),
+          revokedAt: (row['revoked_at'] as num?)?.toInt(),
+        ),
+    ];
+  }
+
+  @override
+  Future<AgentKeyCreated> createToken(
+    String token, {
+    required String name,
+    required List<KeyScope> scopes,
+    int? expiresAt,
+  }) async {
+    final response = await _client.post(
+      _uri('/api/v1/tokens'),
+      headers: _headers(token),
+      body: jsonEncode({
+        'name': name,
+        'expires_at': expiresAt,
+        'scopes': [
+          for (final scope in scopes)
+            {'calendar_id': scope.calendarId, 'can_write': scope.canWrite},
+        ],
+      }),
+    );
+    final body = _decode(response);
+    return AgentKeyCreated(
+      id: body['id'] as String,
+      token: body['token'] as String,
+    );
+  }
+
+  @override
+  Future<void> revokeToken(String token, String id) async {
+    final response = await _client.delete(
+      _uri('/api/v1/tokens/$id'),
+      headers: _headers(token),
+    );
+    _decode(response);
+  }
+
+  @override
+  Future<List<KeyAction>> tokenLog(String token, String id) async {
+    final response = await _client.get(
+      _uri('/api/v1/tokens/$id/log'),
+      headers: _headers(token),
+    );
+    return [
+      for (final row in _decodeList(response))
+        KeyAction(
+          at: (row['at'] as num).toInt(),
+          tool: row['tool'] as String,
+          action: row['action'] as String,
+          result: row['result'] as String,
+        ),
+    ];
+  }
+
+  List<Map<String, Object?>> _decodeList(http.Response response) {
+    if (response.statusCode >= 400) {
+      throw SyncFailure(response.statusCode, response.body);
+    }
+    final decoded = jsonDecode(utf8.decode(response.bodyBytes)) as List;
+    return [for (final row in decoded) Map<String, Object?>.from(row as Map)];
   }
 
   DeviceCredentials _credentials(http.Response response) {

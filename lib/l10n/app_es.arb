@@ -1201,5 +1201,66 @@
   "syncDisconnectHint": "Los datos se quedan en el dispositivo",
   "@syncDisconnectHint": {
     "description": "syncDisconnectHint"
+  },
+  "accessNeedsSync": "Las claves aparecen al activar la sincronización",
+  "@accessNeedsSync": {
+    "description": "accessNeedsSync"
+  },
+  "accessNoKeys": "Ninguna clave",
+  "@accessNoKeys": {
+    "description": "accessNoKeys"
+  },
+  "accessLoading": "Cargando…",
+  "@accessLoading": {
+    "description": "accessLoading"
+  },
+  "accessKeyName": "Nombre del agente",
+  "@accessKeyName": {
+    "description": "accessKeyName"
+  },
+  "accessScopesHint": "Qué calendarios ve la clave y dónde puede escribir",
+  "@accessScopesHint": {
+    "description": "accessScopesHint"
+  },
+  "accessReadOnly": "Solo lectura",
+  "@accessReadOnly": {
+    "description": "accessReadOnly"
+  },
+  "accessWrite": "Lectura y escritura",
+  "@accessWrite": {
+    "description": "accessWrite"
+  },
+  "accessKeyOnce": "La clave se muestra una vez",
+  "@accessKeyOnce": {
+    "description": "accessKeyOnce"
+  },
+  "accessKeyOnceHint": "Cópiala ahora en tu agente: en el servidor solo queda un hash y la cadena no se puede recuperar.",
+  "@accessKeyOnceHint": {
+    "description": "accessKeyOnceHint"
+  },
+  "accessLastUsed": "Usada {when}",
+  "@accessLastUsed": {
+    "description": "accessLastUsed",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "accessNeverUsed": "Aún sin usar",
+  "@accessNeverUsed": {
+    "description": "accessNeverUsed"
+  },
+  "accessRevoked": "Revocada",
+  "@accessRevoked": {
+    "description": "accessRevoked"
+  },
+  "accessLog": "Registro",
+  "@accessLog": {
+    "description": "accessLog"
+  },
+  "accessLogEmpty": "La clave aún no ha tocado nada",
+  "@accessLogEmpty": {
+    "description": "accessLogEmpty"
   }
 }

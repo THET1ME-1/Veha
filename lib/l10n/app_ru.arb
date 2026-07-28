@@ -1289,5 +1289,66 @@
   "syncDisconnectHint": "Данные останутся на устройстве",
   "@syncDisconnectHint": {
     "description": "syncDisconnectHint"
+  },
+  "accessNeedsSync": "Ключи появятся, когда включите синхронизацию",
+  "@accessNeedsSync": {
+    "description": "accessNeedsSync"
+  },
+  "accessNoKeys": "Ни одного ключа",
+  "@accessNoKeys": {
+    "description": "accessNoKeys"
+  },
+  "accessLoading": "Загружаю…",
+  "@accessLoading": {
+    "description": "accessLoading"
+  },
+  "accessKeyName": "Имя агента",
+  "@accessKeyName": {
+    "description": "accessKeyName"
+  },
+  "accessScopesHint": "Какие календари видит ключ и где ему можно писать",
+  "@accessScopesHint": {
+    "description": "accessScopesHint"
+  },
+  "accessReadOnly": "Только чтение",
+  "@accessReadOnly": {
+    "description": "accessReadOnly"
+  },
+  "accessWrite": "Чтение и запись",
+  "@accessWrite": {
+    "description": "accessWrite"
+  },
+  "accessKeyOnce": "Ключ показывается один раз",
+  "@accessKeyOnce": {
+    "description": "accessKeyOnce"
+  },
+  "accessKeyOnceHint": "Скопируйте его в агента сейчас: на сервере остался только хеш, и восстановить строку неоткуда.",
+  "@accessKeyOnceHint": {
+    "description": "accessKeyOnceHint"
+  },
+  "accessLastUsed": "Работал {when}",
+  "@accessLastUsed": {
+    "description": "accessLastUsed",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "accessNeverUsed": "Ещё не работал",
+  "@accessNeverUsed": {
+    "description": "accessNeverUsed"
+  },
+  "accessRevoked": "Отозван",
+  "@accessRevoked": {
+    "description": "accessRevoked"
+  },
+  "accessLog": "Журнал",
+  "@accessLog": {
+    "description": "accessLog"
+  },
+  "accessLogEmpty": "Ключ пока ничего не трогал",
+  "@accessLogEmpty": {
+    "description": "accessLogEmpty"
   }
 }

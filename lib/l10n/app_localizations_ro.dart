@@ -976,4 +976,49 @@ class LRo extends L {
 
   @override
   String get syncDisconnectHint => 'Datele rămân pe dispozitiv';
+
+  @override
+  String get accessNeedsSync => 'Cheile apar când pornești sincronizarea';
+
+  @override
+  String get accessNoKeys => 'Nicio cheie';
+
+  @override
+  String get accessLoading => 'Se încarcă…';
+
+  @override
+  String get accessKeyName => 'Numele agentului';
+
+  @override
+  String get accessScopesHint => 'Ce calendare vede cheia și unde poate scrie';
+
+  @override
+  String get accessReadOnly => 'Doar citire';
+
+  @override
+  String get accessWrite => 'Citire și scriere';
+
+  @override
+  String get accessKeyOnce => 'Cheia se arată o singură dată';
+
+  @override
+  String get accessKeyOnceHint =>
+      'Copiaz-o acum în agent: pe server a rămas doar un hash, iar șirul nu poate fi recuperat.';
+
+  @override
+  String accessLastUsed(String when) {
+    return 'A lucrat $when';
+  }
+
+  @override
+  String get accessNeverUsed => 'Încă nefolosită';
+
+  @override
+  String get accessRevoked => 'Revocată';
+
+  @override
+  String get accessLog => 'Jurnal';
+
+  @override
+  String get accessLogEmpty => 'Cheia nu a atins nimic încă';
 }

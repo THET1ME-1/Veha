@@ -1201,5 +1201,66 @@
   "syncDisconnectHint": "Die Daten bleiben auf dem Gerät",
   "@syncDisconnectHint": {
     "description": "syncDisconnectHint"
+  },
+  "accessNeedsSync": "Schlüssel erscheinen, sobald die Synchronisierung an ist",
+  "@accessNeedsSync": {
+    "description": "accessNeedsSync"
+  },
+  "accessNoKeys": "Noch keine Schlüssel",
+  "@accessNoKeys": {
+    "description": "accessNoKeys"
+  },
+  "accessLoading": "Lädt…",
+  "@accessLoading": {
+    "description": "accessLoading"
+  },
+  "accessKeyName": "Name des Agenten",
+  "@accessKeyName": {
+    "description": "accessKeyName"
+  },
+  "accessScopesHint": "Welche Kalender der Schlüssel sieht und wo er schreiben darf",
+  "@accessScopesHint": {
+    "description": "accessScopesHint"
+  },
+  "accessReadOnly": "Nur lesen",
+  "@accessReadOnly": {
+    "description": "accessReadOnly"
+  },
+  "accessWrite": "Lesen und schreiben",
+  "@accessWrite": {
+    "description": "accessWrite"
+  },
+  "accessKeyOnce": "Der Schlüssel wird einmal gezeigt",
+  "@accessKeyOnce": {
+    "description": "accessKeyOnce"
+  },
+  "accessKeyOnceHint": "Kopiere ihn jetzt in den Agenten: auf dem Server liegt nur ein Hash, die Zeichenfolge ist nicht wiederherstellbar.",
+  "@accessKeyOnceHint": {
+    "description": "accessKeyOnceHint"
+  },
+  "accessLastUsed": "Zuletzt {when}",
+  "@accessLastUsed": {
+    "description": "accessLastUsed",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "accessNeverUsed": "Noch nicht benutzt",
+  "@accessNeverUsed": {
+    "description": "accessNeverUsed"
+  },
+  "accessRevoked": "Widerrufen",
+  "@accessRevoked": {
+    "description": "accessRevoked"
+  },
+  "accessLog": "Protokoll",
+  "@accessLog": {
+    "description": "accessLog"
+  },
+  "accessLogEmpty": "Der Schlüssel hat noch nichts angefasst",
+  "@accessLogEmpty": {
+    "description": "accessLogEmpty"
   }
 }

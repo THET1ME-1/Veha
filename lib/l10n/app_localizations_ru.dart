@@ -985,4 +985,50 @@ class LRu extends L {
 
   @override
   String get syncDisconnectHint => 'Данные останутся на устройстве';
+
+  @override
+  String get accessNeedsSync => 'Ключи появятся, когда включите синхронизацию';
+
+  @override
+  String get accessNoKeys => 'Ни одного ключа';
+
+  @override
+  String get accessLoading => 'Загружаю…';
+
+  @override
+  String get accessKeyName => 'Имя агента';
+
+  @override
+  String get accessScopesHint =>
+      'Какие календари видит ключ и где ему можно писать';
+
+  @override
+  String get accessReadOnly => 'Только чтение';
+
+  @override
+  String get accessWrite => 'Чтение и запись';
+
+  @override
+  String get accessKeyOnce => 'Ключ показывается один раз';
+
+  @override
+  String get accessKeyOnceHint =>
+      'Скопируйте его в агента сейчас: на сервере остался только хеш, и восстановить строку неоткуда.';
+
+  @override
+  String accessLastUsed(String when) {
+    return 'Работал $when';
+  }
+
+  @override
+  String get accessNeverUsed => 'Ещё не работал';
+
+  @override
+  String get accessRevoked => 'Отозван';
+
+  @override
+  String get accessLog => 'Журнал';
+
+  @override
+  String get accessLogEmpty => 'Ключ пока ничего не трогал';
 }

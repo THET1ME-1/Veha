@@ -1750,6 +1750,90 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'Данные останутся на устройстве'**
   String get syncDisconnectHint;
+
+  /// accessNeedsSync
+  ///
+  /// In ru, this message translates to:
+  /// **'Ключи появятся, когда включите синхронизацию'**
+  String get accessNeedsSync;
+
+  /// accessNoKeys
+  ///
+  /// In ru, this message translates to:
+  /// **'Ни одного ключа'**
+  String get accessNoKeys;
+
+  /// accessLoading
+  ///
+  /// In ru, this message translates to:
+  /// **'Загружаю…'**
+  String get accessLoading;
+
+  /// accessKeyName
+  ///
+  /// In ru, this message translates to:
+  /// **'Имя агента'**
+  String get accessKeyName;
+
+  /// accessScopesHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Какие календари видит ключ и где ему можно писать'**
+  String get accessScopesHint;
+
+  /// accessReadOnly
+  ///
+  /// In ru, this message translates to:
+  /// **'Только чтение'**
+  String get accessReadOnly;
+
+  /// accessWrite
+  ///
+  /// In ru, this message translates to:
+  /// **'Чтение и запись'**
+  String get accessWrite;
+
+  /// accessKeyOnce
+  ///
+  /// In ru, this message translates to:
+  /// **'Ключ показывается один раз'**
+  String get accessKeyOnce;
+
+  /// accessKeyOnceHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Скопируйте его в агента сейчас: на сервере остался только хеш, и восстановить строку неоткуда.'**
+  String get accessKeyOnceHint;
+
+  /// accessLastUsed
+  ///
+  /// In ru, this message translates to:
+  /// **'Работал {when}'**
+  String accessLastUsed(String when);
+
+  /// accessNeverUsed
+  ///
+  /// In ru, this message translates to:
+  /// **'Ещё не работал'**
+  String get accessNeverUsed;
+
+  /// accessRevoked
+  ///
+  /// In ru, this message translates to:
+  /// **'Отозван'**
+  String get accessRevoked;
+
+  /// accessLog
+  ///
+  /// In ru, this message translates to:
+  /// **'Журнал'**
+  String get accessLog;
+
+  /// accessLogEmpty
+  ///
+  /// In ru, this message translates to:
+  /// **'Ключ пока ничего не трогал'**
+  String get accessLogEmpty;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

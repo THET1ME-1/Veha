@@ -977,4 +977,51 @@ class LDe extends L {
 
   @override
   String get syncDisconnectHint => 'Die Daten bleiben auf dem Gerät';
+
+  @override
+  String get accessNeedsSync =>
+      'Schlüssel erscheinen, sobald die Synchronisierung an ist';
+
+  @override
+  String get accessNoKeys => 'Noch keine Schlüssel';
+
+  @override
+  String get accessLoading => 'Lädt…';
+
+  @override
+  String get accessKeyName => 'Name des Agenten';
+
+  @override
+  String get accessScopesHint =>
+      'Welche Kalender der Schlüssel sieht und wo er schreiben darf';
+
+  @override
+  String get accessReadOnly => 'Nur lesen';
+
+  @override
+  String get accessWrite => 'Lesen und schreiben';
+
+  @override
+  String get accessKeyOnce => 'Der Schlüssel wird einmal gezeigt';
+
+  @override
+  String get accessKeyOnceHint =>
+      'Kopiere ihn jetzt in den Agenten: auf dem Server liegt nur ein Hash, die Zeichenfolge ist nicht wiederherstellbar.';
+
+  @override
+  String accessLastUsed(String when) {
+    return 'Zuletzt $when';
+  }
+
+  @override
+  String get accessNeverUsed => 'Noch nicht benutzt';
+
+  @override
+  String get accessRevoked => 'Widerrufen';
+
+  @override
+  String get accessLog => 'Protokoll';
+
+  @override
+  String get accessLogEmpty => 'Der Schlüssel hat noch nichts angefasst';
 }

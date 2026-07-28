@@ -107,7 +107,7 @@ class RepeatRule {
           ? const {}
           : {
               for (final d in byDay.split(','))
-                if (names.indexOf(d.replaceAll(RegExp(r'[^A-Z]'), '')) >= 0)
+                if (names.contains(d.replaceAll(RegExp(r'[^A-Z]'), '')))
                   names.indexOf(d.replaceAll(RegExp(r'[^A-Z]'), '')) + 1,
             },
       count: int.tryParse(parts['COUNT'] ?? ''),

@@ -1201,5 +1201,66 @@
   "syncDisconnectHint": "Дані залишаться на пристрої",
   "@syncDisconnectHint": {
     "description": "syncDisconnectHint"
+  },
+  "accessNeedsSync": "Ключі з’являться, коли ввімкнете синхронізацію",
+  "@accessNeedsSync": {
+    "description": "accessNeedsSync"
+  },
+  "accessNoKeys": "Жодного ключа",
+  "@accessNoKeys": {
+    "description": "accessNoKeys"
+  },
+  "accessLoading": "Завантажую…",
+  "@accessLoading": {
+    "description": "accessLoading"
+  },
+  "accessKeyName": "Ім’я агента",
+  "@accessKeyName": {
+    "description": "accessKeyName"
+  },
+  "accessScopesHint": "Які календарі бачить ключ і де йому можна писати",
+  "@accessScopesHint": {
+    "description": "accessScopesHint"
+  },
+  "accessReadOnly": "Лише читання",
+  "@accessReadOnly": {
+    "description": "accessReadOnly"
+  },
+  "accessWrite": "Читання й запис",
+  "@accessWrite": {
+    "description": "accessWrite"
+  },
+  "accessKeyOnce": "Ключ показується один раз",
+  "@accessKeyOnce": {
+    "description": "accessKeyOnce"
+  },
+  "accessKeyOnceHint": "Скопіюйте його в агента зараз: на сервері лишився тільки хеш, і відновити рядок нізвідки.",
+  "@accessKeyOnceHint": {
+    "description": "accessKeyOnceHint"
+  },
+  "accessLastUsed": "Працював {when}",
+  "@accessLastUsed": {
+    "description": "accessLastUsed",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "accessNeverUsed": "Ще не працював",
+  "@accessNeverUsed": {
+    "description": "accessNeverUsed"
+  },
+  "accessRevoked": "Відкликано",
+  "@accessRevoked": {
+    "description": "accessRevoked"
+  },
+  "accessLog": "Журнал",
+  "@accessLog": {
+    "description": "accessLog"
+  },
+  "accessLogEmpty": "Ключ поки нічого не чіпав",
+  "@accessLogEmpty": {
+    "description": "accessLogEmpty"
   }
 }

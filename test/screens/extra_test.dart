@@ -12,59 +12,12 @@ import 'golden_harness.dart';
 void main() {
   setUpAll(loadAppFonts);
 
+  // Журнал приходит с сервера, а сервера в снимке нет: экран показывает пустое
+  // состояние. Оно и проверяется — оно же и видно человеку без синхронизации.
   testWidgets('Журнал ключа', (tester) async {
     await pumpScreen(
       tester,
-      const Scaffold(
-        body: SafeArea(
-          child: KeyLogScreen(
-            keyName: 'Claude',
-            keyPrefix: 'cal_a8f3k2 · · · · · ·',
-            days: [
-              ('Сегодня', [
-                LogEntry(
-                  time: '09:29',
-                  tool: 'list_events',
-                  detail: 'Личное, Учёба · 27 июля — 3 августа · 14 событий',
-                  result: LogResult.ok,
-                ),
-                LogEntry(
-                  time: '09:29',
-                  tool: 'find_free_time',
-                  detail: 'Окно 90 минут · чт 30 июля · нашёл 3',
-                  result: LogResult.ok,
-                ),
-                LogEntry(
-                  time: '09:30',
-                  tool: 'create_event',
-                  detail: '«Английский» · Учёба · чт 30 июля, 16:00 · каб. 312',
-                  result: LogResult.ok,
-                ),
-                LogEntry(
-                  time: '09:31',
-                  tool: 'update_event',
-                  detail: '«Планёрка» · Личное · нет права записи',
-                  result: LogResult.denied,
-                ),
-                LogEntry(
-                  time: '09:31',
-                  tool: 'delete_event',
-                  detail: '«Зарядка» · ждёт подтверждения',
-                  result: LogResult.needsConfirm,
-                ),
-              ]),
-              ('Вчера', [
-                LogEntry(
-                  time: '21:03',
-                  tool: 'list_calendars',
-                  detail: 'Вернул 3 из 6 календарей',
-                  result: LogResult.ok,
-                ),
-              ]),
-            ],
-          ),
-        ),
-      ),
+      const KeyLogScreen(keyId: 'k1', keyName: 'Claude'),
     );
     await shoot(tester, 'key_log');
   });

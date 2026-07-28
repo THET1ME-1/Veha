@@ -973,4 +973,50 @@ class LEn extends L {
 
   @override
   String get syncDisconnectHint => 'The data stays on the device';
+
+  @override
+  String get accessNeedsSync => 'Keys appear once you turn on sync';
+
+  @override
+  String get accessNoKeys => 'No keys yet';
+
+  @override
+  String get accessLoading => 'Loading…';
+
+  @override
+  String get accessKeyName => 'Agent name';
+
+  @override
+  String get accessScopesHint =>
+      'Which calendars the key sees and where it may write';
+
+  @override
+  String get accessReadOnly => 'Read only';
+
+  @override
+  String get accessWrite => 'Read and write';
+
+  @override
+  String get accessKeyOnce => 'The key is shown once';
+
+  @override
+  String get accessKeyOnceHint =>
+      'Copy it into your agent now: only a hash is stored on the server, and the string cannot be recovered.';
+
+  @override
+  String accessLastUsed(String when) {
+    return 'Used $when';
+  }
+
+  @override
+  String get accessNeverUsed => 'Not used yet';
+
+  @override
+  String get accessRevoked => 'Revoked';
+
+  @override
+  String get accessLog => 'Log';
+
+  @override
+  String get accessLogEmpty => 'The key has not touched anything yet';
 }

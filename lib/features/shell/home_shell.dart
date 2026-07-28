@@ -80,32 +80,10 @@ class _HomeShellState extends ConsumerState<HomeShell> {
   Widget _page(int tab) => switch (tab) {
         0 => const CalendarScreen(),
         1 => const CalendarsScreen(),
-        2 => AccessScreen(keys: demoKeys),
+        2 => const AccessScreen(),
         _ => const SettingsScreen(),
       };
 
   /// Демонстрационные ключи: серверного слоя ещё нет, но экран должен быть
   /// собран и сверен с макетом до него.
-  static const demoKeys = [
-    AccessKey(
-      name: 'Claude · планировщик',
-      prefix: 'cal_a8f3k2 · · · · · ·',
-      scopes: [('Личное', false), ('Учёба', true), ('Спорт', false)],
-      lastUsed: 'Работал 12 минут назад',
-      expires: 'до 30 сентября',
-    ),
-    AccessKey(
-      name: 'Домашний ассистент',
-      prefix: 'cal_7z1qm4 · · · · · ·',
-      scopes: [('Дом', false), ('Бессрочно', false)],
-      lastUsed: 'Работал вчера в 21:03',
-    ),
-    AccessKey(
-      name: 'Пробный ключ',
-      prefix: 'отозван 24 июля',
-      scopes: [],
-      lastUsed: '',
-      revoked: true,
-    ),
-  ];
 }
