@@ -6,6 +6,8 @@ import '../../core/icon_registry.dart';
 
 import '../../data/models.dart';
 import '../../data/providers.dart';
+import '../../data/settings.dart';
+import '../../domain/week_layout.dart';
 import '../../data/seed.dart';
 import '../event/event_flow.dart';
 import 'views/bands_view.dart';
@@ -16,6 +18,7 @@ import 'views/week_view.dart';
 import 'widgets/month_header.dart';
 import 'widgets/span_bar.dart';
 import 'widgets/view_switcher.dart';
+import 'widgets/week_setup_sheet.dart';
 import 'widgets/week_strip.dart';
 
 /// Сколько дней показывает лента.
@@ -34,11 +37,15 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   DayReading _reading = DayReading.chain;
   DateTime? _selected;
 
-  List<DateTime> get _week {
+  /// Полоска дней над видом «День» — всегда семь суток подряд.
+  List<DateTime> get _strip {
     final day = _selected!;
     final monday = day.subtract(Duration(days: day.weekday - 1));
     return List.generate(7, (i) => monday.add(Duration(days: i)));
   }
+
+  /// Колонки вида «Неделя» — столько, сколько дней выбрал человек.
+  List<DateTime> _weekColumns(WeekLayout layout) => layout.daysOf(_selected!);
 
   /// Видимое окно плюс запас: ряды разворачиваются на него, и при листании
   /// соседний месяц уже посчитан.
@@ -46,7 +53,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     final day = _selected!;
     final (DateTime from, DateTime to) = switch (_view) {
       CalendarView.day => (day, day.add(const Duration(days: 1))),
-      CalendarView.week => (_week.first, _week.last.add(const Duration(days: 1))),
+      CalendarView.week => (_strip.first, _strip.last.add(const Duration(days: 1))),
       CalendarView.bands => (day, day.add(const Duration(days: _bandsLength))),
       CalendarView.month => (
           DateTime(day.year, day.month, 1),
@@ -80,15 +87,19 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         ),
         if (_view == CalendarView.day)
           WeekStrip(
-            week: _week,
+            week: _strip,
             selected: _selected!,
             busyDays: {
-              for (final d in _week)
+              for (final d in _strip)
                 if (range.eventsOn(d).isNotEmpty) d.day,
             },
             onSelect: (d) => setState(() => _selected = d),
           ),
-        ViewSwitcher(value: _view, onChanged: (v) => setState(() => _view = v)),
+        ViewSwitcher(
+          value: _view,
+          onChanged: (v) => setState(() => _view = v),
+          onSetup: _view == CalendarView.week ? _setupWeek : null,
+        ),
         if (_view != CalendarView.week && _view != CalendarView.month)
           SpanBars(
             events: range.spansOn(_selected!),
@@ -98,6 +109,14 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         Expanded(child: _body(range, inheritance, now, today)),
       ],
     );
+  }
+
+  /// Настройка вида «Неделя»: какие дни показывать и с какого начинать.
+  Future<void> _setupWeek() async {
+    final chosen =
+        await askWeekLayout(context, ref.read(weekLayoutProvider));
+    if (chosen == null) return;
+    await ref.read(weekLayoutProvider.notifier).set(chosen);
   }
 
   bool _isToday(DateTime today) =>
@@ -187,7 +206,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           mode: _monthMode,
         ),
       CalendarView.week => WeekView(
-          week: _week,
+          week: _weekColumns(ref.watch(weekLayoutProvider)),
           eventsOf: range.eventsOn,
           spans: range.spans,
           inheritance: inheritance,
