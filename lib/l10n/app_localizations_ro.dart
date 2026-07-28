@@ -918,4 +918,62 @@ class LRo extends L {
 
   @override
   String get msgNotSaved => 'Modificările nu au fost salvate';
+
+  @override
+  String get syncTitle => 'Sincronizare';
+
+  @override
+  String get syncOff => 'Oprită, calendarul e doar aici';
+
+  @override
+  String get syncClean => 'totul trimis';
+
+  @override
+  String syncPending(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count modificări așteaptă',
+      one: '$count modificare așteaptă',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get syncConnectTitle => 'Conectează un server';
+
+  @override
+  String get syncServerAddress => 'Adresa serverului';
+
+  @override
+  String get syncCode => 'Cod de pe primul dispozitiv';
+
+  @override
+  String get syncCodeHint => 'Gol înseamnă că e primul dispozitiv';
+
+  @override
+  String get syncDeviceName => 'Telefon';
+
+  @override
+  String get syncConnected => 'Server conectat';
+
+  @override
+  String get syncFailed => 'Nu a mers';
+
+  @override
+  String syncDone(int sent, int received) {
+    return 'Trimise $sent, primite $received';
+  }
+
+  @override
+  String get syncPairTitle => 'Cod pentru al doilea dispozitiv';
+
+  @override
+  String get syncPairHint => 'Arată-l și scrie-l pe celălalt';
+
+  @override
+  String get syncDisconnect => 'Deconectează serverul';
+
+  @override
+  String get syncDisconnectHint => 'Datele rămân pe dispozitiv';
 }

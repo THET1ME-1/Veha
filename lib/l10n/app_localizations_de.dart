@@ -919,4 +919,62 @@ class LDe extends L {
 
   @override
   String get msgNotSaved => 'Änderungen wurden nicht gespeichert';
+
+  @override
+  String get syncTitle => 'Synchronisierung';
+
+  @override
+  String get syncOff => 'Aus — der Kalender lebt nur hier';
+
+  @override
+  String get syncClean => 'alles gesendet';
+
+  @override
+  String syncPending(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Änderungen warten',
+      one: '$count Änderung wartet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get syncConnectTitle => 'Server verbinden';
+
+  @override
+  String get syncServerAddress => 'Serveradresse';
+
+  @override
+  String get syncCode => 'Code vom ersten Gerät';
+
+  @override
+  String get syncCodeHint => 'Leer heißt: erstes Gerät';
+
+  @override
+  String get syncDeviceName => 'Telefon';
+
+  @override
+  String get syncConnected => 'Server verbunden';
+
+  @override
+  String get syncFailed => 'Fehlgeschlagen';
+
+  @override
+  String syncDone(int sent, int received) {
+    return 'Gesendet $sent, empfangen $received';
+  }
+
+  @override
+  String get syncPairTitle => 'Code für ein zweites Gerät';
+
+  @override
+  String get syncPairHint => 'Anzeigen und am anderen eingeben';
+
+  @override
+  String get syncDisconnect => 'Server trennen';
+
+  @override
+  String get syncDisconnectHint => 'Die Daten bleiben auf dem Gerät';
 }

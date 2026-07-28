@@ -915,4 +915,62 @@ class LEs extends L {
 
   @override
   String get msgNotSaved => 'Los cambios no se guardaron';
+
+  @override
+  String get syncTitle => 'Sincronización';
+
+  @override
+  String get syncOff => 'Desactivada: el calendario vive solo aquí';
+
+  @override
+  String get syncClean => 'todo enviado';
+
+  @override
+  String syncPending(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count cambios en espera',
+      one: '$count cambio en espera',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get syncConnectTitle => 'Conectar un servidor';
+
+  @override
+  String get syncServerAddress => 'Dirección del servidor';
+
+  @override
+  String get syncCode => 'Código del primer dispositivo';
+
+  @override
+  String get syncCodeHint => 'Vacío significa que es el primer dispositivo';
+
+  @override
+  String get syncDeviceName => 'Teléfono';
+
+  @override
+  String get syncConnected => 'Servidor conectado';
+
+  @override
+  String get syncFailed => 'No funcionó';
+
+  @override
+  String syncDone(int sent, int received) {
+    return 'Enviados $sent, recibidos $received';
+  }
+
+  @override
+  String get syncPairTitle => 'Código para un segundo dispositivo';
+
+  @override
+  String get syncPairHint => 'Muéstralo y escríbelo en el otro';
+
+  @override
+  String get syncDisconnect => 'Desconectar el servidor';
+
+  @override
+  String get syncDisconnectHint => 'Los datos se quedan en el dispositivo';
 }

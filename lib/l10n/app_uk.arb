@@ -1124,5 +1124,82 @@
   "msgNotSaved": "Зміни не збережено",
   "@msgNotSaved": {
     "description": "msgNotSaved"
+  },
+  "syncTitle": "Синхронізація",
+  "@syncTitle": {
+    "description": "syncTitle"
+  },
+  "syncOff": "Вимкнена, календар лише тут",
+  "@syncOff": {
+    "description": "syncOff"
+  },
+  "syncClean": "усе надіслано",
+  "@syncClean": {
+    "description": "syncClean"
+  },
+  "syncPending": "{count, plural, one{{count} правка чекає} few{{count} правки чекають} other{{count} правок чекають}}",
+  "@syncPending": {
+    "description": "syncPending",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncConnectTitle": "Підключити сервер",
+  "@syncConnectTitle": {
+    "description": "syncConnectTitle"
+  },
+  "syncServerAddress": "Адреса сервера",
+  "@syncServerAddress": {
+    "description": "syncServerAddress"
+  },
+  "syncCode": "Код із першого пристрою",
+  "@syncCode": {
+    "description": "syncCode"
+  },
+  "syncCodeHint": "Порожньо — це перший пристрій",
+  "@syncCodeHint": {
+    "description": "syncCodeHint"
+  },
+  "syncDeviceName": "Телефон",
+  "@syncDeviceName": {
+    "description": "syncDeviceName"
+  },
+  "syncConnected": "Сервер підключено",
+  "@syncConnected": {
+    "description": "syncConnected"
+  },
+  "syncFailed": "Не вийшло",
+  "@syncFailed": {
+    "description": "syncFailed"
+  },
+  "syncDone": "Надіслано {sent}, отримано {received}",
+  "@syncDone": {
+    "description": "syncDone",
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "received": {
+        "type": "int"
+      }
+    }
+  },
+  "syncPairTitle": "Код для другого пристрою",
+  "@syncPairTitle": {
+    "description": "syncPairTitle"
+  },
+  "syncPairHint": "Показати й ввести на іншому",
+  "@syncPairHint": {
+    "description": "syncPairHint"
+  },
+  "syncDisconnect": "Відключити сервер",
+  "@syncDisconnect": {
+    "description": "syncDisconnect"
+  },
+  "syncDisconnectHint": "Дані залишаться на пристрої",
+  "@syncDisconnectHint": {
+    "description": "syncDisconnectHint"
   }
 }

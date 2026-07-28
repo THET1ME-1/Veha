@@ -1124,5 +1124,82 @@
   "msgNotSaved": "Modificările nu au fost salvate",
   "@msgNotSaved": {
     "description": "msgNotSaved"
+  },
+  "syncTitle": "Sincronizare",
+  "@syncTitle": {
+    "description": "syncTitle"
+  },
+  "syncOff": "Oprită, calendarul e doar aici",
+  "@syncOff": {
+    "description": "syncOff"
+  },
+  "syncClean": "totul trimis",
+  "@syncClean": {
+    "description": "syncClean"
+  },
+  "syncPending": "{count, plural, one{{count} modificare așteaptă} other{{count} modificări așteaptă}}",
+  "@syncPending": {
+    "description": "syncPending",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncConnectTitle": "Conectează un server",
+  "@syncConnectTitle": {
+    "description": "syncConnectTitle"
+  },
+  "syncServerAddress": "Adresa serverului",
+  "@syncServerAddress": {
+    "description": "syncServerAddress"
+  },
+  "syncCode": "Cod de pe primul dispozitiv",
+  "@syncCode": {
+    "description": "syncCode"
+  },
+  "syncCodeHint": "Gol înseamnă că e primul dispozitiv",
+  "@syncCodeHint": {
+    "description": "syncCodeHint"
+  },
+  "syncDeviceName": "Telefon",
+  "@syncDeviceName": {
+    "description": "syncDeviceName"
+  },
+  "syncConnected": "Server conectat",
+  "@syncConnected": {
+    "description": "syncConnected"
+  },
+  "syncFailed": "Nu a mers",
+  "@syncFailed": {
+    "description": "syncFailed"
+  },
+  "syncDone": "Trimise {sent}, primite {received}",
+  "@syncDone": {
+    "description": "syncDone",
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "received": {
+        "type": "int"
+      }
+    }
+  },
+  "syncPairTitle": "Cod pentru al doilea dispozitiv",
+  "@syncPairTitle": {
+    "description": "syncPairTitle"
+  },
+  "syncPairHint": "Arată-l și scrie-l pe celălalt",
+  "@syncPairHint": {
+    "description": "syncPairHint"
+  },
+  "syncDisconnect": "Deconectează serverul",
+  "@syncDisconnect": {
+    "description": "syncDisconnect"
+  },
+  "syncDisconnectHint": "Datele rămân pe dispozitiv",
+  "@syncDisconnectHint": {
+    "description": "syncDisconnectHint"
   }
 }

@@ -24,6 +24,9 @@ class VehaSettings {
   static const _monthChips = 'month_chips';
   static const _startTab = 'start_tab';
   static const _startView = 'start_view';
+  static const _syncUrl = 'sync_url';
+  static const _syncToken = 'sync_token';
+  static const _syncCursor = 'sync_cursor';
   static const _themeMode = 'theme_mode';
   static const _vibrant = 'vibrant';
   static const _seed = 'seed';
@@ -93,6 +96,21 @@ class VehaSettings {
   int get startView => _prefs.getInt(_startView) ?? 0;
 
   Future<void> setStartView(int value) => _prefs.setInt(_startView, value);
+
+  /// Адрес сервера. Пустой — синхронизации нет, календарь чисто локальный.
+  String get syncUrl => _prefs.getString(_syncUrl) ?? '';
+
+  Future<void> setSyncUrl(String value) => _prefs.setString(_syncUrl, value);
+
+  /// Ключ устройства. Живёт рядом с адресом: сменил сервер — ключ не годится.
+  String get syncToken => _prefs.getString(_syncToken) ?? '';
+
+  Future<void> setSyncToken(String value) => _prefs.setString(_syncToken, value);
+
+  /// Докуда дошли в прошлый раз.
+  int get syncCursor => _prefs.getInt(_syncCursor) ?? 0;
+
+  Future<void> setSyncCursor(int value) => _prefs.setInt(_syncCursor, value);
 }
 
 /// Настройки читаются один раз при запуске: дальше синхронный доступ.
@@ -159,6 +177,59 @@ final monthChipsProvider =
     StateNotifierProvider<MonthChipsNotifier, int>((ref) {
   final settings = ref.watch(settingsProvider).valueOrNull;
   return MonthChipsNotifier(settings, (settings?.monthChips ?? 2).clamp(1, 5));
+});
+
+/// Синхронизация: адрес, ключ и курсор одним состоянием — по отдельности они
+/// не значат ничего.
+@immutable
+class SyncSettings {
+  const SyncSettings({this.url = '', this.token = '', this.cursor = 0});
+
+  final String url;
+  final String token;
+  final int cursor;
+
+  bool get connected => url.isNotEmpty && token.isNotEmpty;
+}
+
+class SyncSettingsNotifier extends StateNotifier<SyncSettings> {
+  SyncSettingsNotifier(this._settings, super.state);
+
+  final VehaSettings? _settings;
+
+  Future<void> connect({required String url, required String token}) async {
+    state = SyncSettings(url: url, token: token);
+    await _settings?.setSyncUrl(url);
+    await _settings?.setSyncToken(token);
+    await _settings?.setSyncCursor(0);
+  }
+
+  Future<void> setCursor(int value) async {
+    state = SyncSettings(url: state.url, token: state.token, cursor: value);
+    await _settings?.setSyncCursor(value);
+  }
+
+  /// Отключение: ключ и курсор забываются, данные остаются. Локальный
+  /// календарь — это норма, а не поломка.
+  Future<void> disconnect() async {
+    state = const SyncSettings();
+    await _settings?.setSyncUrl('');
+    await _settings?.setSyncToken('');
+    await _settings?.setSyncCursor(0);
+  }
+}
+
+final syncSettingsProvider =
+    StateNotifierProvider<SyncSettingsNotifier, SyncSettings>((ref) {
+  final settings = ref.watch(settingsProvider).valueOrNull;
+  return SyncSettingsNotifier(
+    settings,
+    SyncSettings(
+      url: settings?.syncUrl ?? '',
+      token: settings?.syncToken ?? '',
+      cursor: settings?.syncCursor ?? 0,
+    ),
+  );
 });
 
 /// Стартовый раздел: с него открывается приложение. Человек, живущий в

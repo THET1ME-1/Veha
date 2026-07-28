@@ -1124,5 +1124,82 @@
   "msgNotSaved": "Los cambios no se guardaron",
   "@msgNotSaved": {
     "description": "msgNotSaved"
+  },
+  "syncTitle": "Sincronización",
+  "@syncTitle": {
+    "description": "syncTitle"
+  },
+  "syncOff": "Desactivada: el calendario vive solo aquí",
+  "@syncOff": {
+    "description": "syncOff"
+  },
+  "syncClean": "todo enviado",
+  "@syncClean": {
+    "description": "syncClean"
+  },
+  "syncPending": "{count, plural, one{{count} cambio en espera} other{{count} cambios en espera}}",
+  "@syncPending": {
+    "description": "syncPending",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncConnectTitle": "Conectar un servidor",
+  "@syncConnectTitle": {
+    "description": "syncConnectTitle"
+  },
+  "syncServerAddress": "Dirección del servidor",
+  "@syncServerAddress": {
+    "description": "syncServerAddress"
+  },
+  "syncCode": "Código del primer dispositivo",
+  "@syncCode": {
+    "description": "syncCode"
+  },
+  "syncCodeHint": "Vacío significa que es el primer dispositivo",
+  "@syncCodeHint": {
+    "description": "syncCodeHint"
+  },
+  "syncDeviceName": "Teléfono",
+  "@syncDeviceName": {
+    "description": "syncDeviceName"
+  },
+  "syncConnected": "Servidor conectado",
+  "@syncConnected": {
+    "description": "syncConnected"
+  },
+  "syncFailed": "No funcionó",
+  "@syncFailed": {
+    "description": "syncFailed"
+  },
+  "syncDone": "Enviados {sent}, recibidos {received}",
+  "@syncDone": {
+    "description": "syncDone",
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "received": {
+        "type": "int"
+      }
+    }
+  },
+  "syncPairTitle": "Código para un segundo dispositivo",
+  "@syncPairTitle": {
+    "description": "syncPairTitle"
+  },
+  "syncPairHint": "Muéstralo y escríbelo en el otro",
+  "@syncPairHint": {
+    "description": "syncPairHint"
+  },
+  "syncDisconnect": "Desconectar el servidor",
+  "@syncDisconnect": {
+    "description": "syncDisconnect"
+  },
+  "syncDisconnectHint": "Los datos se quedan en el dispositivo",
+  "@syncDisconnectHint": {
+    "description": "syncDisconnectHint"
   }
 }

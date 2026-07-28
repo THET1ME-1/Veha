@@ -1654,6 +1654,102 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'Изменения не сохранены'**
   String get msgNotSaved;
+
+  /// syncTitle
+  ///
+  /// In ru, this message translates to:
+  /// **'Синхронизация'**
+  String get syncTitle;
+
+  /// syncOff
+  ///
+  /// In ru, this message translates to:
+  /// **'Выключена, календарь только здесь'**
+  String get syncOff;
+
+  /// syncClean
+  ///
+  /// In ru, this message translates to:
+  /// **'всё отправлено'**
+  String get syncClean;
+
+  /// syncPending
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{{count} правка ждёт} few{{count} правки ждут} other{{count} правок ждут}}'**
+  String syncPending(int count);
+
+  /// syncConnectTitle
+  ///
+  /// In ru, this message translates to:
+  /// **'Подключить сервер'**
+  String get syncConnectTitle;
+
+  /// syncServerAddress
+  ///
+  /// In ru, this message translates to:
+  /// **'Адрес сервера'**
+  String get syncServerAddress;
+
+  /// syncCode
+  ///
+  /// In ru, this message translates to:
+  /// **'Код с первого устройства'**
+  String get syncCode;
+
+  /// syncCodeHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Пусто — это первое устройство'**
+  String get syncCodeHint;
+
+  /// syncDeviceName
+  ///
+  /// In ru, this message translates to:
+  /// **'Телефон'**
+  String get syncDeviceName;
+
+  /// syncConnected
+  ///
+  /// In ru, this message translates to:
+  /// **'Сервер подключён'**
+  String get syncConnected;
+
+  /// syncFailed
+  ///
+  /// In ru, this message translates to:
+  /// **'Не вышло'**
+  String get syncFailed;
+
+  /// syncDone
+  ///
+  /// In ru, this message translates to:
+  /// **'Отправлено {sent}, получено {received}'**
+  String syncDone(int sent, int received);
+
+  /// syncPairTitle
+  ///
+  /// In ru, this message translates to:
+  /// **'Код для второго устройства'**
+  String get syncPairTitle;
+
+  /// syncPairHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Показать и ввести на другом'**
+  String get syncPairHint;
+
+  /// syncDisconnect
+  ///
+  /// In ru, this message translates to:
+  /// **'Отключить сервер'**
+  String get syncDisconnect;
+
+  /// syncDisconnectHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Данные останутся на устройстве'**
+  String get syncDisconnectHint;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

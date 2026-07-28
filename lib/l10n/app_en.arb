@@ -1124,5 +1124,82 @@
   "msgNotSaved": "Changes were not saved",
   "@msgNotSaved": {
     "description": "msgNotSaved"
+  },
+  "syncTitle": "Sync",
+  "@syncTitle": {
+    "description": "syncTitle"
+  },
+  "syncOff": "Off — the calendar lives here only",
+  "@syncOff": {
+    "description": "syncOff"
+  },
+  "syncClean": "all sent",
+  "@syncClean": {
+    "description": "syncClean"
+  },
+  "syncPending": "{count, plural, one{{count} change waiting} other{{count} changes waiting}}",
+  "@syncPending": {
+    "description": "syncPending",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncConnectTitle": "Connect a server",
+  "@syncConnectTitle": {
+    "description": "syncConnectTitle"
+  },
+  "syncServerAddress": "Server address",
+  "@syncServerAddress": {
+    "description": "syncServerAddress"
+  },
+  "syncCode": "Code from the first device",
+  "@syncCode": {
+    "description": "syncCode"
+  },
+  "syncCodeHint": "Empty means this is the first device",
+  "@syncCodeHint": {
+    "description": "syncCodeHint"
+  },
+  "syncDeviceName": "Phone",
+  "@syncDeviceName": {
+    "description": "syncDeviceName"
+  },
+  "syncConnected": "Server connected",
+  "@syncConnected": {
+    "description": "syncConnected"
+  },
+  "syncFailed": "Failed",
+  "@syncFailed": {
+    "description": "syncFailed"
+  },
+  "syncDone": "Sent {sent}, received {received}",
+  "@syncDone": {
+    "description": "syncDone",
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "received": {
+        "type": "int"
+      }
+    }
+  },
+  "syncPairTitle": "Code for a second device",
+  "@syncPairTitle": {
+    "description": "syncPairTitle"
+  },
+  "syncPairHint": "Show it and type it on the other one",
+  "@syncPairHint": {
+    "description": "syncPairHint"
+  },
+  "syncDisconnect": "Disconnect the server",
+  "@syncDisconnect": {
+    "description": "syncDisconnect"
+  },
+  "syncDisconnectHint": "The data stays on the device",
+  "@syncDisconnectHint": {
+    "description": "syncDisconnectHint"
   }
 }

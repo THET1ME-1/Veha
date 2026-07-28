@@ -927,4 +927,63 @@ class LPl extends L {
 
   @override
   String get msgNotSaved => 'Zmiany nie zostały zapisane';
+
+  @override
+  String get syncTitle => 'Synchronizacja';
+
+  @override
+  String get syncOff => 'Wyłączona, kalendarz tylko tutaj';
+
+  @override
+  String get syncClean => 'wszystko wysłane';
+
+  @override
+  String syncPending(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count zmian czeka',
+      few: '$count zmiany czekają',
+      one: '$count zmiana czeka',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get syncConnectTitle => 'Podłącz serwer';
+
+  @override
+  String get syncServerAddress => 'Adres serwera';
+
+  @override
+  String get syncCode => 'Kod z pierwszego urządzenia';
+
+  @override
+  String get syncCodeHint => 'Puste — to pierwsze urządzenie';
+
+  @override
+  String get syncDeviceName => 'Telefon';
+
+  @override
+  String get syncConnected => 'Serwer podłączony';
+
+  @override
+  String get syncFailed => 'Nie udało się';
+
+  @override
+  String syncDone(int sent, int received) {
+    return 'Wysłano $sent, odebrano $received';
+  }
+
+  @override
+  String get syncPairTitle => 'Kod dla drugiego urządzenia';
+
+  @override
+  String get syncPairHint => 'Pokaż i wpisz na drugim';
+
+  @override
+  String get syncDisconnect => 'Odłącz serwer';
+
+  @override
+  String get syncDisconnectHint => 'Dane zostaną na urządzeniu';
 }

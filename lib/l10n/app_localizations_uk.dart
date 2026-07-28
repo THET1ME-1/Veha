@@ -926,4 +926,63 @@ class LUk extends L {
 
   @override
   String get msgNotSaved => 'Зміни не збережено';
+
+  @override
+  String get syncTitle => 'Синхронізація';
+
+  @override
+  String get syncOff => 'Вимкнена, календар лише тут';
+
+  @override
+  String get syncClean => 'усе надіслано';
+
+  @override
+  String syncPending(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count правок чекають',
+      few: '$count правки чекають',
+      one: '$count правка чекає',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get syncConnectTitle => 'Підключити сервер';
+
+  @override
+  String get syncServerAddress => 'Адреса сервера';
+
+  @override
+  String get syncCode => 'Код із першого пристрою';
+
+  @override
+  String get syncCodeHint => 'Порожньо — це перший пристрій';
+
+  @override
+  String get syncDeviceName => 'Телефон';
+
+  @override
+  String get syncConnected => 'Сервер підключено';
+
+  @override
+  String get syncFailed => 'Не вийшло';
+
+  @override
+  String syncDone(int sent, int received) {
+    return 'Надіслано $sent, отримано $received';
+  }
+
+  @override
+  String get syncPairTitle => 'Код для другого пристрою';
+
+  @override
+  String get syncPairHint => 'Показати й ввести на іншому';
+
+  @override
+  String get syncDisconnect => 'Відключити сервер';
+
+  @override
+  String get syncDisconnectHint => 'Дані залишаться на пристрої';
 }

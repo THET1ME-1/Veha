@@ -1124,5 +1124,82 @@
   "msgNotSaved": "Änderungen wurden nicht gespeichert",
   "@msgNotSaved": {
     "description": "msgNotSaved"
+  },
+  "syncTitle": "Synchronisierung",
+  "@syncTitle": {
+    "description": "syncTitle"
+  },
+  "syncOff": "Aus — der Kalender lebt nur hier",
+  "@syncOff": {
+    "description": "syncOff"
+  },
+  "syncClean": "alles gesendet",
+  "@syncClean": {
+    "description": "syncClean"
+  },
+  "syncPending": "{count, plural, one{{count} Änderung wartet} other{{count} Änderungen warten}}",
+  "@syncPending": {
+    "description": "syncPending",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncConnectTitle": "Server verbinden",
+  "@syncConnectTitle": {
+    "description": "syncConnectTitle"
+  },
+  "syncServerAddress": "Serveradresse",
+  "@syncServerAddress": {
+    "description": "syncServerAddress"
+  },
+  "syncCode": "Code vom ersten Gerät",
+  "@syncCode": {
+    "description": "syncCode"
+  },
+  "syncCodeHint": "Leer heißt: erstes Gerät",
+  "@syncCodeHint": {
+    "description": "syncCodeHint"
+  },
+  "syncDeviceName": "Telefon",
+  "@syncDeviceName": {
+    "description": "syncDeviceName"
+  },
+  "syncConnected": "Server verbunden",
+  "@syncConnected": {
+    "description": "syncConnected"
+  },
+  "syncFailed": "Fehlgeschlagen",
+  "@syncFailed": {
+    "description": "syncFailed"
+  },
+  "syncDone": "Gesendet {sent}, empfangen {received}",
+  "@syncDone": {
+    "description": "syncDone",
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "received": {
+        "type": "int"
+      }
+    }
+  },
+  "syncPairTitle": "Code für ein zweites Gerät",
+  "@syncPairTitle": {
+    "description": "syncPairTitle"
+  },
+  "syncPairHint": "Anzeigen und am anderen eingeben",
+  "@syncPairHint": {
+    "description": "syncPairHint"
+  },
+  "syncDisconnect": "Server trennen",
+  "@syncDisconnect": {
+    "description": "syncDisconnect"
+  },
+  "syncDisconnectHint": "Die Daten bleiben auf dem Gerät",
+  "@syncDisconnectHint": {
+    "description": "syncDisconnectHint"
   }
 }

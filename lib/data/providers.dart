@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../domain/reminder_plan.dart';
 import '../services/place_service.dart';
+import '../services/sync_api.dart';
+import '../services/sync_service.dart';
+import 'settings.dart';
 import '../services/reminder_service.dart';
 import 'db/connection.dart';
 import 'db/database.dart';
@@ -137,6 +140,24 @@ final reminderPlanProvider = Provider<List<PlannedReminder>>((ref) {
   // Считаем от настоящего «сейчас», а не от `nowProvider`: тот заморожен на
   // запуске приложения и в снимках экрана.
   return planReminders(events, now: DateTime.now());
+});
+
+/// Синхронизация: живёт, только когда сервер подключён.
+final syncServiceProvider = Provider<SyncService?>((ref) {
+  final settings = ref.watch(syncSettingsProvider);
+  if (!settings.connected) return null;
+  return SyncService(
+    db: ref.watch(databaseProvider),
+    api: HttpSyncApi(baseUrl: settings.url),
+  );
+});
+
+/// Сколько правок ждёт отправки. Пересчитывается по требованию: строка
+/// состояния обновляется после синка, а не тикает каждую секунду.
+final pendingChangesProvider = FutureProvider<int>((ref) async {
+  final service = ref.watch(syncServiceProvider);
+  if (service == null) return 0;
+  return service.pendingCount();
 });
 
 /// Источник места: координаты и названия. Подменяется в тестах — плагинов

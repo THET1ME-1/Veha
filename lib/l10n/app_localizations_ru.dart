@@ -926,4 +926,63 @@ class LRu extends L {
 
   @override
   String get msgNotSaved => 'Изменения не сохранены';
+
+  @override
+  String get syncTitle => 'Синхронизация';
+
+  @override
+  String get syncOff => 'Выключена, календарь только здесь';
+
+  @override
+  String get syncClean => 'всё отправлено';
+
+  @override
+  String syncPending(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count правок ждут',
+      few: '$count правки ждут',
+      one: '$count правка ждёт',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get syncConnectTitle => 'Подключить сервер';
+
+  @override
+  String get syncServerAddress => 'Адрес сервера';
+
+  @override
+  String get syncCode => 'Код с первого устройства';
+
+  @override
+  String get syncCodeHint => 'Пусто — это первое устройство';
+
+  @override
+  String get syncDeviceName => 'Телефон';
+
+  @override
+  String get syncConnected => 'Сервер подключён';
+
+  @override
+  String get syncFailed => 'Не вышло';
+
+  @override
+  String syncDone(int sent, int received) {
+    return 'Отправлено $sent, получено $received';
+  }
+
+  @override
+  String get syncPairTitle => 'Код для второго устройства';
+
+  @override
+  String get syncPairHint => 'Показать и ввести на другом';
+
+  @override
+  String get syncDisconnect => 'Отключить сервер';
+
+  @override
+  String get syncDisconnectHint => 'Данные останутся на устройстве';
 }

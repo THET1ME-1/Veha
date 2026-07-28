@@ -15,6 +15,7 @@ import '../fields/fields_screen.dart';
 import '../calendar/widgets/view_switcher.dart';
 import 'appearance_card.dart';
 import 'ics_rows.dart';
+import 'sync_rows.dart';
 
 /// Настройки: оформление, неделя, данные, о приложении.
 ///
@@ -117,7 +118,11 @@ class SettingsScreen extends ConsumerWidget {
           ),
         ]),
         VBlockCap(L.of(context).settingsDataGroup),
-        const VBlock(children: [IcsRows()]),
+        const VBlock(children: [
+          SyncRows(),
+          VSep(),
+          IcsRows(),
+        ]),
         VBlockCap(L.of(context).settingsAbout),
         VBlock(children: [
           const _VersionRow(),

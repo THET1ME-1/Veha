@@ -915,4 +915,62 @@ class LEn extends L {
 
   @override
   String get msgNotSaved => 'Changes were not saved';
+
+  @override
+  String get syncTitle => 'Sync';
+
+  @override
+  String get syncOff => 'Off — the calendar lives here only';
+
+  @override
+  String get syncClean => 'all sent';
+
+  @override
+  String syncPending(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count changes waiting',
+      one: '$count change waiting',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get syncConnectTitle => 'Connect a server';
+
+  @override
+  String get syncServerAddress => 'Server address';
+
+  @override
+  String get syncCode => 'Code from the first device';
+
+  @override
+  String get syncCodeHint => 'Empty means this is the first device';
+
+  @override
+  String get syncDeviceName => 'Phone';
+
+  @override
+  String get syncConnected => 'Server connected';
+
+  @override
+  String get syncFailed => 'Failed';
+
+  @override
+  String syncDone(int sent, int received) {
+    return 'Sent $sent, received $received';
+  }
+
+  @override
+  String get syncPairTitle => 'Code for a second device';
+
+  @override
+  String get syncPairHint => 'Show it and type it on the other one';
+
+  @override
+  String get syncDisconnect => 'Disconnect the server';
+
+  @override
+  String get syncDisconnectHint => 'The data stays on the device';
 }
