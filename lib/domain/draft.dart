@@ -148,7 +148,7 @@ class EventDraft {
         recurrenceId: source?.recurrenceId,
         originalStart: source?.originalStart,
         isVirtual: source?.isVirtual ?? false,
-        timezone: source?.timezone ?? 'Europe/Chisinau',
+        timezone: source?.timezone,
         location: location,
         fields: fields,
         reminders: reminders,

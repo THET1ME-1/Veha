@@ -26,7 +26,11 @@ final nowProvider = Provider<DateTime>((ref) => DateTime.now());
 
 /// Первый запуск: наполняем пустую базу и только потом отдаём экраны.
 final bootstrapProvider = FutureProvider<void>((ref) async {
-  await ref.watch(repositoryProvider).seedIfEmpty(today: ref.watch(nowProvider));
+  final repo = ref.watch(repositoryProvider);
+  await repo.seedIfEmpty(today: ref.watch(nowProvider));
+  // Чистка давно удалённого — на запуске: отдельного расписания ради неё
+  // заводить не за что, а приложение открывают чаще, чем раз в 90 дней.
+  await repo.purgeDeleted();
 });
 
 /// Календари и ветки. Нужны на каждом экране, поэтому держатся отдельно от

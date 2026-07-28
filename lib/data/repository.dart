@@ -454,6 +454,60 @@ class VehaRepository {
     });
   }
 
+  /// Выбрасывает то, что удалено давно.
+  ///
+  /// Удаление мягкое: строка остаётся с отметкой `deleted_at`, иначе сервер
+  /// вернёт её обратно при следующей синхронизации. Но копить это вечно
+  /// нельзя — база растёт на каждой правке. Девяносто дней с запасом
+  /// перекрывают любой разумный перерыв между запусками.
+  ///
+  /// Возвращает число выброшенных событий: остальное считать незачем, а
+  /// показать «почищено» полезно.
+  Future<int> purgeDeleted({
+    Duration olderThan = const Duration(days: 90),
+    DateTime? now,
+  }) async {
+    final cutoff = (now ?? DateTime.now())
+        .subtract(olderThan)
+        .millisecondsSinceEpoch;
+
+    return db.transaction(() async {
+      final doomed = await (db.select(db.events)
+            ..where((t) => t.deletedAt.isSmallerThanValue(cutoff)))
+          .get();
+
+      for (final e in doomed) {
+        // Сначала то, что на событие ссылается: иначе внешние ключи не дадут
+        // убрать саму строку.
+        await (db.delete(db.fieldValues)..where((t) => t.eventId.equals(e.id)))
+            .go();
+        await (db.delete(db.reminders)..where((t) => t.eventId.equals(e.id)))
+            .go();
+        await (db.delete(db.eventNotes)..where((t) => t.eventId.equals(e.id)))
+            .go();
+        await (db.delete(db.recurrenceExceptions)
+              ..where((t) => t.eventId.equals(e.id)))
+            .go();
+        await (db.delete(db.events)..where((t) => t.id.equals(e.id))).go();
+      }
+
+      await (db.delete(db.eventNotes)
+            ..where((t) => t.deletedAt.isSmallerThanValue(cutoff)))
+          .go();
+      await (db.delete(db.fieldDefs)
+            ..where((t) => t.deletedAt.isSmallerThanValue(cutoff)))
+          .go();
+      await (db.delete(db.subcategories)
+            ..where((t) => t.deletedAt.isSmallerThanValue(cutoff)))
+          .go();
+      await (db.delete(db.calendars)
+            ..where((t) => t.deletedAt.isSmallerThanValue(cutoff)))
+          .go();
+
+      return doomed.length;
+    });
+  }
+
   // ---------- обмен файлами ----------
 
   /// Все события для выгрузки: строки как есть, без развёртки рядов.

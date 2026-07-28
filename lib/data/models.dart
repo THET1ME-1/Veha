@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../core/app_timezone.dart';
+
 /// Календарь — верхний уровень группировки и цвета.
 @immutable
 class VCalendar {
@@ -65,7 +67,9 @@ const Object _keep = Object();
 
 @immutable
 class VEvent {
-  const VEvent({
+  // Не `const`: пояс по умолчанию берётся у устройства, а системный вызов
+  // константой быть не может.
+  VEvent({
     required this.id,
     required this.calendarId,
     required this.title,
@@ -79,11 +83,11 @@ class VEvent {
     this.recurrenceId,
     this.originalStart,
     this.isVirtual = false,
-    this.timezone = 'Europe/Chisinau',
+    String? timezone,
     this.location,
     this.fields = const [],
     this.reminders = const [],
-  });
+  }) : timezone = timezone ?? AppTimezone.current;
 
   final String id;
   final String calendarId;
@@ -158,7 +162,8 @@ class VEvent {
       );
 
   /// Пояс события, IANA. Нужен для абсолютного момента напоминания:
-  /// 16:00 в Кишинёве — разный UTC летом и зимой.
+  /// 16:00 в Кишинёве — разный UTC летом и зимой. По умолчанию пояс
+  /// устройства: зашитый чужой — тихая ошибка у всех, кроме автора.
   final String timezone;
   final String? location;
   final List<VFieldValue> fields;

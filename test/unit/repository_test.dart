@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart' show Color;
 import 'package:flutter_test/flutter_test.dart';
@@ -267,6 +268,26 @@ void main() {
     // Своего цвета нет — берётся от календаря.
     expect(inheritance.colorOfSubcategory(inheritance.subcategories[id]!),
         inheritance.calendars['c-study']!.color);
+  });
+
+  // Мягкое удаление копится вечно: без чистки база растёт на каждой правке,
+  // а сервер по возвращении привезёт удалённое обратно.
+  test('Чистка убирает давно удалённое и не трогает свежее', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+    await repo.deleteEvent('e-eng');
+
+    final long = DateTime.now()
+        .subtract(const Duration(days: 100))
+        .millisecondsSinceEpoch;
+    await (db.update(db.events)..where((t) => t.id.equals('e-pool')))
+        .write(EventsCompanion(deletedAt: Value(long)));
+
+    final removed = await repo.purgeDeleted();
+
+    final left = (await db.select(db.events).get()).map((e) => e.id);
+    expect(removed, 1);
+    expect(left, contains('e-eng'), reason: 'Удалили только что — рано');
+    expect(left, isNot(contains('e-pool')), reason: 'Лежит сто дней');
   });
 
   test('Значения своих полей сохраняются вместе с событием', () async {
