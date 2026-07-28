@@ -164,6 +164,84 @@ class VehaRepository {
     });
   }
 
+  /// Поиск по всему календарю: название, место и значения своих полей.
+  ///
+  /// Окна у поиска нет. «Когда был экзамен» спрашивают про прошлое так же
+  /// часто, как про будущее, а ограничение диапазоном человек воспринимает как
+  /// «не нашлось».
+  ///
+  /// Ряд отдаётся ближайшим занятием: строка ряда стоит на дате первого
+  /// занятия, и «Подъём» из мая в ответе на поиск выглядит ошибкой. Занятия
+  /// ищутся вперёд на год — дальше уходят разве что годовщины, а разворачивать
+  /// бесконечный ряд ради поиска дорого.
+  Stream<List<VEvent>> watchSearch(String query, {DateTime? now}) {
+    final needle = query.trim().toLowerCase();
+    if (needle.isEmpty) return Stream.value(const []);
+
+    final moment = now ?? DateTime.now();
+
+    // Отбор идёт в Dart, а не в `WHERE ... LIKE`. `lower()` у SQLite трогает
+    // только латиницу: «Английский» так и остаётся с заглавной, и поиск по
+    // «англ» не находит ничего. Своя ICU-сборка ради этого не стоит того —
+    // событий у человека тысячи, проход по ним занимает миллисекунды.
+    // Полнотекстового индекса нет и не будет: он не переживёт шифрование.
+    final selfQuery = db.select(db.events).join([
+      innerJoin(db.calendars, db.calendars.id.equalsExp(db.events.calendarId)),
+      leftOuterJoin(
+          db.fieldValues, db.fieldValues.eventId.equalsExp(db.events.id)),
+    ])
+      ..where(db.events.deletedAt.isNull() &
+          db.calendars.deletedAt.isNull() &
+          db.calendars.isVisible.equals(true));
+
+    return selfQuery.watch().map((rows) {
+      final byId = <String, VEvent>{};
+      final matched = <String>{};
+
+      for (final row in rows) {
+        final e = row.readTable(db.events);
+        byId.putIfAbsent(e.id, () => _toEvent(e));
+
+        final value = row.readTableOrNull(db.fieldValues)?.value;
+        if (_has(e.title, needle) ||
+            _has(e.location, needle) ||
+            _has(e.description, needle) ||
+            _has(value, needle)) {
+          matched.add(e.id);
+        }
+      }
+      byId.removeWhere((id, _) => !matched.contains(id));
+
+      final out = <VEvent>[];
+      for (final e in byId.values) {
+        if (e.rrule == null) {
+          out.add(e);
+          continue;
+        }
+        final next = expandOccurrences(
+          [e],
+          from: moment,
+          to: moment.add(const Duration(days: 365)),
+        );
+        // Ряд, у которого впереди ничего нет, показываем последним занятием:
+        // закончившийся курс из поиска пропадать не должен.
+        out.add(next.isNotEmpty ? next.first : e);
+      }
+
+      // Сначала то, что ещё будет, — по возрастанию. Прошедшее следом, от
+      // недавнего к давнему: «на той неделе» ищут чаще, чем «в прошлом году».
+      final future = out.where((e) => e.start.isAfter(moment)).toList()
+        ..sort((a, b) => a.start.compareTo(b.start));
+      final past = out.where((e) => !e.start.isAfter(moment)).toList()
+        ..sort((a, b) => b.start.compareTo(a.start));
+
+      return [...future, ...past];
+    });
+  }
+
+  static bool _has(String? haystack, String needle) =>
+      haystack != null && haystack.toLowerCase().contains(needle);
+
   Future<List<VNote>> notesOf(String eventId) async {
     final rows = await (db.select(db.eventNotes)
           ..where((t) => t.eventId.equals(eventId) & t.deletedAt.isNull())
