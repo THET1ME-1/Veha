@@ -1304,6 +1304,58 @@ class VehaRepository {
 
   // ---------- преобразования ----------
 
+  /// Частые события: что человек заводит снова и снова.
+  ///
+  /// Отдельной таблицы шаблонов нет намеренно. Шаблон, который надо завести
+  /// руками, заводят один раз и забывают; а история уже знает, что «Планёрка»
+  /// была двенадцать раз по полтора часа в «Работе». Считаем по ней.
+  Future<List<VEvent>> frequentEvents({
+    int limit = 6,
+    Duration within = const Duration(days: 90),
+    DateTime? now,
+  }) async {
+    final since = (now ?? DateTime.now())
+        .subtract(within)
+        .millisecondsSinceEpoch;
+
+    final rows = await db
+        .customSelect(
+          'SELECT title, calendar_id, subcategory_id, color, icon, '
+          '       MAX(start) AS last_start, '
+          '       (\'end\') AS ignored, '
+          '       AVG("end" - start) AS avg_length, '
+          '       COUNT(*) AS times '
+          'FROM events '
+          'WHERE deleted_at IS NULL AND start >= ? '
+          'GROUP BY lower(title), calendar_id '
+          'ORDER BY times DESC, last_start DESC '
+          'LIMIT ?',
+          variables: [Variable<int>(since), Variable<int>(limit)],
+        )
+        .get();
+
+    return [
+      for (final row in rows)
+        VEvent(
+          // Ключ не настоящий: это заготовка, а не запись из базы.
+          id: 'frequent',
+          calendarId: row.read<String>('calendar_id'),
+          subcategoryId: row.read<String?>('subcategory_id'),
+          title: row.read<String>('title'),
+          start: DateTime.fromMillisecondsSinceEpoch(
+              row.read<int>('last_start')),
+          end: DateTime.fromMillisecondsSinceEpoch(
+                  row.read<int>('last_start'))
+              .add(Duration(
+                  milliseconds: row.read<double>('avg_length').round())),
+          color: row.read<int?>('color') == null
+              ? null
+              : Color(row.read<int>('color')),
+          iconName: row.read<String?>('icon'),
+        ),
+    ];
+  }
+
   /// Удалённое, что ещё лежит в базе: корзина показывает именно это.
   ///
   /// Хранение мягкое и без того — корзина просто даёт на него посмотреть.

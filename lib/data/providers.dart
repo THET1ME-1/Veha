@@ -120,6 +120,14 @@ final photosProvider =
   yield* ref.watch(repositoryProvider).watchPhotos(eventId);
 });
 
+/// Частые события: подсказки быстрого листа. Считаются по истории, а не по
+/// заготовкам, которые надо заводить руками.
+final frequentEventsProvider =
+    FutureProvider.autoDispose<List<VEvent>>((ref) async {
+  await ref.watch(bootstrapProvider.future);
+  return ref.watch(repositoryProvider).frequentEvents();
+});
+
 /// «Мои цвета»: подобранные оттенки, общие на всё приложение.
 final savedColorsProvider = StreamProvider<List<Color>>((ref) async* {
   await ref.watch(bootstrapProvider.future);

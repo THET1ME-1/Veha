@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+
+import '../../data/providers.dart';
 
 import '../../core/brand.dart';
 import '../../domain/phrase.dart';
@@ -16,7 +19,7 @@ import '../../domain/draft.dart';
 /// Здесь ровно то, без чего событие не существует: название, время, календарь.
 /// Остальное живёт в полной форме, куда ведёт «Подробнее» — черновик уезжает
 /// туда целиком, набранное не теряется.
-class QuickAddSheet extends StatefulWidget {
+class QuickAddSheet extends ConsumerStatefulWidget {
   const QuickAddSheet({
     super.key,
     required this.draft,
@@ -35,10 +38,10 @@ class QuickAddSheet extends StatefulWidget {
   final Future<DateTime?> Function(Duration length)? onFindSlot;
 
   @override
-  State<QuickAddSheet> createState() => _QuickAddSheetState();
+  ConsumerState<QuickAddSheet> createState() => _QuickAddSheetState();
 }
 
-class _QuickAddSheetState extends State<QuickAddSheet> {
+class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
   late EventDraft _draft = widget.draft;
   late final TextEditingController _title =
       TextEditingController(text: _draft.title);
@@ -95,6 +98,44 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
       _read = L.of(context).msgSlotFound(
         DateFormat('EEE d MMMM, HH:mm', locale).format(found),
       );
+    });
+  }
+
+  /// Лента частых событий. Тап подставляет название, календарь, длительность
+  /// и внешность — остаётся нажать «Готово».
+  Widget _frequent() {
+    final events = ref.watch(frequentEventsProvider).valueOrNull ?? const [];
+    if (events.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(VehaInsets.screen, 12, 0, 0),
+      child: SizedBox(
+        height: 36,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemCount: events.length,
+          separatorBuilder: (_, __) => const SizedBox(width: 7),
+          padding: const EdgeInsets.only(right: VehaInsets.screen),
+          itemBuilder: (context, i) => _TimeChip(
+            text: events[i].title,
+            onTap: () => _useFrequent(events[i]),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _useFrequent(VEvent sample) {
+    _title.text = sample.title;
+    setState(() {
+      _timeTouched = true;
+      _read = null;
+      _draft = _draft
+          .withTitle(sample.title)
+          .withCalendar(sample.calendarId, subcategoryId: sample.subcategoryId)
+          .withColor(sample.color)
+          .withIcon(sample.iconName)
+          .withEnd(_draft.start.add(sample.duration));
     });
   }
 
@@ -251,6 +292,9 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
               ],
             ),
           ),
+          // Половина событий повторяет прошлые: подсказываем то, что человек
+          // уже заводил, вместо шаблонов, которые надо готовить руками.
+          if (_draft.title.trim().isEmpty) _frequent(),
           Padding(
             padding: const EdgeInsets.fromLTRB(VehaInsets.screen, 12, VehaInsets.screen, 0),
             child: Wrap(
