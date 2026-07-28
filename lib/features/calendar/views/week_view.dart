@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/event_colors.dart';
@@ -22,6 +23,7 @@ class WeekView extends StatelessWidget {
     required this.today,
     this.onEventTap,
     this.onEventLongPress,
+    this.onEventMoved,
   });
 
   final List<DateTime> week;
@@ -31,6 +33,11 @@ class WeekView extends StatelessWidget {
   final DateTime today;
   final ValueChanged<VEvent>? onEventTap;
   final ValueChanged<VEvent>? onEventLongPress;
+
+  /// Блок перетащили: сдвиг по времени и по дням сразу. В неделе это одно
+  /// движение — палец идёт наискосок, и требовать двух отдельных жестов
+  /// значит спорить с рукой.
+  final void Function(VEvent event, Duration shift)? onEventMoved;
 
   static const double _firstHour = 7;
   // Границы кратны шагу подписей (два часа), иначе последняя подпись вылезает
@@ -47,7 +54,7 @@ class WeekView extends StatelessWidget {
     final dow = DateFormat.E(locale);
     final gridHeight = (_lastHour - _firstHour) * _hourHeight;
 
-    return SingleChildScrollView(
+    return LayoutBuilder(builder: (context, constraints) => SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(14, 6, 14, 120),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,6 +131,13 @@ class WeekView extends StatelessWidget {
                       hourHeight: _hourHeight,
                       onEventTap: onEventTap,
                       onEventLongPress: onEventLongPress,
+                      onEventMoved: onEventMoved,
+                      // Ширина колонки нужна пилюле, чтобы перевести сдвиг
+                      // пальца вбок в дни.
+                      dayWidth: (constraints.maxWidth - _gutter -
+                              _gap * week.length) /
+                          week.length +
+                          _gap,
                     ),
                   ),
                 ],
@@ -132,7 +146,7 @@ class WeekView extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 
   static bool _sameDay(DateTime a, DateTime b) =>
@@ -213,6 +227,8 @@ class _DayColumn extends StatelessWidget {
     required this.hourHeight,
     this.onEventTap,
     this.onEventLongPress,
+    this.onEventMoved,
+    this.dayWidth = 0,
   });
 
   final List<VEvent> events;
@@ -223,6 +239,10 @@ class _DayColumn extends StatelessWidget {
   final double hourHeight;
   final ValueChanged<VEvent>? onEventTap;
   final ValueChanged<VEvent>? onEventLongPress;
+  final void Function(VEvent event, Duration shift)? onEventMoved;
+
+  /// Ширина колонки вместе с зазором: по ней сдвиг вбок переводится в дни.
+  final double dayWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -258,6 +278,8 @@ class _DayColumn extends StatelessWidget {
                   onLongPress: onEventLongPress == null
                       ? null
                       : () => onEventLongPress!(p.event),
+                  onMoved: onEventMoved,
+                  dayWidth: dayWidth,
                 ),
             ],
           ),
@@ -300,7 +322,7 @@ List<PlacedEvent> layoutOverlaps(List<VEvent> events) {
   return result;
 }
 
-class _Pill extends StatelessWidget {
+class _Pill extends StatefulWidget {
   const _Pill({
     required this.placed,
     required this.width,
@@ -310,6 +332,8 @@ class _Pill extends StatelessWidget {
     required this.icon,
     this.onTap,
     this.onLongPress,
+    this.onMoved,
+    this.dayWidth = 0,
   });
 
   final PlacedEvent placed;
@@ -320,9 +344,43 @@ class _Pill extends StatelessWidget {
   final String icon;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
+  final void Function(VEvent event, Duration shift)? onMoved;
+  final double dayWidth;
+
+  @override
+  State<_Pill> createState() => _PillState();
+}
+
+class _PillState extends State<_Pill> {
+  Offset _drag = Offset.zero;
+  bool _dragging = false;
+
+  /// Шаг сетки: четверть часа по вертикали, целый день по горизонтали.
+  static const int _stepMinutes = 15;
+
+  double get _stepPixels => widget.hourHeight * _stepMinutes / 60;
+
+  /// Сдвиг пальца — в минуты и дни. Наискосок работает: в неделе перенос на
+  /// другой день и другое время — одно движение.
+  Duration _shiftOf(Offset offset) {
+    final minutes =
+        (offset.dy / _stepPixels).round() * _stepMinutes;
+    final days = widget.dayWidth == 0
+        ? 0
+        : (offset.dx / widget.dayWidth).round();
+    return Duration(days: days, minutes: minutes);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final placed = widget.placed;
+    final width = widget.width;
+    final firstHour = widget.firstHour;
+    final hourHeight = widget.hourHeight;
+    final color = widget.color;
+    final icon = widget.icon;
+    final onTap = widget.onTap;
+    final onLongPress = widget.onLongPress;
     final e = placed.event;
     final ink = EventColors.of(color, Theme.of(context).brightness);
 
@@ -335,18 +393,53 @@ class _Pill extends StatelessWidget {
     final laneWidth = (width - 6) / placed.lanes;
     final iconSize = height < 30 ? 13.0 : 17.0;
 
+    final canDrag = widget.onMoved != null;
+
     return Positioned(
-      top: top < 0 ? 0 : top,
-      left: 3 + placed.lane * laneWidth,
+      top: (top < 0 ? 0 : top) + _drag.dy,
+      left: 3 + placed.lane * laneWidth + _drag.dx,
       width: laneWidth - (placed.lanes > 1 ? 2 : 0),
       height: height,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         onLongPress: onLongPress,
+        onLongPressStart: canDrag
+            ? (_) {
+                HapticFeedback.mediumImpact();
+                setState(() => _dragging = true);
+              }
+            : null,
+        onLongPressMoveUpdate: canDrag
+            ? (details) {
+                final raw = details.localOffsetFromOrigin;
+                final snapped = Offset(
+                  widget.dayWidth == 0
+                      ? 0
+                      : (raw.dx / widget.dayWidth).round() * widget.dayWidth,
+                  (raw.dy / _stepPixels).round() * _stepPixels,
+                );
+                if (snapped == _drag) return;
+                HapticFeedback.selectionClick();
+                setState(() => _drag = snapped);
+              }
+            : null,
+        onLongPressEnd: canDrag
+            ? (_) {
+                final shift = _shiftOf(_drag);
+                setState(() {
+                  _drag = Offset.zero;
+                  _dragging = false;
+                });
+                if (shift.inMinutes != 0) widget.onMoved!(e, shift);
+              }
+            : null,
         child: Container(
           decoration: ShapeDecoration(
-            color: ink.background,
+            // Оторванная пилюля светлеет тоном: теней в приложении нет.
+            color: _dragging
+                ? ink.foreground.withValues(alpha: 0.24)
+                : ink.background,
             shape: const StadiumBorder(),
           ),
           alignment: Alignment.center,

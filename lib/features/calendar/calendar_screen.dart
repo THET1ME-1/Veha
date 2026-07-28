@@ -312,6 +312,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           today: today,
           onEventTap: (e) => EventFlow(context, ref).preview(e),
           onEventLongPress: _showEventMenu,
+          // В неделе перенос идёт наискосок: и на другой час, и на другой
+          // день одним движением.
+          onEventMoved: (e, shift) => EventFlow(context, ref).moveBy(e, shift),
         ),
       CalendarView.bands => BandsView(
           days: List.generate(
