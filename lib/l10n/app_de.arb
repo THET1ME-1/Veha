@@ -749,7 +749,7 @@
       }
     }
   },
-  "colorPickerHint": "Die Pipette nimmt eine Farbe vom Hintergrundbild oder Screenshot. Gespeicherte stehen unter „Meine Farben“ überall bereit.",
+  "colorPickerHint": "Die Pipette nimmt die Farbe aus einem Bild: Screenshot oder Foto öffnen und die Stelle antippen. Gespeicherte Farben liegen in «Meine Farben» und stehen in jeder Auswahl bereit.",
   "@colorPickerHint": {
     "description": "colorPickerHint"
   },
@@ -1431,6 +1431,85 @@
     "placeholders": {
       "percent": {
         "type": "int"
+      }
+    }
+  },
+  "colorSaved": "Farbe in «Meine Farben»",
+  "@colorSaved": {
+    "description": "colorSaved"
+  },
+  "colorAlreadySaved": "Diese Farbe ist schon gespeichert",
+  "@colorAlreadySaved": {
+    "description": "colorAlreadySaved"
+  },
+  "colorRemovedFromMine": "Aus «Meine Farben» entfernt",
+  "@colorRemovedFromMine": {
+    "description": "colorRemovedFromMine"
+  },
+  "colorCopied": "Code kopiert",
+  "@colorCopied": {
+    "description": "colorCopied"
+  },
+  "colorCopy": "Code kopieren",
+  "@colorCopy": {
+    "description": "colorCopy"
+  },
+  "colorPickFromImage": "Farbe aus einem Bild nehmen",
+  "@colorPickFromImage": {
+    "description": "colorPickFromImage"
+  },
+  "colorTapImage": "Tippe aufs Bild — die Farbe kommt von dort",
+  "@colorTapImage": {
+    "description": "colorTapImage"
+  },
+  "colorHexHint": "Eigener Code",
+  "@colorHexHint": {
+    "description": "colorHexHint"
+  },
+  "scopeOnlyHint": "{day} rückt um, der Rest bleibt",
+  "@scopeOnlyHint": {
+    "description": "scopeOnlyHint",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "scopeDeleteTitle": "Was löschen",
+  "@scopeDeleteTitle": {
+    "description": "scopeDeleteTitle"
+  },
+  "scopeDeleteOnlyHint": "{day} verschwindet, die Reihe bleibt",
+  "@scopeDeleteOnlyHint": {
+    "description": "scopeDeleteOnlyHint",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "scopeDeleteFollowingHint": "Die Reihe endet an diesem Datum, Vergangenes bleibt",
+  "@scopeDeleteFollowingHint": {
+    "description": "scopeDeleteFollowingHint"
+  },
+  "scopeDeleteWholeHint": "Alle Termine verschwinden, auch vergangene",
+  "@scopeDeleteWholeHint": {
+    "description": "scopeDeleteWholeHint"
+  },
+  "msgSeriesTrimmed": "Die Reihe endet jetzt an diesem Datum",
+  "@msgSeriesTrimmed": {
+    "description": "msgSeriesTrimmed"
+  },
+  "eventDuplicate": "Kopie anlegen",
+  "@eventDuplicate": {
+    "description": "eventDuplicate"
+  },
+  "eventCopySuffix": "{title} — Kopie",
+  "@eventCopySuffix": {
+    "description": "eventCopySuffix",
+    "placeholders": {
+      "title": {
+        "type": "String"
       }
     }
   }

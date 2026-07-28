@@ -32,12 +32,16 @@ class EventEditScreen extends ConsumerStatefulWidget {
     required this.inheritance,
     required this.onSave,
     this.onDelete,
+    this.onDuplicate,
   });
 
   final EventDraft draft;
   final Inheritance inheritance;
   final ValueChanged<EventDraft> onSave;
   final VoidCallback? onDelete;
+
+  /// Копия события: та же карточка с новым ключом, сразу в форме.
+  final VoidCallback? onDuplicate;
 
   @override
   ConsumerState<EventEditScreen> createState() => _EventEditScreenState();
@@ -521,13 +525,25 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
         // ключа, к которому их привязать, и держать их в черновике значит
         // заводить вторую правду о том же.
         if (_draft.isEditing) _notes(color),
-        if (widget.onDelete != null) ...[
+        if (widget.onDuplicate != null || widget.onDelete != null) ...[
           const SizedBox(height: 18),
-          TextButton.icon(
-            onPressed: widget.onDelete,
-            icon: Icon(VehaIcons.byName('trash'), size: 18),
-            label: Text(l.eventDelete),
-            style: TextButton.styleFrom(foregroundColor: scheme.error),
+          Row(
+            children: [
+              if (widget.onDuplicate != null)
+                TextButton.icon(
+                  onPressed: widget.onDuplicate,
+                  icon: Icon(VehaIcons.byName('content_copy'), size: 18),
+                  label: Text(l.eventDuplicate),
+                ),
+              const Spacer(),
+              if (widget.onDelete != null)
+                TextButton.icon(
+                  onPressed: widget.onDelete,
+                  icon: Icon(VehaIcons.byName('trash'), size: 18),
+                  label: Text(l.eventDelete),
+                  style: TextButton.styleFrom(foregroundColor: scheme.error),
+                ),
+            ],
           ),
         ],
       ],

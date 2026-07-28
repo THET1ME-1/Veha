@@ -1190,7 +1190,7 @@ abstract class L {
   /// colorPickerHint
   ///
   /// In ru, this message translates to:
-  /// **'Пипетка берёт цвет с обоев или скриншота. Сохранённые живут в «Моих цветах» и доступны из любого пикера в приложении.'**
+  /// **'Пипетка берёт цвет с картинки: откройте снимок экрана или фотографию и нажмите на нужное место. Сохранённые живут в «Моих цветах» и доступны из любого пикера приложения.'**
   String get colorPickerHint;
 
   /// branchColorTitle
@@ -2068,6 +2068,102 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'{percent}%'**
   String statsShare(int percent);
+
+  /// colorSaved
+  ///
+  /// In ru, this message translates to:
+  /// **'Цвет в «Моих»'**
+  String get colorSaved;
+
+  /// colorAlreadySaved
+  ///
+  /// In ru, this message translates to:
+  /// **'Такой цвет уже сохранён'**
+  String get colorAlreadySaved;
+
+  /// colorRemovedFromMine
+  ///
+  /// In ru, this message translates to:
+  /// **'Убрано из «Моих»'**
+  String get colorRemovedFromMine;
+
+  /// colorCopied
+  ///
+  /// In ru, this message translates to:
+  /// **'Код скопирован'**
+  String get colorCopied;
+
+  /// colorCopy
+  ///
+  /// In ru, this message translates to:
+  /// **'Скопировать код'**
+  String get colorCopy;
+
+  /// colorPickFromImage
+  ///
+  /// In ru, this message translates to:
+  /// **'Взять цвет с картинки'**
+  String get colorPickFromImage;
+
+  /// colorTapImage
+  ///
+  /// In ru, this message translates to:
+  /// **'Нажмите на картинку — цвет возьмётся оттуда'**
+  String get colorTapImage;
+
+  /// colorHexHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Свой код'**
+  String get colorHexHint;
+
+  /// scopeOnlyHint
+  ///
+  /// In ru, this message translates to:
+  /// **'{day} встанет по-новому, остальные не тронутся'**
+  String scopeOnlyHint(String day);
+
+  /// scopeDeleteTitle
+  ///
+  /// In ru, this message translates to:
+  /// **'Что удалить'**
+  String get scopeDeleteTitle;
+
+  /// scopeDeleteOnlyHint
+  ///
+  /// In ru, this message translates to:
+  /// **'{day} исчезнет, ряд останется'**
+  String scopeDeleteOnlyHint(String day);
+
+  /// scopeDeleteFollowingHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Ряд оборвётся на этой дате, прошедшие занятия останутся'**
+  String get scopeDeleteFollowingHint;
+
+  /// scopeDeleteWholeHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Исчезнут все занятия, включая прошедшие'**
+  String get scopeDeleteWholeHint;
+
+  /// msgSeriesTrimmed
+  ///
+  /// In ru, this message translates to:
+  /// **'Ряд оборван на этой дате'**
+  String get msgSeriesTrimmed;
+
+  /// eventDuplicate
+  ///
+  /// In ru, this message translates to:
+  /// **'Сделать копию'**
+  String get eventDuplicate;
+
+  /// eventCopySuffix
+  ///
+  /// In ru, this message translates to:
+  /// **'{title} — копия'**
+  String eventCopySuffix(String title);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

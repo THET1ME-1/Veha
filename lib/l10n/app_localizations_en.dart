@@ -633,7 +633,7 @@ class LEn extends L {
 
   @override
   String get colorPickerHint =>
-      'The dropper picks a colour from your wallpaper or a screenshot. Saved ones live in “My colours” and are available in every picker.';
+      'The dropper takes a color from an image: open a screenshot or a photo and tap the spot you need. Saved colors live in «My colors» and are available in every picker.';
 
   @override
   String get branchColorTitle => 'Branch colour';
@@ -1142,5 +1142,61 @@ class LEn extends L {
   @override
   String statsShare(int percent) {
     return '$percent%';
+  }
+
+  @override
+  String get colorSaved => 'Saved to My colors';
+
+  @override
+  String get colorAlreadySaved => 'That color is already saved';
+
+  @override
+  String get colorRemovedFromMine => 'Removed from My colors';
+
+  @override
+  String get colorCopied => 'Code copied';
+
+  @override
+  String get colorCopy => 'Copy the code';
+
+  @override
+  String get colorPickFromImage => 'Pick a color from an image';
+
+  @override
+  String get colorTapImage => 'Tap the image to take the color from it';
+
+  @override
+  String get colorHexHint => 'Your own code';
+
+  @override
+  String scopeOnlyHint(String day) {
+    return '$day moves, the rest stay put';
+  }
+
+  @override
+  String get scopeDeleteTitle => 'What to delete';
+
+  @override
+  String scopeDeleteOnlyHint(String day) {
+    return '$day disappears, the series stays';
+  }
+
+  @override
+  String get scopeDeleteFollowingHint =>
+      'The series ends on this date; past occurrences stay';
+
+  @override
+  String get scopeDeleteWholeHint =>
+      'Every occurrence goes, past ones included';
+
+  @override
+  String get msgSeriesTrimmed => 'The series now ends on this date';
+
+  @override
+  String get eventDuplicate => 'Make a copy';
+
+  @override
+  String eventCopySuffix(String title) {
+    return '$title — copy';
   }
 }

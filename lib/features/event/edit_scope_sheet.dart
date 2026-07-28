@@ -25,10 +25,15 @@ enum EditScope {
 /// Вопрос неизбежен: одно и то же движение пальца может означать «перенеси
 /// сегодняшнее» и «теперь всегда так». Спрашиваем в конце, когда правка уже
 /// сделана и человеку понятно, о чём речь.
+///
+/// Удаление задаёт тот же вопрос теми же тремя вариантами: «удалить» у ряда
+/// значит и «отменить занятие», и «убрать всё» — молча выбирать за человека
+/// нельзя.
 Future<EditScope?> askEditScope(
   BuildContext context, {
   required DateTime occurrence,
   required String repeatLabel,
+  bool deleting = false,
 }) {
   return showModalBottomSheet<EditScope>(
     context: context,
@@ -36,15 +41,21 @@ Future<EditScope?> askEditScope(
     builder: (context) => _EditScopeSheet(
       occurrence: occurrence,
       repeatLabel: repeatLabel,
+      deleting: deleting,
     ),
   );
 }
 
 class _EditScopeSheet extends StatefulWidget {
-  const _EditScopeSheet({required this.occurrence, required this.repeatLabel});
+  const _EditScopeSheet({
+    required this.occurrence,
+    required this.repeatLabel,
+    required this.deleting,
+  });
 
   final DateTime occurrence;
   final String repeatLabel;
+  final bool deleting;
 
   @override
   State<_EditScopeSheet> createState() => _EditScopeSheetState();
@@ -69,7 +80,9 @@ class _EditScopeSheetState extends State<_EditScopeSheet> {
             Padding(
               padding: const EdgeInsets.fromLTRB(VehaInsets.screen, 4, VehaInsets.screen, 2),
               child: Text(
-                L.of(context).scopeTitle,
+                widget.deleting
+                    ? L.of(context).scopeDeleteTitle
+                    : L.of(context).scopeTitle,
                 style: TextStyle(
                   fontFamily: AppFonts.display,
                   fontSize: 17,
@@ -95,21 +108,27 @@ class _EditScopeSheetState extends State<_EditScopeSheet> {
               child: VBlock(children: [
                 VOption(
                   title: L.of(context).scopeOnly,
-                  subtitle: '$day встанет по-новому, остальные не тронутся',
+                  subtitle: widget.deleting
+                      ? L.of(context).scopeDeleteOnlyHint(day)
+                      : L.of(context).scopeOnlyHint(day),
                   selected: _scope == EditScope.single,
                   onTap: () => setState(() => _scope = EditScope.single),
                 ),
                 const VSep(inset: 15),
                 VOption(
                   title: L.of(context).scopeFollowing,
-                  subtitle: L.of(context).scopeFollowingHint,
+                  subtitle: widget.deleting
+                      ? L.of(context).scopeDeleteFollowingHint
+                      : L.of(context).scopeFollowingHint,
                   selected: _scope == EditScope.following,
                   onTap: () => setState(() => _scope = EditScope.following),
                 ),
                 const VSep(inset: 15),
                 VOption(
                   title: L.of(context).scopeWhole,
-                  subtitle: L.of(context).scopeWholeHint,
+                  subtitle: widget.deleting
+                      ? L.of(context).scopeDeleteWholeHint
+                      : L.of(context).scopeWholeHint,
                   selected: _scope == EditScope.series,
                   onTap: () => setState(() => _scope = EditScope.series),
                 ),
@@ -126,8 +145,18 @@ class _EditScopeSheetState extends State<_EditScopeSheet> {
                   const Spacer(),
                   FilledButton.icon(
                     onPressed: () => Navigator.pop(context, _scope),
-                    icon: Icon(VehaIcons.byName('check'), size: 18),
-                    label: Text(L.of(context).actionSave),
+                    icon: Icon(
+                        VehaIcons.byName(widget.deleting ? 'trash' : 'check'),
+                        size: 18),
+                    label: Text(widget.deleting
+                        ? L.of(context).actionDelete
+                        : L.of(context).actionSave),
+                    style: widget.deleting
+                        ? FilledButton.styleFrom(
+                            backgroundColor: scheme.errorContainer,
+                            foregroundColor: scheme.onErrorContainer,
+                          )
+                        : null,
                   ),
                 ],
               ),

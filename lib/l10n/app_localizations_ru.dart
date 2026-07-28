@@ -639,7 +639,7 @@ class LRu extends L {
 
   @override
   String get colorPickerHint =>
-      'Пипетка берёт цвет с обоев или скриншота. Сохранённые живут в «Моих цветах» и доступны из любого пикера в приложении.';
+      'Пипетка берёт цвет с картинки: откройте снимок экрана или фотографию и нажмите на нужное место. Сохранённые живут в «Моих цветах» и доступны из любого пикера приложения.';
 
   @override
   String get branchColorTitle => 'Цвет ветки';
@@ -1153,5 +1153,60 @@ class LRu extends L {
   @override
   String statsShare(int percent) {
     return '$percent%';
+  }
+
+  @override
+  String get colorSaved => 'Цвет в «Моих»';
+
+  @override
+  String get colorAlreadySaved => 'Такой цвет уже сохранён';
+
+  @override
+  String get colorRemovedFromMine => 'Убрано из «Моих»';
+
+  @override
+  String get colorCopied => 'Код скопирован';
+
+  @override
+  String get colorCopy => 'Скопировать код';
+
+  @override
+  String get colorPickFromImage => 'Взять цвет с картинки';
+
+  @override
+  String get colorTapImage => 'Нажмите на картинку — цвет возьмётся оттуда';
+
+  @override
+  String get colorHexHint => 'Свой код';
+
+  @override
+  String scopeOnlyHint(String day) {
+    return '$day встанет по-новому, остальные не тронутся';
+  }
+
+  @override
+  String get scopeDeleteTitle => 'Что удалить';
+
+  @override
+  String scopeDeleteOnlyHint(String day) {
+    return '$day исчезнет, ряд останется';
+  }
+
+  @override
+  String get scopeDeleteFollowingHint =>
+      'Ряд оборвётся на этой дате, прошедшие занятия останутся';
+
+  @override
+  String get scopeDeleteWholeHint => 'Исчезнут все занятия, включая прошедшие';
+
+  @override
+  String get msgSeriesTrimmed => 'Ряд оборван на этой дате';
+
+  @override
+  String get eventDuplicate => 'Сделать копию';
+
+  @override
+  String eventCopySuffix(String title) {
+    return '$title — копия';
   }
 }

@@ -1,4 +1,4 @@
-import 'dart:ui' show PlatformDispatcher;
+import 'dart:ui' show Color, PlatformDispatcher;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -118,6 +118,12 @@ final photosProvider =
     StreamProvider.family<List<VPhoto>, String>((ref, eventId) async* {
   await ref.watch(bootstrapProvider.future);
   yield* ref.watch(repositoryProvider).watchPhotos(eventId);
+});
+
+/// «Мои цвета»: подобранные оттенки, общие на всё приложение.
+final savedColorsProvider = StreamProvider<List<Color>>((ref) async* {
+  await ref.watch(bootstrapProvider.future);
+  yield* ref.watch(repositoryProvider).watchSavedColors();
 });
 
 /// Камера и галерея. Подменяется в тестах: плагина выбора файлов в

@@ -837,7 +837,7 @@
       }
     }
   },
-  "colorPickerHint": "Пипетка берёт цвет с обоев или скриншота. Сохранённые живут в «Моих цветах» и доступны из любого пикера в приложении.",
+  "colorPickerHint": "Пипетка берёт цвет с картинки: откройте снимок экрана или фотографию и нажмите на нужное место. Сохранённые живут в «Моих цветах» и доступны из любого пикера приложения.",
   "@colorPickerHint": {
     "description": "colorPickerHint"
   },
@@ -1519,6 +1519,85 @@
     "placeholders": {
       "percent": {
         "type": "int"
+      }
+    }
+  },
+  "colorSaved": "Цвет в «Моих»",
+  "@colorSaved": {
+    "description": "colorSaved"
+  },
+  "colorAlreadySaved": "Такой цвет уже сохранён",
+  "@colorAlreadySaved": {
+    "description": "colorAlreadySaved"
+  },
+  "colorRemovedFromMine": "Убрано из «Моих»",
+  "@colorRemovedFromMine": {
+    "description": "colorRemovedFromMine"
+  },
+  "colorCopied": "Код скопирован",
+  "@colorCopied": {
+    "description": "colorCopied"
+  },
+  "colorCopy": "Скопировать код",
+  "@colorCopy": {
+    "description": "colorCopy"
+  },
+  "colorPickFromImage": "Взять цвет с картинки",
+  "@colorPickFromImage": {
+    "description": "colorPickFromImage"
+  },
+  "colorTapImage": "Нажмите на картинку — цвет возьмётся оттуда",
+  "@colorTapImage": {
+    "description": "colorTapImage"
+  },
+  "colorHexHint": "Свой код",
+  "@colorHexHint": {
+    "description": "colorHexHint"
+  },
+  "scopeOnlyHint": "{day} встанет по-новому, остальные не тронутся",
+  "@scopeOnlyHint": {
+    "description": "scopeOnlyHint",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "scopeDeleteTitle": "Что удалить",
+  "@scopeDeleteTitle": {
+    "description": "scopeDeleteTitle"
+  },
+  "scopeDeleteOnlyHint": "{day} исчезнет, ряд останется",
+  "@scopeDeleteOnlyHint": {
+    "description": "scopeDeleteOnlyHint",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "scopeDeleteFollowingHint": "Ряд оборвётся на этой дате, прошедшие занятия останутся",
+  "@scopeDeleteFollowingHint": {
+    "description": "scopeDeleteFollowingHint"
+  },
+  "scopeDeleteWholeHint": "Исчезнут все занятия, включая прошедшие",
+  "@scopeDeleteWholeHint": {
+    "description": "scopeDeleteWholeHint"
+  },
+  "msgSeriesTrimmed": "Ряд оборван на этой дате",
+  "@msgSeriesTrimmed": {
+    "description": "msgSeriesTrimmed"
+  },
+  "eventDuplicate": "Сделать копию",
+  "@eventDuplicate": {
+    "description": "eventDuplicate"
+  },
+  "eventCopySuffix": "{title} — копия",
+  "@eventCopySuffix": {
+    "description": "eventCopySuffix",
+    "placeholders": {
+      "title": {
+        "type": "String"
       }
     }
   }

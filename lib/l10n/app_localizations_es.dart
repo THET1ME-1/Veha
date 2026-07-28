@@ -633,7 +633,7 @@ class LEs extends L {
 
   @override
   String get colorPickerHint =>
-      'El cuentagotas toma el color del fondo o de una captura. Los guardados viven en «Mis colores» y están en cualquier selector.';
+      'El cuentagotas toma el color de una imagen: abre una captura o una foto y toca el punto que quieras. Los colores guardados viven en «Mis colores» y están en cualquier selector.';
 
   @override
   String get branchColorTitle => 'Color de la rama';
@@ -1143,5 +1143,60 @@ class LEs extends L {
   @override
   String statsShare(int percent) {
     return '$percent %';
+  }
+
+  @override
+  String get colorSaved => 'Color en «Mis colores»';
+
+  @override
+  String get colorAlreadySaved => 'Ese color ya está guardado';
+
+  @override
+  String get colorRemovedFromMine => 'Quitado de «Mis colores»';
+
+  @override
+  String get colorCopied => 'Código copiado';
+
+  @override
+  String get colorCopy => 'Copiar el código';
+
+  @override
+  String get colorPickFromImage => 'Tomar el color de una imagen';
+
+  @override
+  String get colorTapImage => 'Toca la imagen y el color se toma de ahí';
+
+  @override
+  String get colorHexHint => 'Tu código';
+
+  @override
+  String scopeOnlyHint(String day) {
+    return '$day cambia, el resto se queda';
+  }
+
+  @override
+  String get scopeDeleteTitle => 'Qué eliminar';
+
+  @override
+  String scopeDeleteOnlyHint(String day) {
+    return '$day desaparece, la serie se queda';
+  }
+
+  @override
+  String get scopeDeleteFollowingHint =>
+      'La serie termina en esta fecha; lo pasado se queda';
+
+  @override
+  String get scopeDeleteWholeHint => 'Desaparecen todas, también las pasadas';
+
+  @override
+  String get msgSeriesTrimmed => 'La serie termina en esta fecha';
+
+  @override
+  String get eventDuplicate => 'Hacer una copia';
+
+  @override
+  String eventCopySuffix(String title) {
+    return '$title — copia';
   }
 }

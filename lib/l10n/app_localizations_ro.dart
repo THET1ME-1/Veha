@@ -634,7 +634,7 @@ class LRo extends L {
 
   @override
   String get colorPickerHint =>
-      'Pipeta ia culoarea din fundal sau dintr-o captură. Cele salvate stau în „Culorile mele” și sunt disponibile peste tot.';
+      'Pipeta ia culoarea dintr-o imagine: deschide o captură sau o fotografie și atinge locul dorit. Culorile salvate stau în «Culorile mele» și apar în orice selector.';
 
   @override
   String get branchColorTitle => 'Culoarea ramurii';
@@ -1144,5 +1144,60 @@ class LRo extends L {
   @override
   String statsShare(int percent) {
     return '$percent%';
+  }
+
+  @override
+  String get colorSaved => 'Culoarea e în «Ale mele»';
+
+  @override
+  String get colorAlreadySaved => 'Culoarea e deja salvată';
+
+  @override
+  String get colorRemovedFromMine => 'Scos din «Ale mele»';
+
+  @override
+  String get colorCopied => 'Codul a fost copiat';
+
+  @override
+  String get colorCopy => 'Copiază codul';
+
+  @override
+  String get colorPickFromImage => 'Ia culoarea dintr-o imagine';
+
+  @override
+  String get colorTapImage => 'Atinge imaginea — culoarea se ia de acolo';
+
+  @override
+  String get colorHexHint => 'Codul tău';
+
+  @override
+  String scopeOnlyHint(String day) {
+    return '$day se schimbă, restul rămân la locul lor';
+  }
+
+  @override
+  String get scopeDeleteTitle => 'Ce ștergem';
+
+  @override
+  String scopeDeleteOnlyHint(String day) {
+    return '$day dispare, seria rămâne';
+  }
+
+  @override
+  String get scopeDeleteFollowingHint =>
+      'Seria se oprește la această dată; cele trecute rămân';
+
+  @override
+  String get scopeDeleteWholeHint => 'Dispar toate, inclusiv cele trecute';
+
+  @override
+  String get msgSeriesTrimmed => 'Seria se oprește la această dată';
+
+  @override
+  String get eventDuplicate => 'Fă o copie';
+
+  @override
+  String eventCopySuffix(String title) {
+    return '$title — copie';
   }
 }

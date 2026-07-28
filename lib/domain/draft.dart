@@ -83,6 +83,23 @@ class EventDraft {
   final VEvent? source;
 
   bool get isEditing => source != null;
+
+  /// Тот же черновик, но без исходного события: так копия открывается формой
+  /// нового, не спрашивает про ряд и получает свой ключ при сохранении.
+  EventDraft asNew() => EventDraft(
+        calendarId: calendarId,
+        subcategoryId: subcategoryId,
+        title: title,
+        start: start,
+        end: end,
+        color: color,
+        iconName: iconName,
+        isAllDay: isAllDay,
+        rrule: null,
+        location: location,
+        reminders: reminders,
+        fields: fields,
+      );
   bool get isReady => title.trim().isNotEmpty;
   Duration get duration => end.difference(start);
 

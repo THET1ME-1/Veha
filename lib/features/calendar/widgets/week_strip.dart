@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/brand.dart';
+import '../../../core/icon_registry.dart';
 import 'month_header.dart';
 
 /// Горизонтальная лента дат недели под заголовком.
@@ -12,6 +13,8 @@ class WeekStrip extends StatelessWidget {
     required this.selected,
     this.busyDays = const {},
     this.onSelect,
+    this.onPrevious,
+    this.onNext,
   });
 
   final List<DateTime> week;
@@ -20,6 +23,11 @@ class WeekStrip extends StatelessWidget {
   /// Дни, где что-то запланировано: под числом появляется точка.
   final Set<int> busyDays;
   final ValueChanged<DateTime>? onSelect;
+
+  /// Листание на неделю назад и вперёд. Свайп по календарю делает то же
+  /// самое, но кнопки видно — а невидимый жест человек не находит.
+  final VoidCallback? onPrevious;
+  final VoidCallback? onNext;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +41,7 @@ class WeekStrip extends StatelessWidget {
           VehaInsets.screen, 16, VehaInsets.screen, 0),
       child: Row(
         children: [
+          if (onPrevious != null) _Arrow(icon: 'chevron_left', onTap: onPrevious!),
           for (var i = 0; i < week.length; i++)
             Expanded(
               child: GestureDetector(
@@ -48,6 +57,7 @@ class WeekStrip extends StatelessWidget {
                 ),
               ),
             ),
+          if (onNext != null) _Arrow(icon: 'chevron_right', onTap: onNext!),
         ],
       ),
     );
@@ -55,6 +65,38 @@ class WeekStrip extends StatelessWidget {
 
   static bool _sameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
+}
+
+/// Круглая кнопка листания. Заливка, а не голая иконка: в приложении нет
+/// обводок, и нажимаемое от подписи отличает только фон.
+class _Arrow extends StatelessWidget {
+  const _Arrow({required this.icon, required this.onTap});
+
+  final String icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.only(top: 14),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(99),
+        child: Container(
+          width: 28,
+          height: 28,
+          alignment: Alignment.center,
+          decoration: ShapeDecoration(
+            color: scheme.surfaceContainerHigh,
+            shape: const CircleBorder(),
+          ),
+          child: Icon(VehaIcons.byName(icon),
+              size: 15, color: scheme.onSurfaceVariant),
+        ),
+      ),
+    );
+  }
 }
 
 class _Day extends StatelessWidget {

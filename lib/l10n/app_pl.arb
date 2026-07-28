@@ -749,7 +749,7 @@
       }
     }
   },
-  "colorPickerHint": "Zakraplacz pobiera kolor z tapety lub zrzutu ekranu. Zapisane trafiają do „Moich kolorów” i są dostępne wszędzie.",
+  "colorPickerHint": "Zakraplacz pobiera kolor z obrazu: otwórz zrzut ekranu albo zdjęcie i dotknij wybranego miejsca. Zapisane trafiają do «Moich kolorów» i są dostępne w każdym wyborze koloru.",
   "@colorPickerHint": {
     "description": "colorPickerHint"
   },
@@ -1431,6 +1431,85 @@
     "placeholders": {
       "percent": {
         "type": "int"
+      }
+    }
+  },
+  "colorSaved": "Kolor w «Moich»",
+  "@colorSaved": {
+    "description": "colorSaved"
+  },
+  "colorAlreadySaved": "Ten kolor już jest zapisany",
+  "@colorAlreadySaved": {
+    "description": "colorAlreadySaved"
+  },
+  "colorRemovedFromMine": "Usunięto z «Moich»",
+  "@colorRemovedFromMine": {
+    "description": "colorRemovedFromMine"
+  },
+  "colorCopied": "Kod skopiowany",
+  "@colorCopied": {
+    "description": "colorCopied"
+  },
+  "colorCopy": "Skopiuj kod",
+  "@colorCopy": {
+    "description": "colorCopy"
+  },
+  "colorPickFromImage": "Pobierz kolor z obrazu",
+  "@colorPickFromImage": {
+    "description": "colorPickFromImage"
+  },
+  "colorTapImage": "Dotknij obrazu — kolor zostanie stamtąd pobrany",
+  "@colorTapImage": {
+    "description": "colorTapImage"
+  },
+  "colorHexHint": "Własny kod",
+  "@colorHexHint": {
+    "description": "colorHexHint"
+  },
+  "scopeOnlyHint": "{day} zmieni się, reszta zostaje",
+  "@scopeOnlyHint": {
+    "description": "scopeOnlyHint",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "scopeDeleteTitle": "Co usunąć",
+  "@scopeDeleteTitle": {
+    "description": "scopeDeleteTitle"
+  },
+  "scopeDeleteOnlyHint": "{day} zniknie, seria zostaje",
+  "@scopeDeleteOnlyHint": {
+    "description": "scopeDeleteOnlyHint",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "scopeDeleteFollowingHint": "Seria urwie się na tej dacie, przeszłe zostaną",
+  "@scopeDeleteFollowingHint": {
+    "description": "scopeDeleteFollowingHint"
+  },
+  "scopeDeleteWholeHint": "Znikną wszystkie, także przeszłe",
+  "@scopeDeleteWholeHint": {
+    "description": "scopeDeleteWholeHint"
+  },
+  "msgSeriesTrimmed": "Seria urwana na tej dacie",
+  "@msgSeriesTrimmed": {
+    "description": "msgSeriesTrimmed"
+  },
+  "eventDuplicate": "Zrób kopię",
+  "@eventDuplicate": {
+    "description": "eventDuplicate"
+  },
+  "eventCopySuffix": "{title} — kopia",
+  "@eventCopySuffix": {
+    "description": "eventCopySuffix",
+    "placeholders": {
+      "title": {
+        "type": "String"
       }
     }
   }

@@ -40,7 +40,9 @@ void main() {
 
   testWidgets('Скрытый календарь уносит события из дня', (tester) async {
     await pumpScreen(tester, const HomeShell());
-    expect(find.text('Английский'), findsWidgets);
+    // Берём занятие, которое видно без прокрутки: сетка часов ленивая, и
+    // проверка по вечернему событию ломалась от любой правки высоты шапки.
+    expect(find.text('Урок'), findsWidgets);
 
     await tester.tap(find.text('Список'));
     await tester.pumpAndSettle();
@@ -56,6 +58,6 @@ void main() {
     await tester.tap(find.text('Календарь'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Английский'), findsNothing);
+    expect(find.text('Урок'), findsNothing);
   });
 }

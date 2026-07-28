@@ -78,8 +78,45 @@ class EventFlow {
                 _delete(draft);
               }
             : null,
+        onDuplicate: draft.isEditing
+            ? () {
+                Navigator.pop(formContext);
+                duplicate(draft.source!);
+              }
+            : null,
       ),
     ));
+  }
+
+  /// Копия события: та же карточка с новым ключом, сразу в форме.
+  ///
+  /// Открывается именно форма, а не тихое создание рядом: копируют, чтобы
+  /// что-то поменять — время, место, название. Ряд копия не наследует: два
+  /// одинаковых расписания на одном календаре человек не имел в виду.
+  Future<void> duplicate(VEvent event) async {
+    final inheritance = ref.read(inheritanceProvider).valueOrNull;
+    if (inheritance == null) return;
+
+    final l = L.of(context);
+    final copy = VEvent(
+      id: ref.read(repositoryProvider).newId(),
+      calendarId: event.calendarId,
+      subcategoryId: event.subcategoryId,
+      title: l.eventCopySuffix(event.title),
+      start: event.start,
+      end: event.end,
+      color: event.color,
+      iconName: event.iconName,
+      isAllDay: event.isAllDay,
+      location: event.location,
+      fields: event.fields,
+      reminders: event.reminders,
+      timezone: event.timezone,
+    );
+
+    // Черновик без `source`: экрану это новое событие, и вопроса про ряд он
+    // не задаст.
+    await _openFullForm(EventDraft.of(copy).asNew(), inheritance);
   }
 
   /// Сохранение. У экземпляра ряда спрашиваем область правки — одно и то же
@@ -140,16 +177,40 @@ class EventFlow {
     if (source.isOccurrence && source.recurrenceId != null) {
       final series = source.recurrenceId!;
       final moment = source.originalStart ?? source.start;
-      await repo.skipOccurrence(series, moment);
-      _offerUndo(
-        l.msgOccurrenceSkipped,
-        () => repo.unskipOccurrence(series, moment),
+
+      // Раньше кнопка молча отменяла одно занятие, и удалить ряд из формы
+      // было нельзя вовсе. Теперь спрашиваем — тем же листом, что и правка.
+      final scope = await askEditScope(
+        context,
+        occurrence: moment,
+        repeatLabel: recurrenceLabelOf(l, source) ?? l.repeatByRule,
+        deleting: true,
       );
+      if (scope == null) return;
+
+      switch (scope) {
+        case EditScope.single:
+          await repo.skipOccurrence(series, moment);
+          _offerUndo(
+            l.msgOccurrenceSkipped,
+            () => repo.unskipOccurrence(series, moment),
+          );
+        case EditScope.following:
+          final before = await repo.eventById(series);
+          await repo.trimSeriesAt(series, moment);
+          _offerUndo(
+            l.msgSeriesTrimmed,
+            () async => before == null ? null : repo.upsertEvent(before),
+          );
+        case EditScope.series:
+          await repo.deleteSeries(series);
+          _offerUndo(l.msgSeriesDeleted, () => repo.restoreEvent(series));
+      }
       return;
     }
 
     await repo.deleteEvent(source.id);
-    _offerUndo(l.msgEventDeleted, () => repo.upsertEvent(source));
+    _offerUndo(l.msgEventDeleted, () => repo.restoreEvent(source.id));
   }
 
   /// Отмена одного занятия прямо из списка, без открытия формы.

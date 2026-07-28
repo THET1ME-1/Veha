@@ -99,6 +99,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         ),
         if (view == CalendarView.day)
           WeekStrip(
+            onPrevious: () => _shift(-1),
+            onNext: () => _shift(1),
             week: _strip,
             selected: _selected!,
             busyDays: {
@@ -127,9 +129,47 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             onEventTap: (e) => EventFlow(context, ref).edit(e),
             onEventLongPress: _showEventMenu,
           ),
-        Expanded(child: _body(range, inheritance, now, today, reading, monthMode)),
+        // Свайп листает период. Без него календарь показывал только тот день,
+        // на который его открыли: соседняя неделя была недостижима вовсе.
+        Expanded(
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onHorizontalDragEnd: (details) {
+              final v = details.primaryVelocity ?? 0;
+              // Порог отсекает случайный сдвиг пальца при прокрутке часов.
+              if (v.abs() < 220) return;
+              _shift(v < 0 ? 1 : -1);
+            },
+            child: _body(range, inheritance, now, today, reading, monthMode),
+          ),
+        ),
       ],
     );
+  }
+
+  /// Шаг листания зависит от вида: день — сутки, лента — свою длину, неделя —
+  /// семь дней, месяц — месяц.
+  void _shift(int direction) {
+    setState(() {
+      final view = _view ?? CalendarView.day;
+      if (view == CalendarView.month) {
+        _selected = DateTime(
+          _selected!.year,
+          _selected!.month + direction,
+          // День месяца может не существовать в соседнем (31 марта → 31
+          // апреля), поэтому берём первое и возвращаем ближайшее к прежнему.
+          1,
+        );
+        return;
+      }
+      final step = switch (view) {
+        CalendarView.day => 1,
+        CalendarView.week => 7,
+        CalendarView.bands => _bandsLength,
+        CalendarView.month => 0,
+      };
+      _selected = _selected!.add(Duration(days: step * direction));
+    });
   }
 
   /// Настройка вида «Неделя»: какие дни показывать и с какого начинать.
@@ -174,6 +214,14 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               onTap: () {
                 Navigator.pop(sheetContext);
                 flow.edit(event);
+              },
+            ),
+            ListTile(
+              leading: Icon(VehaIcons.byName('content_copy')),
+              title: Text(L.of(context).eventDuplicate),
+              onTap: () {
+                Navigator.pop(sheetContext);
+                flow.duplicate(event);
               },
             ),
             if (event.isOccurrence)

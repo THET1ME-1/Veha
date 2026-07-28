@@ -749,7 +749,7 @@
       }
     }
   },
-  "colorPickerHint": "The dropper picks a colour from your wallpaper or a screenshot. Saved ones live in “My colours” and are available in every picker.",
+  "colorPickerHint": "The dropper takes a color from an image: open a screenshot or a photo and tap the spot you need. Saved colors live in «My colors» and are available in every picker.",
   "@colorPickerHint": {
     "description": "colorPickerHint"
   },
@@ -1431,6 +1431,85 @@
     "placeholders": {
       "percent": {
         "type": "int"
+      }
+    }
+  },
+  "colorSaved": "Saved to My colors",
+  "@colorSaved": {
+    "description": "colorSaved"
+  },
+  "colorAlreadySaved": "That color is already saved",
+  "@colorAlreadySaved": {
+    "description": "colorAlreadySaved"
+  },
+  "colorRemovedFromMine": "Removed from My colors",
+  "@colorRemovedFromMine": {
+    "description": "colorRemovedFromMine"
+  },
+  "colorCopied": "Code copied",
+  "@colorCopied": {
+    "description": "colorCopied"
+  },
+  "colorCopy": "Copy the code",
+  "@colorCopy": {
+    "description": "colorCopy"
+  },
+  "colorPickFromImage": "Pick a color from an image",
+  "@colorPickFromImage": {
+    "description": "colorPickFromImage"
+  },
+  "colorTapImage": "Tap the image to take the color from it",
+  "@colorTapImage": {
+    "description": "colorTapImage"
+  },
+  "colorHexHint": "Your own code",
+  "@colorHexHint": {
+    "description": "colorHexHint"
+  },
+  "scopeOnlyHint": "{day} moves, the rest stay put",
+  "@scopeOnlyHint": {
+    "description": "scopeOnlyHint",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "scopeDeleteTitle": "What to delete",
+  "@scopeDeleteTitle": {
+    "description": "scopeDeleteTitle"
+  },
+  "scopeDeleteOnlyHint": "{day} disappears, the series stays",
+  "@scopeDeleteOnlyHint": {
+    "description": "scopeDeleteOnlyHint",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "scopeDeleteFollowingHint": "The series ends on this date; past occurrences stay",
+  "@scopeDeleteFollowingHint": {
+    "description": "scopeDeleteFollowingHint"
+  },
+  "scopeDeleteWholeHint": "Every occurrence goes, past ones included",
+  "@scopeDeleteWholeHint": {
+    "description": "scopeDeleteWholeHint"
+  },
+  "msgSeriesTrimmed": "The series now ends on this date",
+  "@msgSeriesTrimmed": {
+    "description": "msgSeriesTrimmed"
+  },
+  "eventDuplicate": "Make a copy",
+  "@eventDuplicate": {
+    "description": "eventDuplicate"
+  },
+  "eventCopySuffix": "{title} — copy",
+  "@eventCopySuffix": {
+    "description": "eventCopySuffix",
+    "placeholders": {
+      "title": {
+        "type": "String"
       }
     }
   }

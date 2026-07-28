@@ -87,13 +87,33 @@ class _ChainRow extends StatelessWidget {
 
   static const double _tail = 12;
 
+  /// Сколько высоты даёт час. Цепочка не сетка часов: пустые промежутки она
+  /// не рисует, но длина занятия должна читаться — четырёхчасовая съёмка не
+  /// может выглядеть как получасовой звонок.
+  static const double _perHour = 58;
+
+  /// Пол и потолок. Ниже первого не помещается иконка, выше второго одно
+  /// занятие занимает весь экран и прячет остальные.
+  static const double _minHeight = 62;
+  static const double _maxHeight = 260;
+
+  double get _height {
+    final minutes = event.duration.inMinutes;
+    if (minutes <= 0) return _minHeight;
+    return (minutes / 60 * _perHour).clamp(_minHeight, _maxHeight);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final ink = EventColors.of(color, theme.brightness);
 
-    return IntrinsicHeight(
+    return ConstrainedBox(
+      // Высота идёт от длительности, но текст всё равно раздвинет строку,
+      // если названию и полям не хватит места.
+      constraints: BoxConstraints(minHeight: _height),
+      child: IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -119,15 +139,19 @@ class _ChainRow extends StatelessWidget {
             child: Column(
               children: [
                 Expanded(
-                  child: Center(
-                    child: Container(
-                      width: VehaInsets.pill,
-                      decoration: ShapeDecoration(
-                        color: ink.background,
-                        shape: const StadiumBorder(),
-                      ),
-                      // Иконка по центру пилюли, а не прижата к верху.
-                      child: Center(
+                  child: Container(
+                    width: VehaInsets.pill,
+                    decoration: ShapeDecoration(
+                      color: ink.background,
+                      shape: const StadiumBorder(),
+                    ),
+                    // Иконка вверху пилюли: пилюля теперь тянется на всю
+                    // длительность, и по центру она уезжала бы от времени
+                    // начала, к которому и относится.
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 9),
                         child: Icon(VehaIcons.byName(icon),
                             size: 26, color: ink.foreground),
                       ),
@@ -169,6 +193,7 @@ class _ChainRow extends StatelessWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

@@ -749,7 +749,7 @@
       }
     }
   },
-  "colorPickerHint": "Піпетка бере колір із шпалер або скриншота. Збережені живуть у «Моїх кольорах» і доступні з будь-якого пікера.",
+  "colorPickerHint": "Піпетка бере колір із зображення: відкрийте знімок екрана або фотографію та натисніть на потрібне місце. Збережені живуть у «Моїх кольорах» і доступні з будь-якого пікера.",
   "@colorPickerHint": {
     "description": "colorPickerHint"
   },
@@ -1431,6 +1431,85 @@
     "placeholders": {
       "percent": {
         "type": "int"
+      }
+    }
+  },
+  "colorSaved": "Колір у «Моїх»",
+  "@colorSaved": {
+    "description": "colorSaved"
+  },
+  "colorAlreadySaved": "Такий колір уже збережено",
+  "@colorAlreadySaved": {
+    "description": "colorAlreadySaved"
+  },
+  "colorRemovedFromMine": "Прибрано з «Моїх»",
+  "@colorRemovedFromMine": {
+    "description": "colorRemovedFromMine"
+  },
+  "colorCopied": "Код скопійовано",
+  "@colorCopied": {
+    "description": "colorCopied"
+  },
+  "colorCopy": "Скопіювати код",
+  "@colorCopy": {
+    "description": "colorCopy"
+  },
+  "colorPickFromImage": "Узяти колір із зображення",
+  "@colorPickFromImage": {
+    "description": "colorPickFromImage"
+  },
+  "colorTapImage": "Натисніть на зображення — колір візьметься звідти",
+  "@colorTapImage": {
+    "description": "colorTapImage"
+  },
+  "colorHexHint": "Свій код",
+  "@colorHexHint": {
+    "description": "colorHexHint"
+  },
+  "scopeOnlyHint": "{day} стане по-новому, решта не зміниться",
+  "@scopeOnlyHint": {
+    "description": "scopeOnlyHint",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "scopeDeleteTitle": "Що видалити",
+  "@scopeDeleteTitle": {
+    "description": "scopeDeleteTitle"
+  },
+  "scopeDeleteOnlyHint": "{day} зникне, ряд залишиться",
+  "@scopeDeleteOnlyHint": {
+    "description": "scopeDeleteOnlyHint",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "scopeDeleteFollowingHint": "Ряд обірветься на цій даті, минулі заняття залишаться",
+  "@scopeDeleteFollowingHint": {
+    "description": "scopeDeleteFollowingHint"
+  },
+  "scopeDeleteWholeHint": "Зникнуть усі заняття, зокрема минулі",
+  "@scopeDeleteWholeHint": {
+    "description": "scopeDeleteWholeHint"
+  },
+  "msgSeriesTrimmed": "Ряд обірвано на цій даті",
+  "@msgSeriesTrimmed": {
+    "description": "msgSeriesTrimmed"
+  },
+  "eventDuplicate": "Зробити копію",
+  "@eventDuplicate": {
+    "description": "eventDuplicate"
+  },
+  "eventCopySuffix": "{title} — копія",
+  "@eventCopySuffix": {
+    "description": "eventCopySuffix",
+    "placeholders": {
+      "title": {
+        "type": "String"
       }
     }
   }

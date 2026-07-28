@@ -614,6 +614,45 @@ class VehaRepository {
     });
   }
 
+  // ---------- сохранённые цвета ----------
+
+  /// «Мои цвета» — общие на всё приложение: подобранный оттенок нужен и
+  /// календарю, и заметке, и теме, и повторять подбор в каждом пикере глупо.
+  Stream<List<Color>> watchSavedColors() => (db.select(db.savedColors)
+        ..orderBy([
+          (t) => OrderingTerm(expression: t.sortOrder),
+          (t) => OrderingTerm(expression: t.createdAt),
+          (t) => OrderingTerm(expression: t.id),
+        ]))
+      .watch()
+      .map((rows) => [for (final r in rows) Color(r.color)]);
+
+  Future<List<Color>> savedColors() async =>
+      (await db.select(db.savedColors).get()).map((r) => Color(r.color)).toList();
+
+  /// Возвращает `false`, если такой цвет уже сохранён: два одинаковых кружка
+  /// в списке — мусор, а не выбор.
+  Future<bool> addSavedColor(Color color) async {
+    final value = color.toARGB32();
+    final existing = await (db.select(db.savedColors)
+          ..where((t) => t.color.equals(value)))
+        .getSingleOrNull();
+    if (existing != null) return false;
+
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await db.into(db.savedColors).insert(SavedColorsCompanion.insert(
+          id: newId(),
+          color: value,
+          sortOrder: Value(now ~/ 1000),
+          createdAt: now,
+        ));
+    return true;
+  }
+
+  Future<void> removeSavedColor(Color color) =>
+      (db.delete(db.savedColors)..where((t) => t.color.equals(color.toARGB32())))
+          .go();
+
   // ---------- снимки ----------
 
   /// Снимки события потоком: их добавляют на том же экране, где показывают.
@@ -849,6 +888,13 @@ class VehaRepository {
     });
   }
 
+  /// Удаление всего ряда: и записи, и всех его занятий разом.
+  ///
+  /// Отдельным методом от [deleteEvent] намеренно: у экземпляра ряда своего
+  /// ключа нет, и «удалить» без уточнения означало бы «отменить одно
+  /// занятие» — разные намерения, которые легко перепутать.
+  Future<void> deleteSeries(String seriesId) => deleteEvent(seriesId);
+
   /// Возвращает удалённое событие: полоска «Вернуть» живёт несколько секунд,
   /// и всё это время строка лежит в базе с пометкой об удалении.
   Future<void> restoreEvent(String id) async {
@@ -858,6 +904,51 @@ class VehaRepository {
           const EventsCompanion(deletedAt: Value(null))
               .copyWith(updatedAt: Value(now)));
       await _enqueue('event', id, 'upsert');
+    });
+  }
+
+  /// Событие по ключу — как оно лежит в базе. Нужно, чтобы полоска «Вернуть»
+  /// могла положить обратно ровно то, что было до правки.
+  Future<VEvent?> eventById(String id) async {
+    final row = await (db.select(db.events)..where((t) => t.id.equals(id)))
+        .getSingleOrNull();
+    if (row == null) return null;
+
+    final fields = await (db.select(db.fieldValues)
+          ..where((t) => t.eventId.equals(id)))
+        .get();
+    final alarms = await (db.select(db.reminders)
+          ..where((t) => t.eventId.equals(id)))
+        .get();
+
+    return _withDetails(
+      _toEvent(row),
+      fields: [
+        for (final f in fields)
+          VFieldValue(fieldId: f.fieldId, value: f.value),
+      ],
+      reminders: [for (final r in alarms) r.minutesBefore],
+    );
+  }
+
+  /// Обрывает ряд на дате занятия: «это и следующие удалить».
+  ///
+  /// Прошедшие занятия остаются — их человек прожил, и стирать их задним
+  /// числом нельзя. Правилу дописывается `UNTIL` на канун разреза.
+  Future<void> trimSeriesAt(String seriesId, DateTime cut) async {
+    final series = await (db.select(db.events)
+          ..where((t) => t.id.equals(seriesId)))
+        .getSingleOrNull();
+    if (series?.rrule == null) return;
+
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final start = DateTime.fromMillisecondsSinceEpoch(series!.start);
+    final head = Recurrence.endBefore(series.rrule!, cut, start: start);
+
+    await db.transaction(() async {
+      await (db.update(db.events)..where((t) => t.id.equals(seriesId)))
+          .write(EventsCompanion(rrule: Value(head), updatedAt: Value(now)));
+      await _enqueue('event', seriesId, 'upsert');
     });
   }
 
@@ -896,10 +987,22 @@ class VehaRepository {
     }
 
     final seriesStart = DateTime.fromMillisecondsSinceEpoch(series.start);
+
+    // Занятие могли не только переставить по времени, но и перенести на
+    // другой день. Сдвиг считаем от исходного места экземпляра в ряду и
+    // прикладываем к началу ряда: ряд, начатый в мае, переезжает на столько
+    // же суток, а не прыгает в август из-за правки августовского занятия.
+    final origin = instance.originalStart ?? instance.start;
+    final shift = DateTime(instance.start.year, instance.start.month,
+            instance.start.day)
+        .difference(DateTime(origin.year, origin.month, origin.day))
+        .inDays;
+
+    final moved = seriesStart.add(Duration(days: shift));
     final start = DateTime(
-      seriesStart.year,
-      seriesStart.month,
-      seriesStart.day,
+      moved.year,
+      moved.month,
+      moved.day,
       instance.start.hour,
       instance.start.minute,
     );
@@ -916,7 +1019,10 @@ class VehaRepository {
         isAllDay: Value(instance.isAllDay),
         color: Value(instance.color?.toARGB32()),
         icon: Value(instance.iconName),
-        rrule: Value(instance.rrule ?? series.rrule),
+        // Ровно то, что выбрал человек. Подстановка старого правила при
+        // пустом значении означала, что снять повтор невозможно: экран
+        // говорил «Не повторяется», а ряд продолжал идти.
+        rrule: Value(instance.rrule),
         updatedAt: Value(now),
       ));
       // Напоминания и значения полей лежат в соседних таблицах: строка

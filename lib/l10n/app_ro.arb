@@ -749,7 +749,7 @@
       }
     }
   },
-  "colorPickerHint": "Pipeta ia culoarea din fundal sau dintr-o captură. Cele salvate stau în „Culorile mele” și sunt disponibile peste tot.",
+  "colorPickerHint": "Pipeta ia culoarea dintr-o imagine: deschide o captură sau o fotografie și atinge locul dorit. Culorile salvate stau în «Culorile mele» și apar în orice selector.",
   "@colorPickerHint": {
     "description": "colorPickerHint"
   },
@@ -1431,6 +1431,85 @@
     "placeholders": {
       "percent": {
         "type": "int"
+      }
+    }
+  },
+  "colorSaved": "Culoarea e în «Ale mele»",
+  "@colorSaved": {
+    "description": "colorSaved"
+  },
+  "colorAlreadySaved": "Culoarea e deja salvată",
+  "@colorAlreadySaved": {
+    "description": "colorAlreadySaved"
+  },
+  "colorRemovedFromMine": "Scos din «Ale mele»",
+  "@colorRemovedFromMine": {
+    "description": "colorRemovedFromMine"
+  },
+  "colorCopied": "Codul a fost copiat",
+  "@colorCopied": {
+    "description": "colorCopied"
+  },
+  "colorCopy": "Copiază codul",
+  "@colorCopy": {
+    "description": "colorCopy"
+  },
+  "colorPickFromImage": "Ia culoarea dintr-o imagine",
+  "@colorPickFromImage": {
+    "description": "colorPickFromImage"
+  },
+  "colorTapImage": "Atinge imaginea — culoarea se ia de acolo",
+  "@colorTapImage": {
+    "description": "colorTapImage"
+  },
+  "colorHexHint": "Codul tău",
+  "@colorHexHint": {
+    "description": "colorHexHint"
+  },
+  "scopeOnlyHint": "{day} se schimbă, restul rămân la locul lor",
+  "@scopeOnlyHint": {
+    "description": "scopeOnlyHint",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "scopeDeleteTitle": "Ce ștergem",
+  "@scopeDeleteTitle": {
+    "description": "scopeDeleteTitle"
+  },
+  "scopeDeleteOnlyHint": "{day} dispare, seria rămâne",
+  "@scopeDeleteOnlyHint": {
+    "description": "scopeDeleteOnlyHint",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "scopeDeleteFollowingHint": "Seria se oprește la această dată; cele trecute rămân",
+  "@scopeDeleteFollowingHint": {
+    "description": "scopeDeleteFollowingHint"
+  },
+  "scopeDeleteWholeHint": "Dispar toate, inclusiv cele trecute",
+  "@scopeDeleteWholeHint": {
+    "description": "scopeDeleteWholeHint"
+  },
+  "msgSeriesTrimmed": "Seria se oprește la această dată",
+  "@msgSeriesTrimmed": {
+    "description": "msgSeriesTrimmed"
+  },
+  "eventDuplicate": "Fă o copie",
+  "@eventDuplicate": {
+    "description": "eventDuplicate"
+  },
+  "eventCopySuffix": "{title} — copie",
+  "@eventCopySuffix": {
+    "description": "eventCopySuffix",
+    "placeholders": {
+      "title": {
+        "type": "String"
       }
     }
   }

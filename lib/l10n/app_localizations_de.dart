@@ -633,7 +633,7 @@ class LDe extends L {
 
   @override
   String get colorPickerHint =>
-      'Die Pipette nimmt eine Farbe vom Hintergrundbild oder Screenshot. Gespeicherte stehen unter „Meine Farben“ überall bereit.';
+      'Die Pipette nimmt die Farbe aus einem Bild: Screenshot oder Foto öffnen und die Stelle antippen. Gespeicherte Farben liegen in «Meine Farben» und stehen in jeder Auswahl bereit.';
 
   @override
   String get branchColorTitle => 'Zweigfarbe';
@@ -1147,5 +1147,61 @@ class LDe extends L {
   @override
   String statsShare(int percent) {
     return '$percent %';
+  }
+
+  @override
+  String get colorSaved => 'Farbe in «Meine Farben»';
+
+  @override
+  String get colorAlreadySaved => 'Diese Farbe ist schon gespeichert';
+
+  @override
+  String get colorRemovedFromMine => 'Aus «Meine Farben» entfernt';
+
+  @override
+  String get colorCopied => 'Code kopiert';
+
+  @override
+  String get colorCopy => 'Code kopieren';
+
+  @override
+  String get colorPickFromImage => 'Farbe aus einem Bild nehmen';
+
+  @override
+  String get colorTapImage => 'Tippe aufs Bild — die Farbe kommt von dort';
+
+  @override
+  String get colorHexHint => 'Eigener Code';
+
+  @override
+  String scopeOnlyHint(String day) {
+    return '$day rückt um, der Rest bleibt';
+  }
+
+  @override
+  String get scopeDeleteTitle => 'Was löschen';
+
+  @override
+  String scopeDeleteOnlyHint(String day) {
+    return '$day verschwindet, die Reihe bleibt';
+  }
+
+  @override
+  String get scopeDeleteFollowingHint =>
+      'Die Reihe endet an diesem Datum, Vergangenes bleibt';
+
+  @override
+  String get scopeDeleteWholeHint =>
+      'Alle Termine verschwinden, auch vergangene';
+
+  @override
+  String get msgSeriesTrimmed => 'Die Reihe endet jetzt an diesem Datum';
+
+  @override
+  String get eventDuplicate => 'Kopie anlegen';
+
+  @override
+  String eventCopySuffix(String title) {
+    return '$title — Kopie';
   }
 }

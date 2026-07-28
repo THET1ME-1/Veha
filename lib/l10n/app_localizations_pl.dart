@@ -639,7 +639,7 @@ class LPl extends L {
 
   @override
   String get colorPickerHint =>
-      'Zakraplacz pobiera kolor z tapety lub zrzutu ekranu. Zapisane trafiają do „Moich kolorów” i są dostępne wszędzie.';
+      'Zakraplacz pobiera kolor z obrazu: otwórz zrzut ekranu albo zdjęcie i dotknij wybranego miejsca. Zapisane trafiają do «Moich kolorów» i są dostępne w każdym wyborze koloru.';
 
   @override
   String get branchColorTitle => 'Kolor gałęzi';
@@ -1155,5 +1155,60 @@ class LPl extends L {
   @override
   String statsShare(int percent) {
     return '$percent%';
+  }
+
+  @override
+  String get colorSaved => 'Kolor w «Moich»';
+
+  @override
+  String get colorAlreadySaved => 'Ten kolor już jest zapisany';
+
+  @override
+  String get colorRemovedFromMine => 'Usunięto z «Moich»';
+
+  @override
+  String get colorCopied => 'Kod skopiowany';
+
+  @override
+  String get colorCopy => 'Skopiuj kod';
+
+  @override
+  String get colorPickFromImage => 'Pobierz kolor z obrazu';
+
+  @override
+  String get colorTapImage => 'Dotknij obrazu — kolor zostanie stamtąd pobrany';
+
+  @override
+  String get colorHexHint => 'Własny kod';
+
+  @override
+  String scopeOnlyHint(String day) {
+    return '$day zmieni się, reszta zostaje';
+  }
+
+  @override
+  String get scopeDeleteTitle => 'Co usunąć';
+
+  @override
+  String scopeDeleteOnlyHint(String day) {
+    return '$day zniknie, seria zostaje';
+  }
+
+  @override
+  String get scopeDeleteFollowingHint =>
+      'Seria urwie się na tej dacie, przeszłe zostaną';
+
+  @override
+  String get scopeDeleteWholeHint => 'Znikną wszystkie, także przeszłe';
+
+  @override
+  String get msgSeriesTrimmed => 'Seria urwana na tej dacie';
+
+  @override
+  String get eventDuplicate => 'Zrób kopię';
+
+  @override
+  String eventCopySuffix(String title) {
+    return '$title — kopia';
   }
 }

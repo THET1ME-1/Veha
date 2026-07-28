@@ -39,7 +39,10 @@ class MonthHeader extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Text.rich(
+            child: Padding(
+              // Заголовок не должен упираться в кнопку поиска.
+              padding: const EdgeInsets.only(right: 10),
+              child: Text.rich(
               TextSpan(children: [
                 TextSpan(text: '$title '),
                 TextSpan(
@@ -57,6 +60,7 @@ class MonthHeader extends StatelessWidget {
                 height: 1,
                 letterSpacing: -1.26,
                 fontWeight: FontWeight.w800,
+              ),
               ),
             ),
           ),

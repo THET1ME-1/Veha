@@ -1,14 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-
-import '../common/blocks.dart' show vBack;
-
-import '../../l10n/app_localizations.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
 
 import '../../core/brand.dart';
 import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
+import '../../data/providers.dart';
+import '../../l10n/app_localizations.dart';
 import '../calendar/widgets/month_header.dart';
+import '../common/blocks.dart' show vBack;
+import 'eyedropper_screen.dart';
 
 /// Ряды плиток пикера, посчитанные в HCT.
 ///
@@ -63,7 +67,7 @@ class PickerScales {
 ///
 /// Радуги-градиента здесь нет — правило «заливка или ничего» действует и тут,
 /// а в плитку ещё и проще попасть пальцем. Бесконечность даёт поле hex.
-class ColorPickerScreen extends StatefulWidget {
+class ColorPickerScreen extends ConsumerStatefulWidget {
   const ColorPickerScreen({
     super.key,
     required this.initial,
@@ -72,19 +76,55 @@ class ColorPickerScreen extends StatefulWidget {
   });
 
   final Color initial;
+
+  /// Заранее заданные образцы. Обычно пусто: «мои цвета» экран берёт из базы
+  /// сам, а параметр остался для снимков экрана.
   final List<Color> saved;
   final List<Color> recent;
 
   @override
-  State<ColorPickerScreen> createState() => _ColorPickerScreenState();
+  ConsumerState<ColorPickerScreen> createState() => _ColorPickerScreenState();
 }
 
-class _ColorPickerScreenState extends State<ColorPickerScreen> {
+class _ColorPickerScreenState extends ConsumerState<ColorPickerScreen> {
   late Color _color = widget.initial;
+
+  /// Поле кода живёт своим состоянием: пока человек печатает, экран не должен
+  /// подставлять ему курсор в конец на каждую букву.
+  late final TextEditingController _hex = TextEditingController(text: _hexOf(_color));
+
+  @override
+  void dispose() {
+    _hex.dispose();
+    super.dispose();
+  }
+
+  void _apply(Color color, {bool syncField = true}) {
+    setState(() => _color = color);
+    if (syncField) _hex.text = _hexOf(color);
+  }
+
+  static String _hexOf(Color c) =>
+      (c.toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0').toUpperCase();
+
+  /// Разбор введённого кода: шесть знаков или три сокращённых («f0a»).
+  static Color? _parseHex(String value) {
+    final text = value.replaceAll('#', '').trim();
+    if (text.length == 3) {
+      final full = text.split('').map((c) => '$c$c').join();
+      final parsed = int.tryParse(full, radix: 16);
+      return parsed == null ? null : Color(0xFF000000 | parsed);
+    }
+    if (text.length != 6) return null;
+    final parsed = int.tryParse(text, radix: 16);
+    return parsed == null ? null : Color(0xFF000000 | parsed);
+  }
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final mine = ref.watch(savedColorsProvider).valueOrNull ?? widget.saved;
+    final isSaved = mine.any((c) => c.toARGB32() == _color.toARGB32());
     final scales = PickerScales.forColor(_color);
     final hct = Hct.fromInt(_color.toARGB32());
     final ink = EventColors.of(_color, Theme.of(context).brightness);
@@ -128,7 +168,13 @@ class _ColorPickerScreenState extends State<ColorPickerScreen> {
             ],
           ),
         ),
-        _Preview(color: _color, hct: hct, foreground: ink.foreground),
+        _Preview(
+          color: _color,
+          hct: hct,
+          foreground: ink.foreground,
+          saved: isSaved,
+          onSave: _toggleSaved,
+        ),
         const SizedBox(height: 14),
         _Scale(
           label: L.of(context).colorHue,
@@ -162,10 +208,21 @@ class _ColorPickerScreenState extends State<ColorPickerScreen> {
           }),
         ),
         const SizedBox(height: 4),
-        _HexRow(color: _color),
-        if (widget.saved.isNotEmpty) _Swatches(L.of(context).colorMine, widget.saved, onPick: _pick),
+        _HexRow(
+          controller: _hex,
+          onChanged: (value) {
+            final parsed = _parseHex(value);
+            // Пока код недописан, цвет не трогаем: иначе экран мигает на
+            // каждой букве и норовит подставить чёрный.
+            if (parsed != null) _apply(parsed, syncField: false);
+          },
+          onCopy: _copy,
+          onDropper: _pickFromImage,
+        ),
+        if (mine.isNotEmpty)
+          _Swatches(L.of(context).colorMine, mine, onPick: _apply),
         if (widget.recent.isNotEmpty)
-          _Swatches(L.of(context).colorRecent, widget.recent, onPick: _pick),
+          _Swatches(L.of(context).colorRecent, widget.recent, onPick: _apply),
         Padding(
           padding: const EdgeInsets.only(top: 10),
           child: Text(
@@ -184,7 +241,49 @@ class _ColorPickerScreenState extends State<ColorPickerScreen> {
     );
   }
 
-  void _pick(Color c) => setState(() => _color = c);
+  Future<void> _toggleSaved() async {
+    final repo = ref.read(repositoryProvider);
+    final mine = ref.read(savedColorsProvider).valueOrNull ?? const <Color>[];
+    final l = L.of(context);
+
+    if (mine.any((c) => c.toARGB32() == _color.toARGB32())) {
+      await repo.removeSavedColor(_color);
+      _say(l.colorRemovedFromMine);
+      return;
+    }
+    final added = await repo.addSavedColor(_color);
+    _say(added ? l.colorSaved : l.colorAlreadySaved);
+  }
+
+  Future<void> _copy() async {
+    await Clipboard.setData(ClipboardData(text: '#${_hexOf(_color)}'));
+    if (mounted) _say(L.of(context).colorCopied);
+  }
+
+  /// Пипетка: снимок или фотография, дальше касание по нужному месту.
+  Future<void> _pickFromImage() async {
+    final l = L.of(context);
+    final service = ref.read(photoServiceProvider);
+
+    try {
+      final path = await service.pickForReading();
+      if (path == null || !mounted) return;
+
+      final picked = await Navigator.of(context).push<Color>(
+        MaterialPageRoute(builder: (_) => EyedropperScreen(file: File(path))),
+      );
+      if (picked != null) _apply(picked);
+    } catch (e) {
+      if (mounted) _say('${l.msgSaveFailed}: $e');
+    }
+  }
+
+  void _say(String text) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(text)));
+  }
 
   static int _closestToneIndex(double tone) {
     const tones = [22, 32, 42, 52, 62, 72, 84, 94];
@@ -201,11 +300,15 @@ class _Preview extends StatelessWidget {
     required this.color,
     required this.hct,
     required this.foreground,
+    required this.saved,
+    required this.onSave,
   });
 
   final Color color;
   final Hct hct;
   final Color foreground;
+  final bool saved;
+  final VoidCallback onSave;
 
   @override
   Widget build(BuildContext context) {
@@ -248,27 +351,34 @@ class _Preview extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-            decoration: ShapeDecoration(
-              color: foreground.withValues(alpha: 0.16),
-              shape: const StadiumBorder(),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(VehaIcons.byName('add'), size: 15, color: foreground),
-                const SizedBox(width: 6),
-                Text(
-                  L.of(context).colorSaveMine,
-                  style: TextStyle(
-                    fontFamily: AppFonts.body,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: foreground,
+          // Повторное нажатие убирает цвет из «Моих»: отдельная кнопка
+          // удаления на том же месте была бы лишней.
+          InkWell(
+            onTap: onSave,
+            borderRadius: BorderRadius.circular(99),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+              decoration: ShapeDecoration(
+                color: foreground.withValues(alpha: saved ? 0.28 : 0.16),
+                shape: const StadiumBorder(),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(VehaIcons.byName(saved ? 'check' : 'add'),
+                      size: 15, color: foreground),
+                  const SizedBox(width: 6),
+                  Text(
+                    saved ? L.of(context).colorSaved : L.of(context).colorSaveMine,
+                    style: TextStyle(
+                      fontFamily: AppFonts.body,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: foreground,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
@@ -381,15 +491,21 @@ class _Tile extends StatelessWidget {
 }
 
 class _HexRow extends StatelessWidget {
-  const _HexRow({required this.color});
+  const _HexRow({
+    required this.controller,
+    required this.onChanged,
+    required this.onCopy,
+    required this.onDropper,
+  });
 
-  final Color color;
+  final TextEditingController controller;
+  final ValueChanged<String> onChanged;
+  final VoidCallback onCopy;
+  final VoidCallback onDropper;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final hex =
-        (color.toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0').toUpperCase();
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
@@ -397,7 +513,7 @@ class _HexRow extends StatelessWidget {
         children: [
           Expanded(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               decoration: ShapeDecoration(
                 color: scheme.surfaceContainerHigh,
                 shape: const RoundedRectangleBorder(
@@ -416,34 +532,75 @@ class _HexRow extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  Text(
-                    hex,
-                    style: TextStyle(
-                      fontFamily: AppFonts.body,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1,
-                      color: scheme.onSurface,
-                      fontFeatures: const [FontFeature.tabularFigures()],
+                  Expanded(
+                    child: TextField(
+                      controller: controller,
+                      onChanged: onChanged,
+                      textCapitalization: TextCapitalization.characters,
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(6),
+                        FilteringTextInputFormatter.allow(RegExp('[0-9a-fA-F]')),
+                        // Строчные буквы в коде читаются хуже, а вводят их
+                        // чаще: приводим сразу.
+                        TextInputFormatter.withFunction(
+                          (_, next) => next.copyWith(text: next.text.toUpperCase()),
+                        ),
+                      ],
+                      style: TextStyle(
+                        fontFamily: AppFonts.body,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 1,
+                        color: scheme.onSurface,
+                        fontFeatures: const [FontFeature.tabularFigures()],
+                      ),
+                      decoration: InputDecoration(
+                        isDense: true,
+                        filled: false,
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 13),
+                        hintText: L.of(context).colorHexHint,
+                        hintStyle: TextStyle(
+                          fontFamily: AppFonts.body,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
                     ),
+                  ),
+                  IconButton(
+                    onPressed: onCopy,
+                    tooltip: L.of(context).colorCopy,
+                    icon: Icon(VehaIcons.byName('content_copy'), size: 18),
+                    color: scheme.onSurfaceVariant,
                   ),
                 ],
               ),
             ),
           ),
           const SizedBox(width: 9),
-          Container(
-            width: 52,
-            height: 52,
-            alignment: Alignment.center,
-            decoration: ShapeDecoration(
-              color: scheme.secondaryContainer,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(18)),
+          InkWell(
+            onTap: onDropper,
+            borderRadius: BorderRadius.circular(18),
+            child: Container(
+              width: 52,
+              height: 52,
+              alignment: Alignment.center,
+              decoration: ShapeDecoration(
+                color: scheme.secondaryContainer,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(18)),
+                ),
+              ),
+              child: Tooltip(
+                message: L.of(context).colorPickFromImage,
+                child: Icon(VehaIcons.byName('dropper'),
+                    size: 21, color: scheme.onSecondaryContainer),
               ),
             ),
-            child: Icon(VehaIcons.byName('dropper'),
-                size: 21, color: scheme.onSecondaryContainer),
           ),
         ],
       ),

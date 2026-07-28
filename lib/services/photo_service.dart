@@ -58,6 +58,13 @@ class PhotoService {
     return p.join(_folder, p.basename(file.path));
   }
 
+  /// Картинка для чтения цвета: пипетке файл нужен только чтобы посмотреть
+  /// на пиксель, копировать его в папку приложения незачем.
+  Future<String?> pickForReading() async {
+    final shot = await _picker.pickImage(source: ImageSource.gallery);
+    return shot?.path;
+  }
+
   /// Убрать файл с диска. Мягкого удаления у снимка нет: строка в базе уходит
   /// вместе с ним, и держать осиротевший файл незачем.
   static Future<void> erase(String relative) async {
