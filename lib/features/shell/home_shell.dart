@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/icon_registry.dart';
+import '../../data/models.dart';
+import '../../data/providers.dart';
 import '../../data/settings.dart';
 import '../../l10n/app_localizations.dart';
-import '../access/access_screen.dart';
 import '../calendar/calendar_screen.dart';
 import '../calendars/calendars_screen.dart';
 import '../event/event_flow.dart';
 import '../settings/settings_screen.dart';
+import '../tasks/tasks_screen.dart';
 
 /// Оболочка приложения: нижняя навигация на четыре раздела.
 /// Боковой панели нет и не будет — переключение видов живёт в сегментированном
@@ -26,14 +28,14 @@ class _HomeShellState extends ConsumerState<HomeShell> {
 
   static final _icons = [
     VehaIcons.byName('calendar'),
+    VehaIcons.byName('task_alt'),
     VehaIcons.byName('list'),
-    VehaIcons.byName('key'),
     VehaIcons.byName('tune'),
   ];
 
   List<String> _labels(BuildContext context) {
     final l = L.of(context);
-    return [l.navCalendar, l.navList, l.navAccess, l.navSettings];
+    return [l.navCalendar, l.navTasks, l.navList, l.navSettings];
   }
 
   @override
@@ -47,17 +49,24 @@ class _HomeShellState extends ConsumerState<HomeShell> {
 
     return Scaffold(
       body: SafeArea(bottom: false, child: _page(tab)),
-      floatingActionButton: tab == 0
-          ? FloatingActionButton(
-              onPressed: () => EventFlow(context, ref).create(),
-              tooltip: L.of(context).newEvent,
+      floatingActionButton: tab > 1
+          ? null
+          : FloatingActionButton(
+              onPressed: () => tab == 0
+                  ? EventFlow(context, ref).create()
+                  : createTask(
+                      context,
+                      ref,
+                      ref.read(inheritanceProvider).valueOrNull ??
+                          const Inheritance(calendars: {}, subcategories: {}),
+                    ),
+              tooltip: tab == 0 ? L.of(context).newEvent : L.of(context).taskNew,
               elevation: 0,
               focusElevation: 0,
               hoverElevation: 0,
               highlightElevation: 0,
               child: Icon(VehaIcons.byName('add'), size: 28),
-            )
-          : null,
+            ),
       bottomNavigationBar: NavigationBar(
         // ДНК прячет подписи неактивных разделов, но в макете подписаны все
         // четыре: без них «Доступ» и «Настройки» по иконке не различить.
@@ -77,13 +86,13 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     );
   }
 
+  // Доступ для ИИ живёт не вкладкой, а строкой в настройках рядом с
+  // синхронизацией: ключи и работают только при ней, а открывают этот экран
+  // раз в полгода.
   Widget _page(int tab) => switch (tab) {
         0 => const CalendarScreen(),
-        1 => const CalendarsScreen(),
-        2 => const AccessScreen(),
+        1 => const TasksScreen(),
+        2 => const CalendarsScreen(),
         _ => const SettingsScreen(),
       };
-
-  /// Демонстрационные ключи: серверного слоя ещё нет, но экран должен быть
-  /// собран и сверен с макетом до него.
 }

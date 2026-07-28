@@ -68,6 +68,7 @@ Future<void> pumpScreen(
   Size size = phoneSize,
   Locale locale = const Locale('ru'),
   List<Override> overrides = const [],
+  Future<void> Function(VehaRepository repo)? seed,
 }) async {
   tester.view
     ..physicalSize = size * 2
@@ -86,7 +87,11 @@ Future<void> pumpScreen(
 
   // Демонстрацию сеют тесты, а не приложение: человеку при первом запуске
   // чужие дела не нужны, а снимкам экрана нужен полный календарь.
-  await VehaRepository(db).seedIfEmpty(today: testNow, words: SeedWords.of('ru'));
+  final repo = VehaRepository(db);
+  await repo.seedIfEmpty(today: testNow, words: SeedWords.of('ru'));
+  // Своё содержимое поверх общего сева: задачи и снимки нужны не каждому
+  // снимку экрана, а держать их в общем посеве значит менять все остальные.
+  if (seed != null) await seed(repo);
 
   await tester.pumpWidget(
     ProviderScope(

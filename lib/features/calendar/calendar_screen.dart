@@ -11,6 +11,7 @@ import '../../data/settings.dart';
 import '../../domain/week_layout.dart';
 import '../common/blocks.dart' show vBack;
 import '../search/search_screen.dart';
+import '../tasks/day_tasks.dart';
 import '../settings/month_settings_screen.dart';
 import '../event/event_flow.dart';
 import 'views/bands_view.dart';
@@ -115,6 +116,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             _ => null,
           },
         ),
+        // Задачи со сроком на этот день — над видом, а не внутри сетки часов:
+        // у задачи срок, а не длительность.
+        if (view == CalendarView.day) DayTasks(day: _selected!),
         if (view != CalendarView.week && view != CalendarView.month)
           SpanBars(
             events: range.spansOn(_selected!),

@@ -31,11 +31,19 @@ void main() {
   setUpAll(() async {
     if (!available) return;
 
-    final port = 8890 + DateTime.now().second % 50;
+    // Порт спрашиваем у системы: фиксированный номер занимает сервер,
+    // оставшийся от прошлого прогона, и тест стучится в чужую базу — со
+    // старой схемой и ответом 500.
+    final probe = await ServerSocket.bind('127.0.0.1', 0);
+    final port = probe.port;
+    await probe.close();
+
     baseUrl = 'http://127.0.0.1:$port';
+    // Напрямую бинарём, а не через `npx`: тот порождает node отдельным
+    // процессом, и `kill` гасит обёртку, оставляя сервер держать порт.
     server = await Process.start(
-      'npx',
-      ['tsx', 'src/node.ts'],
+      '$serverDir/node_modules/.bin/tsx',
+      ['src/node.ts'],
       workingDirectory: serverDir,
       environment: {
         'PORT': '$port',
@@ -59,8 +67,18 @@ void main() {
     }
   });
 
-  tearDownAll(() {
-    if (available) server.kill();
+  tearDownAll(() async {
+    if (!available) return;
+    server.kill();
+    // Ждём фактического выхода: иначе следующий прогон встречает живой
+    // процесс на том же порту.
+    await server.exitCode.timeout(
+      const Duration(seconds: 5),
+      onTimeout: () {
+        server.kill(ProcessSignal.sigkill);
+        return -1;
+      },
+    );
   });
 
   Future<(VehaDatabase, VehaRepository, SyncService)> device(String url) async {
@@ -110,6 +128,47 @@ void main() {
     final event = day.firstWhere((e) => e.id == 'live-1');
     expect(event.title, 'Через сервер');
     expect(event.reminders, [30], reason: 'Напоминание пережило дорогу');
+  }, timeout: const Timeout(Duration(seconds: 60)));
+
+  test('Задача доезжает вместе с отметкой', () async {
+    if (!available) {
+      markTestSkipped('Сервер не установлен');
+      return;
+    }
+
+    final api = HttpSyncApi(baseUrl: baseUrl);
+    final owner = await api.register('Телефон');
+
+    final (dbA, repoA, syncA) = await device(baseUrl);
+    addTearDown(dbA.close);
+    await repoA.upsertTask(VTask(
+      id: 'live-task',
+      calendarId: 'default',
+      title: 'Продлить абонемент',
+      due: DateTime(2026, 8, 12, 18),
+      hasTime: true,
+    ));
+    var cursor = (await syncA.run(token: owner.token, since: 0)).cursor;
+
+    final code = await api.pairCode(owner.token);
+    final second = await api.claim(code, 'Планшет');
+    final (dbB, repoB, syncB) = await device(baseUrl);
+    addTearDown(dbB.close);
+    var cursorB = (await syncB.run(token: second.token, since: 0)).cursor;
+
+    final arrived = await repoB.watchTasks().first;
+    final task = arrived.firstWhere((t) => t.id == 'live-task');
+    expect(task.title, 'Продлить абонемент');
+    expect(task.hasTime, isTrue, reason: 'Булево значение пережило JSON');
+    expect(task.due, DateTime(2026, 8, 12, 18));
+
+    // Отметка выполнения — обычная правка: едет тем же путём.
+    await repoA.setTaskDone('live-task', true);
+    cursor = (await syncA.run(token: owner.token, since: cursor)).cursor;
+    cursorB = (await syncB.run(token: second.token, since: cursorB)).cursor;
+
+    final after = await repoB.watchTasks().first;
+    expect(after.firstWhere((t) => t.id == 'live-task').isDone, isTrue);
   }, timeout: const Timeout(Duration(seconds: 60)));
 
   test('Удаление доезжает так же, как заведение', () async {

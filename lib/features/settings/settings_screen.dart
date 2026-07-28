@@ -9,6 +9,7 @@ import '../../core/icon_registry.dart';
 import '../../data/settings.dart';
 import '../../domain/week_layout.dart';
 import '../calendar/widgets/month_header.dart' show AppFonts;
+import '../access/access_screen.dart';
 import '../calendar/widgets/week_setup_sheet.dart';
 import '../common/blocks.dart';
 import '../fields/fields_screen.dart';
@@ -67,8 +68,8 @@ class SettingsScreen extends ConsumerWidget {
             hint: L.of(context).settingsStartScreenHint,
             options: {
               0: L.of(context).navCalendar,
-              1: L.of(context).navList,
-              2: L.of(context).navAccess,
+              1: L.of(context).navTasks,
+              2: L.of(context).navList,
               3: L.of(context).navSettings,
             },
             value: ref.watch(startTabProvider),
@@ -118,10 +119,29 @@ class SettingsScreen extends ConsumerWidget {
           ),
         ]),
         VBlockCap(L.of(context).settingsDataGroup),
-        const VBlock(children: [
-          SyncRows(),
-          VSep(),
-          IcsRows(),
+        VBlock(children: [
+          const SyncRows(),
+          const VSep(),
+          VRow(
+            icon: 'key',
+            label: L.of(context).accessTitle,
+            value: L.of(context).accessHint,
+            trailing: Icon(VehaIcons.byName('chevron'),
+                size: 17, color: scheme.outline),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => Scaffold(
+                  appBar: AppBar(
+                      toolbarHeight: 56,
+                      leading: vBack(context),
+                      leadingWidth: 60),
+                  body: const SafeArea(child: AccessScreen()),
+                ),
+              ),
+            ),
+          ),
+          const VSep(),
+          const IcsRows(),
         ]),
         VBlockCap(L.of(context).settingsAbout),
         VBlock(children: [
