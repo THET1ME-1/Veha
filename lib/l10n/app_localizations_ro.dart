@@ -912,4 +912,10 @@ class LRo extends L {
   @override
   String get placeNoFix =>
       'Nu am putut afla locul: fără permisiune sau semnal.';
+
+  @override
+  String get msgSaveFailed => 'Nu s-a putut salva';
+
+  @override
+  String get msgNotSaved => 'Modificările nu au fost salvate';
 }

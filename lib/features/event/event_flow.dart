@@ -85,30 +85,49 @@ class EventFlow {
   /// Сохранение. У экземпляра ряда спрашиваем область правки — одно и то же
   /// движение может значить «перенеси сегодняшнее» и «теперь всегда так».
   Future<void> _save(EventDraft draft) async {
+    final l = L.of(context);
     final repo = ref.read(repositoryProvider);
     final event = draft.toEvent(newId: repo.newId);
 
-    if (!draft.needsScopeQuestion) {
-      await repo.upsertEvent(event);
-      return;
-    }
-
-    if (!context.mounted) return;
-    final scope = await askEditScope(
-      context,
-      occurrence: event.originalStart ?? event.start,
-      repeatLabel: recurrenceLabelOf(L.of(context), event) ?? L.of(context).repeatByRule,
-    );
-    if (scope == null) return;
-
-    switch (scope) {
-      case EditScope.single:
+    // Сохранение идёт мимо экрана, и упавшая запись раньше пропадала в
+    // никуда: человек видел «сохранил», а в базе ничего. Ошибку показываем.
+    try {
+      if (!draft.needsScopeQuestion) {
         await repo.upsertEvent(event);
-      case EditScope.following:
-        await repo.updateFromOccurrence(event);
-      case EditScope.series:
-        await repo.updateWholeSeries(event);
+        return;
+      }
+
+      if (!context.mounted) return;
+      final scope = await askEditScope(
+        context,
+        occurrence: event.originalStart ?? event.start,
+        repeatLabel: recurrenceLabelOf(l, event) ?? l.repeatByRule,
+      );
+      // Лист закрыли, не выбрав: правка не применяется, но и молчать нельзя —
+      // человек уверен, что сохранил.
+      if (scope == null) {
+        _say(l.msgNotSaved);
+        return;
+      }
+
+      switch (scope) {
+        case EditScope.single:
+          await repo.upsertEvent(event);
+        case EditScope.following:
+          await repo.updateFromOccurrence(event);
+        case EditScope.series:
+          await repo.updateWholeSeries(event);
+      }
+    } on Exception catch (e) {
+      _say('${l.msgSaveFailed}: $e');
     }
+  }
+
+  void _say(String message) {
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
   }
 
   /// Удаление: у ряда это отмена одного занятия, у разового события — само

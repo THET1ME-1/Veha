@@ -1116,5 +1116,13 @@
   "placeNoFix": "No se pudo obtener el lugar: sin permiso o sin señal.",
   "@placeNoFix": {
     "description": "placeNoFix"
+  },
+  "msgSaveFailed": "No se pudo guardar",
+  "@msgSaveFailed": {
+    "description": "msgSaveFailed"
+  },
+  "msgNotSaved": "Los cambios no se guardaron",
+  "@msgNotSaved": {
+    "description": "msgNotSaved"
   }
 }

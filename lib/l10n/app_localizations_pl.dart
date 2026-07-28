@@ -921,4 +921,10 @@ class LPl extends L {
   @override
   String get placeNoFix =>
       'Nie udało się ustalić miejsca: brak zgody lub sygnału.';
+
+  @override
+  String get msgSaveFailed => 'Nie udało się zapisać';
+
+  @override
+  String get msgNotSaved => 'Zmiany nie zostały zapisane';
 }

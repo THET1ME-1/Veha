@@ -913,4 +913,10 @@ class LDe extends L {
   @override
   String get placeNoFix =>
       'Ort nicht ermittelbar: keine Berechtigung oder kein Signal.';
+
+  @override
+  String get msgSaveFailed => 'Speichern fehlgeschlagen';
+
+  @override
+  String get msgNotSaved => 'Änderungen wurden nicht gespeichert';
 }

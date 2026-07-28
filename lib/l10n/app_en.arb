@@ -1116,5 +1116,13 @@
   "placeNoFix": "Could not get the location: no permission or no signal.",
   "@placeNoFix": {
     "description": "placeNoFix"
+  },
+  "msgSaveFailed": "Could not save",
+  "@msgSaveFailed": {
+    "description": "msgSaveFailed"
+  },
+  "msgNotSaved": "Changes were not saved",
+  "@msgNotSaved": {
+    "description": "msgNotSaved"
   }
 }

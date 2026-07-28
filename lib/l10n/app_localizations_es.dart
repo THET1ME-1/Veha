@@ -909,4 +909,10 @@ class LEs extends L {
   @override
   String get placeNoFix =>
       'No se pudo obtener el lugar: sin permiso o sin señal.';
+
+  @override
+  String get msgSaveFailed => 'No se pudo guardar';
+
+  @override
+  String get msgNotSaved => 'Los cambios no se guardaron';
 }

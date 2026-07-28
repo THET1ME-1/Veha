@@ -183,6 +183,48 @@ void main() {
         reason: 'Начиная с разреза занятия идут по новому времени');
   });
 
+  // Правка ряда шла мимо напоминаний и своих полей: строку события переписывали
+  // руками, а всё, что лежит в соседних таблицах, оставалось старым.
+  test('Правка «весь ряд» сохраняет напоминания, поля и ветку', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+    final day = await repo
+        .watchRange(DateTime(2026, 7, 30), DateTime(2026, 7, 31))
+        .first;
+    final wake = day.firstWhere((e) => e.title == 'Подъём');
+
+    await repo.updateWholeSeries(wake.copyWith(
+      reminders: const [15],
+      fields: const [VFieldValue(fieldId: 'f-place', value: 'Дом')],
+    ));
+
+    final after = await repo
+        .watchRange(DateTime(2026, 7, 31), DateTime(2026, 8, 1))
+        .first;
+    final saved = after.firstWhere((e) => e.recurrenceId == 'e-wake');
+    expect(saved.reminders, [15]);
+    expect(saved.fields.single.value, 'Дом');
+  });
+
+  test('Правка «это и следующие» сохраняет напоминания и поля', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+    final day = await repo
+        .watchRange(DateTime(2026, 8, 3), DateTime(2026, 8, 4))
+        .first;
+    final wake = day.firstWhere((e) => e.title == 'Подъём');
+
+    await repo.updateFromOccurrence(wake.copyWith(
+      reminders: const [45],
+      fields: const [VFieldValue(fieldId: 'f-place', value: 'Дача')],
+    ));
+
+    final after = await repo
+        .watchRange(DateTime(2026, 8, 5), DateTime(2026, 8, 6))
+        .first;
+    final saved = after.firstWhere((e) => e.title == 'Подъём');
+    expect(saved.reminders, [45]);
+    expect(saved.fields.single.value, 'Дача');
+  });
+
   test('Правка «весь ряд» переносит и прошедшие занятия', () async {
     await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
     final day = await repo

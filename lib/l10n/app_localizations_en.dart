@@ -909,4 +909,10 @@ class LEn extends L {
   @override
   String get placeNoFix =>
       'Could not get the location: no permission or no signal.';
+
+  @override
+  String get msgSaveFailed => 'Could not save';
+
+  @override
+  String get msgNotSaved => 'Changes were not saved';
 }

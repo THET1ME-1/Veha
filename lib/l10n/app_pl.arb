@@ -1116,5 +1116,13 @@
   "placeNoFix": "Nie udało się ustalić miejsca: brak zgody lub sygnału.",
   "@placeNoFix": {
     "description": "placeNoFix"
+  },
+  "msgSaveFailed": "Nie udało się zapisać",
+  "@msgSaveFailed": {
+    "description": "msgSaveFailed"
+  },
+  "msgNotSaved": "Zmiany nie zostały zapisane",
+  "@msgNotSaved": {
+    "description": "msgNotSaved"
   }
 }

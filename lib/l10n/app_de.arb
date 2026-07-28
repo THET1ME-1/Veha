@@ -1116,5 +1116,13 @@
   "placeNoFix": "Ort nicht ermittelbar: keine Berechtigung oder kein Signal.",
   "@placeNoFix": {
     "description": "placeNoFix"
+  },
+  "msgSaveFailed": "Speichern fehlgeschlagen",
+  "@msgSaveFailed": {
+    "description": "msgSaveFailed"
+  },
+  "msgNotSaved": "Änderungen wurden nicht gespeichert",
+  "@msgNotSaved": {
+    "description": "msgNotSaved"
   }
 }

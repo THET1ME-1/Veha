@@ -920,4 +920,10 @@ class LRu extends L {
   @override
   String get placeNoFix =>
       'Не вышло определить место: нет разрешения или сигнала.';
+
+  @override
+  String get msgSaveFailed => 'Не удалось сохранить';
+
+  @override
+  String get msgNotSaved => 'Изменения не сохранены';
 }

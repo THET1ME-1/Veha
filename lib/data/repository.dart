@@ -754,6 +754,7 @@ class VehaRepository {
       await (db.update(db.events)..where((t) => t.id.equals(seriesId)))
           .write(EventsCompanion(
         title: Value(instance.title),
+        subcategoryId: Value(instance.subcategoryId),
         location: Value(instance.location),
         start: Value(start.millisecondsSinceEpoch),
         end: Value(start.add(instance.duration).millisecondsSinceEpoch),
@@ -763,6 +764,11 @@ class VehaRepository {
         rrule: Value(instance.rrule ?? series.rrule),
         updatedAt: Value(now),
       ));
+      // Напоминания и значения полей лежат в соседних таблицах: строка
+      // события их не несёт, и без этих двух вызовов правка ряда теряла
+      // половину — молча.
+      await _writeReminders(seriesId, instance.reminders);
+      await _writeFieldValues(seriesId, instance.fields);
       await _enqueue('event', seriesId, 'upsert');
     });
   }
@@ -814,6 +820,8 @@ class VehaRepository {
             createdAt: now,
             updatedAt: now,
           ));
+      await _writeReminders(newId, instance.reminders);
+      await _writeFieldValues(newId, instance.fields);
 
       await _enqueue('event', seriesId, 'upsert');
       await _enqueue('event', newId, 'upsert');

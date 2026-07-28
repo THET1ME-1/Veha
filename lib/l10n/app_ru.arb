@@ -1204,5 +1204,13 @@
   "placeNoFix": "Не вышло определить место: нет разрешения или сигнала.",
   "@placeNoFix": {
     "description": "placeNoFix"
+  },
+  "msgSaveFailed": "Не удалось сохранить",
+  "@msgSaveFailed": {
+    "description": "msgSaveFailed"
+  },
+  "msgNotSaved": "Изменения не сохранены",
+  "@msgNotSaved": {
+    "description": "msgNotSaved"
   }
 }

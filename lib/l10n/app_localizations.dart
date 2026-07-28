@@ -1642,6 +1642,18 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'Не вышло определить место: нет разрешения или сигнала.'**
   String get placeNoFix;
+
+  /// msgSaveFailed
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось сохранить'**
+  String get msgSaveFailed;
+
+  /// msgNotSaved
+  ///
+  /// In ru, this message translates to:
+  /// **'Изменения не сохранены'**
+  String get msgNotSaved;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

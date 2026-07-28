@@ -1116,5 +1116,13 @@
   "placeNoFix": "Nu am putut afla locul: fără permisiune sau semnal.",
   "@placeNoFix": {
     "description": "placeNoFix"
+  },
+  "msgSaveFailed": "Nu s-a putut salva",
+  "@msgSaveFailed": {
+    "description": "msgSaveFailed"
+  },
+  "msgNotSaved": "Modificările nu au fost salvate",
+  "@msgNotSaved": {
+    "description": "msgNotSaved"
   }
 }

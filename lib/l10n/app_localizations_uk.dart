@@ -920,4 +920,10 @@ class LUk extends L {
   @override
   String get placeNoFix =>
       'Не вдалося визначити місце: немає дозволу або сигналу.';
+
+  @override
+  String get msgSaveFailed => 'Не вдалося зберегти';
+
+  @override
+  String get msgNotSaved => 'Зміни не збережено';
 }

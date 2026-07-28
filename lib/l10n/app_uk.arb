@@ -1116,5 +1116,13 @@
   "placeNoFix": "Не вдалося визначити місце: немає дозволу або сигналу.",
   "@placeNoFix": {
     "description": "placeNoFix"
+  },
+  "msgSaveFailed": "Не вдалося зберегти",
+  "@msgSaveFailed": {
+    "description": "msgSaveFailed"
+  },
+  "msgNotSaved": "Зміни не збережено",
+  "@msgNotSaved": {
+    "description": "msgNotSaved"
   }
 }
