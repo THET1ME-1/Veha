@@ -1306,4 +1306,15 @@ class LDe extends L {
 
   @override
   String get quickPhraseRead => 'Aus dem Satz gelesen';
+
+  @override
+  String get findSlot => 'Nächste freie Lücke';
+
+  @override
+  String msgSlotFound(String when) {
+    return 'Frei: $when';
+  }
+
+  @override
+  String get msgNoSlot => 'In den nächsten zwei Wochen keine Lücke';
 }

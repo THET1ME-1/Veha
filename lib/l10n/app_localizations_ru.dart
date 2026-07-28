@@ -1311,4 +1311,15 @@ class LRu extends L {
 
   @override
   String get quickPhraseRead => 'Понял из строки';
+
+  @override
+  String get findSlot => 'Ближайшее окно';
+
+  @override
+  String msgSlotFound(String when) {
+    return 'Свободно: $when';
+  }
+
+  @override
+  String get msgNoSlot => 'В ближайшие две недели окна нет';
 }

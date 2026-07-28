@@ -1301,4 +1301,15 @@ class LEn extends L {
 
   @override
   String get quickPhraseRead => 'Read from the line';
+
+  @override
+  String get findSlot => 'Next free slot';
+
+  @override
+  String msgSlotFound(String when) {
+    return 'Free at $when';
+  }
+
+  @override
+  String get msgNoSlot => 'No free slot in the next two weeks';
 }

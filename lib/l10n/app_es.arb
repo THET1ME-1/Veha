@@ -1672,5 +1672,22 @@
   "quickPhraseRead": "Leído de la frase",
   "@quickPhraseRead": {
     "description": "quickPhraseRead"
+  },
+  "findSlot": "Primer hueco libre",
+  "@findSlot": {
+    "description": "findSlot"
+  },
+  "msgSlotFound": "Libre: {when}",
+  "@msgSlotFound": {
+    "description": "msgSlotFound",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "msgNoSlot": "No hay hueco en las próximas dos semanas",
+  "@msgNoSlot": {
+    "description": "msgNoSlot"
   }
 }

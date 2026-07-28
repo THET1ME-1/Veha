@@ -1672,5 +1672,22 @@
   "quickPhraseRead": "Odczytano z tekstu",
   "@quickPhraseRead": {
     "description": "quickPhraseRead"
+  },
+  "findSlot": "Najbliższe okno",
+  "@findSlot": {
+    "description": "findSlot"
+  },
+  "msgSlotFound": "Wolne: {when}",
+  "@msgSlotFound": {
+    "description": "msgSlotFound",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "msgNoSlot": "Przez dwa tygodnie nie ma okna",
+  "@msgNoSlot": {
+    "description": "msgNoSlot"
   }
 }

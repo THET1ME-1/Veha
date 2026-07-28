@@ -1672,5 +1672,22 @@
   "quickPhraseRead": "Зрозумів із рядка",
   "@quickPhraseRead": {
     "description": "quickPhraseRead"
+  },
+  "findSlot": "Найближче вікно",
+  "@findSlot": {
+    "description": "findSlot"
+  },
+  "msgSlotFound": "Вільно: {when}",
+  "@msgSlotFound": {
+    "description": "msgSlotFound",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "msgNoSlot": "Найближчі два тижні вікна немає",
+  "@msgNoSlot": {
+    "description": "msgNoSlot"
   }
 }

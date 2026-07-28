@@ -1672,5 +1672,22 @@
   "quickPhraseRead": "Read from the line",
   "@quickPhraseRead": {
     "description": "quickPhraseRead"
+  },
+  "findSlot": "Next free slot",
+  "@findSlot": {
+    "description": "findSlot"
+  },
+  "msgSlotFound": "Free at {when}",
+  "@msgSlotFound": {
+    "description": "msgSlotFound",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "msgNoSlot": "No free slot in the next two weeks",
+  "@msgNoSlot": {
+    "description": "msgNoSlot"
   }
 }

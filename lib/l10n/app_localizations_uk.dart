@@ -1313,4 +1313,15 @@ class LUk extends L {
 
   @override
   String get quickPhraseRead => 'Зрозумів із рядка';
+
+  @override
+  String get findSlot => 'Найближче вікно';
+
+  @override
+  String msgSlotFound(String when) {
+    return 'Вільно: $when';
+  }
+
+  @override
+  String get msgNoSlot => 'Найближчі два тижні вікна немає';
 }

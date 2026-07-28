@@ -1760,5 +1760,22 @@
   "quickPhraseRead": "Понял из строки",
   "@quickPhraseRead": {
     "description": "quickPhraseRead"
+  },
+  "findSlot": "Ближайшее окно",
+  "@findSlot": {
+    "description": "findSlot"
+  },
+  "msgSlotFound": "Свободно: {when}",
+  "@msgSlotFound": {
+    "description": "msgSlotFound",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "msgNoSlot": "В ближайшие две недели окна нет",
+  "@msgNoSlot": {
+    "description": "msgNoSlot"
   }
 }

@@ -2332,6 +2332,24 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'Понял из строки'**
   String get quickPhraseRead;
+
+  /// findSlot
+  ///
+  /// In ru, this message translates to:
+  /// **'Ближайшее окно'**
+  String get findSlot;
+
+  /// msgSlotFound
+  ///
+  /// In ru, this message translates to:
+  /// **'Свободно: {when}'**
+  String msgSlotFound(String when);
+
+  /// msgNoSlot
+  ///
+  /// In ru, this message translates to:
+  /// **'В ближайшие две недели окна нет'**
+  String get msgNoSlot;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

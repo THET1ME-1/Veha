@@ -1301,4 +1301,15 @@ class LEs extends L {
 
   @override
   String get quickPhraseRead => 'Leído de la frase';
+
+  @override
+  String get findSlot => 'Primer hueco libre';
+
+  @override
+  String msgSlotFound(String when) {
+    return 'Libre: $when';
+  }
+
+  @override
+  String get msgNoSlot => 'No hay hueco en las próximas dos semanas';
 }

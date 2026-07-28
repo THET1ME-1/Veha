@@ -1302,4 +1302,15 @@ class LRo extends L {
 
   @override
   String get quickPhraseRead => 'Am înțeles din text';
+
+  @override
+  String get findSlot => 'Prima fereastră liberă';
+
+  @override
+  String msgSlotFound(String when) {
+    return 'Liber: $when';
+  }
+
+  @override
+  String get msgNoSlot => 'Nicio fereastră în următoarele două săptămâni';
 }

@@ -16,6 +16,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../domain/free_time.dart';
 import '../../domain/ics.dart';
 import 'calendar_picker_sheet.dart';
 import 'edit_scope_sheet.dart';
@@ -555,6 +556,7 @@ class EventFlow {
       builder: (sheetContext) => QuickAddSheet(
         draft: draft,
         inheritance: inheritance,
+        onFindSlot: (length) => _findSlot(draft.start, length),
         onSave: (value) {
           Navigator.pop(sheetContext);
           _save(value);
@@ -621,6 +623,34 @@ class EventFlow {
     // Черновик без `source`: экрану это новое событие, и вопроса про ряд он
     // не задаст.
     await _openFullForm(EventDraft.of(copy).asNew(), inheritance);
+  }
+
+  /// Ближайшее окно нужной длины начиная с этого дня.
+  ///
+  /// Календарь знает, когда человек занят, — значит может ответить и на
+  /// обратный вопрос. Смотрим на две недели вперёд: «никогда» честнее
+  /// бесконечного поиска.
+  Future<DateTime?> _findSlot(DateTime from, Duration length) async {
+    final repo = ref.read(repositoryProvider);
+    final start = DateTime(from.year, from.month, from.day);
+
+    // Одним запросом на две недели, а не четырнадцатью: столько же ответа,
+    // в четырнадцать раз меньше работы.
+    final all = await repo.eventsBetween(start, start.add(const Duration(days: 14)));
+    final cache = <String, List<VEvent>>{};
+    for (final e in all) {
+      final key = '${e.start.year}-${e.start.month}-${e.start.day}';
+      cache.putIfAbsent(key, () => []).add(e);
+    }
+
+    final slot = firstFreeSlot(
+      eventsOf: (day) =>
+          cache['${day.year}-${day.month}-${day.day}'] ?? const [],
+      from: from,
+      length: length,
+      now: DateTime.now(),
+    );
+    return slot?.start;
   }
 
   /// Сохранение. У экземпляра ряда спрашиваем область правки — одно и то же

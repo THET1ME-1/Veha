@@ -1672,5 +1672,22 @@
   "quickPhraseRead": "Am înțeles din text",
   "@quickPhraseRead": {
     "description": "quickPhraseRead"
+  },
+  "findSlot": "Prima fereastră liberă",
+  "@findSlot": {
+    "description": "findSlot"
+  },
+  "msgSlotFound": "Liber: {when}",
+  "@msgSlotFound": {
+    "description": "msgSlotFound",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "msgNoSlot": "Nicio fereastră în următoarele două săptămâni",
+  "@msgNoSlot": {
+    "description": "msgNoSlot"
   }
 }

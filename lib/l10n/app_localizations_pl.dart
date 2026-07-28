@@ -1313,4 +1313,15 @@ class LPl extends L {
 
   @override
   String get quickPhraseRead => 'Odczytano z tekstu';
+
+  @override
+  String get findSlot => 'Najbliższe okno';
+
+  @override
+  String msgSlotFound(String when) {
+    return 'Wolne: $when';
+  }
+
+  @override
+  String get msgNoSlot => 'Przez dwa tygodnie nie ma okna';
 }

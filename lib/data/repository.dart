@@ -96,7 +96,19 @@ class VehaRepository {
   /// сих пор), а выломанный экземпляр — по своему прежнему месту в ряду, иначе
   /// перенесённое на неделю вперёд занятие оставит после себя призрак на
   /// старом времени.
-  Stream<List<VEvent>> watchRange(DateTime from, DateTime to) {
+  Stream<List<VEvent>> watchRange(DateTime from, DateTime to) =>
+      _rangeQuery(from, to).watch().map((rows) => _expand(rows, from, to));
+
+  /// То же окно разовым запросом. Нужно там, где стрим не к месту: поиск
+  /// свободного окна перебирает две недели, и четырнадцать живых подписок
+  /// ради одного ответа — цена ни за что.
+  Future<List<VEvent>> eventsBetween(DateTime from, DateTime to) async =>
+      _expand(await _rangeQuery(from, to).get(), from, to);
+
+  JoinedSelectStatement<HasResultSet, dynamic> _rangeQuery(
+    DateTime from,
+    DateTime to,
+  ) {
     final fromMs = from.millisecondsSinceEpoch;
     final toMs = to.millisecondsSinceEpoch;
 
@@ -111,7 +123,7 @@ class VehaRepository {
     // и того и другого у события единицы, а взамен стрим сам просыпается на
     // правку любой из трёх таблиц. Календарь присоединён внутренним: скрытый
     // и удалённый календарь уносят свои события из всех видов сразу.
-    final query = db.select(db.events).join([
+    return db.select(db.events).join([
       innerJoin(db.calendars, db.calendars.id.equalsExp(db.events.calendarId)),
       leftOuterJoin(db.fieldValues, db.fieldValues.eventId.equalsExp(db.events.id)),
       leftOuterJoin(db.recurrenceExceptions,
@@ -123,46 +135,47 @@ class VehaRepository {
           db.calendars.isVisible.equals(true) &
           (crossesWindow | startedSeries | movedFromWindow))
       ..orderBy([OrderingTerm(expression: db.events.start)]);
+  }
 
-    return query.watch().map((rows) {
-      final byId = <String, VEvent>{};
-      final fields = <String, Set<VFieldValue>>{};
-      final excluded = <String, Set<DateTime>>{};
-      final alarms = <String, Set<int>>{};
+  /// Строки запроса — в развёрнутые события окна.
+  List<VEvent> _expand(List<TypedResult> rows, DateTime from, DateTime to) {
+    final byId = <String, VEvent>{};
+    final fields = <String, Set<VFieldValue>>{};
+    final excluded = <String, Set<DateTime>>{};
+    final alarms = <String, Set<int>>{};
 
-      for (final row in rows) {
-        final e = row.readTable(db.events);
-        byId.putIfAbsent(e.id, () => _toEvent(e));
+    for (final row in rows) {
+      final e = row.readTable(db.events);
+      byId.putIfAbsent(e.id, () => _toEvent(e));
 
-        final fv = row.readTableOrNull(db.fieldValues);
-        if (fv != null) {
-          fields.putIfAbsent(e.id, () => <VFieldValue>{}).add(
-              VFieldValue(fieldId: fv.fieldId, value: fv.value));
-        }
-
-        final ex = row.readTableOrNull(db.recurrenceExceptions);
-        if (ex != null) {
-          excluded.putIfAbsent(e.id, () => <DateTime>{}).add(
-              DateTime.fromMillisecondsSinceEpoch(ex.excludedDate));
-        }
-
-        final rem = row.readTableOrNull(db.reminders);
-        if (rem != null) {
-          alarms.putIfAbsent(e.id, () => <int>{}).add(rem.minutesBefore);
-        }
+      final fv = row.readTableOrNull(db.fieldValues);
+      if (fv != null) {
+        fields.putIfAbsent(e.id, () => <VFieldValue>{}).add(
+            VFieldValue(fieldId: fv.fieldId, value: fv.value));
       }
 
-      final stored = [
-        for (final e in byId.values)
-          _withDetails(
-            e,
-            fields: fields[e.id]?.toList(),
-            reminders: alarms[e.id]?.toList(),
-          ),
-      ];
+      final ex = row.readTableOrNull(db.recurrenceExceptions);
+      if (ex != null) {
+        excluded.putIfAbsent(e.id, () => <DateTime>{}).add(
+            DateTime.fromMillisecondsSinceEpoch(ex.excludedDate));
+      }
 
-      return expandOccurrences(stored, from: from, to: to, excluded: excluded);
-    });
+      final rem = row.readTableOrNull(db.reminders);
+      if (rem != null) {
+        alarms.putIfAbsent(e.id, () => <int>{}).add(rem.minutesBefore);
+      }
+    }
+
+    final stored = [
+      for (final e in byId.values)
+        _withDetails(
+          e,
+          fields: fields[e.id]?.toList(),
+          reminders: alarms[e.id]?.toList(),
+        ),
+    ];
+
+    return expandOccurrences(stored, from: from, to: to, excluded: excluded);
   }
 
   /// Поиск по всему календарю: название, место и значения своих полей.
@@ -987,7 +1000,7 @@ class VehaRepository {
   /// с днём целиком: сдвинуть остаток, повторить день.
   Future<List<VEvent>> eventsOfDay(DateTime day) {
     final from = DateTime(day.year, day.month, day.day);
-    return watchRange(from, from.add(const Duration(days: 1))).first;
+    return eventsBetween(from, from.add(const Duration(days: 1)));
   }
 
   /// Обрывает ряд на дате занятия: «это и следующие удалить».

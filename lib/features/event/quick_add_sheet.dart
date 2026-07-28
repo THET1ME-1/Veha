@@ -23,12 +23,16 @@ class QuickAddSheet extends StatefulWidget {
     required this.inheritance,
     required this.onSave,
     required this.onDetails,
+    this.onFindSlot,
   });
 
   final EventDraft draft;
   final Inheritance inheritance;
   final ValueChanged<EventDraft> onSave;
   final ValueChanged<EventDraft> onDetails;
+
+  /// Ближайшее свободное окно нужной длины. `null` — искать негде.
+  final Future<DateTime?> Function(Duration length)? onFindSlot;
 
   @override
   State<QuickAddSheet> createState() => _QuickAddSheetState();
@@ -69,6 +73,28 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
           .withStart(phrase.start)
           .withEnd(phrase.start.add(phrase.duration));
       _read = understood ? _readLabel(phrase) : null;
+    });
+  }
+
+  /// Ищет ближайшее окно под текущую длительность и переносит туда событие.
+  Future<void> _findSlot() async {
+    final found = await widget.onFindSlot!(_draft.duration);
+    if (!mounted) return;
+
+    if (found == null) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(L.of(context).msgNoSlot)));
+      return;
+    }
+
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    setState(() {
+      _timeTouched = true;
+      _draft = _draft.withStart(found);
+      _read = L.of(context).msgSlotFound(
+        DateFormat('EEE d MMMM, HH:mm', locale).format(found),
+      );
     });
   }
 
@@ -248,6 +274,13 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                       color: scheme.onSurfaceVariant,
                     )),
                 _TimeChip(text: _hhmm(_draft.end)),
+                // «Поставь, где влезет» — вопрос, на который календари обычно
+                // не отвечают, хотя спрашивают его чаще, чем «когда я занят».
+                if (widget.onFindSlot != null)
+                  _TimeChip(
+                    text: L.of(context).findSlot,
+                    onTap: _findSlot,
+                  ),
                 // Плашка «понял из строки»: человек видит, что именно
                 // календарь вычитал, и может поправить чипами рядом.
                 if (_read != null)
