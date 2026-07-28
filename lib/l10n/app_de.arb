@@ -1038,5 +1038,14 @@
   "untitled": "Ohne Titel",
   "@untitled": {
     "description": "untitled"
+  },
+  "msgCancelledNamed": "„{title}“ abgesagt",
+  "@msgCancelledNamed": {
+    "description": "msgCancelledNamed",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
   }
 }

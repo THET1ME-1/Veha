@@ -1540,6 +1540,12 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'Без названия'**
   String get untitled;
+
+  /// msgCancelledNamed
+  ///
+  /// In ru, this message translates to:
+  /// **'«{title}» отменено'**
+  String msgCancelledNamed(String title);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

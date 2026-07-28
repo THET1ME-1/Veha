@@ -1038,5 +1038,14 @@
   "untitled": "Без назви",
   "@untitled": {
     "description": "untitled"
+  },
+  "msgCancelledNamed": "«{title}» скасовано",
+  "@msgCancelledNamed": {
+    "description": "msgCancelledNamed",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -1126,5 +1126,14 @@
   "untitled": "Без названия",
   "@untitled": {
     "description": "untitled"
+  },
+  "msgCancelledNamed": "«{title}» отменено",
+  "@msgCancelledNamed": {
+    "description": "msgCancelledNamed",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
   }
 }

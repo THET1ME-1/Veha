@@ -857,4 +857,9 @@ class LRu extends L {
 
   @override
   String get untitled => 'Без названия';
+
+  @override
+  String msgCancelledNamed(String title) {
+    return '«$title» отменено';
+  }
 }

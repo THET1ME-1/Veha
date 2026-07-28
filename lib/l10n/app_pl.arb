@@ -1038,5 +1038,14 @@
   "untitled": "Bez nazwy",
   "@untitled": {
     "description": "untitled"
+  },
+  "msgCancelledNamed": "„{title}” odwołane",
+  "@msgCancelledNamed": {
+    "description": "msgCancelledNamed",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
   }
 }

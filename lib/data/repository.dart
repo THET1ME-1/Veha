@@ -7,6 +7,7 @@ import '../domain/recurrence.dart';
 import 'db/database.dart';
 import 'models.dart';
 import 'seed.dart';
+import 'seed_words.dart';
 
 /// Единственная дверь между экранами и базой.
 ///
@@ -842,7 +843,10 @@ class VehaRepository {
   /// Данные собраны на 27 июля 2026 и сдвигаются к дню первого запуска целыми
   /// сутками: иначе человек, поставивший приложение в сентябре, открывает его
   /// на пустом дне, а демонстрация лежит в прошлом.
-  Future<void> seedIfEmpty({DateTime? today}) async {
+  /// [words] переводят демонстрацию на язык человека: первый запуск с чужой
+  /// кириллицей выглядит поломкой, а не приветствием.
+  Future<void> seedIfEmpty({DateTime? today, SeedWords? words}) async {
+    final w = words ?? SeedWords.of('ru');
     final count = await db.select(db.calendars).get();
     if (count.isNotEmpty) return;
 
@@ -856,7 +860,7 @@ class VehaRepository {
       for (final c in Seed.calendars) {
         await db.into(db.calendars).insert(CalendarsCompanion.insert(
               id: c.id,
-              name: c.name,
+              name: w.t(c.name),
               color: c.color.toARGB32(),
               icon: c.iconName,
               sortOrder: Value(c.sortOrder),
@@ -868,7 +872,7 @@ class VehaRepository {
         await db.into(db.subcategories).insert(SubcategoriesCompanion.insert(
               id: s.id,
               calendarId: s.calendarId,
-              name: s.name,
+              name: w.t(s.name),
               icon: Value(s.iconName),
               color: Value(s.color?.toARGB32()),
               sortOrder: Value(s.sortOrder),
@@ -879,7 +883,7 @@ class VehaRepository {
       for (final f in Seed.fields) {
         await db.into(db.fieldDefs).insert(FieldDefsCompanion.insert(
               id: f.id,
-              name: f.name,
+              name: w.t(f.name),
               type: f.type.name,
               icon: Value(f.iconName),
               scopeType: Value(f.calendarId == null ? 'global' : 'calendar'),
@@ -895,8 +899,8 @@ class VehaRepository {
               id: e.id,
               calendarId: e.calendarId,
               subcategoryId: Value(e.subcategoryId),
-              title: e.title,
-              location: Value(e.location),
+              title: w.t(e.title),
+              location: Value(e.location == null ? null : w.t(e.location!)),
               start: moved(e.start).millisecondsSinceEpoch,
               end: moved(e.end).millisecondsSinceEpoch,
               timezone: e.timezone,
@@ -911,7 +915,7 @@ class VehaRepository {
           await db.into(db.fieldValues).insert(FieldValuesCompanion.insert(
                 eventId: e.id,
                 fieldId: v.fieldId,
-                value: v.value,
+                value: w.t(v.value),
               ));
         }
       }
@@ -919,7 +923,7 @@ class VehaRepository {
         await db.into(db.eventNotes).insert(EventNotesCompanion.insert(
               id: n.id,
               eventId: n.eventId,
-              body: n.text,
+              body: w.t(n.text),
               color: Value(n.color?.toARGB32()),
               sortOrder: Value(n.sortOrder),
               createdAt: now,

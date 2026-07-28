@@ -858,4 +858,9 @@ class LPl extends L {
 
   @override
   String get untitled => 'Bez nazwy';
+
+  @override
+  String msgCancelledNamed(String title) {
+    return '„$title” odwołane';
+  }
 }

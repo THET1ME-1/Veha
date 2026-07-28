@@ -849,4 +849,9 @@ class LRo extends L {
 
   @override
   String get untitled => 'Fără titlu';
+
+  @override
+  String msgCancelledNamed(String title) {
+    return '„$title” anulat';
+  }
 }

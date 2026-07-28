@@ -857,4 +857,9 @@ class LUk extends L {
 
   @override
   String get untitled => 'Без назви';
+
+  @override
+  String msgCancelledNamed(String title) {
+    return '«$title» скасовано';
+  }
 }

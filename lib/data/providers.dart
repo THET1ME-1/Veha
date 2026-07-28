@@ -1,3 +1,5 @@
+import 'dart:ui' show PlatformDispatcher;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../domain/reminder_plan.dart';
@@ -6,6 +8,7 @@ import 'db/connection.dart';
 import 'db/database.dart';
 import 'models.dart';
 import 'repository.dart';
+import 'seed_words.dart';
 
 /// База живёт всё время работы приложения: пересоздавать соединение на каждый
 /// экран дороже, чем держать одно.
@@ -19,6 +22,12 @@ final repositoryProvider = Provider<VehaRepository>(
   (ref) => VehaRepository(ref.watch(databaseProvider)),
 );
 
+/// Язык демонстрационных данных первого запуска. Переопределяется в тестах:
+/// снимки экранов сверяются с русским макетом.
+final seedLanguageProvider = Provider<String>(
+  (ref) => PlatformDispatcher.instance.locale.languageCode,
+);
+
 /// Сегодняшний день одной точкой на всё приложение: экраны, демо-данные и
 /// снимки экранов должны сходиться в одном «сейчас», иначе golden-тесты
 /// начинают зависеть от календаря машины.
@@ -27,7 +36,10 @@ final nowProvider = Provider<DateTime>((ref) => DateTime.now());
 /// Первый запуск: наполняем пустую базу и только потом отдаём экраны.
 final bootstrapProvider = FutureProvider<void>((ref) async {
   final repo = ref.watch(repositoryProvider);
-  await repo.seedIfEmpty(today: ref.watch(nowProvider));
+  await repo.seedIfEmpty(
+    today: ref.watch(nowProvider),
+    words: SeedWords.of(ref.watch(seedLanguageProvider)),
+  );
   // Чистка давно удалённого — на запуске: отдельного расписания ради неё
   // заводить не за что, а приложение открывают чаще, чем раз в 90 дней.
   await repo.purgeDeleted();

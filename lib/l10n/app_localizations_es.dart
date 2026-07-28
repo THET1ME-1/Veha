@@ -846,4 +846,9 @@ class LEs extends L {
 
   @override
   String get untitled => 'Sin título';
+
+  @override
+  String msgCancelledNamed(String title) {
+    return '«$title» cancelado';
+  }
 }

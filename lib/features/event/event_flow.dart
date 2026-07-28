@@ -115,6 +115,7 @@ class EventFlow {
   /// событие. Обе операции обратимы полоской «Вернуть».
   Future<void> _delete(EventDraft draft) async {
     final repo = ref.read(repositoryProvider);
+    final l = L.of(context);
     final source = draft.source!;
 
     if (source.isOccurrence && source.recurrenceId != null) {
@@ -122,18 +123,19 @@ class EventFlow {
       final moment = source.originalStart ?? source.start;
       await repo.skipOccurrence(series, moment);
       _offerUndo(
-        L.of(context).msgOccurrenceSkipped,
+        l.msgOccurrenceSkipped,
         () => repo.unskipOccurrence(series, moment),
       );
       return;
     }
 
     await repo.deleteEvent(source.id);
-    _offerUndo(L.of(context).msgEventDeleted, () => repo.upsertEvent(source));
+    _offerUndo(l.msgEventDeleted, () => repo.upsertEvent(source));
   }
 
   /// Отмена одного занятия прямо из списка, без открытия формы.
   Future<void> skip(VEvent occurrence) async {
+    final l = L.of(context);
     final repo = ref.read(repositoryProvider);
     final series = occurrence.recurrenceId;
     if (series == null) return;
@@ -141,18 +143,19 @@ class EventFlow {
     final moment = occurrence.originalStart ?? occurrence.start;
     await repo.skipOccurrence(series, moment);
     _offerUndo(
-      '«${occurrence.title}» отменён',
+      l.msgCancelledNamed(occurrence.title),
       () => repo.unskipOccurrence(series, moment),
     );
   }
 
   /// Удаление события целиком: у экземпляра ряда это удаление всего ряда.
   Future<void> deleteWhole(VEvent event) async {
+    final l = L.of(context);
     final repo = ref.read(repositoryProvider);
     final id = event.recurrenceId ?? event.id;
     await repo.deleteEvent(id);
     _offerUndo(
-      event.isOccurrence ? L.of(context).msgSeriesDeleted : L.of(context).msgEventDeleted,
+      event.isOccurrence ? l.msgSeriesDeleted : l.msgEventDeleted,
       () => repo.restoreEvent(id),
     );
   }

@@ -87,6 +87,9 @@ Future<void> pumpScreen(
       overrides: [
         databaseProvider.overrideWithValue(db),
         nowProvider.overrideWithValue(testNow),
+        // Демонстрация всегда по-русски: снимки сверяются с русским макетом,
+        // а язык интерфейса задаётся отдельно параметром `locale`.
+        seedLanguageProvider.overrideWithValue('ru'),
         ...overrides,
       ],
       child: MaterialApp(

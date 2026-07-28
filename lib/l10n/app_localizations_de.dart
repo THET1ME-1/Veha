@@ -850,4 +850,9 @@ class LDe extends L {
 
   @override
   String get untitled => 'Ohne Titel';
+
+  @override
+  String msgCancelledNamed(String title) {
+    return '„$title“ abgesagt';
+  }
 }
