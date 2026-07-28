@@ -27,11 +27,11 @@ class Seed {
   ];
 
   static const subcategories = <VSubcategory>[
-    VSubcategory(id: 's-eng', calendarId: 'c-study', name: 'Английский', iconName: 'school'),
-    VSubcategory(id: 's-exam', calendarId: 'c-study', name: 'Экзамены', iconName: 'exam', color: ocean),
-    VSubcategory(id: 's-course', calendarId: 'c-study', name: 'Курсы', iconName: 'text'),
-    VSubcategory(id: 's-pool', calendarId: 'c-sport', name: 'Бассейн', iconName: 'pool', color: mint),
-    VSubcategory(id: 's-gym', calendarId: 'c-sport', name: 'Зал', iconName: 'fitness'),
+    VSubcategory(id: 's-eng', calendarId: 'c-study', name: 'Английский', iconName: 'school', sortOrder: 0),
+    VSubcategory(id: 's-exam', calendarId: 'c-study', name: 'Экзамены', iconName: 'exam', color: ocean, sortOrder: 1),
+    VSubcategory(id: 's-course', calendarId: 'c-study', name: 'Курсы', iconName: 'text', sortOrder: 2),
+    VSubcategory(id: 's-pool', calendarId: 'c-sport', name: 'Бассейн', iconName: 'pool', color: mint, sortOrder: 0),
+    VSubcategory(id: 's-gym', calendarId: 'c-sport', name: 'Зал', iconName: 'fitness', sortOrder: 1),
   ];
 
   static Inheritance get inheritance => Inheritance(

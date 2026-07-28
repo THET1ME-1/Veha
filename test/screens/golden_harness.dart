@@ -8,7 +8,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:m3_dna/theme/app_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:veha/core/brand.dart';
+import 'package:drift/drift.dart' show DatabaseConnection;
 import 'package:drift/native.dart';
 import 'package:sqlite3/open.dart' as sqlite_open;
 import 'package:veha/data/db/database.dart';
@@ -33,6 +35,23 @@ Future<void> loadAppFonts() async {
   }
 }
 
+/// База в памяти вместо файла: экраны в тестах проходят тот же путь
+/// «база → репозиторий → виджет», что и в приложении.
+///
+/// `closeStreamsSynchronously` обязателен. Отписавшись от последнего слушателя,
+/// drift придерживает кеш запроса ещё один оборот цикла событий и заводит ради
+/// этого `Timer.run`. Отписка случается при разборе дерева — тогда Riverpod
+/// гасит `ProviderScope`. Часы в `flutter_test` поддельные и двигаются только
+/// `pump`, поэтому таймер не тикает, а `db.close()` ждёт его вечно: тест виснет
+/// молча, без единой строчки в логе. С этим флагом стрим закрывается сразу и
+/// таймера не заводит. Сторож — `harness_timers_test.dart`.
+VehaDatabase testDatabase() => VehaDatabase(
+      DatabaseConnection(
+        NativeDatabase.memory(),
+        closeStreamsSynchronously: true,
+      ),
+    );
+
 /// Размер экрана телефона из макета: 390×844 логических пикселя.
 const Size phoneSize = Size(390, 844);
 
@@ -53,9 +72,14 @@ Future<void> pumpScreen(
     ..devicePixelRatio = 2;
   addTearDown(tester.view.reset);
 
-  // База в памяти вместо файла: экраны в тестах проходят тот же путь
-  // «база → репозиторий → виджет», что и в приложении.
-  final db = VehaDatabase(NativeDatabase.memory());
+  // Настройки вида живут в SharedPreferences, а плагина в тестах нет: без
+  // подмены экран ждёт первый ответ хранилища вечно. Подменять надо на каждом
+  // экране, а не разом в `setUpAll`: иначе «Будни», выбранные одним тестом,
+  // приезжают в снимок следующего — соседние тесты перестают быть
+  // независимыми.
+  SharedPreferences.setMockInitialValues(<String, Object>{});
+
+  final db = testDatabase();
   addTearDown(db.close);
 
   await tester.pumpWidget(

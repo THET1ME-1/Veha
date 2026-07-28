@@ -20,16 +20,65 @@ class VehaRepository {
 
   // ---------- чтение ----------
 
+  /// Календари и ветки потоком: список обновляется сам, когда календарь
+  /// завели, переименовали или скрыли. Ручное обновление экранов после каждой
+  /// правки — источник рассинхрона.
+  Stream<Inheritance> watchInheritance() {
+    // Один запрос вместо двух стримов: два независимых потока пришлось бы
+    // сшивать вручную, и на каждой правке экран моргал бы промежуточным
+    // состоянием.
+    final query = db.select(db.calendars).join([
+      leftOuterJoin(db.subcategories,
+          db.subcategories.calendarId.equalsExp(db.calendars.id) &
+              db.subcategories.deletedAt.isNull()),
+    ])
+      ..where(db.calendars.deletedAt.isNull())
+      // Ничью разрешаем временем заведения, а его — идентификатором. Без этого
+      // две ветки с одинаковым порядком меняются местами от чтения к чтению:
+      // SQLite ничего не обещает про строки, равные по ORDER BY.
+      ..orderBy([
+        OrderingTerm(expression: db.calendars.sortOrder),
+        OrderingTerm(expression: db.calendars.createdAt),
+        OrderingTerm(expression: db.calendars.id),
+        OrderingTerm(expression: db.subcategories.sortOrder),
+        OrderingTerm(expression: db.subcategories.createdAt),
+        OrderingTerm(expression: db.subcategories.id),
+      ]);
+
+    return query.watch().map((rows) {
+      final calendars = <String, VCalendar>{};
+      final subcategories = <String, VSubcategory>{};
+
+      for (final row in rows) {
+        final c = row.readTable(db.calendars);
+        calendars.putIfAbsent(c.id, () => _toCalendar(c));
+
+        final s = row.readTableOrNull(db.subcategories);
+        if (s != null) subcategories.putIfAbsent(s.id, () => _toSubcategory(s));
+      }
+
+      return Inheritance(calendars: calendars, subcategories: subcategories);
+    });
+  }
+
   /// Календари и ветки одним куском: они нужны вместе на каждом экране,
   /// а запросов два.
   Future<Inheritance> loadInheritance() async {
     final cals = await (db.select(db.calendars)
           ..where((t) => t.deletedAt.isNull())
-          ..orderBy([(t) => OrderingTerm(expression: t.sortOrder)]))
+          ..orderBy([
+            (t) => OrderingTerm(expression: t.sortOrder),
+            (t) => OrderingTerm(expression: t.createdAt),
+            (t) => OrderingTerm(expression: t.id),
+          ]))
         .get();
     final subs = await (db.select(db.subcategories)
           ..where((t) => t.deletedAt.isNull())
-          ..orderBy([(t) => OrderingTerm(expression: t.sortOrder)]))
+          ..orderBy([
+            (t) => OrderingTerm(expression: t.sortOrder),
+            (t) => OrderingTerm(expression: t.createdAt),
+            (t) => OrderingTerm(expression: t.id),
+          ]))
         .get();
 
     return Inheritance(
@@ -59,13 +108,17 @@ class VehaRepository {
 
     // Оба присоединения дают декартово произведение полей на исключения, но
     // и того и другого у события единицы, а взамен стрим сам просыпается на
-    // правку любой из трёх таблиц.
+    // правку любой из трёх таблиц. Календарь присоединён внутренним: скрытый
+    // и удалённый календарь уносят свои события из всех видов сразу.
     final query = db.select(db.events).join([
+      innerJoin(db.calendars, db.calendars.id.equalsExp(db.events.calendarId)),
       leftOuterJoin(db.fieldValues, db.fieldValues.eventId.equalsExp(db.events.id)),
       leftOuterJoin(db.recurrenceExceptions,
           db.recurrenceExceptions.eventId.equalsExp(db.events.id)),
     ])
       ..where(db.events.deletedAt.isNull() &
+          db.calendars.deletedAt.isNull() &
+          db.calendars.isVisible.equals(true) &
           (crossesWindow | startedSeries | movedFromWindow))
       ..orderBy([OrderingTerm(expression: db.events.start)]);
 
@@ -164,6 +217,100 @@ class VehaRepository {
             updatedAt: now,
           ));
       await _enqueue('event', id, 'upsert');
+    });
+  }
+
+  // ---------- календари и ветки ----------
+
+  Future<void> upsertCalendar(VCalendar c) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await db.transaction(() async {
+      await db.into(db.calendars).insertOnConflictUpdate(
+            CalendarsCompanion.insert(
+              id: c.id,
+              name: c.name,
+              color: c.color.toARGB32(),
+              icon: c.iconName,
+              isVisible: Value(c.isVisible),
+              sortOrder: Value(c.sortOrder),
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
+      await _enqueue('calendar', c.id, 'upsert');
+    });
+  }
+
+  /// Скрытый календарь остаётся в списке, но его события уходят из видов:
+  /// это «не показывай сейчас», а не «удали».
+  Future<void> setCalendarVisible(String id, bool visible) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await db.transaction(() async {
+      await (db.update(db.calendars)..where((t) => t.id.equals(id))).write(
+        CalendarsCompanion(
+          isVisible: Value(visible),
+          updatedAt: Value(now),
+        ),
+      );
+      await _enqueue('calendar', id, 'upsert');
+    });
+  }
+
+  /// Удаление календаря уносит его ветки и события — все мягко.
+  Future<void> deleteCalendar(String id) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await db.transaction(() async {
+      await (db.update(db.calendars)..where((t) => t.id.equals(id)))
+          .write(CalendarsCompanion(
+        deletedAt: Value(now),
+        updatedAt: Value(now),
+      ));
+      await (db.update(db.subcategories)..where((t) => t.calendarId.equals(id)))
+          .write(SubcategoriesCompanion(
+        deletedAt: Value(now),
+        updatedAt: Value(now),
+      ));
+      await (db.update(db.events)..where((t) => t.calendarId.equals(id)))
+          .write(EventsCompanion(
+        deletedAt: Value(now),
+        updatedAt: Value(now),
+      ));
+      await _enqueue('calendar', id, 'delete');
+    });
+  }
+
+  Future<void> upsertSubcategory(VSubcategory s) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await db.transaction(() async {
+      await db.into(db.subcategories).insertOnConflictUpdate(
+            SubcategoriesCompanion.insert(
+              id: s.id,
+              calendarId: s.calendarId,
+              name: s.name,
+              icon: Value(s.iconName),
+              color: Value(s.color?.toARGB32()),
+              sortOrder: Value(s.sortOrder),
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
+      await _enqueue('subcategory', s.id, 'upsert');
+    });
+  }
+
+  /// Удаление ветки события не трогает: они возвращаются на уровень календаря
+  /// и там же берут цвет.
+  Future<void> deleteSubcategory(String id) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await db.transaction(() async {
+      await (db.update(db.subcategories)..where((t) => t.id.equals(id)))
+          .write(SubcategoriesCompanion(
+        deletedAt: Value(now),
+        updatedAt: Value(now),
+      ));
+      await (db.update(db.events)..where((t) => t.subcategoryId.equals(id)))
+          .write(const EventsCompanion(subcategoryId: Value(null)));
+      await _enqueue('subcategory', id, 'delete');
     });
   }
 
@@ -371,6 +518,7 @@ class VehaRepository {
               name: s.name,
               icon: Value(s.iconName),
               color: Value(s.color?.toARGB32()),
+              sortOrder: Value(s.sortOrder),
               createdAt: now,
               updatedAt: now,
             ));

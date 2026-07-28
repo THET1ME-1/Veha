@@ -29,9 +29,9 @@ final bootstrapProvider = FutureProvider<void>((ref) async {
 
 /// Календари и ветки. Нужны на каждом экране, поэтому держатся отдельно от
 /// потока событий.
-final inheritanceProvider = FutureProvider<Inheritance>((ref) async {
+final inheritanceProvider = StreamProvider<Inheritance>((ref) async* {
   await ref.watch(bootstrapProvider.future);
-  return ref.watch(repositoryProvider).loadInheritance();
+  yield* ref.watch(repositoryProvider).watchInheritance();
 });
 
 /// События целого диапазона, разложенные по дням: этим живут неделя, месяц и

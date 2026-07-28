@@ -1,6 +1,8 @@
 import 'package:drift/native.dart';
+import 'package:flutter/material.dart' show Color;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:veha/data/db/database.dart';
+import 'package:veha/data/models.dart';
 import 'package:veha/data/repository.dart';
 
 import 'sqlite_for_tests.dart';
@@ -38,6 +40,25 @@ void main() {
     expect(events.map((e) => e.title), contains('Планёрка'));
     expect(events.firstWhere((e) => e.title == 'Планёрка').start,
         DateTime(2026, 9, 15, 10));
+  });
+
+  // Порядок задан руками в демо-данных. Без него SQLite возвращает ветки как
+  // ляжет, и список тасуется сам по себе от правки к правке.
+  test('Ветки идут в заданном порядке', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+
+    List<String> namesOf(Inheritance inh, String calendarId) => inh
+        .subcategories.values
+        .where((s) => s.calendarId == calendarId)
+        .map((s) => s.name)
+        .toList();
+
+    final loaded = await repo.loadInheritance();
+    final watched = await repo.watchInheritance().first;
+
+    expect(namesOf(loaded, 'c-study'), ['Английский', 'Экзамены', 'Курсы']);
+    expect(namesOf(watched, 'c-study'), ['Английский', 'Экзамены', 'Курсы']);
+    expect(namesOf(watched, 'c-sport'), ['Бассейн', 'Зал']);
   });
 
   test('Цепочка наследования собирается из базы', () async {
@@ -186,6 +207,66 @@ void main() {
         .first;
     expect(later.singleWhere((e) => e.title == 'Подъём пораньше').start,
         DateTime(2026, 8, 5, 6, 45));
+  });
+
+  test('Новый календарь появляется в цепочке наследования', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+
+    final id = repo.newId();
+    await repo.upsertCalendar(VCalendar(
+      id: id,
+      name: 'Дача',
+      iconName: 'pets',
+      color: const Color(0xFF7C5800),
+    ));
+
+    final inheritance = await repo.loadInheritance();
+    expect(inheritance.calendars[id]?.name, 'Дача');
+  });
+
+  test('Скрытый календарь пропадает из видов, но остаётся в списке', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+    await repo.setCalendarVisible('c-study', false);
+
+    final events = await repo
+        .watchRange(DateTime(2026, 7, 27), DateTime(2026, 7, 28))
+        .first;
+    expect(events.where((e) => e.calendarId == 'c-study'), isEmpty);
+
+    final inheritance = await repo.loadInheritance();
+    expect(inheritance.calendars['c-study']?.isVisible, isFalse);
+  });
+
+  test('Удалённый календарь уносит свои события', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+    await repo.deleteCalendar('c-study');
+
+    final events = await repo
+        .watchRange(DateTime(2026, 7, 27), DateTime(2026, 7, 28))
+        .first;
+    expect(events.where((e) => e.calendarId == 'c-study'), isEmpty);
+
+    final inheritance = await repo.loadInheritance();
+    expect(inheritance.calendars.containsKey('c-study'), isFalse);
+    expect(inheritance.subcategories.values.where((s) => s.calendarId == 'c-study'),
+        isEmpty);
+  });
+
+  test('Ветка заводится внутри календаря', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+
+    final id = repo.newId();
+    await repo.upsertSubcategory(VSubcategory(
+      id: id,
+      calendarId: 'c-study',
+      name: 'Курсы',
+    ));
+
+    final inheritance = await repo.loadInheritance();
+    expect(inheritance.subcategories[id]?.name, 'Курсы');
+    // Своего цвета нет — берётся от календаря.
+    expect(inheritance.colorOfSubcategory(inheritance.subcategories[id]!),
+        inheritance.calendars['c-study']!.color);
   });
 
   test('Удаление мягкое и попадает в очередь синхронизации', () async {

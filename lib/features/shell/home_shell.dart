@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/icon_registry.dart';
 import '../../l10n/app_localizations.dart';
-import '../../data/seed.dart';
 import '../access/access_screen.dart';
 import '../calendar/calendar_screen.dart';
 import '../calendars/calendars_screen.dart';
@@ -74,7 +73,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
 
   Widget _page() => switch (_tab) {
         0 => const CalendarScreen(),
-        1 => CalendarsScreen(inheritance: Seed.inheritance),
+        1 => const CalendarsScreen(),
         2 => AccessScreen(keys: demoKeys),
         _ => const SettingsScreen(),
       };

@@ -1,21 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:veha/data/seed.dart';
 import 'package:veha/features/access/access_screen.dart';
-import 'package:veha/features/calendars/calendars_screen.dart';
 
 import 'golden_harness.dart';
 
+// Экран календарей переехал на базу, и снимок у него свой —
+// `calendars_test.dart`. Здесь остался только доступ для ИИ.
 void main() {
   setUpAll(loadAppFonts);
-
-  testWidgets('Календари и ветки', (tester) async {
-    await pumpScreen(
-      tester,
-      Scaffold(body: SafeArea(child: CalendarsScreen(inheritance: Seed.inheritance))),
-    );
-    await shoot(tester, 'calendars');
-  });
 
   testWidgets('Доступ для ИИ', (tester) async {
     await pumpScreen(
