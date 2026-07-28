@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter/material.dart' show Color;
 import 'package:uuid/uuid.dart';
 
+import '../domain/occurrences.dart';
 import 'db/database.dart';
 import 'models.dart';
 import 'seed.dart';
@@ -36,38 +37,65 @@ class VehaRepository {
     );
   }
 
-  /// События за период. Многодневные попадают сюда же: их отфильтровывает
-  /// экран, потому что рисует их отдельной полосой.
+  /// События за период, уже развёрнутые в экземпляры. Многодневные попадают
+  /// сюда же: их отфильтровывает экран, потому что рисует их отдельной полосой.
+  ///
+  /// Три ветки отбора вместо одной: обычное событие берётся по пересечению с
+  /// окном, ряд — по одной только дате начала (он мог начаться в мае и идти до
+  /// сих пор), а выломанный экземпляр — по своему прежнему месту в ряду, иначе
+  /// перенесённое на неделю вперёд занятие оставит после себя призрак на
+  /// старом времени.
   Stream<List<VEvent>> watchRange(DateTime from, DateTime to) {
     final fromMs = from.millisecondsSinceEpoch;
     final toMs = to.millisecondsSinceEpoch;
 
+    final crossesWindow = db.events.start.isSmallerOrEqualValue(toMs) &
+        db.events.end.isBiggerOrEqualValue(fromMs);
+    final startedSeries = db.events.rrule.isNotNull() &
+        db.events.start.isSmallerOrEqualValue(toMs);
+    final movedFromWindow = db.events.originalStart.isBiggerOrEqualValue(fromMs) &
+        db.events.originalStart.isSmallerOrEqualValue(toMs);
+
+    // Оба присоединения дают декартово произведение полей на исключения, но
+    // и того и другого у события единицы, а взамен стрим сам просыпается на
+    // правку любой из трёх таблиц.
     final query = db.select(db.events).join([
       leftOuterJoin(db.fieldValues, db.fieldValues.eventId.equalsExp(db.events.id)),
+      leftOuterJoin(db.recurrenceExceptions,
+          db.recurrenceExceptions.eventId.equalsExp(db.events.id)),
     ])
       ..where(db.events.deletedAt.isNull() &
-          db.events.start.isSmallerOrEqualValue(toMs) &
-          db.events.end.isBiggerOrEqualValue(fromMs))
+          (crossesWindow | startedSeries | movedFromWindow))
       ..orderBy([OrderingTerm(expression: db.events.start)]);
 
     return query.watch().map((rows) {
       final byId = <String, VEvent>{};
-      final fields = <String, List<VFieldValue>>{};
+      final fields = <String, Set<VFieldValue>>{};
+      final excluded = <String, Set<DateTime>>{};
 
       for (final row in rows) {
         final e = row.readTable(db.events);
         byId.putIfAbsent(e.id, () => _toEvent(e));
+
         final fv = row.readTableOrNull(db.fieldValues);
         if (fv != null) {
-          fields.putIfAbsent(e.id, () => []).add(
+          fields.putIfAbsent(e.id, () => <VFieldValue>{}).add(
               VFieldValue(fieldId: fv.fieldId, value: fv.value));
+        }
+
+        final ex = row.readTableOrNull(db.recurrenceExceptions);
+        if (ex != null) {
+          excluded.putIfAbsent(e.id, () => <DateTime>{}).add(
+              DateTime.fromMillisecondsSinceEpoch(ex.excludedDate));
         }
       }
 
-      return [
+      final stored = [
         for (final e in byId.values)
-          fields[e.id] == null ? e : _withFields(e, fields[e.id]!),
+          fields[e.id] == null ? e : _withFields(e, fields[e.id]!.toList()),
       ];
+
+      return expandOccurrences(stored, from: from, to: to, excluded: excluded);
     });
   }
 
@@ -104,26 +132,53 @@ class VehaRepository {
   /// Каждая правка ложится и в таблицу, и в очередь синхронизации.
   /// Очередь наполняется с первого дня, даже пока сервера нет: иначе при его
   /// появлении накопленные изменения потеряются.
+  ///
+  /// Экземпляр, пришедший из развёртки, своей строки в базе не имеет. Правка
+  /// такого экземпляра выламывает его из ряда отдельной записью: перенос
+  /// одного занятия не должен сдвигать остальные.
   Future<void> upsertEvent(VEvent e) async {
     final now = DateTime.now().millisecondsSinceEpoch;
+    final id = e.isVirtual ? newId() : e.id;
+
     await db.transaction(() async {
       await db.into(db.events).insertOnConflictUpdate(EventsCompanion.insert(
-            id: e.id,
+            id: id,
             calendarId: e.calendarId,
             subcategoryId: Value(e.subcategoryId),
             title: e.title,
             location: Value(e.location),
             start: e.start.millisecondsSinceEpoch,
             end: e.end.millisecondsSinceEpoch,
-            timezone: 'Europe/Chisinau',
+            timezone: e.timezone,
             isAllDay: Value(e.isAllDay),
             color: Value(e.color?.toARGB32()),
             icon: Value(e.iconName),
-            rrule: Value(e.rrule),
+            // Правило остаётся у ряда: выломанный экземпляр повторяется через
+            // него, своего повтора у него нет.
+            rrule: Value(e.isVirtual ? null : e.rrule),
+            recurrenceId: Value(e.recurrenceId),
+            originalStart:
+                Value(e.originalStart?.millisecondsSinceEpoch),
             createdAt: now,
             updatedAt: now,
           ));
-      await _enqueue('event', e.id, 'upsert');
+      await _enqueue('event', id, 'upsert');
+    });
+  }
+
+  /// Отменяет одно занятие ряда: «на этой неделе английского не будет».
+  ///
+  /// Ряд остаётся жить, в базе появляется пропуск. Хранится именно исходное
+  /// время экземпляра — то, на котором развёртка его и порождает.
+  Future<void> skipOccurrence(String seriesId, DateTime originalStart) async {
+    await db.transaction(() async {
+      await db.into(db.recurrenceExceptions).insertOnConflictUpdate(
+            RecurrenceExceptionsCompanion.insert(
+              eventId: seriesId,
+              excludedDate: originalStart.millisecondsSinceEpoch,
+            ),
+          );
+      await _enqueue('event', seriesId, 'upsert');
     });
   }
 
@@ -271,6 +326,10 @@ class VehaRepository {
         iconName: e.icon,
         isAllDay: e.isAllDay,
         rrule: e.rrule,
+        recurrenceId: e.recurrenceId,
+        originalStart: e.originalStart == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(e.originalStart!),
         timezone: e.timezone,
         location: e.location,
       );
@@ -286,6 +345,8 @@ class VehaRepository {
         iconName: e.iconName,
         isAllDay: e.isAllDay,
         rrule: e.rrule,
+        recurrenceId: e.recurrenceId,
+        originalStart: e.originalStart,
         timezone: e.timezone,
         location: e.location,
         fields: fields,

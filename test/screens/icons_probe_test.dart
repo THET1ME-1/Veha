@@ -7,7 +7,7 @@ import 'golden_harness.dart';
 void main() {
   setUpAll(loadAppFonts);
 
-  testWidgets('реестр иконок', (tester) async {
+  testWidgets('Реестр иконок', (tester) async {
     await pumpScreen(
       tester,
       Scaffold(

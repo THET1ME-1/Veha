@@ -8,8 +8,8 @@ void main() {
   String d(DateTime x) =>
       '${x.day}.${x.month} ${x.hour.toString().padLeft(2, '0')}:${x.minute.toString().padLeft(2, '0')}';
 
-  group('разворачивание правила', () {
-    test('каждые 2 недели по понедельникам и четвергам', () {
+  group('Разворачивание правила', () {
+    test('Каждые 2 недели по понедельникам и четвергам', () {
       final dates = Recurrence.expand(
         rrule: Recurrence.weekly(interval: 2, weekdays: {1, 4}),
         start: DateTime(2026, 7, 27, 16),
@@ -27,7 +27,7 @@ void main() {
       ]);
     });
 
-    test('последняя пятница месяца', () {
+    test('Последняя пятница месяца', () {
       final dates = Recurrence.expand(
         rrule: Recurrence.monthlyByPosition(weekday: 5, position: -1),
         start: DateTime(2026, 7, 31, 18),
@@ -43,7 +43,7 @@ void main() {
       ]);
     });
 
-    test('пропущенные даты исключаются из ряда', () {
+    test('Пропущенные даты исключаются из ряда', () {
       final dates = Recurrence.expand(
         rrule: Recurrence.weekly(interval: 1, weekdays: {2}),
         start: DateTime(2026, 8, 4, 11),
@@ -55,7 +55,7 @@ void main() {
       expect(dates.map(d).toList(), ['4.8 11:00', '18.8 11:00']);
     });
 
-    test('окончание после N повторов', () {
+    test('Окончание после N повторов', () {
       final dates = Recurrence.expand(
         rrule: Recurrence.weekly(interval: 1, weekdays: {1}, count: 3),
         start: DateTime(2026, 7, 27, 9),
@@ -68,9 +68,9 @@ void main() {
     });
   });
 
-  group('перевод часов', () {
+  group('Перевод часов', () {
     // В Молдове часы переводят в последнее воскресенье марта и октября.
-    test('время события переживает переход на летнее время', () {
+    test('Время события переживает переход на летнее время', () {
       final dates = Recurrence.expand(
         rrule: Recurrence.weekly(interval: 1, weekdays: {1}),
         start: DateTime(2027, 3, 22, 16),
@@ -82,7 +82,7 @@ void main() {
       expect(dates.map(d).toList(), ['22.3 16:00', '29.3 16:00', '5.4 16:00']);
     });
 
-    test('время события переживает переход на зимнее время', () {
+    test('Время события переживает переход на зимнее время', () {
       final dates = Recurrence.expand(
         rrule: Recurrence.weekly(interval: 1, weekdays: {1}),
         start: DateTime(2026, 10, 19, 16),
@@ -94,8 +94,8 @@ void main() {
     });
   });
 
-  group('абсолютный момент', () {
-    test('одно и то же настенное время даёт разный UTC летом и зимой', () {
+  group('Абсолютный момент', () {
+    test('Одно и то же настенное время даёт разный UTC летом и зимой', () {
       final summer = Recurrence.absoluteMoment(
           DateTime(2026, 7, 27, 16), 'Europe/Chisinau');
       final winter = Recurrence.absoluteMoment(
@@ -108,11 +108,11 @@ void main() {
     });
   });
 
-  group('подпись правила', () {
+  group('Подпись правила', () {
     const names = ['понедельникам', 'вторникам', 'средам', 'четвергам',
         'пятницам', 'субботам', 'воскресеньям'];
 
-    test('интервал вместе с днями недели', () {
+    test('Интервал вместе с днями недели', () {
       expect(
         Recurrence.describe(
           Recurrence.weekly(interval: 2, weekdays: {1, 4}),
@@ -122,7 +122,7 @@ void main() {
       );
     });
 
-    test('правило по позиции склоняется правильно', () {
+    test('Правило по позиции склоняется правильно', () {
       const nominative = ['понедельник', 'вторник', 'среда', 'четверг',
           'пятница', 'суббота', 'воскресенье'];
 

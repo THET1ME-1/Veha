@@ -3,7 +3,7 @@ import 'package:veha/features/repeat/repeat_screen.dart';
 
 void main() {
   group('nextDates', () {
-    test('каждые 2 недели по понедельникам и четвергам', () {
+    test('Каждые 2 недели по понедельникам и четвергам', () {
       // Отсчёт от понедельника 27 июля 2026: сама эта неделя считается тактом.
       final dates = nextDates(DateTime(2026, 7, 27), 2, {1, 4}, 5);
       expect(dates.map((d) => '${d.day}.${d.month}').toList(), [
@@ -15,12 +15,12 @@ void main() {
       ]);
     });
 
-    test('каждую неделю по средам', () {
+    test('Каждую неделю по средам', () {
       final dates = nextDates(DateTime(2026, 7, 27), 1, {3}, 3);
       expect(dates.map((d) => d.day).toList(), [29, 5, 12]);
     });
 
-    test('без выбранных дней правило пустое', () {
+    test('Без выбранных дней правило пустое', () {
       expect(nextDates(DateTime(2026, 7, 27), 2, {}, 5), isEmpty);
     });
   });

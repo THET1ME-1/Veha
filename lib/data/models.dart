@@ -48,7 +48,20 @@ class VFieldValue {
 
   final String fieldId;
   final String value;
+
+  /// Сравнение по содержимому: одно и то же значение приезжает из базы
+  /// несколько раз, когда запрос собирает поля вместе с исключениями ряда.
+  @override
+  bool operator ==(Object other) =>
+      other is VFieldValue && other.fieldId == fieldId && other.value == value;
+
+  @override
+  int get hashCode => Object.hash(fieldId, value);
 }
+
+/// Метка «поле не передавали». Без неё `copyWith(color: null)` не отличить от
+/// «оставь как было», а стереть свой цвет события нужно уметь.
+const Object _keep = Object();
 
 @immutable
 class VEvent {
@@ -63,6 +76,9 @@ class VEvent {
     this.iconName,
     this.isAllDay = false,
     this.rrule,
+    this.recurrenceId,
+    this.originalStart,
+    this.isVirtual = false,
     this.timezone = 'Europe/Chisinau',
     this.location,
     this.fields = const [],
@@ -82,6 +98,56 @@ class VEvent {
   /// на лету: хранить её отдельной строкой нельзя — правило поменяется,
   /// а подпись останется старой и будет врать.
   final String? rrule;
+
+  /// Ряд, из которого выломан этот экземпляр. Занятие перенесли с 16:00 на
+  /// 18:00 — в базе появляется отдельная строка с `recurrenceId` ряда и
+  /// [originalStart] на месте старого времени: по ней развёртка понимает,
+  /// какой виртуальный экземпляр заменить.
+  ///
+  /// У виртуальных экземпляров поле тоже заполнено — им нужен обратный путь
+  /// к записи ряда, у которой они забрали `id`.
+  final String? recurrenceId;
+
+  /// Время, на котором экземпляр стоял в ряду до правки.
+  final DateTime? originalStart;
+
+  /// Экземпляр ряда, а не самостоятельное событие.
+  bool get isOccurrence => recurrenceId != null;
+
+  /// Экземпляр, рождённый развёрткой: своей строки в базе у него нет.
+  /// Правка такого экземпляра выламывает его из ряда отдельной записью,
+  /// а не переписывает ряд целиком.
+  final bool isVirtual;
+
+  VEvent copyWith({
+    String? title,
+    DateTime? start,
+    DateTime? end,
+    Object? color = _keep,
+    Object? iconName = _keep,
+    bool? isAllDay,
+    Object? rrule = _keep,
+    Object? location = _keep,
+    List<VFieldValue>? fields,
+  }) =>
+      VEvent(
+        id: id,
+        calendarId: calendarId,
+        subcategoryId: subcategoryId,
+        title: title ?? this.title,
+        start: start ?? this.start,
+        end: end ?? this.end,
+        color: color == _keep ? this.color : color as Color?,
+        iconName: iconName == _keep ? this.iconName : iconName as String?,
+        isAllDay: isAllDay ?? this.isAllDay,
+        rrule: rrule == _keep ? this.rrule : rrule as String?,
+        recurrenceId: recurrenceId,
+        originalStart: originalStart,
+        isVirtual: isVirtual,
+        timezone: timezone,
+        location: location == _keep ? this.location : location as String?,
+        fields: fields ?? this.fields,
+      );
 
   /// Пояс события, IANA. Нужен для абсолютного момента напоминания:
   /// 16:00 в Кишинёве — разный UTC летом и зимой.
