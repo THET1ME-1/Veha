@@ -242,22 +242,30 @@ class VehaRepository {
   static bool _has(String? haystack, String needle) =>
       haystack != null && haystack.toLowerCase().contains(needle);
 
-  Future<List<VNote>> notesOf(String eventId) async {
-    final rows = await (db.select(db.eventNotes)
-          ..where((t) => t.eventId.equals(eventId) & t.deletedAt.isNull())
-          ..orderBy([(t) => OrderingTerm(expression: t.sortOrder)]))
-        .get();
-    return [
-      for (final n in rows)
-        VNote(
-          id: n.id,
-          eventId: n.eventId,
-          text: n.body,
-          color: n.color == null ? null : Color(n.color!),
-          sortOrder: n.sortOrder,
-        ),
-    ];
-  }
+  Future<List<VNote>> notesOf(String eventId) async =>
+      (await _notesQuery(eventId).get()).map(_toNote).toList();
+
+  /// Заметки события потоком: их правят на том же экране, где показывают,
+  /// и обновляться список должен сам.
+  Stream<List<VNote>> watchNotes(String eventId) =>
+      _notesQuery(eventId).watch().map((rows) => rows.map(_toNote).toList());
+
+  SimpleSelectStatement<EventNotes, EventNote> _notesQuery(String eventId) =>
+      db.select(db.eventNotes)
+        ..where((t) => t.eventId.equals(eventId) & t.deletedAt.isNull())
+        ..orderBy([
+          (t) => OrderingTerm(expression: t.sortOrder),
+          (t) => OrderingTerm(expression: t.createdAt),
+          (t) => OrderingTerm(expression: t.id),
+        ]);
+
+  static VNote _toNote(EventNote n) => VNote(
+        id: n.id,
+        eventId: n.eventId,
+        text: n.body,
+        color: n.color == null ? null : Color(n.color!),
+        sortOrder: n.sortOrder,
+      );
 
   Future<List<VFieldDef>> fieldsFor(String? calendarId) async {
     final rows = await _fieldDefsQuery().get();
@@ -443,6 +451,40 @@ class VehaRepository {
       await (db.update(db.events)..where((t) => t.subcategoryId.equals(id)))
           .write(const EventsCompanion(subcategoryId: Value(null)));
       await _enqueue('subcategory', id, 'delete');
+    });
+  }
+
+  // ---------- заметки ----------
+
+  /// Заметка внутри события. Свой цвет — четвёртый уровень наследования:
+  /// `null` означает «как у события», а не скопированный оттуда цвет.
+  Future<void> upsertNote(VNote n) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await db.transaction(() async {
+      await db.into(db.eventNotes).insertOnConflictUpdate(
+            EventNotesCompanion.insert(
+              id: n.id,
+              eventId: n.eventId,
+              body: n.text,
+              color: Value(n.color?.toARGB32()),
+              sortOrder: Value(n.sortOrder),
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
+      await _enqueue('note', n.id, 'upsert');
+    });
+  }
+
+  Future<void> deleteNote(String id) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await db.transaction(() async {
+      await (db.update(db.eventNotes)..where((t) => t.id.equals(id)))
+          .write(EventNotesCompanion(
+        deletedAt: Value(now),
+        updatedAt: Value(now),
+      ));
+      await _enqueue('note', id, 'delete');
     });
   }
 

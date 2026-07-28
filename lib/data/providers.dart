@@ -84,6 +84,14 @@ final rangeProvider =
   },
 );
 
+/// Заметки события. Семейство по ключу события: карточка держит их ровно
+/// столько, сколько открыта.
+final notesProvider =
+    StreamProvider.family<List<VNote>, String>((ref, eventId) async* {
+  await ref.watch(bootstrapProvider.future);
+  yield* ref.watch(repositoryProvider).watchNotes(eventId);
+});
+
 /// Поиск по запросу. Семейство, а не одно состояние: экран поиска живёт
 /// столько же, сколько запрос, и держать его в провайдере вручную незачем.
 final searchProvider =

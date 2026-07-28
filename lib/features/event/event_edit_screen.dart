@@ -12,6 +12,7 @@ import '../repeat/repeat_screen.dart' show askRepeatRule;
 import 'calendar_picker_sheet.dart';
 import '../../data/providers.dart';
 import 'field_value_sheet.dart';
+import 'note_sheet.dart';
 import 'look_sheet.dart';
 import 'reminders_sheet.dart';
 import '../calendar/widgets/month_header.dart' show AppFonts;
@@ -141,6 +142,74 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
     );
     if (value == null) return;
     setState(() => _draft = _draft.withField(def.id, value));
+  }
+
+  /// Заметки внутри события. Пишутся сразу в базу, не дожидаясь «Сохранить»:
+  /// событие уже существует, а записка — самостоятельная мысль.
+  Widget _notes(Color eventColor) {
+    final eventId = _draft.source!.recurrenceId ?? _draft.source!.id;
+    final notes = ref.watch(notesProvider(eventId)).valueOrNull ?? const <VNote>[];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const VBlockCap('Заметки'),
+        VBlock(children: [
+          for (var i = 0; i < notes.length; i++) ...[
+            if (i > 0) const VSep(),
+            _NoteRow(
+              note: notes[i],
+              eventColor: eventColor,
+              onTap: () => _editNote(notes[i], eventColor),
+            ),
+          ],
+          if (notes.isNotEmpty) const VSep(),
+          VRow(
+            icon: 'add',
+            value: 'Добавить заметку',
+            onTap: () => _addNote(eventId, eventColor, notes.length),
+          ),
+        ]),
+      ],
+    );
+  }
+
+  Future<void> _addNote(String eventId, Color eventColor, int count) async {
+    final draft = await askNote(context, inheritedColor: eventColor);
+    if (draft == null || draft.deleted) return;
+
+    final repo = ref.read(repositoryProvider);
+    await repo.upsertNote(VNote(
+      id: repo.newId(),
+      eventId: eventId,
+      text: draft.text,
+      color: draft.color,
+      sortOrder: count,
+    ));
+  }
+
+  Future<void> _editNote(VNote note, Color eventColor) async {
+    final draft = await askNote(
+      context,
+      text: note.text,
+      color: note.color,
+      inheritedColor: eventColor,
+      canDelete: true,
+    );
+    if (draft == null) return;
+
+    final repo = ref.read(repositoryProvider);
+    if (draft.deleted) {
+      await repo.deleteNote(note.id);
+    } else {
+      await repo.upsertNote(VNote(
+        id: note.id,
+        eventId: note.eventId,
+        text: draft.text,
+        color: draft.color,
+        sortOrder: note.sortOrder,
+      ));
+    }
   }
 
   Future<void> _pickReminders() async {
@@ -454,6 +523,10 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
             ],
           ]),
         ],
+        // Заметки принадлежат сохранённому событию: у нового ещё нет ключа,
+        // к которому их привязать, и держать их в черновике значит заводить
+        // вторую правду о том же.
+        if (_draft.isEditing) _notes(color),
         if (widget.onDelete != null) ...[
           const SizedBox(height: 18),
           TextButton.icon(
@@ -627,6 +700,57 @@ class _Stamp extends StatelessWidget {
             fontSize: 13.5,
             fontWeight: FontWeight.w700,
             color: scheme.onSecondaryContainer,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Строка заметки: заливка цветом заметки, текст в тон.
+class _NoteRow extends StatelessWidget {
+  const _NoteRow({
+    required this.note,
+    required this.eventColor,
+    required this.onTap,
+  });
+
+  final VNote note;
+  final Color eventColor;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final ink = EventColors.of(note.color ?? eventColor, theme.brightness);
+
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(14, 11, 14, 11),
+          decoration: ShapeDecoration(
+            color: ink.background,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(18)),
+            ),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  note.text,
+                  style: TextStyle(
+                    fontFamily: AppFonts.body,
+                    fontSize: 13.5,
+                    height: 1.35,
+                    fontWeight: FontWeight.w500,
+                    color: ink.foreground,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

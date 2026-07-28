@@ -115,6 +115,28 @@ void main() {
         reason: 'Значение дошло до базы и вернулось в форму');
   });
 
+  testWidgets('Заметка заводится и остаётся у события', (tester) async {
+    await pumpScreen(tester, const HomeShell());
+
+    // Правка существующего события: у нового ключа ещё нет, и заметке не к
+    // чему привязаться.
+    await tester.tap(find.text('Завтрак').first);
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(find.text('Добавить заметку'), 200,
+        scrollable: find.byType(Scrollable).first);
+    await tester.tap(find.text('Добавить заметку'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField).last, 'Купить кофе');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Готово'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Купить кофе'), findsOneWidget,
+        reason: 'Заметка ушла в базу и вернулась потоком');
+  });
+
   testWidgets('Снимок быстрого листа', (tester) async {
     await pumpScreen(tester, const HomeShell());
 
