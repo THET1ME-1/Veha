@@ -931,6 +931,65 @@ class VehaRepository {
     );
   }
 
+  /// Пауза ряда: занятия в окне пропускаются, ряд живёт дальше.
+  ///
+  /// Каникулы, отпуск, болезнь — это не «отменить одно» и не «убить весь
+  /// ряд», а отрезок без занятий. Пропуски пишутся теми же исключениями,
+  /// что и отмена одного занятия, поэтому возвращаются так же.
+  ///
+  /// Возвращает даты пропущенного — вызывающий отдаёт их полоске «Вернуть».
+  Future<List<DateTime>> pauseSeries(
+    String seriesId,
+    DateTime from,
+    DateTime to,
+  ) async {
+    final row = await (db.select(db.events)..where((t) => t.id.equals(seriesId)))
+        .getSingleOrNull();
+    if (row?.rrule == null) return const [];
+
+    final series = _toEvent(row!);
+    final occurrences =
+        expandOccurrences([series], from: from, to: to, excluded: const {});
+
+    final skipped = <DateTime>[];
+    await db.transaction(() async {
+      for (final o in occurrences) {
+        final moment = o.originalStart ?? o.start;
+        await db.into(db.recurrenceExceptions).insertOnConflictUpdate(
+              RecurrenceExceptionsCompanion.insert(
+                eventId: seriesId,
+                excludedDate: moment.millisecondsSinceEpoch,
+              ),
+            );
+        skipped.add(moment);
+      }
+      if (skipped.isNotEmpty) await _enqueue('event', seriesId, 'upsert');
+    });
+    return skipped;
+  }
+
+  /// Возвращает в ряд пачку пропущенных занятий — обратная сторона паузы.
+  Future<void> resumeSeries(String seriesId, List<DateTime> moments) async {
+    if (moments.isEmpty) return;
+    await db.transaction(() async {
+      for (final moment in moments) {
+        await (db.delete(db.recurrenceExceptions)
+              ..where((t) =>
+                  t.eventId.equals(seriesId) &
+                  t.excludedDate.equals(moment.millisecondsSinceEpoch)))
+            .go();
+      }
+      await _enqueue('event', seriesId, 'upsert');
+    });
+  }
+
+  /// События одного дня, уже развёрнутые. Нужны действиям, которые работают
+  /// с днём целиком: сдвинуть остаток, повторить день.
+  Future<List<VEvent>> eventsOfDay(DateTime day) {
+    final from = DateTime(day.year, day.month, day.day);
+    return watchRange(from, from.add(const Duration(days: 1))).first;
+  }
+
   /// Обрывает ряд на дате занятия: «это и следующие удалить».
   ///
   /// Прошедшие занятия остаются — их человек прожил, и стирать их задним

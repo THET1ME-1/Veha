@@ -1512,5 +1512,130 @@
         "type": "String"
       }
     }
+  },
+  "moveTitle": "Przenieś",
+  "@moveTitle": {
+    "description": "moveTitle"
+  },
+  "moveTomorrow": "Na jutro",
+  "@moveTomorrow": {
+    "description": "moveTomorrow"
+  },
+  "moveNextWeek": "Za tydzień",
+  "@moveNextWeek": {
+    "description": "moveNextWeek"
+  },
+  "movePickDate": "Wybierz datę",
+  "@movePickDate": {
+    "description": "movePickDate"
+  },
+  "msgEventMoved": "Przeniesiono na {day}",
+  "@msgEventMoved": {
+    "description": "msgEventMoved",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "actionShare": "Udostępnij",
+  "@actionShare": {
+    "description": "actionShare"
+  },
+  "msgEventCopiedText": "Wydarzenie skopiowane jako tekst",
+  "@msgEventCopiedText": {
+    "description": "msgEventCopiedText"
+  },
+  "eventOpenMap": "Otwórz na mapie",
+  "@eventOpenMap": {
+    "description": "eventOpenMap"
+  },
+  "previewActions": "Działania",
+  "@previewActions": {
+    "description": "previewActions"
+  },
+  "seriesPause": "Pauza serii",
+  "@seriesPause": {
+    "description": "seriesPause"
+  },
+  "seriesPauseWeeks": "Bez {weeks} tyg.",
+  "@seriesPauseWeeks": {
+    "description": "seriesPauseWeeks",
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "msgSeriesPaused": "Pominięte terminy: {count}",
+  "@msgSeriesPaused": {
+    "description": "msgSeriesPaused",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lookReset": "Jak gałąź",
+  "@lookReset": {
+    "description": "lookReset"
+  },
+  "msgLookReset": "Kolor i ikona znowu dziedziczone",
+  "@msgLookReset": {
+    "description": "msgLookReset"
+  },
+  "toTask": "Zamień w zadanie",
+  "@toTask": {
+    "description": "toTask"
+  },
+  "msgBecameTask": "Wydarzenie stało się zadaniem",
+  "@msgBecameTask": {
+    "description": "msgBecameTask"
+  },
+  "shiftRest": "Przesuń resztę dnia",
+  "@shiftRest": {
+    "description": "shiftRest"
+  },
+  "msgDayShifted": "Przesunięto dalej: {count}",
+  "@msgDayShifted": {
+    "description": "msgDayShifted",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "repeatDay": "Powtórz dzień",
+  "@repeatDay": {
+    "description": "repeatDay"
+  },
+  "msgDayCopied": "Dzień skopiowany na {day}: wydarzeń {count}",
+  "@msgDayCopied": {
+    "description": "msgDayCopied",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stretchToNext": "Rozciągnij do następnego",
+  "@stretchToNext": {
+    "description": "stretchToNext"
+  },
+  "msgStretched": "Wydarzenie trwa do {time}",
+  "@msgStretched": {
+    "description": "msgStretched",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "nothingToShift": "Dalej tego dnia nic nie ma",
+  "@nothingToShift": {
+    "description": "nothingToShift"
   }
 }

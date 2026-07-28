@@ -1211,4 +1211,85 @@ class LPl extends L {
   String eventCopySuffix(String title) {
     return '$title — kopia';
   }
+
+  @override
+  String get moveTitle => 'Przenieś';
+
+  @override
+  String get moveTomorrow => 'Na jutro';
+
+  @override
+  String get moveNextWeek => 'Za tydzień';
+
+  @override
+  String get movePickDate => 'Wybierz datę';
+
+  @override
+  String msgEventMoved(String day) {
+    return 'Przeniesiono na $day';
+  }
+
+  @override
+  String get actionShare => 'Udostępnij';
+
+  @override
+  String get msgEventCopiedText => 'Wydarzenie skopiowane jako tekst';
+
+  @override
+  String get eventOpenMap => 'Otwórz na mapie';
+
+  @override
+  String get previewActions => 'Działania';
+
+  @override
+  String get seriesPause => 'Pauza serii';
+
+  @override
+  String seriesPauseWeeks(int weeks) {
+    return 'Bez $weeks tyg.';
+  }
+
+  @override
+  String msgSeriesPaused(int count) {
+    return 'Pominięte terminy: $count';
+  }
+
+  @override
+  String get lookReset => 'Jak gałąź';
+
+  @override
+  String get msgLookReset => 'Kolor i ikona znowu dziedziczone';
+
+  @override
+  String get toTask => 'Zamień w zadanie';
+
+  @override
+  String get msgBecameTask => 'Wydarzenie stało się zadaniem';
+
+  @override
+  String get shiftRest => 'Przesuń resztę dnia';
+
+  @override
+  String msgDayShifted(int count) {
+    return 'Przesunięto dalej: $count';
+  }
+
+  @override
+  String get repeatDay => 'Powtórz dzień';
+
+  @override
+  String msgDayCopied(String day, int count) {
+    return 'Dzień skopiowany na $day: wydarzeń $count';
+  }
+
+  @override
+  String get stretchToNext => 'Rozciągnij do następnego';
+
+  @override
+  String msgStretched(String time) {
+    return 'Wydarzenie trwa do $time';
+  }
+
+  @override
+  String get nothingToShift => 'Dalej tego dnia nic nie ma';
 }

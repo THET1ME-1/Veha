@@ -13,16 +13,14 @@ void main() {
 
   Future<void> openView(WidgetTester tester, String name) async {
     await pumpScreen(tester, const HomeShell());
-    await tester.tap(find.text(name));
-    await tester.pumpAndSettle();
+    await openEventEditor(tester, find.text(name));
   }
 
   testWidgets('Событие в неделе открывается тапом', (tester) async {
     await openView(tester, 'Неделя');
 
     // Пилюли недели — одни иконки: у английского это шапочка.
-    await tester.tap(find.byIcon(VehaIcons.byName('school')).first);
-    await tester.pumpAndSettle();
+    await openEventEditor(tester, find.byIcon(VehaIcons.byName('school')).first);
 
     expect(find.text('Сохранить'), findsOneWidget,
         reason: 'Открылась форма события');
@@ -31,8 +29,7 @@ void main() {
   testWidgets('Полоса многодневного события открывается тапом', (tester) async {
     await pumpScreen(tester, const HomeShell());
 
-    await tester.tap(find.text('Абонемент в бассейн').first);
-    await tester.pumpAndSettle();
+    await openEventEditor(tester, find.text('Абонемент в бассейн').first);
 
     expect(find.text('Сохранить'), findsOneWidget);
   });

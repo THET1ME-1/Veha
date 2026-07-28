@@ -2164,6 +2164,144 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'{title} — копия'**
   String eventCopySuffix(String title);
+
+  /// moveTitle
+  ///
+  /// In ru, this message translates to:
+  /// **'Перенести'**
+  String get moveTitle;
+
+  /// moveTomorrow
+  ///
+  /// In ru, this message translates to:
+  /// **'На завтра'**
+  String get moveTomorrow;
+
+  /// moveNextWeek
+  ///
+  /// In ru, this message translates to:
+  /// **'Через неделю'**
+  String get moveNextWeek;
+
+  /// movePickDate
+  ///
+  /// In ru, this message translates to:
+  /// **'Выбрать дату'**
+  String get movePickDate;
+
+  /// msgEventMoved
+  ///
+  /// In ru, this message translates to:
+  /// **'Событие перенесено на {day}'**
+  String msgEventMoved(String day);
+
+  /// actionShare
+  ///
+  /// In ru, this message translates to:
+  /// **'Поделиться'**
+  String get actionShare;
+
+  /// msgEventCopiedText
+  ///
+  /// In ru, this message translates to:
+  /// **'Событие скопировано текстом'**
+  String get msgEventCopiedText;
+
+  /// eventOpenMap
+  ///
+  /// In ru, this message translates to:
+  /// **'Открыть на карте'**
+  String get eventOpenMap;
+
+  /// previewActions
+  ///
+  /// In ru, this message translates to:
+  /// **'Действия'**
+  String get previewActions;
+
+  /// seriesPause
+  ///
+  /// In ru, this message translates to:
+  /// **'Пауза ряда'**
+  String get seriesPause;
+
+  /// seriesPauseWeeks
+  ///
+  /// In ru, this message translates to:
+  /// **'Не будет {weeks} нед.'**
+  String seriesPauseWeeks(int weeks);
+
+  /// msgSeriesPaused
+  ///
+  /// In ru, this message translates to:
+  /// **'Пропущено занятий: {count}'**
+  String msgSeriesPaused(int count);
+
+  /// lookReset
+  ///
+  /// In ru, this message translates to:
+  /// **'Как у ветки'**
+  String get lookReset;
+
+  /// msgLookReset
+  ///
+  /// In ru, this message translates to:
+  /// **'Цвет и иконка снова наследуются'**
+  String get msgLookReset;
+
+  /// toTask
+  ///
+  /// In ru, this message translates to:
+  /// **'Сделать задачей'**
+  String get toTask;
+
+  /// msgBecameTask
+  ///
+  /// In ru, this message translates to:
+  /// **'Событие стало задачей'**
+  String get msgBecameTask;
+
+  /// shiftRest
+  ///
+  /// In ru, this message translates to:
+  /// **'Сдвинуть остаток дня'**
+  String get shiftRest;
+
+  /// msgDayShifted
+  ///
+  /// In ru, this message translates to:
+  /// **'Сдвинуто следом: {count}'**
+  String msgDayShifted(int count);
+
+  /// repeatDay
+  ///
+  /// In ru, this message translates to:
+  /// **'Повторить день'**
+  String get repeatDay;
+
+  /// msgDayCopied
+  ///
+  /// In ru, this message translates to:
+  /// **'День перенесён на {day}: событий {count}'**
+  String msgDayCopied(String day, int count);
+
+  /// stretchToNext
+  ///
+  /// In ru, this message translates to:
+  /// **'Растянуть до следующего'**
+  String get stretchToNext;
+
+  /// msgStretched
+  ///
+  /// In ru, this message translates to:
+  /// **'Событие идёт до {time}'**
+  String msgStretched(String time);
+
+  /// nothingToShift
+  ///
+  /// In ru, this message translates to:
+  /// **'Дальше в этом дне ничего нет'**
+  String get nothingToShift;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

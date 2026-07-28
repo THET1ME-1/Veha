@@ -1204,4 +1204,85 @@ class LDe extends L {
   String eventCopySuffix(String title) {
     return '$title — Kopie';
   }
+
+  @override
+  String get moveTitle => 'Verschieben';
+
+  @override
+  String get moveTomorrow => 'Auf morgen';
+
+  @override
+  String get moveNextWeek => 'In einer Woche';
+
+  @override
+  String get movePickDate => 'Datum wählen';
+
+  @override
+  String msgEventMoved(String day) {
+    return 'Verschoben auf $day';
+  }
+
+  @override
+  String get actionShare => 'Teilen';
+
+  @override
+  String get msgEventCopiedText => 'Termin als Text kopiert';
+
+  @override
+  String get eventOpenMap => 'Auf der Karte öffnen';
+
+  @override
+  String get previewActions => 'Aktionen';
+
+  @override
+  String get seriesPause => 'Reihe pausieren';
+
+  @override
+  String seriesPauseWeeks(int weeks) {
+    return '$weeks Wo. aus';
+  }
+
+  @override
+  String msgSeriesPaused(int count) {
+    return 'Übersprungene Termine: $count';
+  }
+
+  @override
+  String get lookReset => 'Wie der Zweig';
+
+  @override
+  String get msgLookReset => 'Farbe und Symbol werden wieder geerbt';
+
+  @override
+  String get toTask => 'In Aufgabe umwandeln';
+
+  @override
+  String get msgBecameTask => 'Der Termin ist jetzt eine Aufgabe';
+
+  @override
+  String get shiftRest => 'Rest des Tages verschieben';
+
+  @override
+  String msgDayShifted(int count) {
+    return 'Mitverschoben: $count';
+  }
+
+  @override
+  String get repeatDay => 'Tag wiederholen';
+
+  @override
+  String msgDayCopied(String day, int count) {
+    return 'Tag auf $day kopiert: $count Termine';
+  }
+
+  @override
+  String get stretchToNext => 'Bis zum nächsten dehnen';
+
+  @override
+  String msgStretched(String time) {
+    return 'Der Termin läuft bis $time';
+  }
+
+  @override
+  String get nothingToShift => 'An dem Tag kommt nichts mehr';
 }

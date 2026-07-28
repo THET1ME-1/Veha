@@ -1512,5 +1512,130 @@
         "type": "String"
       }
     }
+  },
+  "moveTitle": "Move",
+  "@moveTitle": {
+    "description": "moveTitle"
+  },
+  "moveTomorrow": "To tomorrow",
+  "@moveTomorrow": {
+    "description": "moveTomorrow"
+  },
+  "moveNextWeek": "In a week",
+  "@moveNextWeek": {
+    "description": "moveNextWeek"
+  },
+  "movePickDate": "Pick a date",
+  "@movePickDate": {
+    "description": "movePickDate"
+  },
+  "msgEventMoved": "Moved to {day}",
+  "@msgEventMoved": {
+    "description": "msgEventMoved",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "actionShare": "Share",
+  "@actionShare": {
+    "description": "actionShare"
+  },
+  "msgEventCopiedText": "Event copied as text",
+  "@msgEventCopiedText": {
+    "description": "msgEventCopiedText"
+  },
+  "eventOpenMap": "Open on the map",
+  "@eventOpenMap": {
+    "description": "eventOpenMap"
+  },
+  "previewActions": "Actions",
+  "@previewActions": {
+    "description": "previewActions"
+  },
+  "seriesPause": "Pause the series",
+  "@seriesPause": {
+    "description": "seriesPause"
+  },
+  "seriesPauseWeeks": "Skip {weeks} wk",
+  "@seriesPauseWeeks": {
+    "description": "seriesPauseWeeks",
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "msgSeriesPaused": "Occurrences skipped: {count}",
+  "@msgSeriesPaused": {
+    "description": "msgSeriesPaused",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lookReset": "Back to branch",
+  "@lookReset": {
+    "description": "lookReset"
+  },
+  "msgLookReset": "Color and icon are inherited again",
+  "@msgLookReset": {
+    "description": "msgLookReset"
+  },
+  "toTask": "Turn into a task",
+  "@toTask": {
+    "description": "toTask"
+  },
+  "msgBecameTask": "The event is a task now",
+  "@msgBecameTask": {
+    "description": "msgBecameTask"
+  },
+  "shiftRest": "Shift the rest of the day",
+  "@shiftRest": {
+    "description": "shiftRest"
+  },
+  "msgDayShifted": "Shifted along: {count}",
+  "@msgDayShifted": {
+    "description": "msgDayShifted",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "repeatDay": "Repeat this day",
+  "@repeatDay": {
+    "description": "repeatDay"
+  },
+  "msgDayCopied": "Day copied to {day}: {count} events",
+  "@msgDayCopied": {
+    "description": "msgDayCopied",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stretchToNext": "Stretch to the next one",
+  "@stretchToNext": {
+    "description": "stretchToNext"
+  },
+  "msgStretched": "The event now runs until {time}",
+  "@msgStretched": {
+    "description": "msgStretched",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "nothingToShift": "Nothing else that day",
+  "@nothingToShift": {
+    "description": "nothingToShift"
   }
 }

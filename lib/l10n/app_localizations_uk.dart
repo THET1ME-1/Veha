@@ -1211,4 +1211,85 @@ class LUk extends L {
   String eventCopySuffix(String title) {
     return '$title — копія';
   }
+
+  @override
+  String get moveTitle => 'Перенести';
+
+  @override
+  String get moveTomorrow => 'На завтра';
+
+  @override
+  String get moveNextWeek => 'Через тиждень';
+
+  @override
+  String get movePickDate => 'Вибрати дату';
+
+  @override
+  String msgEventMoved(String day) {
+    return 'Подію перенесено на $day';
+  }
+
+  @override
+  String get actionShare => 'Поділитися';
+
+  @override
+  String get msgEventCopiedText => 'Подію скопійовано текстом';
+
+  @override
+  String get eventOpenMap => 'Відкрити на карті';
+
+  @override
+  String get previewActions => 'Дії';
+
+  @override
+  String get seriesPause => 'Пауза ряду';
+
+  @override
+  String seriesPauseWeeks(int weeks) {
+    return 'Не буде $weeks тижн.';
+  }
+
+  @override
+  String msgSeriesPaused(int count) {
+    return 'Пропущено занять: $count';
+  }
+
+  @override
+  String get lookReset => 'Як у гілки';
+
+  @override
+  String get msgLookReset => 'Колір та іконка знову успадковуються';
+
+  @override
+  String get toTask => 'Зробити завданням';
+
+  @override
+  String get msgBecameTask => 'Подія стала завданням';
+
+  @override
+  String get shiftRest => 'Зсунути решту дня';
+
+  @override
+  String msgDayShifted(int count) {
+    return 'Зсунуто слідом: $count';
+  }
+
+  @override
+  String get repeatDay => 'Повторити день';
+
+  @override
+  String msgDayCopied(String day, int count) {
+    return 'День перенесено на $day: подій $count';
+  }
+
+  @override
+  String get stretchToNext => 'Розтягнути до наступного';
+
+  @override
+  String msgStretched(String time) {
+    return 'Подія триває до $time';
+  }
+
+  @override
+  String get nothingToShift => 'Далі цього дня нічого немає';
 }

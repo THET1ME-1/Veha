@@ -1209,4 +1209,85 @@ class LRu extends L {
   String eventCopySuffix(String title) {
     return '$title — копия';
   }
+
+  @override
+  String get moveTitle => 'Перенести';
+
+  @override
+  String get moveTomorrow => 'На завтра';
+
+  @override
+  String get moveNextWeek => 'Через неделю';
+
+  @override
+  String get movePickDate => 'Выбрать дату';
+
+  @override
+  String msgEventMoved(String day) {
+    return 'Событие перенесено на $day';
+  }
+
+  @override
+  String get actionShare => 'Поделиться';
+
+  @override
+  String get msgEventCopiedText => 'Событие скопировано текстом';
+
+  @override
+  String get eventOpenMap => 'Открыть на карте';
+
+  @override
+  String get previewActions => 'Действия';
+
+  @override
+  String get seriesPause => 'Пауза ряда';
+
+  @override
+  String seriesPauseWeeks(int weeks) {
+    return 'Не будет $weeks нед.';
+  }
+
+  @override
+  String msgSeriesPaused(int count) {
+    return 'Пропущено занятий: $count';
+  }
+
+  @override
+  String get lookReset => 'Как у ветки';
+
+  @override
+  String get msgLookReset => 'Цвет и иконка снова наследуются';
+
+  @override
+  String get toTask => 'Сделать задачей';
+
+  @override
+  String get msgBecameTask => 'Событие стало задачей';
+
+  @override
+  String get shiftRest => 'Сдвинуть остаток дня';
+
+  @override
+  String msgDayShifted(int count) {
+    return 'Сдвинуто следом: $count';
+  }
+
+  @override
+  String get repeatDay => 'Повторить день';
+
+  @override
+  String msgDayCopied(String day, int count) {
+    return 'День перенесён на $day: событий $count';
+  }
+
+  @override
+  String get stretchToNext => 'Растянуть до следующего';
+
+  @override
+  String msgStretched(String time) {
+    return 'Событие идёт до $time';
+  }
+
+  @override
+  String get nothingToShift => 'Дальше в этом дне ничего нет';
 }

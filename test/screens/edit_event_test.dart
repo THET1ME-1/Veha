@@ -12,8 +12,7 @@ void main() {
 
   Future<void> openEvent(WidgetTester tester, String title) async {
     await pumpScreen(tester, const HomeShell());
-    await tester.tap(find.text(title).first);
-    await tester.pumpAndSettle();
+    await openEventEditor(tester, find.text(title).first);
   }
 
   testWidgets('Новое название разового события сохраняется', (tester) async {
@@ -37,8 +36,7 @@ void main() {
     await tester.tap(find.text('Сохранить'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Поздний завтрак').first);
-    await tester.pumpAndSettle();
+    await openEventEditor(tester, find.text('Поздний завтрак').first);
 
     expect(find.text('Поздний завтрак'), findsWidgets,
         reason: 'Название приехало из базы, а не осталось на экране');
@@ -64,8 +62,7 @@ void main() {
     await tester.tap(find.text('Неделя'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(VehaIcons.byName('coffee')).first);
-    await tester.pumpAndSettle();
+    await openEventEditor(tester, find.byIcon(VehaIcons.byName('coffee')).first);
 
     await tester.enterText(find.byType(TextField).first, 'Кофе с Ниной');
     await tester.pumpAndSettle();

@@ -1200,4 +1200,85 @@ class LRo extends L {
   String eventCopySuffix(String title) {
     return '$title — copie';
   }
+
+  @override
+  String get moveTitle => 'Mută';
+
+  @override
+  String get moveTomorrow => 'Pe mâine';
+
+  @override
+  String get moveNextWeek => 'Peste o săptămână';
+
+  @override
+  String get movePickDate => 'Alege data';
+
+  @override
+  String msgEventMoved(String day) {
+    return 'Mutat pe $day';
+  }
+
+  @override
+  String get actionShare => 'Partajează';
+
+  @override
+  String get msgEventCopiedText => 'Evenimentul a fost copiat ca text';
+
+  @override
+  String get eventOpenMap => 'Deschide pe hartă';
+
+  @override
+  String get previewActions => 'Acțiuni';
+
+  @override
+  String get seriesPause => 'Pauză la serie';
+
+  @override
+  String seriesPauseWeeks(int weeks) {
+    return 'Sar $weeks săpt.';
+  }
+
+  @override
+  String msgSeriesPaused(int count) {
+    return 'Ocurențe sărite: $count';
+  }
+
+  @override
+  String get lookReset => 'Ca la ramură';
+
+  @override
+  String get msgLookReset => 'Culoarea și pictograma se moștenesc din nou';
+
+  @override
+  String get toTask => 'Fă din el o sarcină';
+
+  @override
+  String get msgBecameTask => 'Evenimentul a devenit sarcină';
+
+  @override
+  String get shiftRest => 'Mută restul zilei';
+
+  @override
+  String msgDayShifted(int count) {
+    return 'Mutate după el: $count';
+  }
+
+  @override
+  String get repeatDay => 'Repetă ziua';
+
+  @override
+  String msgDayCopied(String day, int count) {
+    return 'Ziua a fost copiată pe $day: $count evenimente';
+  }
+
+  @override
+  String get stretchToNext => 'Întinde până la următorul';
+
+  @override
+  String msgStretched(String time) {
+    return 'Evenimentul ține până la $time';
+  }
+
+  @override
+  String get nothingToShift => 'Nimic mai departe în ziua asta';
 }

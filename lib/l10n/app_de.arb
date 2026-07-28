@@ -1512,5 +1512,130 @@
         "type": "String"
       }
     }
+  },
+  "moveTitle": "Verschieben",
+  "@moveTitle": {
+    "description": "moveTitle"
+  },
+  "moveTomorrow": "Auf morgen",
+  "@moveTomorrow": {
+    "description": "moveTomorrow"
+  },
+  "moveNextWeek": "In einer Woche",
+  "@moveNextWeek": {
+    "description": "moveNextWeek"
+  },
+  "movePickDate": "Datum wählen",
+  "@movePickDate": {
+    "description": "movePickDate"
+  },
+  "msgEventMoved": "Verschoben auf {day}",
+  "@msgEventMoved": {
+    "description": "msgEventMoved",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "actionShare": "Teilen",
+  "@actionShare": {
+    "description": "actionShare"
+  },
+  "msgEventCopiedText": "Termin als Text kopiert",
+  "@msgEventCopiedText": {
+    "description": "msgEventCopiedText"
+  },
+  "eventOpenMap": "Auf der Karte öffnen",
+  "@eventOpenMap": {
+    "description": "eventOpenMap"
+  },
+  "previewActions": "Aktionen",
+  "@previewActions": {
+    "description": "previewActions"
+  },
+  "seriesPause": "Reihe pausieren",
+  "@seriesPause": {
+    "description": "seriesPause"
+  },
+  "seriesPauseWeeks": "{weeks} Wo. aus",
+  "@seriesPauseWeeks": {
+    "description": "seriesPauseWeeks",
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "msgSeriesPaused": "Übersprungene Termine: {count}",
+  "@msgSeriesPaused": {
+    "description": "msgSeriesPaused",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lookReset": "Wie der Zweig",
+  "@lookReset": {
+    "description": "lookReset"
+  },
+  "msgLookReset": "Farbe und Symbol werden wieder geerbt",
+  "@msgLookReset": {
+    "description": "msgLookReset"
+  },
+  "toTask": "In Aufgabe umwandeln",
+  "@toTask": {
+    "description": "toTask"
+  },
+  "msgBecameTask": "Der Termin ist jetzt eine Aufgabe",
+  "@msgBecameTask": {
+    "description": "msgBecameTask"
+  },
+  "shiftRest": "Rest des Tages verschieben",
+  "@shiftRest": {
+    "description": "shiftRest"
+  },
+  "msgDayShifted": "Mitverschoben: {count}",
+  "@msgDayShifted": {
+    "description": "msgDayShifted",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "repeatDay": "Tag wiederholen",
+  "@repeatDay": {
+    "description": "repeatDay"
+  },
+  "msgDayCopied": "Tag auf {day} kopiert: {count} Termine",
+  "@msgDayCopied": {
+    "description": "msgDayCopied",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stretchToNext": "Bis zum nächsten dehnen",
+  "@stretchToNext": {
+    "description": "stretchToNext"
+  },
+  "msgStretched": "Der Termin läuft bis {time}",
+  "@msgStretched": {
+    "description": "msgStretched",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "nothingToShift": "An dem Tag kommt nichts mehr",
+  "@nothingToShift": {
+    "description": "nothingToShift"
   }
 }

@@ -73,8 +73,7 @@ void main() {
     await tester.tap(find.text('Сохранить'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Приём у врача').first);
-    await tester.pumpAndSettle();
+    await openEventEditor(tester, find.text('Приём у врача').first);
 
     expect(find.text('За день · за 30 минут'), findsOneWidget,
         reason: 'Напоминания дошли до базы и вернулись в карточку события');
@@ -120,8 +119,7 @@ void main() {
 
     // Правка существующего события: у нового ключа ещё нет, и заметке не к
     // чему привязаться.
-    await tester.tap(find.text('Завтрак').first);
-    await tester.pumpAndSettle();
+    await openEventEditor(tester, find.text('Завтрак').first);
 
     await tester.scrollUntilVisible(find.text('Добавить заметку'), 200,
         scrollable: find.byType(Scrollable).first);

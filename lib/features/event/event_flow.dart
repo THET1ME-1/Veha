@@ -3,13 +3,27 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/icon_registry.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../domain/draft.dart';
 import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../domain/ics.dart';
+import 'calendar_picker_sheet.dart';
 import 'edit_scope_sheet.dart';
 import 'event_edit_screen.dart';
+import 'event_preview_sheet.dart';
+import 'look_sheet.dart';
 import 'quick_add_sheet.dart';
+import 'reminders_sheet.dart';
 
 /// Путь события от кнопки до базы.
 ///
@@ -41,6 +55,425 @@ class EventFlow {
     final inheritance = ref.read(inheritanceProvider).valueOrNull;
     if (inheritance == null) return;
     await _openFullForm(EventDraft.of(event), inheritance);
+  }
+
+  /// Превью: подробности и действия. Тап по блоку открывает его, а не форму —
+  /// смотреть место или напоминание человек ходит чаще, чем править.
+  Future<void> preview(VEvent event) async {
+    final inheritance = ref.read(inheritanceProvider).valueOrNull;
+    if (inheritance == null) return;
+
+    final choice = await showEventPreview(
+      context,
+      event: event,
+      inheritance: inheritance,
+    );
+    if (choice == null || !context.mounted) return;
+
+    switch (choice.action) {
+      case PreviewAction.edit:
+        await edit(event);
+      case PreviewAction.duplicate:
+        await duplicate(event);
+      case PreviewAction.moveTomorrow:
+        await _move(event, const Duration(days: 1));
+      case PreviewAction.moveNextWeek:
+        await _move(event, const Duration(days: 7));
+      case PreviewAction.movePickDate:
+        await _moveToPickedDate(event);
+      case PreviewAction.changeCalendar:
+        await _changeCalendar(event, inheritance);
+      case PreviewAction.changeLook:
+        await _changeLook(event, inheritance);
+      case PreviewAction.reminders:
+        await _changeReminders(event);
+      case PreviewAction.copyText:
+        await _copyText(event, inheritance);
+      case PreviewAction.exportIcs:
+        await _exportOne(event);
+      case PreviewAction.openMap:
+        await _openMap(event);
+      case PreviewAction.delete:
+        await _delete(EventDraft.of(event));
+      case PreviewAction.pauseSeries:
+        await _pauseSeries(event, choice.weeks);
+      case PreviewAction.resetLook:
+        await _resetLook(event);
+      case PreviewAction.toTask:
+        await _toTask(event, inheritance);
+      case PreviewAction.shiftRest:
+        await _shiftRestOfDay(event);
+      case PreviewAction.repeatDay:
+        await _repeatDay(event);
+      case PreviewAction.stretchToNext:
+        await _stretchToNext(event);
+    }
+  }
+
+  // ── Действия, каких нет у соседей ──────────────────────────────────────
+
+  /// Пауза ряда: занятий не будет столько-то недель, ряд остаётся.
+  ///
+  /// Каникулы и отпуск раньше приходилось разбирать вручную — отменять по
+  /// одному занятию. Ряд при этом должен жить: после паузы он продолжается
+  /// сам.
+  Future<void> _pauseSeries(VEvent event, int weeks) async {
+    final series = event.recurrenceId;
+    if (series == null || weeks <= 0) return;
+
+    final repo = ref.read(repositoryProvider);
+    final l = L.of(context);
+    final from = event.originalStart ?? event.start;
+    final skipped = await repo.pauseSeries(
+      series,
+      DateTime(from.year, from.month, from.day),
+      from.add(Duration(days: 7 * weeks)),
+    );
+
+    _offerUndo(
+      l.msgSeriesPaused(skipped.length),
+      () => repo.resumeSeries(series, skipped),
+    );
+  }
+
+  /// Вернуть цвет и иконку ветке: событие снова наследует их по цепочке.
+  Future<void> _resetLook(VEvent event) async {
+    final repo = ref.read(repositoryProvider);
+    final l = L.of(context);
+
+    await _save(EventDraft.of(event).withIcon(null).withColor(null));
+    if (!context.mounted) return;
+    _offerUndo(l.msgLookReset, () => repo.upsertEvent(event));
+  }
+
+  /// Событие оказалось делом, а не встречей.
+  ///
+  /// Отметки выполнения у события нет и не будет — она есть у задачи. Перенос
+  /// сохраняет календарь, ветку, название и время: задача получает срок.
+  Future<void> _toTask(VEvent event, Inheritance inheritance) async {
+    final repo = ref.read(repositoryProvider);
+    final l = L.of(context);
+
+    await repo.upsertTask(VTask(
+      id: repo.newId(),
+      calendarId: event.calendarId,
+      subcategoryId: event.subcategoryId,
+      title: event.title,
+      notes: event.location,
+      due: event.start,
+      hasTime: !event.isAllDay,
+      color: event.color,
+      iconName: event.iconName,
+    ));
+    await repo.deleteEvent(event.recurrenceId ?? event.id);
+
+    if (!context.mounted) return;
+    _offerUndo(l.msgBecameTask, () => repo.upsertEvent(event));
+  }
+
+  /// Сдвинуть остаток дня следом за событием.
+  ///
+  /// День — цепочка: занятие уехало на полчаса, за ним едет всё, что дальше.
+  /// Разбирать это по одному событию человек не должен.
+  Future<void> _shiftRestOfDay(VEvent event) async {
+    final l = L.of(context);
+    final minutes = await _askMinutes();
+    if (minutes == null || !context.mounted) return;
+
+    final repo = ref.read(repositoryProvider);
+    final day = await repo.eventsOfDay(event.start);
+    final tail = [
+      for (final e in day)
+        if (!e.isMultiDay && !e.start.isBefore(event.start)) e,
+    ];
+    if (tail.isEmpty) {
+      _say(l.nothingToShift);
+      return;
+    }
+
+    final shift = Duration(minutes: minutes);
+    for (final e in tail) {
+      await repo.upsertEvent(_shifted(e, shift));
+    }
+
+    _offerUndo(l.msgDayShifted(tail.length), () async {
+      for (final e in tail) {
+        await repo.upsertEvent(e);
+      }
+    });
+  }
+
+  /// На сколько сдвигать. Полчаса и час покрывают почти всё: расписание
+  /// уезжает круглыми кусками, а не на семнадцать минут.
+  Future<int?> _askMinutes() {
+    final l = L.of(context);
+    return showModalBottomSheet<int>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheet) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final m in const [15, 30, 60, -15, -30, -60])
+              ListTile(
+                leading: Icon(VehaIcons.byName(m > 0 ? 'expand' : 'wand')),
+                title: Text(m > 0
+                    ? '+ ${l.reminderMinutes(m)}'
+                    : '− ${l.reminderMinutes(-m)}'),
+                onTap: () => Navigator.pop(sheet, m),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Повторить день: весь набор событий переезжает копией на другую дату.
+  ///
+  /// Расписание повторяется днями, а не по одному занятию: «сделай завтра
+  /// так же» — обычная просьба к календарю.
+  Future<void> _repeatDay(VEvent event) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: event.start.add(const Duration(days: 1)),
+      firstDate: DateTime(event.start.year - 1),
+      lastDate: DateTime(event.start.year + 5),
+    );
+    if (picked == null || !context.mounted) return;
+
+    final repo = ref.read(repositoryProvider);
+    final l = L.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+
+    final source = DateTime(event.start.year, event.start.month, event.start.day);
+    final target = DateTime(picked.year, picked.month, picked.day);
+    final shift = target.difference(source);
+
+    final day = await repo.eventsOfDay(event.start);
+    final copies = <VEvent>[];
+    for (final e in day) {
+      if (e.isMultiDay) continue;
+      final copy = VEvent(
+        id: repo.newId(),
+        calendarId: e.calendarId,
+        subcategoryId: e.subcategoryId,
+        title: e.title,
+        start: e.start.add(shift),
+        end: e.end.add(shift),
+        color: e.color,
+        iconName: e.iconName,
+        isAllDay: e.isAllDay,
+        location: e.location,
+        fields: e.fields,
+        reminders: e.reminders,
+        timezone: e.timezone,
+      );
+      copies.add(copy);
+      await repo.upsertEvent(copy);
+    }
+
+    if (!context.mounted) return;
+    _offerUndo(
+      l.msgDayCopied(DateFormat('d MMMM', locale).format(target), copies.length),
+      () async {
+        for (final c in copies) {
+          await repo.deleteEvent(c.id);
+        }
+      },
+    );
+  }
+
+  /// Занять промежуток до ближайшего события. Если дальше пусто — до конца
+  /// дня: обед «до вечера» бывает и таким.
+  Future<void> _stretchToNext(VEvent event) async {
+    final repo = ref.read(repositoryProvider);
+    final l = L.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+
+    final day = await repo.eventsOfDay(event.start);
+    final next = [
+      for (final e in day)
+        if (!e.isMultiDay && e.start.isAfter(event.start)) e,
+    ]..sort((a, b) => a.start.compareTo(b.start));
+
+    final until = next.isEmpty
+        ? DateTime(event.start.year, event.start.month, event.start.day, 23, 59)
+        : next.first.start;
+    if (!until.isAfter(event.end)) {
+      _say(l.nothingToShift);
+      return;
+    }
+
+    final stretched = VEvent(
+      id: event.id,
+      calendarId: event.calendarId,
+      subcategoryId: event.subcategoryId,
+      title: event.title,
+      start: event.start,
+      end: until,
+      color: event.color,
+      iconName: event.iconName,
+      isAllDay: event.isAllDay,
+      rrule: event.isOccurrence ? null : event.rrule,
+      recurrenceId: event.recurrenceId,
+      originalStart: event.originalStart,
+      isVirtual: event.isVirtual,
+      timezone: event.timezone,
+      location: event.location,
+      fields: event.fields,
+      reminders: event.reminders,
+    );
+    await repo.upsertEvent(stretched);
+
+    if (!context.mounted) return;
+    _offerUndo(
+      l.msgStretched(DateFormat.Hm(locale).format(until)),
+      () => repo.upsertEvent(event),
+    );
+  }
+
+  /// Перенос на столько-то суток вперёд. Время суток сохраняется: «на завтра»
+  /// означает тот же час, а не полночь.
+  Future<void> _move(VEvent event, Duration shift) async {
+    final repo = ref.read(repositoryProvider);
+    final l = L.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+
+    final moved = _shifted(event, shift);
+    await repo.upsertEvent(moved);
+    _offerUndo(
+      l.msgEventMoved(DateFormat('d MMMM', locale).format(moved.start)),
+      () => repo.upsertEvent(event),
+    );
+  }
+
+  Future<void> _moveToPickedDate(VEvent event) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: event.start,
+      firstDate: DateTime(event.start.year - 2),
+      lastDate: DateTime(event.start.year + 5),
+    );
+    if (picked == null || !context.mounted) return;
+
+    final day = DateTime(picked.year, picked.month, picked.day);
+    final from = DateTime(event.start.year, event.start.month, event.start.day);
+    await _move(event, day.difference(from));
+  }
+
+  /// Тот же event, сдвинутый по времени. Экземпляр ряда при переносе
+  /// выламывается из него отдельной записью — так же, как при правке.
+  VEvent _shifted(VEvent event, Duration shift) => VEvent(
+        id: event.id,
+        calendarId: event.calendarId,
+        subcategoryId: event.subcategoryId,
+        title: event.title,
+        start: event.start.add(shift),
+        end: event.end.add(shift),
+        color: event.color,
+        iconName: event.iconName,
+        isAllDay: event.isAllDay,
+        rrule: event.isOccurrence ? null : event.rrule,
+        recurrenceId: event.recurrenceId,
+        originalStart: event.originalStart,
+        isVirtual: event.isVirtual,
+        timezone: event.timezone,
+        location: event.location,
+        fields: event.fields,
+        reminders: event.reminders,
+      );
+
+  Future<void> _changeCalendar(VEvent event, Inheritance inheritance) async {
+    final chosen = await askCalendar(
+      context,
+      inheritance: inheritance,
+      calendarId: event.calendarId,
+      subcategoryId: event.subcategoryId,
+    );
+    if (chosen == null) return;
+
+    await _saveEdited(
+      EventDraft.of(event)
+          .withCalendar(chosen.calendarId)
+          .withSubcategory(chosen.subcategoryId),
+    );
+  }
+
+  Future<void> _changeLook(VEvent event, Inheritance inheritance) async {
+    final look = await askEventLook(
+      context,
+      current: EventLook(iconName: event.iconName, color: event.color),
+      inheritedColor: inheritance.colorOfEvent(event),
+      inheritedIcon: inheritance.iconOfEvent(event),
+    );
+    if (look == null) return;
+
+    await _saveEdited(
+      EventDraft.of(event).withIcon(look.iconName).withColor(look.color),
+    );
+  }
+
+  Future<void> _changeReminders(VEvent event) async {
+    final chosen = await askReminders(context, current: event.reminders);
+    if (chosen == null) return;
+    await _saveEdited(EventDraft.of(event).withReminders(chosen));
+  }
+
+  /// Правка из превью идёт тем же путём, что из формы: у экземпляра ряда
+  /// спросят область, у разового события — нет.
+  Future<void> _saveEdited(EventDraft draft) => _save(draft);
+
+  Future<void> _copyText(VEvent event, Inheritance inheritance) async {
+    final l = L.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final calendar = inheritance.calendars[event.calendarId]?.name ?? '';
+
+    final text = [
+      event.title,
+      '${DateFormat('EEEE, d MMMM', locale).format(event.start)} · '
+          '${DateFormat.Hm(locale).format(event.start)} – '
+          '${DateFormat.Hm(locale).format(event.end)}',
+      if (event.location != null) event.location!,
+      if (calendar.isNotEmpty) calendar,
+    ].join('\n');
+
+    await Clipboard.setData(ClipboardData(text: text));
+    _say(l.msgEventCopiedText);
+  }
+
+  /// Одно событие файлом: тем же форматом, что и общая выгрузка.
+  Future<void> _exportOne(VEvent event) async {
+    final l = L.of(context);
+    final repo = ref.read(repositoryProvider);
+    final defs = {for (final f in await repo.fieldsFor(null)) f.id: f};
+    if (!context.mounted) return;
+
+    final bytes = utf8.encode(toIcs([event], defs: defs));
+    final safe = event.title
+        .replaceAll(RegExp('[^A-Za-zА-Яа-яЁё0-9 _-]'), '')
+        .trim()
+        .replaceAll(' ', '-');
+
+    final path = await FilePicker.platform.saveFile(
+      dialogTitle: l.icsSaveTitle,
+      fileName: '${safe.isEmpty ? 'event' : safe}.ics',
+      bytes: bytes,
+    );
+    if (!context.mounted || path == null) return;
+
+    if (!Platform.isAndroid) await File(path).writeAsBytes(bytes);
+    if (context.mounted) _say(l.icsExported(1));
+  }
+
+  Future<void> _openMap(VEvent event) async {
+    final place = event.location;
+    if (place == null) return;
+
+    // geo: понимает любое картографическое приложение, включая офлайновые.
+    final uri = Uri.parse('geo:0,0?q=${Uri.encodeComponent(place)}');
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      if (context.mounted) _say(L.of(context).placeNoFix);
+    }
   }
 
   Future<void> _openQuickSheet(EventDraft draft, Inheritance inheritance) async {

@@ -156,6 +156,22 @@ Future<void> _warmImages(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
+/// Открывает форму правки события.
+///
+/// Тап по блоку показывает превью — форма живёт за кнопкой «Изменить».
+/// Помощник нужен, чтобы этот порядок был записан в одном месте: иначе
+/// каждый тест правки повторяет его своими руками и разъезжается.
+Future<void> openEventEditor(WidgetTester tester, Finder target) async {
+  await tester.tap(target);
+  await tester.pumpAndSettle();
+
+  final edit = find.text('Изменить');
+  if (edit.evaluate().isNotEmpty) {
+    await tester.tap(edit.first);
+    await tester.pumpAndSettle();
+  }
+}
+
 /// Пишет PNG рядом с тестами, чтобы картинку можно было открыть глазами.
 Future<void> shoot(WidgetTester tester, String name) async {
   final dir = Directory('test/screens/shots');

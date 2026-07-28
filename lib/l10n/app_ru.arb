@@ -1600,5 +1600,130 @@
         "type": "String"
       }
     }
+  },
+  "moveTitle": "Перенести",
+  "@moveTitle": {
+    "description": "moveTitle"
+  },
+  "moveTomorrow": "На завтра",
+  "@moveTomorrow": {
+    "description": "moveTomorrow"
+  },
+  "moveNextWeek": "Через неделю",
+  "@moveNextWeek": {
+    "description": "moveNextWeek"
+  },
+  "movePickDate": "Выбрать дату",
+  "@movePickDate": {
+    "description": "movePickDate"
+  },
+  "msgEventMoved": "Событие перенесено на {day}",
+  "@msgEventMoved": {
+    "description": "msgEventMoved",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "actionShare": "Поделиться",
+  "@actionShare": {
+    "description": "actionShare"
+  },
+  "msgEventCopiedText": "Событие скопировано текстом",
+  "@msgEventCopiedText": {
+    "description": "msgEventCopiedText"
+  },
+  "eventOpenMap": "Открыть на карте",
+  "@eventOpenMap": {
+    "description": "eventOpenMap"
+  },
+  "previewActions": "Действия",
+  "@previewActions": {
+    "description": "previewActions"
+  },
+  "seriesPause": "Пауза ряда",
+  "@seriesPause": {
+    "description": "seriesPause"
+  },
+  "seriesPauseWeeks": "Не будет {weeks} нед.",
+  "@seriesPauseWeeks": {
+    "description": "seriesPauseWeeks",
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "msgSeriesPaused": "Пропущено занятий: {count}",
+  "@msgSeriesPaused": {
+    "description": "msgSeriesPaused",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lookReset": "Как у ветки",
+  "@lookReset": {
+    "description": "lookReset"
+  },
+  "msgLookReset": "Цвет и иконка снова наследуются",
+  "@msgLookReset": {
+    "description": "msgLookReset"
+  },
+  "toTask": "Сделать задачей",
+  "@toTask": {
+    "description": "toTask"
+  },
+  "msgBecameTask": "Событие стало задачей",
+  "@msgBecameTask": {
+    "description": "msgBecameTask"
+  },
+  "shiftRest": "Сдвинуть остаток дня",
+  "@shiftRest": {
+    "description": "shiftRest"
+  },
+  "msgDayShifted": "Сдвинуто следом: {count}",
+  "@msgDayShifted": {
+    "description": "msgDayShifted",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "repeatDay": "Повторить день",
+  "@repeatDay": {
+    "description": "repeatDay"
+  },
+  "msgDayCopied": "День перенесён на {day}: событий {count}",
+  "@msgDayCopied": {
+    "description": "msgDayCopied",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stretchToNext": "Растянуть до следующего",
+  "@stretchToNext": {
+    "description": "stretchToNext"
+  },
+  "msgStretched": "Событие идёт до {time}",
+  "@msgStretched": {
+    "description": "msgStretched",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "nothingToShift": "Дальше в этом дне ничего нет",
+  "@nothingToShift": {
+    "description": "nothingToShift"
   }
 }

@@ -1199,4 +1199,85 @@ class LEn extends L {
   String eventCopySuffix(String title) {
     return '$title — copy';
   }
+
+  @override
+  String get moveTitle => 'Move';
+
+  @override
+  String get moveTomorrow => 'To tomorrow';
+
+  @override
+  String get moveNextWeek => 'In a week';
+
+  @override
+  String get movePickDate => 'Pick a date';
+
+  @override
+  String msgEventMoved(String day) {
+    return 'Moved to $day';
+  }
+
+  @override
+  String get actionShare => 'Share';
+
+  @override
+  String get msgEventCopiedText => 'Event copied as text';
+
+  @override
+  String get eventOpenMap => 'Open on the map';
+
+  @override
+  String get previewActions => 'Actions';
+
+  @override
+  String get seriesPause => 'Pause the series';
+
+  @override
+  String seriesPauseWeeks(int weeks) {
+    return 'Skip $weeks wk';
+  }
+
+  @override
+  String msgSeriesPaused(int count) {
+    return 'Occurrences skipped: $count';
+  }
+
+  @override
+  String get lookReset => 'Back to branch';
+
+  @override
+  String get msgLookReset => 'Color and icon are inherited again';
+
+  @override
+  String get toTask => 'Turn into a task';
+
+  @override
+  String get msgBecameTask => 'The event is a task now';
+
+  @override
+  String get shiftRest => 'Shift the rest of the day';
+
+  @override
+  String msgDayShifted(int count) {
+    return 'Shifted along: $count';
+  }
+
+  @override
+  String get repeatDay => 'Repeat this day';
+
+  @override
+  String msgDayCopied(String day, int count) {
+    return 'Day copied to $day: $count events';
+  }
+
+  @override
+  String get stretchToNext => 'Stretch to the next one';
+
+  @override
+  String msgStretched(String time) {
+    return 'The event now runs until $time';
+  }
+
+  @override
+  String get nothingToShift => 'Nothing else that day';
 }

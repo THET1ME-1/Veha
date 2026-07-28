@@ -1512,5 +1512,130 @@
         "type": "String"
       }
     }
+  },
+  "moveTitle": "Перенести",
+  "@moveTitle": {
+    "description": "moveTitle"
+  },
+  "moveTomorrow": "На завтра",
+  "@moveTomorrow": {
+    "description": "moveTomorrow"
+  },
+  "moveNextWeek": "Через тиждень",
+  "@moveNextWeek": {
+    "description": "moveNextWeek"
+  },
+  "movePickDate": "Вибрати дату",
+  "@movePickDate": {
+    "description": "movePickDate"
+  },
+  "msgEventMoved": "Подію перенесено на {day}",
+  "@msgEventMoved": {
+    "description": "msgEventMoved",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "actionShare": "Поділитися",
+  "@actionShare": {
+    "description": "actionShare"
+  },
+  "msgEventCopiedText": "Подію скопійовано текстом",
+  "@msgEventCopiedText": {
+    "description": "msgEventCopiedText"
+  },
+  "eventOpenMap": "Відкрити на карті",
+  "@eventOpenMap": {
+    "description": "eventOpenMap"
+  },
+  "previewActions": "Дії",
+  "@previewActions": {
+    "description": "previewActions"
+  },
+  "seriesPause": "Пауза ряду",
+  "@seriesPause": {
+    "description": "seriesPause"
+  },
+  "seriesPauseWeeks": "Не буде {weeks} тижн.",
+  "@seriesPauseWeeks": {
+    "description": "seriesPauseWeeks",
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "msgSeriesPaused": "Пропущено занять: {count}",
+  "@msgSeriesPaused": {
+    "description": "msgSeriesPaused",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lookReset": "Як у гілки",
+  "@lookReset": {
+    "description": "lookReset"
+  },
+  "msgLookReset": "Колір та іконка знову успадковуються",
+  "@msgLookReset": {
+    "description": "msgLookReset"
+  },
+  "toTask": "Зробити завданням",
+  "@toTask": {
+    "description": "toTask"
+  },
+  "msgBecameTask": "Подія стала завданням",
+  "@msgBecameTask": {
+    "description": "msgBecameTask"
+  },
+  "shiftRest": "Зсунути решту дня",
+  "@shiftRest": {
+    "description": "shiftRest"
+  },
+  "msgDayShifted": "Зсунуто слідом: {count}",
+  "@msgDayShifted": {
+    "description": "msgDayShifted",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "repeatDay": "Повторити день",
+  "@repeatDay": {
+    "description": "repeatDay"
+  },
+  "msgDayCopied": "День перенесено на {day}: подій {count}",
+  "@msgDayCopied": {
+    "description": "msgDayCopied",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stretchToNext": "Розтягнути до наступного",
+  "@stretchToNext": {
+    "description": "stretchToNext"
+  },
+  "msgStretched": "Подія триває до {time}",
+  "@msgStretched": {
+    "description": "msgStretched",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "nothingToShift": "Далі цього дня нічого немає",
+  "@nothingToShift": {
+    "description": "nothingToShift"
   }
 }

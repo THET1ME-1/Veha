@@ -1512,5 +1512,130 @@
         "type": "String"
       }
     }
+  },
+  "moveTitle": "Mover",
+  "@moveTitle": {
+    "description": "moveTitle"
+  },
+  "moveTomorrow": "A mañana",
+  "@moveTomorrow": {
+    "description": "moveTomorrow"
+  },
+  "moveNextWeek": "En una semana",
+  "@moveNextWeek": {
+    "description": "moveNextWeek"
+  },
+  "movePickDate": "Elegir fecha",
+  "@movePickDate": {
+    "description": "movePickDate"
+  },
+  "msgEventMoved": "Movido al {day}",
+  "@msgEventMoved": {
+    "description": "msgEventMoved",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "actionShare": "Compartir",
+  "@actionShare": {
+    "description": "actionShare"
+  },
+  "msgEventCopiedText": "Evento copiado como texto",
+  "@msgEventCopiedText": {
+    "description": "msgEventCopiedText"
+  },
+  "eventOpenMap": "Abrir en el mapa",
+  "@eventOpenMap": {
+    "description": "eventOpenMap"
+  },
+  "previewActions": "Acciones",
+  "@previewActions": {
+    "description": "previewActions"
+  },
+  "seriesPause": "Pausar la serie",
+  "@seriesPause": {
+    "description": "seriesPause"
+  },
+  "seriesPauseWeeks": "Sin {weeks} sem.",
+  "@seriesPauseWeeks": {
+    "description": "seriesPauseWeeks",
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "msgSeriesPaused": "Ocurrencias omitidas: {count}",
+  "@msgSeriesPaused": {
+    "description": "msgSeriesPaused",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lookReset": "Como la rama",
+  "@lookReset": {
+    "description": "lookReset"
+  },
+  "msgLookReset": "El color y el icono se heredan de nuevo",
+  "@msgLookReset": {
+    "description": "msgLookReset"
+  },
+  "toTask": "Convertir en tarea",
+  "@toTask": {
+    "description": "toTask"
+  },
+  "msgBecameTask": "El evento ahora es una tarea",
+  "@msgBecameTask": {
+    "description": "msgBecameTask"
+  },
+  "shiftRest": "Mover el resto del día",
+  "@shiftRest": {
+    "description": "shiftRest"
+  },
+  "msgDayShifted": "Movidos detrás: {count}",
+  "@msgDayShifted": {
+    "description": "msgDayShifted",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "repeatDay": "Repetir el día",
+  "@repeatDay": {
+    "description": "repeatDay"
+  },
+  "msgDayCopied": "Día copiado al {day}: {count} eventos",
+  "@msgDayCopied": {
+    "description": "msgDayCopied",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stretchToNext": "Estirar hasta el siguiente",
+  "@stretchToNext": {
+    "description": "stretchToNext"
+  },
+  "msgStretched": "El evento va hasta las {time}",
+  "@msgStretched": {
+    "description": "msgStretched",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "nothingToShift": "No hay nada más ese día",
+  "@nothingToShift": {
+    "description": "nothingToShift"
   }
 }

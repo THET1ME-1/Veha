@@ -1512,5 +1512,130 @@
         "type": "String"
       }
     }
+  },
+  "moveTitle": "Mută",
+  "@moveTitle": {
+    "description": "moveTitle"
+  },
+  "moveTomorrow": "Pe mâine",
+  "@moveTomorrow": {
+    "description": "moveTomorrow"
+  },
+  "moveNextWeek": "Peste o săptămână",
+  "@moveNextWeek": {
+    "description": "moveNextWeek"
+  },
+  "movePickDate": "Alege data",
+  "@movePickDate": {
+    "description": "movePickDate"
+  },
+  "msgEventMoved": "Mutat pe {day}",
+  "@msgEventMoved": {
+    "description": "msgEventMoved",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "actionShare": "Partajează",
+  "@actionShare": {
+    "description": "actionShare"
+  },
+  "msgEventCopiedText": "Evenimentul a fost copiat ca text",
+  "@msgEventCopiedText": {
+    "description": "msgEventCopiedText"
+  },
+  "eventOpenMap": "Deschide pe hartă",
+  "@eventOpenMap": {
+    "description": "eventOpenMap"
+  },
+  "previewActions": "Acțiuni",
+  "@previewActions": {
+    "description": "previewActions"
+  },
+  "seriesPause": "Pauză la serie",
+  "@seriesPause": {
+    "description": "seriesPause"
+  },
+  "seriesPauseWeeks": "Sar {weeks} săpt.",
+  "@seriesPauseWeeks": {
+    "description": "seriesPauseWeeks",
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "msgSeriesPaused": "Ocurențe sărite: {count}",
+  "@msgSeriesPaused": {
+    "description": "msgSeriesPaused",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lookReset": "Ca la ramură",
+  "@lookReset": {
+    "description": "lookReset"
+  },
+  "msgLookReset": "Culoarea și pictograma se moștenesc din nou",
+  "@msgLookReset": {
+    "description": "msgLookReset"
+  },
+  "toTask": "Fă din el o sarcină",
+  "@toTask": {
+    "description": "toTask"
+  },
+  "msgBecameTask": "Evenimentul a devenit sarcină",
+  "@msgBecameTask": {
+    "description": "msgBecameTask"
+  },
+  "shiftRest": "Mută restul zilei",
+  "@shiftRest": {
+    "description": "shiftRest"
+  },
+  "msgDayShifted": "Mutate după el: {count}",
+  "@msgDayShifted": {
+    "description": "msgDayShifted",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "repeatDay": "Repetă ziua",
+  "@repeatDay": {
+    "description": "repeatDay"
+  },
+  "msgDayCopied": "Ziua a fost copiată pe {day}: {count} evenimente",
+  "@msgDayCopied": {
+    "description": "msgDayCopied",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stretchToNext": "Întinde până la următorul",
+  "@stretchToNext": {
+    "description": "stretchToNext"
+  },
+  "msgStretched": "Evenimentul ține până la {time}",
+  "@msgStretched": {
+    "description": "msgStretched",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "nothingToShift": "Nimic mai departe în ziua asta",
+  "@nothingToShift": {
+    "description": "nothingToShift"
   }
 }
