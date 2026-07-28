@@ -11,6 +11,7 @@ import '../../data/settings.dart';
 import '../../domain/week_layout.dart';
 import '../common/blocks.dart' show vBack;
 import '../search/search_screen.dart';
+import '../stats/stats_screen.dart';
 import '../tasks/day_tasks.dart';
 import '../settings/month_settings_screen.dart';
 import '../event/event_flow.dart';
@@ -95,6 +96,17 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           onReadingChanged: (r) => ref.read(dayReadingProvider.notifier).set(r),
           onSearch: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const SearchScreen()),
+          ),
+          onStats: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => Scaffold(
+                appBar: AppBar(
+                    toolbarHeight: 56,
+                    leading: vBack(context),
+                    leadingWidth: 60),
+                body: const SafeArea(child: StatsScreen()),
+              ),
+            ),
           ),
         ),
         if (view == CalendarView.day)
