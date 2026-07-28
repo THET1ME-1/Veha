@@ -15,6 +15,8 @@ import 'package:drift/native.dart';
 import 'package:sqlite3/open.dart' as sqlite_open;
 import 'package:veha/data/db/database.dart';
 import 'package:veha/data/providers.dart';
+import 'package:veha/data/repository.dart';
+import 'package:veha/data/seed_words.dart';
 import 'package:veha/l10n/app_localizations.dart';
 
 /// Снимок экрана без эмулятора.
@@ -81,6 +83,10 @@ Future<void> pumpScreen(
 
   final db = testDatabase();
   addTearDown(db.close);
+
+  // Демонстрацию сеют тесты, а не приложение: человеку при первом запуске
+  // чужие дела не нужны, а снимкам экрана нужен полный календарь.
+  await VehaRepository(db).seedIfEmpty(today: testNow, words: SeedWords.of('ru'));
 
   await tester.pumpWidget(
     ProviderScope(

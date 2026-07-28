@@ -14,11 +14,23 @@ import 'month_header.dart';
 /// сейчас», поэтому в сетку часов оно не попадает — живёт полосой сверху.
 /// Прогресс показан заливкой поверх, а не отдельной шкалой.
 class SpanBar extends StatelessWidget {
-  const SpanBar({super.key, required this.event, required this.today, required this.color});
+  const SpanBar({
+    super.key,
+    required this.event,
+    required this.today,
+    required this.color,
+    this.onTap,
+    this.onLongPress,
+  });
 
   final VEvent event;
   final DateTime today;
   final Color color;
+
+  /// Полоса — такое же событие, как пилюля в сетке: у неё есть и карточка,
+  /// и меню. Без нажатия абонемент нельзя ни открыть, ни удалить.
+  final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +51,11 @@ class SpanBar extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
-      child: ClipPath(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        onLongPress: onLongPress,
+        child: ClipPath(
         clipper: const ShapeBorderClipper(shape: StadiumBorder()),
         child: Stack(
           children: [
@@ -86,12 +102,12 @@ class SpanBar extends StatelessWidget {
                 ],
               ),
             ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
-
 }
 
 /// Список полос над таймлайном.
@@ -101,11 +117,15 @@ class SpanBars extends StatelessWidget {
     required this.events,
     required this.today,
     required this.inheritance,
+    this.onEventTap,
+    this.onEventLongPress,
   });
 
   final List<VEvent> events;
   final DateTime today;
   final Inheritance inheritance;
+  final ValueChanged<VEvent>? onEventTap;
+  final ValueChanged<VEvent>? onEventLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -120,6 +140,9 @@ class SpanBars extends StatelessWidget {
               event: e,
               today: today,
               color: inheritance.colorOfEvent(e),
+              onTap: onEventTap == null ? null : () => onEventTap!(e),
+              onLongPress:
+                  onEventLongPress == null ? null : () => onEventLongPress!(e),
             ),
         ],
       ),

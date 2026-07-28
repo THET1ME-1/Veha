@@ -20,6 +20,8 @@ class WeekView extends StatelessWidget {
     required this.spans,
     required this.inheritance,
     required this.today,
+    this.onEventTap,
+    this.onEventLongPress,
   });
 
   final List<DateTime> week;
@@ -27,6 +29,8 @@ class WeekView extends StatelessWidget {
   final List<VEvent> spans;
   final Inheritance inheritance;
   final DateTime today;
+  final ValueChanged<VEvent>? onEventTap;
+  final ValueChanged<VEvent>? onEventLongPress;
 
   static const double _firstHour = 7;
   // Границы кратны шагу подписей (два часа), иначе последняя подпись вылезает
@@ -72,7 +76,14 @@ class WeekView extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           for (final s in spans)
-            _SpanStrip(event: s, inheritance: inheritance, today: today),
+            _SpanStrip(
+              event: s,
+              inheritance: inheritance,
+              today: today,
+              onTap: onEventTap == null ? null : () => onEventTap!(s),
+              onLongPress:
+                  onEventLongPress == null ? null : () => onEventLongPress!(s),
+            ),
           const SizedBox(height: 2),
           SizedBox(
             height: gridHeight,
@@ -111,6 +122,8 @@ class WeekView extends StatelessWidget {
                       isPast: d.isBefore(DateTime(today.year, today.month, today.day)),
                       firstHour: _firstHour,
                       hourHeight: _hourHeight,
+                      onEventTap: onEventTap,
+                      onEventLongPress: onEventLongPress,
                     ),
                   ),
                 ],
@@ -129,6 +142,8 @@ class WeekView extends StatelessWidget {
 /// Лента многодневного события над сеткой. Тянется через захваченные дни.
 class _SpanStrip extends StatelessWidget {
   const _SpanStrip({
+    this.onTap,
+    this.onLongPress,
     required this.event,
     required this.inheritance,
     required this.today,
@@ -137,6 +152,8 @@ class _SpanStrip extends StatelessWidget {
   final VEvent event;
   final Inheritance inheritance;
   final DateTime today;
+  final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
 
   /// Полоса подписывается вместе со счётчиком: «идёт сейчас» без ответа
   /// «сколько осталось» бесполезно.
@@ -153,7 +170,11 @@ class _SpanStrip extends StatelessWidget {
         inheritance.colorOfEvent(event), Theme.of(context).brightness);
     return Padding(
       padding: const EdgeInsets.only(left: WeekView._gutter + WeekView._gap, bottom: 4),
-      child: Container(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        onLongPress: onLongPress,
+        child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
         decoration: ShapeDecoration(color: ink.background, shape: const StadiumBorder()),
         child: Row(
@@ -177,6 +198,7 @@ class _SpanStrip extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }
@@ -189,6 +211,8 @@ class _DayColumn extends StatelessWidget {
     required this.isPast,
     required this.firstHour,
     required this.hourHeight,
+    this.onEventTap,
+    this.onEventLongPress,
   });
 
   final List<VEvent> events;
@@ -197,6 +221,8 @@ class _DayColumn extends StatelessWidget {
   final bool isPast;
   final double firstHour;
   final double hourHeight;
+  final ValueChanged<VEvent>? onEventTap;
+  final ValueChanged<VEvent>? onEventLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -228,6 +254,10 @@ class _DayColumn extends StatelessWidget {
                   hourHeight: hourHeight,
                   color: inheritance.colorOfEvent(p.event),
                   icon: inheritance.iconOfEvent(p.event),
+                  onTap: onEventTap == null ? null : () => onEventTap!(p.event),
+                  onLongPress: onEventLongPress == null
+                      ? null
+                      : () => onEventLongPress!(p.event),
                 ),
             ],
           ),
@@ -278,6 +308,8 @@ class _Pill extends StatelessWidget {
     required this.hourHeight,
     required this.color,
     required this.icon,
+    this.onTap,
+    this.onLongPress,
   });
 
   final PlacedEvent placed;
@@ -286,6 +318,8 @@ class _Pill extends StatelessWidget {
   final double hourHeight;
   final Color color;
   final String icon;
+  final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -306,13 +340,19 @@ class _Pill extends StatelessWidget {
       left: 3 + placed.lane * laneWidth,
       width: laneWidth - (placed.lanes > 1 ? 2 : 0),
       height: height,
-      child: Container(
-        decoration: ShapeDecoration(
-          color: ink.background,
-          shape: const StadiumBorder(),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        onLongPress: onLongPress,
+        child: Container(
+          decoration: ShapeDecoration(
+            color: ink.background,
+            shape: const StadiumBorder(),
+          ),
+          alignment: Alignment.center,
+          child:
+              Icon(VehaIcons.byName(icon), size: iconSize, color: ink.foreground),
         ),
-        alignment: Alignment.center,
-        child: Icon(VehaIcons.byName(icon), size: iconSize, color: ink.foreground),
       ),
     );
   }

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:veha/data/db/database.dart';
+import 'package:veha/data/repository.dart';
+import 'package:veha/data/seed_words.dart';
 import 'package:veha/data/providers.dart';
 
 import 'sqlite_for_tests.dart';
@@ -16,8 +18,12 @@ void main() {
   late VehaDatabase db;
   late ProviderContainer container;
 
-  setUp(() {
+  setUp(() async {
     db = VehaDatabase(NativeDatabase.memory());
+    await VehaRepository(db)
+        .seedIfEmpty(today: DateTime(2026, 7, 27), words: SeedWords.of('ru'));
+    // Демонстрацию сеет тест: приложение при первом запуске заводит только
+    // пустой календарь.
     container = ProviderContainer(
       overrides: [
         databaseProvider.overrideWithValue(db),

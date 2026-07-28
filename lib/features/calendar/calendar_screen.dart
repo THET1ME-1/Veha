@@ -117,6 +117,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             events: range.spansOn(_selected!),
             today: _selected!,
             inheritance: inheritance,
+            onEventTap: (e) => EventFlow(context, ref).edit(e),
+            onEventLongPress: _showEventMenu,
           ),
         Expanded(child: _body(range, inheritance, now, today, reading, monthMode)),
       ],
@@ -235,6 +237,12 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           today: today,
           mode: monthMode,
           maxChips: ref.watch(monthChipsProvider),
+          // Тап по дню уводит в день: месяц отвечает «когда», подробности
+          // живут там.
+          onDayTap: (d) => setState(() {
+            _selected = d;
+            _view = CalendarView.day;
+          }),
         ),
       CalendarView.week => WeekView(
           week: _weekColumns(ref.watch(weekLayoutProvider)),
@@ -242,6 +250,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           spans: range.spans,
           inheritance: inheritance,
           today: today,
+          onEventTap: (e) => EventFlow(context, ref).edit(e),
+          onEventLongPress: _showEventMenu,
         ),
       CalendarView.bands => BandsView(
           days: List.generate(

@@ -31,6 +31,7 @@ class MonthView extends StatelessWidget {
     required this.today,
     this.mode = MonthMode.chips,
     this.maxChips = 2,
+    this.onDayTap,
   });
 
   final DateTime month;
@@ -40,6 +41,9 @@ class MonthView extends StatelessWidget {
   final DateTime today;
   final MonthMode mode;
   final int maxChips;
+
+  /// Тап по дню: месяц отвечает «когда», день — «что именно».
+  final ValueChanged<DateTime>? onDayTap;
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +89,7 @@ class MonthView extends StatelessWidget {
                       isOutside: day.month != month.month,
                       mode: mode,
                       maxChips: maxChips,
+                      onTap: onDayTap == null ? null : () => onDayTap!(day),
                     ),
                   ),
               ],
@@ -135,6 +140,7 @@ class _Cell extends StatelessWidget {
     required this.isOutside,
     required this.mode,
     required this.maxChips,
+    this.onTap,
   });
 
   final DateTime day;
@@ -144,6 +150,10 @@ class _Cell extends StatelessWidget {
   final bool isOutside;
   final MonthMode mode;
   final int maxChips;
+
+  /// Тап по ячейке уводит в день: месяц отвечает на вопрос «когда», а
+  /// подробности живут в дне.
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +167,10 @@ class _Cell extends StatelessWidget {
           .soft;
     }
 
-    return Opacity(
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Opacity(
       opacity: isOutside ? 0.35 : 1,
       child: Container(
         margin: const EdgeInsets.all(1.5),
@@ -196,6 +209,7 @@ class _Cell extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 

@@ -845,6 +845,30 @@ class VehaRepository {
   /// на пустом дне, а демонстрация лежит в прошлом.
   /// [words] переводят демонстрацию на язык человека: первый запуск с чужой
   /// кириллицей выглядит поломкой, а не приветствием.
+  /// Первый запуск: один пустой календарь и ничего больше.
+  ///
+  /// Демонстрационные события в приложение не попадают: человек ставит
+  /// календарь, чтобы вести свои дела, а не разбирать чужие. Календарь всё же
+  /// нужен один — иначе новое событие некуда положить, и кнопка «Записать»
+  /// молча не работает.
+  Future<void> ensureFirstCalendar({SeedWords? words}) async {
+    final existing = await db.select(db.calendars).get();
+    if (existing.isNotEmpty) return;
+
+    final w = words ?? SeedWords.of('ru');
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await db.into(db.calendars).insert(CalendarsCompanion.insert(
+          id: 'default',
+          name: w.t('Личное'),
+          color: 0xFF41CCB5,
+          icon: 'calendar',
+          createdAt: now,
+          updatedAt: now,
+        ));
+  }
+
+  /// Демонстрационные данные. В приложении не вызывается — живут ради
+  /// снимков экранов и тестов, где нужен полный календарь.
   Future<void> seedIfEmpty({DateTime? today, SeedWords? words}) async {
     final w = words ?? SeedWords.of('ru');
     final count = await db.select(db.calendars).get();

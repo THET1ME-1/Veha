@@ -22,8 +22,8 @@ final repositoryProvider = Provider<VehaRepository>(
   (ref) => VehaRepository(ref.watch(databaseProvider)),
 );
 
-/// Язык демонстрационных данных первого запуска. Переопределяется в тестах:
-/// снимки экранов сверяются с русским макетом.
+/// Язык первого календаря. Переопределяется в тестах: снимки экранов
+/// сверяются с русским макетом.
 final seedLanguageProvider = Provider<String>(
   (ref) => PlatformDispatcher.instance.locale.languageCode,
 );
@@ -36,8 +36,7 @@ final nowProvider = Provider<DateTime>((ref) => DateTime.now());
 /// Первый запуск: наполняем пустую базу и только потом отдаём экраны.
 final bootstrapProvider = FutureProvider<void>((ref) async {
   final repo = ref.watch(repositoryProvider);
-  await repo.seedIfEmpty(
-    today: ref.watch(nowProvider),
+  await repo.ensureFirstCalendar(
     words: SeedWords.of(ref.watch(seedLanguageProvider)),
   );
   // Чистка давно удалённого — на запуске: отдельного расписания ради неё
