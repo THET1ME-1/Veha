@@ -1068,5 +1068,37 @@
         "type": "int"
       }
     }
+  },
+  "settingsAutoTime": "Zależnie od pory dnia",
+  "@settingsAutoTime": {
+    "description": "settingsAutoTime"
+  },
+  "settingsAmoled": "AMOLED",
+  "@settingsAmoled": {
+    "description": "settingsAmoled"
+  },
+  "settingsAmoledHint": "Czysto czarne tło w ciemnym motywie",
+  "@settingsAmoledHint": {
+    "description": "settingsAmoledHint"
+  },
+  "settingsMaterialYou": "Material You",
+  "@settingsMaterialYou": {
+    "description": "settingsMaterialYou"
+  },
+  "settingsMaterialYouHint": "Kolor z tapety systemu (Android 12+)",
+  "@settingsMaterialYouHint": {
+    "description": "settingsMaterialYouHint"
+  },
+  "settingsStartScreen": "Ekran startowy",
+  "@settingsStartScreen": {
+    "description": "settingsStartScreen"
+  },
+  "settingsStartScreenHint": "Aplikacja otwiera się na nim",
+  "@settingsStartScreenHint": {
+    "description": "settingsStartScreenHint"
+  },
+  "settingsStartView": "Widok na starcie",
+  "@settingsStartView": {
+    "description": "settingsStartView"
   }
 }

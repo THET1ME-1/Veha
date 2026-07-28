@@ -10,9 +10,10 @@ import '../../data/settings.dart';
 import '../../domain/week_layout.dart';
 import '../calendar/widgets/month_header.dart' show AppFonts;
 import '../calendar/widgets/week_setup_sheet.dart';
-import '../color/color_picker_screen.dart';
 import '../common/blocks.dart';
 import '../fields/fields_screen.dart';
+import '../calendar/widgets/view_switcher.dart';
+import 'appearance_card.dart';
 import 'ics_rows.dart';
 
 /// Настройки: оформление, неделя, данные, о приложении.
@@ -43,45 +44,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
         ),
         VBlockCap(L.of(context).settingsAppearance),
-        VBlock(children: [
-          _ChoiceRow(
-            icon: 'palette',
-            label: L.of(context).settingsTheme,
-            options: {
-              ThemeMode.system: L.of(context).settingsSystem,
-              ThemeMode.light: L.of(context).settingsLight,
-              ThemeMode.dark: L.of(context).settingsDark,
-            },
-            value: look.themeMode,
-            onChanged: (v) =>
-                ref.read(appearanceProvider.notifier).setThemeMode(v),
-          ),
-          const VSep(),
-          _ChoiceRow(
-            icon: 'wand',
-            label: L.of(context).settingsChroma,
-            hint: L.of(context).settingsChromaHint,
-            options: {false: L.of(context).settingsExact, true: L.of(context).settingsVivid},
-            value: look.vibrant,
-            onChanged: (v) =>
-                ref.read(appearanceProvider.notifier).setVibrant(v),
-          ),
-          const VSep(),
-          VRow(
-            icon: 'dropper',
-            label: L.of(context).settingsSeed,
-            value: _hex(look.seed),
-            trailing: Container(
-              width: 26,
-              height: 26,
-              decoration: ShapeDecoration(
-                color: look.seed,
-                shape: const CircleBorder(),
-              ),
-            ),
-            onTap: () => _pickSeed(context, ref, look.seed),
-          ),
-        ]),
+        const AppearanceCard(),
         VBlockCap(L.of(context).settingsCalendarGroup),
         VBlock(children: [
           VRow(
@@ -96,6 +59,32 @@ class SettingsScreen extends ConsumerWidget {
               await ref.read(weekLayoutProvider.notifier).set(chosen);
             },
           ),
+          const VSep(),
+          _ChoiceRow(
+            icon: 'today',
+            label: L.of(context).settingsStartScreen,
+            hint: L.of(context).settingsStartScreenHint,
+            options: {
+              0: L.of(context).navCalendar,
+              1: L.of(context).navList,
+              2: L.of(context).navAccess,
+              3: L.of(context).navSettings,
+            },
+            value: ref.watch(startTabProvider),
+            onChanged: (v) => ref.read(startTabProvider.notifier).set(v),
+          ),
+          if (ref.watch(startTabProvider) == 0) ...[
+            const VSep(),
+            _ChoiceRow(
+              icon: 'viewDay',
+              label: L.of(context).settingsStartView,
+              options: {
+                for (final v in CalendarView.values) v: v.label(L.of(context)),
+              },
+              value: ref.watch(startViewProvider),
+              onChanged: (v) => ref.read(startViewProvider.notifier).set(v),
+            ),
+          ],
           const VSep(),
           VRow(
             icon: 'text',
@@ -148,23 +137,6 @@ class SettingsScreen extends ConsumerWidget {
       ],
     );
   }
-
-  static Future<void> _pickSeed(
-    BuildContext context,
-    WidgetRef ref,
-    Color current,
-  ) async {
-    final picked = await Navigator.of(context).push<Color>(
-      MaterialPageRoute(
-        builder: (_) => ColorPickerScreen(initial: current),
-      ),
-    );
-    if (picked == null) return;
-    await ref.read(appearanceProvider.notifier).setSeed(picked);
-  }
-
-  static String _hex(Color c) =>
-      '#${c.toARGB32().toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}';
 
   static String _weekLabel(L l, WeekLayout layout) {
     if (layout.isFullWeek) return l.settingsWeekFull;

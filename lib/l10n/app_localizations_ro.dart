@@ -874,4 +874,29 @@ class LRo extends L {
     );
     return '$_temp0';
   }
+
+  @override
+  String get settingsAutoTime => 'După ora zilei';
+
+  @override
+  String get settingsAmoled => 'AMOLED';
+
+  @override
+  String get settingsAmoledHint => 'Fundal negru pur în tema închisă';
+
+  @override
+  String get settingsMaterialYou => 'Material You';
+
+  @override
+  String get settingsMaterialYouHint =>
+      'Culoare din fundalul sistemului (Android 12+)';
+
+  @override
+  String get settingsStartScreen => 'Ecran de pornire';
+
+  @override
+  String get settingsStartScreenHint => 'Aplicația se deschide pe el';
+
+  @override
+  String get settingsStartView => 'Vizualizarea la pornire';
 }

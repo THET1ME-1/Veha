@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/icon_registry.dart';
+import '../../data/settings.dart';
 import '../../l10n/app_localizations.dart';
 import '../access/access_screen.dart';
 import '../calendar/calendar_screen.dart';
@@ -20,7 +21,8 @@ class HomeShell extends ConsumerStatefulWidget {
 }
 
 class _HomeShellState extends ConsumerState<HomeShell> {
-  int _tab = 0;
+  /// `null` — ещё не открывали: берём стартовый раздел из настроек.
+  int? _tab;
 
   static final _icons = [
     VehaIcons.byName('calendar'),
@@ -36,12 +38,16 @@ class _HomeShellState extends ConsumerState<HomeShell> {
 
   @override
   Widget build(BuildContext context) {
+    // Раздел на старте берётся из настроек, дальше живёт своим состоянием:
+    // человек ушёл в список — приложение не должно возвращать его в календарь.
+    _tab ??= ref.watch(startTabProvider);
+    final tab = _tab!;
     final scheme = Theme.of(context).colorScheme;
     final labels = _labels(context);
 
     return Scaffold(
-      body: SafeArea(bottom: false, child: _page()),
-      floatingActionButton: _tab == 0
+      body: SafeArea(bottom: false, child: _page(tab)),
+      floatingActionButton: tab == 0
           ? FloatingActionButton(
               onPressed: () => EventFlow(context, ref).create(),
               tooltip: L.of(context).newEvent,
@@ -56,7 +62,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         // ДНК прячет подписи неактивных разделов, но в макете подписаны все
         // четыре: без них «Доступ» и «Настройки» по иконке не различить.
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-        selectedIndex: _tab,
+        selectedIndex: tab,
         onDestinationSelected: (i) => setState(() => _tab = i),
         destinations: [
           for (var i = 0; i < _icons.length; i++)
@@ -71,7 +77,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     );
   }
 
-  Widget _page() => switch (_tab) {
+  Widget _page(int tab) => switch (tab) {
         0 => const CalendarScreen(),
         1 => const CalendarsScreen(),
         2 => AccessScreen(keys: demoKeys),

@@ -883,4 +883,28 @@ class LRu extends L {
     );
     return '$_temp0';
   }
+
+  @override
+  String get settingsAutoTime => 'По времени суток';
+
+  @override
+  String get settingsAmoled => 'AMOLED';
+
+  @override
+  String get settingsAmoledHint => 'Чистый чёрный фон в тёмной теме';
+
+  @override
+  String get settingsMaterialYou => 'Material You';
+
+  @override
+  String get settingsMaterialYouHint => 'Цвет из обоев системы (Android 12+)';
+
+  @override
+  String get settingsStartScreen => 'Стартовый экран';
+
+  @override
+  String get settingsStartScreenHint => 'С него открывается приложение';
+
+  @override
+  String get settingsStartView => 'Вид на старте';
 }

@@ -871,4 +871,29 @@ class LEn extends L {
     );
     return '$_temp0';
   }
+
+  @override
+  String get settingsAutoTime => 'By time of day';
+
+  @override
+  String get settingsAmoled => 'AMOLED';
+
+  @override
+  String get settingsAmoledHint => 'Pure black background in the dark theme';
+
+  @override
+  String get settingsMaterialYou => 'Material You';
+
+  @override
+  String get settingsMaterialYouHint =>
+      'Colour from the system wallpaper (Android 12+)';
+
+  @override
+  String get settingsStartScreen => 'Start screen';
+
+  @override
+  String get settingsStartScreenHint => 'The app opens on it';
+
+  @override
+  String get settingsStartView => 'View on start';
 }

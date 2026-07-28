@@ -1570,6 +1570,54 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'{count, plural, one{Нашлась {count}} few{Нашлось {count}} other{Нашлось {count}}}'**
   String iconFound(int count);
+
+  /// settingsAutoTime
+  ///
+  /// In ru, this message translates to:
+  /// **'По времени суток'**
+  String get settingsAutoTime;
+
+  /// settingsAmoled
+  ///
+  /// In ru, this message translates to:
+  /// **'AMOLED'**
+  String get settingsAmoled;
+
+  /// settingsAmoledHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Чистый чёрный фон в тёмной теме'**
+  String get settingsAmoledHint;
+
+  /// settingsMaterialYou
+  ///
+  /// In ru, this message translates to:
+  /// **'Material You'**
+  String get settingsMaterialYou;
+
+  /// settingsMaterialYouHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Цвет из обоев системы (Android 12+)'**
+  String get settingsMaterialYouHint;
+
+  /// settingsStartScreen
+  ///
+  /// In ru, this message translates to:
+  /// **'Стартовый экран'**
+  String get settingsStartScreen;
+
+  /// settingsStartScreenHint
+  ///
+  /// In ru, this message translates to:
+  /// **'С него открывается приложение'**
+  String get settingsStartScreenHint;
+
+  /// settingsStartView
+  ///
+  /// In ru, this message translates to:
+  /// **'Вид на старте'**
+  String get settingsStartView;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

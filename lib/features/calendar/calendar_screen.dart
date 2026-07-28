@@ -35,7 +35,8 @@ class CalendarScreen extends ConsumerStatefulWidget {
 }
 
 class _CalendarScreenState extends ConsumerState<CalendarScreen> {
-  CalendarView _view = CalendarView.day;
+  /// `null` — экран только открыли: вид берётся из настроек.
+  CalendarView? _view;
   DateTime? _selected;
 
   /// Полоска дней над видом «День» — всегда семь суток подряд.
@@ -52,7 +53,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   /// соседний месяц уже посчитан.
   ({DateTime from, DateTime to}) get _window {
     final day = _selected!;
-    final (DateTime from, DateTime to) = switch (_view) {
+    final (DateTime from, DateTime to) = switch (_view ?? CalendarView.day) {
       CalendarView.day => (day, day.add(const Duration(days: 1))),
       CalendarView.week => (_strip.first, _strip.last.add(const Duration(days: 1))),
       CalendarView.bands => (day, day.add(const Duration(days: _bandsLength))),
@@ -79,6 +80,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     // демо-данные: чужие календари в первом кадре человек принимает за свои.
     final inheritance = ref.watch(inheritanceProvider).valueOrNull ??
         const Inheritance(calendars: {}, subcategories: {});
+    _view ??= ref.watch(startViewProvider);
+    final view = _view!;
     final reading = ref.watch(dayReadingProvider);
     final monthMode = ref.watch(monthModeProvider);
     final range = ref.watch(rangeProvider(_window)).valueOrNull ?? RangeData.empty;
@@ -87,13 +90,13 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       children: [
         MonthHeader(
           date: _selected!,
-          dayReading: _view == CalendarView.day ? reading : null,
+          dayReading: view == CalendarView.day ? reading : null,
           onReadingChanged: (r) => ref.read(dayReadingProvider.notifier).set(r),
           onSearch: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const SearchScreen()),
           ),
         ),
-        if (_view == CalendarView.day)
+        if (view == CalendarView.day)
           WeekStrip(
             week: _strip,
             selected: _selected!,
@@ -104,15 +107,15 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             onSelect: (d) => setState(() => _selected = d),
           ),
         ViewSwitcher(
-          value: _view,
+          value: view,
           onChanged: (v) => setState(() => _view = v),
-          onSetup: switch (_view) {
+          onSetup: switch (view) {
             CalendarView.week => _setupWeek,
             CalendarView.month => _setupMonth,
             _ => null,
           },
         ),
-        if (_view != CalendarView.week && _view != CalendarView.month)
+        if (view != CalendarView.week && view != CalendarView.month)
           SpanBars(
             events: range.spansOn(_selected!),
             today: _selected!,
@@ -211,7 +214,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     DayReading reading,
     MonthMode monthMode,
   ) {
-    return switch (_view) {
+    return switch (_view ?? CalendarView.day) {
       CalendarView.day when reading == DayReading.chain => ChainView(
           events: range.eventsOn(_selected!),
           inheritance: inheritance,

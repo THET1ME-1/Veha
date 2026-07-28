@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:m3_dna/theme/app_theme.dart';
 
 import 'l10n/app_localizations.dart';
@@ -23,12 +24,20 @@ class VehaApp extends ConsumerWidget {
       ref.read(reminderServiceProvider).apply(plan);
     });
 
-    return MaterialApp(
+    return DynamicColorBuilder(
+      builder: (lightDynamic, darkDynamic) {
+        // Material You берём только когда система его отдала: на Android 11
+        // и ниже схемы нет, и тумблер там ничего не значит.
+        final dynamicSeed = look.dynamicColor ? lightDynamic?.primary : null;
+        final seed = dynamicSeed ?? look.seed;
+
+        return MaterialApp(
       title: 'Veha',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light(look.seed, vibrant: look.vibrant),
-      darkTheme: AppTheme.dark(look.seed, vibrant: look.vibrant),
-      themeMode: look.themeMode,
+      theme: AppTheme.light(seed, vibrant: look.vibrant),
+      darkTheme:
+          AppTheme.dark(seed, vibrant: look.vibrant, amoled: look.amoled),
+      themeMode: look.themeMode.flutter,
       locale: look.locale,
       // Семь языков с первого дня: русский, английский, украинский,
       // румынский, польский, немецкий, испанский. Язык берётся системный.
@@ -40,6 +49,8 @@ class VehaApp extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       home: const HomeShell(),
+        );
+      },
     );
   }
 }

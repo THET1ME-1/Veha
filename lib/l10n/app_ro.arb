@@ -1068,5 +1068,37 @@
         "type": "int"
       }
     }
+  },
+  "settingsAutoTime": "După ora zilei",
+  "@settingsAutoTime": {
+    "description": "settingsAutoTime"
+  },
+  "settingsAmoled": "AMOLED",
+  "@settingsAmoled": {
+    "description": "settingsAmoled"
+  },
+  "settingsAmoledHint": "Fundal negru pur în tema închisă",
+  "@settingsAmoledHint": {
+    "description": "settingsAmoledHint"
+  },
+  "settingsMaterialYou": "Material You",
+  "@settingsMaterialYou": {
+    "description": "settingsMaterialYou"
+  },
+  "settingsMaterialYouHint": "Culoare din fundalul sistemului (Android 12+)",
+  "@settingsMaterialYouHint": {
+    "description": "settingsMaterialYouHint"
+  },
+  "settingsStartScreen": "Ecran de pornire",
+  "@settingsStartScreen": {
+    "description": "settingsStartScreen"
+  },
+  "settingsStartScreenHint": "Aplicația se deschide pe el",
+  "@settingsStartScreenHint": {
+    "description": "settingsStartScreenHint"
+  },
+  "settingsStartView": "Vizualizarea la pornire",
+  "@settingsStartView": {
+    "description": "settingsStartView"
   }
 }

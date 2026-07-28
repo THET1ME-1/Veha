@@ -883,4 +883,28 @@ class LUk extends L {
     );
     return '$_temp0';
   }
+
+  @override
+  String get settingsAutoTime => 'За часом доби';
+
+  @override
+  String get settingsAmoled => 'AMOLED';
+
+  @override
+  String get settingsAmoledHint => 'Чистий чорний фон у темній темі';
+
+  @override
+  String get settingsMaterialYou => 'Material You';
+
+  @override
+  String get settingsMaterialYouHint => 'Колір із шпалер системи (Android 12+)';
+
+  @override
+  String get settingsStartScreen => 'Стартовий екран';
+
+  @override
+  String get settingsStartScreenHint => 'З нього відкривається застосунок';
+
+  @override
+  String get settingsStartView => 'Вигляд на старті';
 }

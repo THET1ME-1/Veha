@@ -1068,5 +1068,37 @@
         "type": "int"
       }
     }
+  },
+  "settingsAutoTime": "За часом доби",
+  "@settingsAutoTime": {
+    "description": "settingsAutoTime"
+  },
+  "settingsAmoled": "AMOLED",
+  "@settingsAmoled": {
+    "description": "settingsAmoled"
+  },
+  "settingsAmoledHint": "Чистий чорний фон у темній темі",
+  "@settingsAmoledHint": {
+    "description": "settingsAmoledHint"
+  },
+  "settingsMaterialYou": "Material You",
+  "@settingsMaterialYou": {
+    "description": "settingsMaterialYou"
+  },
+  "settingsMaterialYouHint": "Колір із шпалер системи (Android 12+)",
+  "@settingsMaterialYouHint": {
+    "description": "settingsMaterialYouHint"
+  },
+  "settingsStartScreen": "Стартовий екран",
+  "@settingsStartScreen": {
+    "description": "settingsStartScreen"
+  },
+  "settingsStartScreenHint": "З нього відкривається застосунок",
+  "@settingsStartScreenHint": {
+    "description": "settingsStartScreenHint"
+  },
+  "settingsStartView": "Вигляд на старті",
+  "@settingsStartView": {
+    "description": "settingsStartView"
   }
 }

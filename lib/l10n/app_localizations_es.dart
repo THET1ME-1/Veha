@@ -871,4 +871,29 @@ class LEs extends L {
     );
     return '$_temp0';
   }
+
+  @override
+  String get settingsAutoTime => 'Según la hora del día';
+
+  @override
+  String get settingsAmoled => 'AMOLED';
+
+  @override
+  String get settingsAmoledHint => 'Fondo negro puro en el tema oscuro';
+
+  @override
+  String get settingsMaterialYou => 'Material You';
+
+  @override
+  String get settingsMaterialYouHint =>
+      'Color del fondo del sistema (Android 12+)';
+
+  @override
+  String get settingsStartScreen => 'Pantalla de inicio';
+
+  @override
+  String get settingsStartScreenHint => 'La app se abre en ella';
+
+  @override
+  String get settingsStartView => 'Vista al inicio';
 }

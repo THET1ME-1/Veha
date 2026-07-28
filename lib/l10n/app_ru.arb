@@ -1156,5 +1156,37 @@
         "type": "int"
       }
     }
+  },
+  "settingsAutoTime": "По времени суток",
+  "@settingsAutoTime": {
+    "description": "settingsAutoTime"
+  },
+  "settingsAmoled": "AMOLED",
+  "@settingsAmoled": {
+    "description": "settingsAmoled"
+  },
+  "settingsAmoledHint": "Чистый чёрный фон в тёмной теме",
+  "@settingsAmoledHint": {
+    "description": "settingsAmoledHint"
+  },
+  "settingsMaterialYou": "Material You",
+  "@settingsMaterialYou": {
+    "description": "settingsMaterialYou"
+  },
+  "settingsMaterialYouHint": "Цвет из обоев системы (Android 12+)",
+  "@settingsMaterialYouHint": {
+    "description": "settingsMaterialYouHint"
+  },
+  "settingsStartScreen": "Стартовый экран",
+  "@settingsStartScreen": {
+    "description": "settingsStartScreen"
+  },
+  "settingsStartScreenHint": "С него открывается приложение",
+  "@settingsStartScreenHint": {
+    "description": "settingsStartScreenHint"
+  },
+  "settingsStartView": "Вид на старте",
+  "@settingsStartView": {
+    "description": "settingsStartView"
   }
 }

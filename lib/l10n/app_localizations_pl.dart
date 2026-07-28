@@ -884,4 +884,28 @@ class LPl extends L {
     );
     return '$_temp0';
   }
+
+  @override
+  String get settingsAutoTime => 'Zależnie od pory dnia';
+
+  @override
+  String get settingsAmoled => 'AMOLED';
+
+  @override
+  String get settingsAmoledHint => 'Czysto czarne tło w ciemnym motywie';
+
+  @override
+  String get settingsMaterialYou => 'Material You';
+
+  @override
+  String get settingsMaterialYouHint => 'Kolor z tapety systemu (Android 12+)';
+
+  @override
+  String get settingsStartScreen => 'Ekran startowy';
+
+  @override
+  String get settingsStartScreenHint => 'Aplikacja otwiera się na nim';
+
+  @override
+  String get settingsStartView => 'Widok na starcie';
 }

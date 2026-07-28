@@ -6,6 +6,7 @@ import '../core/brand.dart';
 import '../domain/week_layout.dart';
 import '../features/calendar/views/month_view.dart' show MonthMode;
 import '../features/calendar/widgets/month_header.dart' show DayReading;
+import '../features/calendar/widgets/view_switcher.dart' show CalendarView;
 
 /// Пользовательские настройки вида.
 ///
@@ -21,13 +22,18 @@ class VehaSettings {
   static const _dayReading = 'day_reading';
   static const _monthMode = 'month_mode';
   static const _monthChips = 'month_chips';
+  static const _startTab = 'start_tab';
+  static const _startView = 'start_view';
   static const _themeMode = 'theme_mode';
   static const _vibrant = 'vibrant';
   static const _seed = 'seed';
   static const _locale = 'locale';
+  static const _amoled = 'amoled';
+  static const _dynamicColor = 'dynamic_color';
 
-  /// 0 — как в системе, 1 — светлая, 2 — тёмная.
-  int get themeMode => _prefs.getInt(_themeMode) ?? 0;
+  /// Индекс в `VehaThemeMode`. `null` — человек не выбирал; умолчание решает
+  /// не хранилище.
+  int? get themeMode => _prefs.getInt(_themeMode);
 
   Future<void> setThemeMode(int value) => _prefs.setInt(_themeMode, value);
 
@@ -41,6 +47,17 @@ class VehaSettings {
   int get seed => _prefs.getInt(_seed) ?? 0;
 
   Future<void> setSeed(int value) => _prefs.setInt(_seed, value);
+
+  /// Чисто чёрный фон в тёмной теме: на OLED он не светится и не ест батарею.
+  bool get amoled => _prefs.getBool(_amoled) ?? false;
+
+  Future<void> setAmoled(bool value) => _prefs.setBool(_amoled, value);
+
+  /// Цвет из обоев системы (Android 12+).
+  bool get dynamicColor => _prefs.getBool(_dynamicColor) ?? false;
+
+  Future<void> setDynamicColor(bool value) =>
+      _prefs.setBool(_dynamicColor, value);
 
   /// Пустая строка — язык системы.
   String get locale => _prefs.getString(_locale) ?? '';
@@ -66,6 +83,16 @@ class VehaSettings {
   int get monthChips => _prefs.getInt(_monthChips) ?? 2;
 
   Future<void> setMonthChips(int value) => _prefs.setInt(_monthChips, value);
+
+  /// С какого раздела открывается приложение.
+  int get startTab => _prefs.getInt(_startTab) ?? 0;
+
+  Future<void> setStartTab(int value) => _prefs.setInt(_startTab, value);
+
+  /// Каким видом открывается календарь: день, дни лентами, неделя, месяц.
+  int get startView => _prefs.getInt(_startView) ?? 0;
+
+  Future<void> setStartView(int value) => _prefs.setInt(_startView, value);
 }
 
 /// Настройки читаются один раз при запуске: дальше синхронный доступ.
@@ -134,6 +161,43 @@ final monthChipsProvider =
   return MonthChipsNotifier(settings, (settings?.monthChips ?? 2).clamp(1, 5));
 });
 
+/// Стартовый раздел: с него открывается приложение. Человек, живущий в
+/// списке календарей, не должен каждый раз проходить через день.
+class StartTabNotifier extends StateNotifier<int> {
+  StartTabNotifier(this._settings, super.state);
+
+  final VehaSettings? _settings;
+
+  Future<void> set(int value) async {
+    state = value;
+    await _settings?.setStartTab(value);
+  }
+}
+
+final startTabProvider = StateNotifierProvider<StartTabNotifier, int>((ref) {
+  final settings = ref.watch(settingsProvider).valueOrNull;
+  return StartTabNotifier(settings, (settings?.startTab ?? 0).clamp(0, 3));
+});
+
+/// Каким видом открывается календарь.
+class StartViewNotifier extends StateNotifier<CalendarView> {
+  StartViewNotifier(this._settings, super.state);
+
+  final VehaSettings? _settings;
+
+  Future<void> set(CalendarView value) async {
+    state = value;
+    await _settings?.setStartView(value.index);
+  }
+}
+
+final startViewProvider =
+    StateNotifierProvider<StartViewNotifier, CalendarView>((ref) {
+  final settings = ref.watch(settingsProvider).valueOrNull;
+  final saved = (settings?.startView ?? 0).clamp(0, CalendarView.values.length - 1);
+  return StartViewNotifier(settings, CalendarView.values[saved]);
+});
+
 /// Прочтение дня: часы или цепочка. Тоже запоминается — человек выбирает его
 /// один раз и живёт с ним.
 class DayReadingNotifier extends StateNotifier<DayReading> {
@@ -161,33 +225,67 @@ final dayReadingProvider =
   );
 });
 
+/// Режим темы. Четвёртый, «по времени суток», системному не равен: система
+/// переключается по своему расписанию, а человеку бывает нужно ровно «после
+/// заката — тёмная».
+enum VehaThemeMode { light, dark, system, autoTime }
+
+extension VehaThemeModeX on VehaThemeMode {
+  /// Во что превращается для Flutter. «По времени суток» решается здесь и
+  /// сейчас: с восьми вечера до семи утра — тёмная.
+  ThemeMode get flutter => switch (this) {
+        VehaThemeMode.light => ThemeMode.light,
+        VehaThemeMode.dark => ThemeMode.dark,
+        VehaThemeMode.system => ThemeMode.system,
+        VehaThemeMode.autoTime =>
+          _isNight ? ThemeMode.dark : ThemeMode.light,
+      };
+
+  static bool get _isNight {
+    final hour = DateTime.now().hour;
+    return hour >= 20 || hour < 7;
+  }
+}
+
 /// Оформление: тема, режим схемы, фирменный цвет, язык.
 @immutable
 class Appearance {
   const Appearance({
-    this.themeMode = ThemeMode.system,
+    this.themeMode = VehaThemeMode.system,
     this.vibrant = false,
     this.seed = VehaBrand.seed,
+    this.amoled = false,
+    this.dynamicColor = false,
     this.locale,
   });
 
-  final ThemeMode themeMode;
+  final VehaThemeMode themeMode;
   final bool vibrant;
   final Color seed;
+
+  /// Чисто чёрный фон в тёмной теме.
+  final bool amoled;
+
+  /// Цвет из обоев системы вместо выбранного.
+  final bool dynamicColor;
 
   /// `null` — язык системы.
   final Locale? locale;
 
   Appearance copyWith({
-    ThemeMode? themeMode,
+    VehaThemeMode? themeMode,
     bool? vibrant,
     Color? seed,
+    bool? amoled,
+    bool? dynamicColor,
     Object? locale = _keepLocale,
   }) =>
       Appearance(
         themeMode: themeMode ?? this.themeMode,
         vibrant: vibrant ?? this.vibrant,
         seed: seed ?? this.seed,
+        amoled: amoled ?? this.amoled,
+        dynamicColor: dynamicColor ?? this.dynamicColor,
         locale: locale == _keepLocale ? this.locale : locale as Locale?,
       );
 
@@ -199,9 +297,19 @@ class AppearanceNotifier extends StateNotifier<Appearance> {
 
   final VehaSettings? _settings;
 
-  Future<void> setThemeMode(ThemeMode mode) async {
+  Future<void> setThemeMode(VehaThemeMode mode) async {
     state = state.copyWith(themeMode: mode);
-    await _settings?.setThemeMode(ThemeMode.values.indexOf(mode));
+    await _settings?.setThemeMode(mode.index);
+  }
+
+  Future<void> setAmoled(bool value) async {
+    state = state.copyWith(amoled: value);
+    await _settings?.setAmoled(value);
+  }
+
+  Future<void> setDynamicColor(bool value) async {
+    state = state.copyWith(dynamicColor: value);
+    await _settings?.setDynamicColor(value);
   }
 
   Future<void> setVibrant(bool value) async {
@@ -229,9 +337,15 @@ final appearanceProvider =
   return AppearanceNotifier(
     settings,
     Appearance(
-      themeMode: ThemeMode.values[settings.themeMode.clamp(0, 2)],
+      // По умолчанию системная: приложение подстраивается под телефон, пока
+      // человек не сказал иначе.
+      themeMode: settings.themeMode == null
+          ? VehaThemeMode.system
+          : VehaThemeMode.values[settings.themeMode!.clamp(0, 3)],
       vibrant: settings.vibrant,
       seed: settings.seed == 0 ? VehaBrand.seed : Color(settings.seed),
+      amoled: settings.amoled,
+      dynamicColor: settings.dynamicColor,
       locale: language.isEmpty ? null : Locale(language),
     ),
   );

@@ -875,4 +875,29 @@ class LDe extends L {
     );
     return '$_temp0';
   }
+
+  @override
+  String get settingsAutoTime => 'Nach Tageszeit';
+
+  @override
+  String get settingsAmoled => 'AMOLED';
+
+  @override
+  String get settingsAmoledHint => 'Reines Schwarz im dunklen Design';
+
+  @override
+  String get settingsMaterialYou => 'Material You';
+
+  @override
+  String get settingsMaterialYouHint =>
+      'Farbe aus dem System-Hintergrundbild (Android 12+)';
+
+  @override
+  String get settingsStartScreen => 'Startbildschirm';
+
+  @override
+  String get settingsStartScreenHint => 'Damit startet die App';
+
+  @override
+  String get settingsStartView => 'Ansicht beim Start';
 }
