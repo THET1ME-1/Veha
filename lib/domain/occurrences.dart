@@ -75,4 +75,5 @@ VEvent _instanceAt(VEvent series, DateTime start) => VEvent(
       timezone: series.timezone,
       location: series.location,
       fields: series.fields,
+      reminders: series.reminders,
     );

@@ -10,6 +10,7 @@ import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
 import '../repeat/repeat_screen.dart' show askRepeatRule;
 import 'calendar_picker_sheet.dart';
 import 'look_sheet.dart';
+import 'reminders_sheet.dart';
 import '../calendar/widgets/month_header.dart' show AppFonts;
 import '../common/blocks.dart';
 
@@ -97,6 +98,12 @@ class _EventEditScreenState extends State<EventEditScreen> {
     );
     if (!mounted) return;
     setState(() => _draft = _draft.withRrule(rrule));
+  }
+
+  Future<void> _pickReminders() async {
+    final chosen = await askReminders(context, current: _draft.reminders);
+    if (chosen == null) return;
+    setState(() => _draft = _draft.withReminders(chosen));
   }
 
   Future<void> _pickCalendar() async {
@@ -363,6 +370,18 @@ class _EventEditScreenState extends State<EventEditScreen> {
                   ? calendar?.name ?? ''
                   : '${calendar?.name} · ${sub.name}',
               onTap: _pickCalendar,
+              trailing: Icon(
+                VehaIcons.byName('chevron'),
+                size: 17,
+                color: scheme.outline,
+              ),
+            ),
+            const VSep(),
+            VRow(
+              icon: 'bell',
+              label: 'Напоминание',
+              value: remindersLabel(_draft.reminders),
+              onTap: _pickReminders,
               trailing: Icon(
                 VehaIcons.byName('chevron'),
                 size: 17,

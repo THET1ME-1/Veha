@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../domain/reminder_plan.dart';
+import '../services/reminder_service.dart';
 import 'db/connection.dart';
 import 'db/database.dart';
 import 'models.dart';
@@ -81,6 +83,32 @@ final rangeProvider =
     }
   },
 );
+
+/// Будильники на ближайший месяц.
+///
+/// Отдельный поток, а не побочное действие сохранения: напоминание должно
+/// пересобираться и когда событие приехало по синхронизации, и когда занятие
+/// отменили, и когда календарь скрыли. Место, где это видно одинаково, — сама
+/// база.
+final reminderPlanProvider = Provider<List<PlannedReminder>>((ref) {
+  final now = ref.watch(nowProvider);
+  final from = DateTime(now.year, now.month, now.day);
+  final range = (from: from, to: from.add(const Duration(days: 30)));
+
+  final data = ref.watch(rangeProvider(range)).valueOrNull;
+  if (data == null) return const [];
+
+  final events = [
+    for (final day in data.byDay.values) ...day,
+    ...data.spans,
+  ];
+  // Считаем от настоящего «сейчас», а не от `nowProvider`: тот заморожен на
+  // запуске приложения и в снимках экрана.
+  return planReminders(events, now: DateTime.now());
+});
+
+final reminderServiceProvider =
+    Provider<ReminderService>((ref) => ReminderService());
 
 class RangeData {
   const RangeData({required this.byDay, required this.spans});

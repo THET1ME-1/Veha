@@ -47,6 +47,39 @@ void main() {
     expect(find.text('Сохранить'), findsOneWidget);
   });
 
+  testWidgets('Выбранное напоминание доезжает до карточки', (tester) async {
+    await pumpScreen(tester, const HomeShell());
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'Приём у врача');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Подробнее'));
+    await tester.pumpAndSettle();
+
+    // По умолчанию событие предупреждает за полчаса.
+    expect(find.text('За 30 минут'), findsOneWidget);
+
+    await tester.tap(find.text('Напоминание'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('За день'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Готово'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('За день · за 30 минут'), findsOneWidget,
+        reason: 'Оба срока показаны от дальнего к ближнему');
+
+    await tester.tap(find.text('Сохранить'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Приём у врача').first);
+    await tester.pumpAndSettle();
+
+    expect(find.text('За день · за 30 минут'), findsOneWidget,
+        reason: 'Напоминания дошли до базы и вернулись в карточку события');
+  });
+
   testWidgets('Снимок быстрого листа', (tester) async {
     await pumpScreen(tester, const HomeShell());
 

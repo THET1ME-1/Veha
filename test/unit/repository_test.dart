@@ -269,6 +269,66 @@ void main() {
         inheritance.calendars['c-study']!.color);
   });
 
+  test('Напоминания сохраняются вместе с событием', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+
+    final id = repo.newId();
+    await repo.upsertEvent(VEvent(
+      id: id,
+      calendarId: 'c-study',
+      title: 'Зачёт',
+      start: DateTime(2026, 7, 28, 10),
+      end: DateTime(2026, 7, 28, 11),
+      reminders: const [60, 10],
+    ));
+
+    final saved = await _eventById(repo, id, DateTime(2026, 7, 28));
+    expect(saved.reminders, [60, 10]);
+  });
+
+  test('Правка переписывает набор напоминаний, а не добавляет второй', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+
+    final id = repo.newId();
+    final base = VEvent(
+      id: id,
+      calendarId: 'c-study',
+      title: 'Зачёт',
+      start: DateTime(2026, 7, 28, 10),
+      end: DateTime(2026, 7, 28, 11),
+      reminders: const [60, 10],
+    );
+    await repo.upsertEvent(base);
+    await repo.upsertEvent(base.copyWith(reminders: const [5]));
+
+    final saved = await _eventById(repo, id, DateTime(2026, 7, 28));
+    expect(saved.reminders, [5]);
+  });
+
+  test('Занятия ряда наследуют напоминания ряда', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+
+    final id = repo.newId();
+    await repo.upsertEvent(VEvent(
+      id: id,
+      calendarId: 'c-study',
+      title: 'Английский',
+      start: DateTime(2026, 7, 27, 16),
+      end: DateTime(2026, 7, 27, 17),
+      rrule: 'FREQ=DAILY',
+      reminders: const [30],
+    ));
+
+    final week = await repo
+        .watchRange(DateTime(2026, 7, 27), DateTime(2026, 8, 3))
+        .first;
+    // Именно по ряду, а не по названию: «Английский» есть и в демо-данных.
+    final instances = week.where((e) => e.recurrenceId == id).toList();
+
+    expect(instances.length, greaterThan(3));
+    expect(instances.every((e) => e.reminders.contains(30)), isTrue);
+  });
+
   test('Своё поле заводится в группе календаря', () async {
     await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
 
@@ -368,4 +428,17 @@ void main() {
     final queue = await db.select(db.syncQueue).get();
     expect(queue.where((q) => q.entityId == 'e-breakfast'), hasLength(1));
   });
+}
+
+/// Событие из базы по ключу: репозиторий отдаёт их диапазоном, отдельного
+/// чтения по одному нет — виды всегда просят период.
+Future<VEvent> _eventById(
+  VehaRepository repo,
+  String id,
+  DateTime day,
+) async {
+  final events = await repo
+      .watchRange(day, day.add(const Duration(days: 1)))
+      .first;
+  return events.firstWhere((e) => e.id == id);
 }

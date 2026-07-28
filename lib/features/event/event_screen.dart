@@ -9,6 +9,7 @@ import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
 import '../calendar/widgets/month_header.dart';
+import 'reminders_sheet.dart' show remindersLabel;
 import '../common/blocks.dart';
 
 /// Событие целиком: шапка, поля одним блоком, заметки.
@@ -69,7 +70,11 @@ class EventScreen extends ConsumerWidget {
     if (event.location != null) {
       add(VRow(icon: 'place', label: 'Место', value: event.location));
     }
-    add(const VRow(icon: 'bell', label: 'Напоминание', value: 'За 30 минут'));
+    add(VRow(
+      icon: 'bell',
+      label: 'Напоминание',
+      value: remindersLabel(event.reminders),
+    ));
     add(VRow(
       icon: 'calendar',
       label: 'Календарь и ветка',

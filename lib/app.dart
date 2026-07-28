@@ -5,6 +5,7 @@ import 'package:m3_dna/theme/app_theme.dart';
 
 import 'l10n/app_localizations.dart';
 
+import 'data/providers.dart';
 import 'data/settings.dart';
 import 'features/shell/home_shell.dart';
 
@@ -14,6 +15,13 @@ class VehaApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final look = ref.watch(appearanceProvider);
+
+    // Будильники держатся в согласии с базой на всё время работы приложения.
+    // Слушаем здесь, а не на экране: экран календаря можно закрыть, а
+    // напоминания от этого пропасть не должны.
+    ref.listen(reminderPlanProvider, (_, plan) {
+      ref.read(reminderServiceProvider).apply(plan);
+    });
 
     return MaterialApp(
       title: 'Veha',

@@ -115,6 +115,7 @@ class VehaRepository {
       leftOuterJoin(db.fieldValues, db.fieldValues.eventId.equalsExp(db.events.id)),
       leftOuterJoin(db.recurrenceExceptions,
           db.recurrenceExceptions.eventId.equalsExp(db.events.id)),
+      leftOuterJoin(db.reminders, db.reminders.eventId.equalsExp(db.events.id)),
     ])
       ..where(db.events.deletedAt.isNull() &
           db.calendars.deletedAt.isNull() &
@@ -126,6 +127,7 @@ class VehaRepository {
       final byId = <String, VEvent>{};
       final fields = <String, Set<VFieldValue>>{};
       final excluded = <String, Set<DateTime>>{};
+      final alarms = <String, Set<int>>{};
 
       for (final row in rows) {
         final e = row.readTable(db.events);
@@ -142,11 +144,20 @@ class VehaRepository {
           excluded.putIfAbsent(e.id, () => <DateTime>{}).add(
               DateTime.fromMillisecondsSinceEpoch(ex.excludedDate));
         }
+
+        final rem = row.readTableOrNull(db.reminders);
+        if (rem != null) {
+          alarms.putIfAbsent(e.id, () => <int>{}).add(rem.minutesBefore);
+        }
       }
 
       final stored = [
         for (final e in byId.values)
-          fields[e.id] == null ? e : _withFields(e, fields[e.id]!.toList()),
+          _withDetails(
+            e,
+            fields: fields[e.id]?.toList(),
+            reminders: alarms[e.id]?.toList(),
+          ),
       ];
 
       return expandOccurrences(stored, from: from, to: to, excluded: excluded);
@@ -227,8 +238,24 @@ class VehaRepository {
             createdAt: now,
             updatedAt: now,
           ));
+      await _writeReminders(id, e.reminders);
       await _enqueue('event', id, 'upsert');
     });
+  }
+
+  /// Набор напоминаний переписывается целиком: правка отвечает на вопрос
+  /// «когда предупредить», а не «добавь ещё одно». Дописывание оставляло бы
+  /// снятые галочки жить в базе.
+  Future<void> _writeReminders(String eventId, List<int> minutes) async {
+    await (db.delete(db.reminders)..where((t) => t.eventId.equals(eventId)))
+        .go();
+    for (final m in minutes.toSet()) {
+      await db.into(db.reminders).insert(RemindersCompanion.insert(
+            id: newId(),
+            eventId: eventId,
+            minutesBefore: m,
+          ));
+    }
   }
 
   // ---------- календари и ветки ----------
@@ -682,23 +709,40 @@ class VehaRepository {
         location: e.location,
       );
 
-  static VEvent _withFields(VEvent e, List<VFieldValue> fields) => VEvent(
-        id: e.id,
-        calendarId: e.calendarId,
-        subcategoryId: e.subcategoryId,
-        title: e.title,
-        start: e.start,
-        end: e.end,
-        color: e.color,
-        iconName: e.iconName,
-        isAllDay: e.isAllDay,
-        rrule: e.rrule,
-        recurrenceId: e.recurrenceId,
-        originalStart: e.originalStart,
-        timezone: e.timezone,
-        location: e.location,
-        fields: fields,
-      );
+  /// Поля и напоминания приезжают отдельными строками присоединения, поэтому
+  /// садятся на событие уже после сборки.
+  ///
+  /// Напоминания идут от дальнего к ближнему («за час, за десять минут»):
+  /// у равных строк порядка нет, а список читается человеком.
+  static VEvent _withDetails(
+    VEvent e, {
+    List<VFieldValue>? fields,
+    List<int>? reminders,
+  }) {
+    if (fields == null && reminders == null) return e;
+    final sorted = reminders == null
+        ? e.reminders
+        : (reminders.toList()..sort((a, b) => b.compareTo(a)));
+
+    return VEvent(
+      id: e.id,
+      calendarId: e.calendarId,
+      subcategoryId: e.subcategoryId,
+      title: e.title,
+      start: e.start,
+      end: e.end,
+      color: e.color,
+      iconName: e.iconName,
+      isAllDay: e.isAllDay,
+      rrule: e.rrule,
+      recurrenceId: e.recurrenceId,
+      originalStart: e.originalStart,
+      timezone: e.timezone,
+      location: e.location,
+      fields: fields ?? e.fields,
+      reminders: sorted,
+    );
+  }
 
   static VFieldDef _toFieldDef(FieldDef f) => VFieldDef(
         id: f.id,

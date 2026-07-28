@@ -113,6 +113,7 @@ class Seed {
       end: _at(27, 17),
       rrule: Recurrence.weekly(interval: 2, weekdays: const {1, 4}),
       location: 'Языковой центр, Бэнулеску-Бодони 45',
+      reminders: const [30],
       fields: const [
         VFieldValue(fieldId: 'f-room', value: '312'),
         VFieldValue(fieldId: 'f-teacher', value: 'Мария Л.'),
@@ -252,6 +253,7 @@ class Seed {
     iconName: 'exam',
     start: _at(28, 11),
     end: _at(28, 13),
+    reminders: const [1440, 30],
     fields: const [VFieldValue(fieldId: 'f-room', value: '204-б')],
   );
 

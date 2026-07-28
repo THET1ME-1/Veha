@@ -20,6 +20,7 @@ class EventDraft {
     this.rrule,
     this.location,
     this.isAllDay = false,
+    this.reminders = const [30],
     this.source,
   });
 
@@ -52,6 +53,7 @@ class EventDraft {
         rrule: e.rrule,
         location: e.location,
         isAllDay: e.isAllDay,
+        reminders: e.reminders,
         source: e,
       );
 
@@ -65,6 +67,11 @@ class EventDraft {
   final String? rrule;
   final String? location;
   final bool isAllDay;
+
+  /// За сколько минут предупредить. У нового события одно напоминание за
+  /// полчаса: событие, о котором не напомнили, человек пропускает, а лишний
+  /// сигнал он снимет сам.
+  final List<int> reminders;
 
   /// Событие, которое правят. `null` — черновик нового события.
   final VEvent? source;
@@ -100,6 +107,7 @@ class EventDraft {
       _copy(iconName: value, dropIcon: value == null);
   EventDraft withColor(Color? value) => _copy(color: value, dropColor: value == null);
   EventDraft withAllDay(bool value) => _copy(isAllDay: value);
+  EventDraft withReminders(List<int> value) => _copy(reminders: value);
 
   /// Готовое событие. Новому выдаётся ключ, правка сохраняет свой — вместе с
   /// пометкой «экземпляр ряда», по которой репозиторий решает, писать в ряд
@@ -121,6 +129,7 @@ class EventDraft {
         timezone: source?.timezone ?? 'Europe/Chisinau',
         location: location,
         fields: source?.fields ?? const [],
+        reminders: reminders,
       );
 
   EventDraft _copy({
@@ -134,6 +143,7 @@ class EventDraft {
     String? rrule,
     String? location,
     bool? isAllDay,
+    List<int>? reminders,
     bool dropSubcategory = false,
     bool dropColor = false,
     bool dropIcon = false,
@@ -152,6 +162,7 @@ class EventDraft {
         rrule: dropRrule ? rrule : rrule ?? this.rrule,
         location: dropLocation ? location : location ?? this.location,
         isAllDay: isAllDay ?? this.isAllDay,
+        reminders: reminders ?? this.reminders,
         source: source,
       );
 }

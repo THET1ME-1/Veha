@@ -82,6 +82,7 @@ class VEvent {
     this.timezone = 'Europe/Chisinau',
     this.location,
     this.fields = const [],
+    this.reminders = const [],
   });
 
   final String id;
@@ -114,6 +115,11 @@ class VEvent {
   /// Экземпляр ряда, а не самостоятельное событие.
   bool get isOccurrence => recurrenceId != null;
 
+  /// За сколько минут до начала предупредить. Список, а не одно число:
+  /// «за день» и «за десять минут» отвечают на разные вопросы — успеть
+  /// подготовиться и успеть дойти.
+  final List<int> reminders;
+
   /// Экземпляр, рождённый развёрткой: своей строки в базе у него нет.
   /// Правка такого экземпляра выламывает его из ряда отдельной записью,
   /// а не переписывает ряд целиком.
@@ -129,6 +135,7 @@ class VEvent {
     Object? rrule = _keep,
     Object? location = _keep,
     List<VFieldValue>? fields,
+    List<int>? reminders,
   }) =>
       VEvent(
         id: id,
@@ -147,6 +154,7 @@ class VEvent {
         timezone: timezone,
         location: location == _keep ? this.location : location as String?,
         fields: fields ?? this.fields,
+        reminders: reminders ?? this.reminders,
       );
 
   /// Пояс события, IANA. Нужен для абсолютного момента напоминания:
