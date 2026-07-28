@@ -175,44 +175,41 @@ class Recurrence {
   /// [weekdayNominative] — именительный падеж для правил по позиции
   /// («последняя пятница»). Одним списком не обойтись: в русском у позиции
   /// другой падеж, да ещё и род меняет прилагательное.
-  static String describe(
-    String rrule, {
-    required List<String> weekdayNames,
-    List<String>? weekdayNominative,
-    List<String>? lastByGender,
-  }) {
+  /// Разобранное правило: частота, шаг и дни. Слова подбирает слой
+  /// интерфейса — грамматика у каждого языка своя, и домену тут делать нечего.
+  static RecurrenceShape shape(String rrule) {
     final rule = RecurrenceRule.fromString(
       rrule.startsWith('RRULE:') ? rrule : 'RRULE:$rrule',
     );
-    final interval = rule.interval ?? 1;
-
-    switch (rule.frequency) {
-      case Frequency.daily:
-        return interval == 1 ? 'каждый день' : 'каждые $interval дня';
-      case Frequency.weekly:
-        final days = rule.byWeekDays
-            .map((d) => weekdayNames[d.day - 1])
-            .join(', ');
-        final every = interval == 1 ? 'каждую неделю' : 'каждые $interval недели';
-        return days.isEmpty ? every : '$every, $days';
-      case Frequency.monthly:
-        if (rule.byWeekDays.isNotEmpty) {
-          final d = rule.byWeekDays.first;
-          final pos = d.occurrence;
-          final name = (weekdayNominative ?? weekdayNames)[d.day - 1];
-          if (pos == -1) {
-            final last = (lastByGender ??
-                const ['последний', 'последний', 'последняя', 'последний',
-                       'последняя', 'последняя', 'последнее'])[d.day - 1];
-            return '$last $name месяца';
-          }
-          return '$pos-й $name месяца';
-        }
-        return interval == 1 ? 'каждый месяц' : 'каждые $interval месяца';
-      case Frequency.yearly:
-        return 'каждый год';
-      default:
-        return 'по правилу';
-    }
+    return RecurrenceShape(
+      frequency: rule.frequency,
+      interval: rule.interval ?? 1,
+      weekdays: [for (final d in rule.byWeekDays) d.day],
+      monthPosition:
+          rule.byWeekDays.isEmpty ? null : rule.byWeekDays.first.occurrence,
+      monthWeekday:
+          rule.byWeekDays.isEmpty ? null : rule.byWeekDays.first.day,
+    );
   }
+}
+
+/// Правило повторения, разобранное на части.
+class RecurrenceShape {
+  const RecurrenceShape({
+    required this.frequency,
+    required this.interval,
+    required this.weekdays,
+    this.monthPosition,
+    this.monthWeekday,
+  });
+
+  final Frequency frequency;
+  final int interval;
+
+  /// Дни недели, 1 — понедельник.
+  final List<int> weekdays;
+
+  /// Позиция дня в месяце: 1..4 либо −1 для последнего.
+  final int? monthPosition;
+  final int? monthWeekday;
 }

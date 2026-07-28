@@ -74,4 +74,698 @@ class LUk extends L {
   String spanUntil(String date) {
     return 'до $date';
   }
+
+  @override
+  String get actionDone => 'Готово';
+
+  @override
+  String get actionCancel => 'Скасувати';
+
+  @override
+  String get actionDelete => 'Видалити';
+
+  @override
+  String get actionSave => 'Зберегти';
+
+  @override
+  String get actionAdd => 'додати';
+
+  @override
+  String get actionEdit => 'Змінити';
+
+  @override
+  String get actionUndo => 'Повернути';
+
+  @override
+  String get fieldName => 'Назва';
+
+  @override
+  String get calendarsTitle => 'Календарі';
+
+  @override
+  String get calendarOne => 'Календар';
+
+  @override
+  String get calendarNewShort => 'Новий';
+
+  @override
+  String get calendarNew => 'Новий календар';
+
+  @override
+  String get calendarCreate => 'Створити календар';
+
+  @override
+  String get calendarsEmptyTitle => 'Жодного календаря';
+
+  @override
+  String get calendarsEmptyBody =>
+      'Календар задає колір та іконку всім подіям усередині. Зазвичай їх три-чотири: дім, робота, навчання, спорт.';
+
+  @override
+  String get branchOne => 'Гілка';
+
+  @override
+  String get branchNone => 'Без гілок';
+
+  @override
+  String get branchAdd => 'Додати гілку';
+
+  @override
+  String branchOf(String name) {
+    return 'Гілка «$name»';
+  }
+
+  @override
+  String branchCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count гілок',
+      few: '$count гілки',
+      one: '$count гілка',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get colorInherits => 'успадковує';
+
+  @override
+  String get colorOwn => 'свій колір';
+
+  @override
+  String get fieldsTitle => 'Власні поля';
+
+  @override
+  String get fieldsShared => 'Спільні для всіх';
+
+  @override
+  String get fieldsSharedRow => 'Спільні поля';
+
+  @override
+  String get fieldsGroups => 'Групи';
+
+  @override
+  String get fieldsNoneYet => 'Поки жодного';
+
+  @override
+  String get fieldsGroupEmpty => 'Без власних полів';
+
+  @override
+  String get fieldsGroupCreate => 'Створити групу полів';
+
+  @override
+  String get fieldsGroupNew => 'Нова група';
+
+  @override
+  String fieldAddTo(String name) {
+    return 'Додати поле до «$name»';
+  }
+
+  @override
+  String fieldNewIn(String name) {
+    return 'Нове поле в «$name»';
+  }
+
+  @override
+  String get fieldOne => 'Поле';
+
+  @override
+  String get fieldShared => 'спільне';
+
+  @override
+  String get fieldNamePlaceholder => 'Назва поля';
+
+  @override
+  String get fieldKind => 'Чим заповнювати';
+
+  @override
+  String fieldsOwnCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count власних полів',
+      few: '$count власних поля',
+      one: '$count власне поле',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String fieldsInCard(int count) {
+    return 'у картці $count';
+  }
+
+  @override
+  String get fieldEraseValue => 'Стерти';
+
+  @override
+  String get yes => 'так';
+
+  @override
+  String get no => 'ні';
+
+  @override
+  String get typeText => 'Текст';
+
+  @override
+  String get typeNumber => 'Число';
+
+  @override
+  String get typeDate => 'Дата';
+
+  @override
+  String get typeTime => 'Час';
+
+  @override
+  String get typeDuration => 'Тривалість';
+
+  @override
+  String get typeSelect => 'Список';
+
+  @override
+  String get typeCheckbox => 'Прапорець';
+
+  @override
+  String get typeUrl => 'Посилання';
+
+  @override
+  String get typePhone => 'Телефон';
+
+  @override
+  String get typePerson => 'Людина';
+
+  @override
+  String get typeMoney => 'Гроші';
+
+  @override
+  String get searchHint => 'Знайти подію';
+
+  @override
+  String get searchEmpty =>
+      'Шукайте за назвою, місцем або власним полем — наприклад, за номером кабінету.';
+
+  @override
+  String get searchNothing => 'Нічого не знайшлося.';
+
+  @override
+  String get allDay => 'весь день';
+
+  @override
+  String get settingsTitle => 'Налаштування';
+
+  @override
+  String get settingsAppearance => 'Оформлення';
+
+  @override
+  String get settingsTheme => 'Тема';
+
+  @override
+  String get settingsSystem => 'Як у системі';
+
+  @override
+  String get settingsLight => 'Світла';
+
+  @override
+  String get settingsDark => 'Темна';
+
+  @override
+  String get settingsChroma => 'Насиченість';
+
+  @override
+  String get settingsChromaHint =>
+      'На фірмовій м’яті «Соковито» викручує пігулки до кислотного';
+
+  @override
+  String get settingsExact => 'Точнісінько';
+
+  @override
+  String get settingsVivid => 'Соковито';
+
+  @override
+  String get settingsSeed => 'Фірмовий колір';
+
+  @override
+  String get settingsCalendarGroup => 'Календар';
+
+  @override
+  String get settingsWeekDays => 'Дні у вигляді «Тиждень»';
+
+  @override
+  String get settingsWeekFull => 'Весь тиждень';
+
+  @override
+  String get settingsWeekdaysOnly => 'Лише будні';
+
+  @override
+  String settingsWeekSome(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count днів на тиждень',
+      few: '$count дні на тиждень',
+      one: '$count день на тиждень',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settingsFieldsHint => 'Кабінет, тренер, номер абонемента';
+
+  @override
+  String get settingsLanguage => 'Мова';
+
+  @override
+  String get settingsDataGroup => 'Дані';
+
+  @override
+  String get settingsAbout => 'Про застосунок';
+
+  @override
+  String get settingsVersion => 'Версія';
+
+  @override
+  String get settingsStorage => 'Усе зберігається на пристрої';
+
+  @override
+  String get settingsSource => 'Вихідний код';
+
+  @override
+  String get monthViewTitle => 'Вигляд місяця';
+
+  @override
+  String get monthChips => 'Чіпи з назвами';
+
+  @override
+  String get monthChipsHint => 'Видно, що саме цього дня';
+
+  @override
+  String get monthTint => 'Тоновані комірки';
+
+  @override
+  String get monthTintHint => 'Видно, чим зайнятий день';
+
+  @override
+  String get monthDensity => 'Щільність чіпа';
+
+  @override
+  String get monthDensityBoth => 'Іконка й текст';
+
+  @override
+  String get monthDensityIcon => 'Лише іконка';
+
+  @override
+  String get monthPerCell => 'Подій у комірці';
+
+  @override
+  String get monthPerCellHint => 'Далі згортати в «+N»';
+
+  @override
+  String get eventOne => 'Подія';
+
+  @override
+  String get eventWhen => 'Коли';
+
+  @override
+  String get eventTime => 'Час';
+
+  @override
+  String get eventRepeat => 'Повтор';
+
+  @override
+  String get eventCalendarAndBranch => 'Календар і гілка';
+
+  @override
+  String get eventReminder => 'Нагадування';
+
+  @override
+  String get eventPlace => 'Місце';
+
+  @override
+  String get eventPlaceHint => 'Де це буде';
+
+  @override
+  String get eventDelete => 'Видалити подію';
+
+  @override
+  String get moreDetails => 'Докладніше';
+
+  @override
+  String get lookTitle => 'Іконка й колір';
+
+  @override
+  String get lookInherit => 'Як у календаря';
+
+  @override
+  String get lookOwnColor => 'Свій колір';
+
+  @override
+  String get inCard => 'у картці';
+
+  @override
+  String get notesTitle => 'Нотатки';
+
+  @override
+  String get noteOne => 'Нотатка';
+
+  @override
+  String get noteAdd => 'Додати нотатку';
+
+  @override
+  String get noteHint => 'Що не забути';
+
+  @override
+  String get repeatNone => 'не повторюється';
+
+  @override
+  String get repeatByRule => 'за правилом';
+
+  @override
+  String get repeatTitle => 'Повторення';
+
+  @override
+  String get repeatDaily => 'Щодня';
+
+  @override
+  String get repeatWeekly => 'Щотижня';
+
+  @override
+  String get repeatEvery => 'Кожні';
+
+  @override
+  String get repeatEndsWhen => 'Коли закінчується';
+
+  @override
+  String get repeatNextDates => 'Найближчі дати';
+
+  @override
+  String get repeatNever => 'Ніколи';
+
+  @override
+  String get repeatUntilDate => 'До дати';
+
+  @override
+  String repeatAfterCount(int count) {
+    return 'Після $count повторів';
+  }
+
+  @override
+  String get unitDay => 'День';
+
+  @override
+  String get unitWeek => 'Тиждень';
+
+  @override
+  String get unitMonth => 'Місяць';
+
+  @override
+  String get unitYear => 'Рік';
+
+  @override
+  String get scopeTitle => 'Що змінити';
+
+  @override
+  String scopeRepeats(String label) {
+    return 'Заняття повторюється: $label';
+  }
+
+  @override
+  String get scopeOnly => 'Лише це заняття';
+
+  @override
+  String get scopeFollowing => 'Це й наступні';
+
+  @override
+  String get scopeFollowingHint =>
+      'Ряд поділиться: минулі заняття залишаться як були';
+
+  @override
+  String get scopeWhole => 'Весь ряд';
+
+  @override
+  String get scopeWholeHint => 'Усі заняття, включно з минулими';
+
+  @override
+  String get msgEventDeleted => 'Подію видалено';
+
+  @override
+  String get msgSeriesDeleted => 'Ряд видалено';
+
+  @override
+  String get msgOccurrenceSkipped => 'Заняття скасовано';
+
+  @override
+  String get reminderNone => 'Без нагадування';
+
+  @override
+  String get reminderAtStart => 'У момент початку';
+
+  @override
+  String get reminderNever => 'Не нагадувати';
+
+  @override
+  String get reminderHint =>
+      'Можна кілька: за день зібратися, за десять хвилин вийти';
+
+  @override
+  String reminderMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'За $count хвилин',
+      few: 'За $count хвилини',
+      one: 'За $count хвилину',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String reminderHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'За $count годин',
+      few: 'За $count години',
+      one: 'За годину',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String reminderDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'За $count днів',
+      few: 'За $count дні',
+      one: 'За день',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reminderWeek => 'За тиждень';
+
+  @override
+  String get reminderStarts => 'Починається';
+
+  @override
+  String reminderStartsAt(String time) {
+    return 'Початок о $time';
+  }
+
+  @override
+  String get icsExport => 'Вивантажити в .ics';
+
+  @override
+  String get icsExportHint => 'Файл для іншого календаря';
+
+  @override
+  String get icsImport => 'Завантажити з .ics';
+
+  @override
+  String get icsImportHint => 'Події з чужого календаря';
+
+  @override
+  String get icsSaveTitle => 'Куди зберегти календар';
+
+  @override
+  String get icsPickTitle => 'Виберіть файл календаря';
+
+  @override
+  String get icsNothingToExport => 'Вивантажувати нічого: подій немає.';
+
+  @override
+  String icsExported(int count) {
+    return 'Вивантажено подій: $count.';
+  }
+
+  @override
+  String icsImported(int count) {
+    return 'Завантажено подій: $count.';
+  }
+
+  @override
+  String get icsUnreadable => 'Файл не прочитався.';
+
+  @override
+  String get icsNoEvents => 'У файлі не знайшлося жодної події.';
+
+  @override
+  String get colorPickerOwn => 'Свій колір';
+
+  @override
+  String get colorHue => 'Відтінок';
+
+  @override
+  String get colorChroma => 'Насиченість';
+
+  @override
+  String get colorTone => 'Світлота';
+
+  @override
+  String get colorMine => 'Мої кольори';
+
+  @override
+  String get colorRecent => 'Останні';
+
+  @override
+  String get colorSaveMine => 'До моїх';
+
+  @override
+  String colorReadout(int hue, int chroma, int tone) {
+    return 'Відтінок $hue° · насиченість $chroma · світлота $tone';
+  }
+
+  @override
+  String get colorPickerHint =>
+      'Піпетка бере колір із шпалер або скриншота. Збережені живуть у «Моїх кольорах» і доступні з будь-якого пікера.';
+
+  @override
+  String get branchColorTitle => 'Колір гілки';
+
+  @override
+  String get branchColorOwnHint => 'Задано в цій гілці';
+
+  @override
+  String branchColorOfCalendar(String name) {
+    return 'Колір «$name»';
+  }
+
+  @override
+  String get branchColorPickerRow => 'Свій колір із пікера';
+
+  @override
+  String get branchColorPickerHint => 'Відтінок, насиченість, hex, піпетка';
+
+  @override
+  String branchColorChain(String name) {
+    return 'Перефарбуєте «$name» — змінять колір усі гілки й події, де стоїть успадкування. Гілки зі своїм кольором залишаться як є.';
+  }
+
+  @override
+  String get branchColorEventRow => 'Подія гілки';
+
+  @override
+  String get levelCalendar => 'календар';
+
+  @override
+  String get levelOwn => 'свій';
+
+  @override
+  String ruleDaily(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'кожні $count днів',
+      few: 'кожні $count дні',
+      one: 'щодня',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String ruleWeekly(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'кожні $count тижнів',
+      few: 'кожні $count тижні',
+      one: 'щотижня',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String ruleMonthly(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'кожні $count місяців',
+      few: 'кожні $count місяці',
+      one: 'щомісяця',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get ruleYearly => 'щороку';
+
+  @override
+  String ruleWeekDays(String every, String days) {
+    return '$every: $days';
+  }
+
+  @override
+  String ruleMonthPosition(String every, String ordinal, String weekday) {
+    return '$every: $ordinal $weekday';
+  }
+
+  @override
+  String get ordinalLast =>
+      'останній,останній,остання,останній,остання,остання,остання';
+
+  @override
+  String get ordinal1 => 'перший,перший,перша,перший,перша,перша,перша';
+
+  @override
+  String get ordinal2 => 'другий,другий,друга,другий,друга,друга,друга';
+
+  @override
+  String get ordinal3 => 'третій,третій,третя,третій,третя,третя,третя';
+
+  @override
+  String get ordinal4 =>
+      'четвертий,четвертий,четверта,четвертий,четверта,четверта,четверта';
+
+  @override
+  String get weekSetupTitle => 'Які дні показувати';
+
+  @override
+  String get weekSetupHint => 'Колонок буде стільки, скільки днів позначено';
+
+  @override
+  String get weekSetupAll => 'Весь тиждень';
+
+  @override
+  String get weekSetupWorkdays => 'Будні';
+
+  @override
+  String get weekSetupWeekend => 'Вихідні';
+
+  @override
+  String get weekSetupStartsWith => 'Тиждень починається з';
+
+  @override
+  String get accessTitle => 'Доступ';
+
+  @override
+  String get accessCreateKey => 'Створити ключ';
+
+  @override
+  String get accessRevoke => 'Відкликати';
+
+  @override
+  String get accessHint =>
+      'Ключі працюють, поки ввімкнено синхронізацію. Календар, який живе лише на телефоні, ззовні недоступний — стукати нікуди.';
 }

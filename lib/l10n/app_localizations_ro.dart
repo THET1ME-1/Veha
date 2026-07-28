@@ -74,4 +74,690 @@ class LRo extends L {
   String spanUntil(String date) {
     return 'până la $date';
   }
+
+  @override
+  String get actionDone => 'Gata';
+
+  @override
+  String get actionCancel => 'Anulează';
+
+  @override
+  String get actionDelete => 'Șterge';
+
+  @override
+  String get actionSave => 'Salvează';
+
+  @override
+  String get actionAdd => 'adaugă';
+
+  @override
+  String get actionEdit => 'Modifică';
+
+  @override
+  String get actionUndo => 'Anulează';
+
+  @override
+  String get fieldName => 'Nume';
+
+  @override
+  String get calendarsTitle => 'Calendare';
+
+  @override
+  String get calendarOne => 'Calendar';
+
+  @override
+  String get calendarNewShort => 'Nou';
+
+  @override
+  String get calendarNew => 'Calendar nou';
+
+  @override
+  String get calendarCreate => 'Creează un calendar';
+
+  @override
+  String get calendarsEmptyTitle => 'Niciun calendar';
+
+  @override
+  String get calendarsEmptyBody =>
+      'Un calendar dă culoarea și pictograma tuturor evenimentelor din el. De obicei sunt trei-patru: acasă, muncă, studiu, sport.';
+
+  @override
+  String get branchOne => 'Ramură';
+
+  @override
+  String get branchNone => 'Fără ramuri';
+
+  @override
+  String get branchAdd => 'Adaugă o ramură';
+
+  @override
+  String branchOf(String name) {
+    return 'Ramura „$name”';
+  }
+
+  @override
+  String branchCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ramuri',
+      one: '$count ramură',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get colorInherits => 'moștenit';
+
+  @override
+  String get colorOwn => 'culoare proprie';
+
+  @override
+  String get fieldsTitle => 'Câmpuri proprii';
+
+  @override
+  String get fieldsShared => 'Comune tuturor';
+
+  @override
+  String get fieldsSharedRow => 'Câmpuri comune';
+
+  @override
+  String get fieldsGroups => 'Grupuri';
+
+  @override
+  String get fieldsNoneYet => 'Deocamdată niciunul';
+
+  @override
+  String get fieldsGroupEmpty => 'Fără câmpuri proprii';
+
+  @override
+  String get fieldsGroupCreate => 'Creează un grup de câmpuri';
+
+  @override
+  String get fieldsGroupNew => 'Grup nou';
+
+  @override
+  String fieldAddTo(String name) {
+    return 'Adaugă un câmp în „$name”';
+  }
+
+  @override
+  String fieldNewIn(String name) {
+    return 'Câmp nou în „$name”';
+  }
+
+  @override
+  String get fieldOne => 'Câmp';
+
+  @override
+  String get fieldShared => 'comun';
+
+  @override
+  String get fieldNamePlaceholder => 'Numele câmpului';
+
+  @override
+  String get fieldKind => 'Cu ce se completează';
+
+  @override
+  String fieldsOwnCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count câmpuri proprii',
+      one: '$count câmp propriu',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String fieldsInCard(int count) {
+    return 'în card $count';
+  }
+
+  @override
+  String get fieldEraseValue => 'Șterge';
+
+  @override
+  String get yes => 'da';
+
+  @override
+  String get no => 'nu';
+
+  @override
+  String get typeText => 'Text';
+
+  @override
+  String get typeNumber => 'Număr';
+
+  @override
+  String get typeDate => 'Dată';
+
+  @override
+  String get typeTime => 'Oră';
+
+  @override
+  String get typeDuration => 'Durată';
+
+  @override
+  String get typeSelect => 'Listă';
+
+  @override
+  String get typeCheckbox => 'Bifă';
+
+  @override
+  String get typeUrl => 'Link';
+
+  @override
+  String get typePhone => 'Telefon';
+
+  @override
+  String get typePerson => 'Persoană';
+
+  @override
+  String get typeMoney => 'Bani';
+
+  @override
+  String get searchHint => 'Caută un eveniment';
+
+  @override
+  String get searchEmpty =>
+      'Caută după titlu, loc sau un câmp propriu — de exemplu, după numărul sălii.';
+
+  @override
+  String get searchNothing => 'Nu s-a găsit nimic.';
+
+  @override
+  String get allDay => 'toată ziua';
+
+  @override
+  String get settingsTitle => 'Setări';
+
+  @override
+  String get settingsAppearance => 'Aspect';
+
+  @override
+  String get settingsTheme => 'Temă';
+
+  @override
+  String get settingsSystem => 'Ca în sistem';
+
+  @override
+  String get settingsLight => 'Deschisă';
+
+  @override
+  String get settingsDark => 'Închisă';
+
+  @override
+  String get settingsChroma => 'Saturație';
+
+  @override
+  String get settingsChromaHint =>
+      'Pe menta de brand, „Viu” duce pastilele spre un ton acid';
+
+  @override
+  String get settingsExact => 'Exact';
+
+  @override
+  String get settingsVivid => 'Viu';
+
+  @override
+  String get settingsSeed => 'Culoarea de brand';
+
+  @override
+  String get settingsCalendarGroup => 'Calendar';
+
+  @override
+  String get settingsWeekDays => 'Zilele în vizualizarea „Săptămână”';
+
+  @override
+  String get settingsWeekFull => 'Toată săptămâna';
+
+  @override
+  String get settingsWeekdaysOnly => 'Doar zilele lucrătoare';
+
+  @override
+  String settingsWeekSome(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count zile pe săptămână',
+      one: '$count zi pe săptămână',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settingsFieldsHint => 'Sala, antrenorul, numărul abonamentului';
+
+  @override
+  String get settingsLanguage => 'Limbă';
+
+  @override
+  String get settingsDataGroup => 'Date';
+
+  @override
+  String get settingsAbout => 'Despre aplicație';
+
+  @override
+  String get settingsVersion => 'Versiune';
+
+  @override
+  String get settingsStorage => 'Totul rămâne pe dispozitiv';
+
+  @override
+  String get settingsSource => 'Cod sursă';
+
+  @override
+  String get monthViewTitle => 'Vizualizarea lunii';
+
+  @override
+  String get monthChips => 'Etichete cu titluri';
+
+  @override
+  String get monthChipsHint => 'Se vede exact ce e în ziua aceea';
+
+  @override
+  String get monthTint => 'Celule colorate';
+
+  @override
+  String get monthTintHint => 'Se vede cu ce e ocupată ziua';
+
+  @override
+  String get monthDensity => 'Densitatea etichetei';
+
+  @override
+  String get monthDensityBoth => 'Pictogramă și text';
+
+  @override
+  String get monthDensityIcon => 'Doar pictogramă';
+
+  @override
+  String get monthPerCell => 'Evenimente pe celulă';
+
+  @override
+  String get monthPerCellHint => 'Restul se strâng în „+N”';
+
+  @override
+  String get eventOne => 'Eveniment';
+
+  @override
+  String get eventWhen => 'Când';
+
+  @override
+  String get eventTime => 'Ora';
+
+  @override
+  String get eventRepeat => 'Repetare';
+
+  @override
+  String get eventCalendarAndBranch => 'Calendar și ramură';
+
+  @override
+  String get eventReminder => 'Memento';
+
+  @override
+  String get eventPlace => 'Loc';
+
+  @override
+  String get eventPlaceHint => 'Unde va fi';
+
+  @override
+  String get eventDelete => 'Șterge evenimentul';
+
+  @override
+  String get moreDetails => 'Detalii';
+
+  @override
+  String get lookTitle => 'Pictogramă și culoare';
+
+  @override
+  String get lookInherit => 'Ca la calendar';
+
+  @override
+  String get lookOwnColor => 'Culoare proprie';
+
+  @override
+  String get inCard => 'în card';
+
+  @override
+  String get notesTitle => 'Notițe';
+
+  @override
+  String get noteOne => 'Notiță';
+
+  @override
+  String get noteAdd => 'Adaugă o notiță';
+
+  @override
+  String get noteHint => 'Ce să nu uiți';
+
+  @override
+  String get repeatNone => 'nu se repetă';
+
+  @override
+  String get repeatByRule => 'după regulă';
+
+  @override
+  String get repeatTitle => 'Repetare';
+
+  @override
+  String get repeatDaily => 'În fiecare zi';
+
+  @override
+  String get repeatWeekly => 'În fiecare săptămână';
+
+  @override
+  String get repeatEvery => 'La fiecare';
+
+  @override
+  String get repeatEndsWhen => 'Când se termină';
+
+  @override
+  String get repeatNextDates => 'Următoarele date';
+
+  @override
+  String get repeatNever => 'Niciodată';
+
+  @override
+  String get repeatUntilDate => 'Până la o dată';
+
+  @override
+  String repeatAfterCount(int count) {
+    return 'După $count repetări';
+  }
+
+  @override
+  String get unitDay => 'Zi';
+
+  @override
+  String get unitWeek => 'Săptămână';
+
+  @override
+  String get unitMonth => 'Lună';
+
+  @override
+  String get unitYear => 'An';
+
+  @override
+  String get scopeTitle => 'Ce se schimbă';
+
+  @override
+  String scopeRepeats(String label) {
+    return 'Se repetă: $label';
+  }
+
+  @override
+  String get scopeOnly => 'Doar această apariție';
+
+  @override
+  String get scopeFollowing => 'Aceasta și următoarele';
+
+  @override
+  String get scopeFollowingHint =>
+      'Seria se împarte: cele trecute rămân cum au fost';
+
+  @override
+  String get scopeWhole => 'Toată seria';
+
+  @override
+  String get scopeWholeHint => 'Toate aparițiile, inclusiv cele trecute';
+
+  @override
+  String get msgEventDeleted => 'Eveniment șters';
+
+  @override
+  String get msgSeriesDeleted => 'Serie ștearsă';
+
+  @override
+  String get msgOccurrenceSkipped => 'Apariție anulată';
+
+  @override
+  String get reminderNone => 'Fără memento';
+
+  @override
+  String get reminderAtStart => 'La început';
+
+  @override
+  String get reminderNever => 'Fără memento';
+
+  @override
+  String get reminderHint =>
+      'Poți pune mai multe: cu o zi să te pregătești, cu zece minute să pleci';
+
+  @override
+  String reminderMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Cu $count de minute înainte',
+      one: 'Cu $count minut înainte',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String reminderHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Cu $count ore înainte',
+      one: 'Cu o oră înainte',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String reminderDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Cu $count zile înainte',
+      one: 'Cu o zi înainte',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reminderWeek => 'Cu o săptămână înainte';
+
+  @override
+  String get reminderStarts => 'Începe';
+
+  @override
+  String reminderStartsAt(String time) {
+    return 'Începe la $time';
+  }
+
+  @override
+  String get icsExport => 'Exportă în .ics';
+
+  @override
+  String get icsExportHint => 'Un fișier pentru alt calendar';
+
+  @override
+  String get icsImport => 'Importă din .ics';
+
+  @override
+  String get icsImportHint => 'Evenimente din alt calendar';
+
+  @override
+  String get icsSaveTitle => 'Unde salvăm calendarul';
+
+  @override
+  String get icsPickTitle => 'Alege un fișier de calendar';
+
+  @override
+  String get icsNothingToExport =>
+      'Nu e nimic de exportat: nu există evenimente.';
+
+  @override
+  String icsExported(int count) {
+    return 'Evenimente exportate: $count.';
+  }
+
+  @override
+  String icsImported(int count) {
+    return 'Evenimente importate: $count.';
+  }
+
+  @override
+  String get icsUnreadable => 'Fișierul nu a putut fi citit.';
+
+  @override
+  String get icsNoEvents => 'În fișier nu s-a găsit niciun eveniment.';
+
+  @override
+  String get colorPickerOwn => 'Culoare proprie';
+
+  @override
+  String get colorHue => 'Nuanță';
+
+  @override
+  String get colorChroma => 'Saturație';
+
+  @override
+  String get colorTone => 'Luminozitate';
+
+  @override
+  String get colorMine => 'Culorile mele';
+
+  @override
+  String get colorRecent => 'Recente';
+
+  @override
+  String get colorSaveMine => 'Salvează';
+
+  @override
+  String colorReadout(int hue, int chroma, int tone) {
+    return 'Nuanță $hue° · saturație $chroma · luminozitate $tone';
+  }
+
+  @override
+  String get colorPickerHint =>
+      'Pipeta ia culoarea din fundal sau dintr-o captură. Cele salvate stau în „Culorile mele” și sunt disponibile peste tot.';
+
+  @override
+  String get branchColorTitle => 'Culoarea ramurii';
+
+  @override
+  String get branchColorOwnHint => 'Setată pe această ramură';
+
+  @override
+  String branchColorOfCalendar(String name) {
+    return 'Culoarea „$name”';
+  }
+
+  @override
+  String get branchColorPickerRow => 'Culoare proprie din selector';
+
+  @override
+  String get branchColorPickerHint => 'Nuanță, saturație, hex, pipetă';
+
+  @override
+  String branchColorChain(String name) {
+    return 'Dacă schimbi culoarea „$name”, se schimbă toate ramurile și evenimentele care moștenesc. Cele cu culoare proprie rămân la fel.';
+  }
+
+  @override
+  String get branchColorEventRow => 'Eveniment al ramurii';
+
+  @override
+  String get levelCalendar => 'calendar';
+
+  @override
+  String get levelOwn => 'proprie';
+
+  @override
+  String ruleDaily(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'la fiecare $count zile',
+      one: 'în fiecare zi',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String ruleWeekly(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'la fiecare $count săptămâni',
+      one: 'în fiecare săptămână',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String ruleMonthly(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'la fiecare $count luni',
+      one: 'în fiecare lună',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get ruleYearly => 'în fiecare an';
+
+  @override
+  String ruleWeekDays(String every, String days) {
+    return '$every: $days';
+  }
+
+  @override
+  String ruleMonthPosition(String every, String ordinal, String weekday) {
+    return '$every: $ordinal $weekday';
+  }
+
+  @override
+  String get ordinalLast => 'ultima,ultima,ultima,ultima,ultima,ultima,ultima';
+
+  @override
+  String get ordinal1 => 'prima,prima,prima,prima,prima,prima,prima';
+
+  @override
+  String get ordinal2 => 'a doua,a doua,a doua,a doua,a doua,a doua,a doua';
+
+  @override
+  String get ordinal3 =>
+      'a treia,a treia,a treia,a treia,a treia,a treia,a treia';
+
+  @override
+  String get ordinal4 =>
+      'a patra,a patra,a patra,a patra,a patra,a patra,a patra';
+
+  @override
+  String get weekSetupTitle => 'Ce zile să arătăm';
+
+  @override
+  String get weekSetupHint => 'Vor fi atâtea coloane câte zile sunt bifate';
+
+  @override
+  String get weekSetupAll => 'Toată săptămâna';
+
+  @override
+  String get weekSetupWorkdays => 'Zile lucrătoare';
+
+  @override
+  String get weekSetupWeekend => 'Weekend';
+
+  @override
+  String get weekSetupStartsWith => 'Săptămâna începe cu';
+
+  @override
+  String get accessTitle => 'Acces';
+
+  @override
+  String get accessCreateKey => 'Creează o cheie';
+
+  @override
+  String get accessRevoke => 'Revocă';
+
+  @override
+  String get accessHint =>
+      'Cheile funcționează cât timp sincronizarea e pornită. Un calendar care trăiește doar pe telefon nu e accesibil din afară — nu ai unde să bați.';
 }

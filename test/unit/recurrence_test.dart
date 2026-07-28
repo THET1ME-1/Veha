@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rrule/rrule.dart' show Frequency;
 import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:veha/domain/recurrence.dart';
 
@@ -149,40 +150,29 @@ void main() {
     });
   });
 
-  group('Подпись правила', () {
-    const names = ['понедельникам', 'вторникам', 'средам', 'четвергам',
-        'пятницам', 'субботам', 'воскресеньям'];
-
-    test('Интервал вместе с днями недели', () {
-      expect(
-        Recurrence.describe(
-          Recurrence.weekly(interval: 2, weekdays: {1, 4}),
-          weekdayNames: names,
-        ),
-        'каждые 2 недели, понедельникам, четвергам',
+  group('Разбор правила', () {
+    test('Частота, шаг и дни недели', () {
+      final shape = Recurrence.shape(
+        Recurrence.weekly(interval: 2, weekdays: {1, 4}),
       );
+
+      expect(shape.frequency, Frequency.weekly);
+      expect(shape.interval, 2);
+      expect(shape.weekdays, [1, 4]);
     });
 
-    test('Правило по позиции склоняется правильно', () {
-      const nominative = ['понедельник', 'вторник', 'среда', 'четверг',
-          'пятница', 'суббота', 'воскресенье'];
+    test('Позиция дня в месяце', () {
+      final last = Recurrence.shape(
+        Recurrence.monthlyByPosition(weekday: 5, position: -1),
+      );
+      expect(last.monthWeekday, 5);
+      expect(last.monthPosition, -1);
 
-      expect(
-        Recurrence.describe(
-          Recurrence.monthlyByPosition(weekday: 5, position: -1),
-          weekdayNames: names,
-          weekdayNominative: nominative,
-        ),
-        'последняя пятница месяца',
+      final second = Recurrence.shape(
+        Recurrence.monthlyByPosition(weekday: 2, position: 2),
       );
-      expect(
-        Recurrence.describe(
-          Recurrence.monthlyByPosition(weekday: 1, position: -1),
-          weekdayNames: names,
-          weekdayNominative: nominative,
-        ),
-        'последний понедельник месяца',
-      );
+      expect(second.monthWeekday, 2);
+      expect(second.monthPosition, 2);
     });
   });
 }

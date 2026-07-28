@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/models.dart';
@@ -95,7 +97,7 @@ class EventFlow {
     final scope = await askEditScope(
       context,
       occurrence: event.originalStart ?? event.start,
-      repeatLabel: recurrenceLabelOf(event) ?? 'по правилу',
+      repeatLabel: recurrenceLabelOf(L.of(context), event) ?? L.of(context).repeatByRule,
     );
     if (scope == null) return;
 
@@ -120,14 +122,14 @@ class EventFlow {
       final moment = source.originalStart ?? source.start;
       await repo.skipOccurrence(series, moment);
       _offerUndo(
-        'Занятие отменено',
+        L.of(context).msgOccurrenceSkipped,
         () => repo.unskipOccurrence(series, moment),
       );
       return;
     }
 
     await repo.deleteEvent(source.id);
-    _offerUndo('Событие удалено', () => repo.upsertEvent(source));
+    _offerUndo(L.of(context).msgEventDeleted, () => repo.upsertEvent(source));
   }
 
   /// Отмена одного занятия прямо из списка, без открытия формы.
@@ -150,7 +152,7 @@ class EventFlow {
     final id = event.recurrenceId ?? event.id;
     await repo.deleteEvent(id);
     _offerUndo(
-      event.isOccurrence ? 'Ряд удалён' : 'Событие удалено',
+      event.isOccurrence ? L.of(context).msgSeriesDeleted : L.of(context).msgEventDeleted,
       () => repo.restoreEvent(id),
     );
   }
@@ -163,7 +165,7 @@ class EventFlow {
         content: Text(message),
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 6),
-        action: SnackBarAction(label: 'Вернуть', onPressed: () => undo()),
+        action: SnackBarAction(label: L.of(context).actionUndo, onPressed: () => undo()),
       ));
   }
 }

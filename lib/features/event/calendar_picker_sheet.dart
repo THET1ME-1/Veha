@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/brand.dart';
+import '../../l10n/app_localizations.dart';
 import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
 import '../../data/models.dart';
@@ -59,7 +60,7 @@ class _CalendarPickerSheet extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(
                   VehaInsets.screen, 2, VehaInsets.screen, 10),
               child: Text(
-                'Календарь и ветка',
+                L.of(context).eventCalendarAndBranch,
                 style: TextStyle(
                   fontFamily: AppFonts.display,
                   fontSize: 17,

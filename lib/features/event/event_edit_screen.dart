@@ -11,6 +11,7 @@ import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
 import '../repeat/repeat_screen.dart' show askRepeatRule;
 import 'calendar_picker_sheet.dart';
 import '../../data/providers.dart';
+import '../../l10n/app_localizations.dart';
 import 'field_value_sheet.dart';
 import 'note_sheet.dart';
 import 'look_sheet.dart';
@@ -119,15 +120,19 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
   }
 
   Widget _fieldRow(VFieldDef def, ColorScheme scheme) {
+    final l = L.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
     final value = _draft.fieldValue(def.id);
     return VRow(
       icon: def.iconName,
       label: def.name,
-      value: value == null ? 'добавить' : showFieldValue(def, value),
+      value: value == null
+          ? l.actionAdd
+          : showFieldValue(l, def, value, locale),
       onTap: () => _pickField(def),
       trailing: def.type == VFieldType.checkbox
           ? VSwitch(
-              value: value == 'да',
+              value: isFieldChecked(value),
               onChanged: (_) => _pickField(def),
             )
           : Icon(VehaIcons.byName('chevron'), size: 17, color: scheme.outline),
@@ -153,7 +158,7 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const VBlockCap('Заметки'),
+        VBlockCap(L.of(context).notesTitle),
         VBlock(children: [
           for (var i = 0; i < notes.length; i++) ...[
             if (i > 0) const VSep(),
@@ -166,7 +171,7 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
           if (notes.isNotEmpty) const VSep(),
           VRow(
             icon: 'add',
-            value: 'Добавить заметку',
+            value: L.of(context).noteAdd,
             onTap: () => _addNote(eventId, eventColor, notes.length),
           ),
         ]),
@@ -248,20 +253,20 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
     final value = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Место'),
+        title: Text(L.of(context).eventPlace),
         content: TextField(
           controller: controller,
           autofocus: true,
-          decoration: const InputDecoration(hintText: 'Где это будет'),
+          decoration: InputDecoration(hintText: L.of(context).eventPlaceHint),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Отмена'),
+            child: Text(L.of(context).actionCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, controller.text),
-            child: const Text('Готово'),
+            child: Text(L.of(context).actionDone),
           ),
         ],
       ),
@@ -291,22 +296,24 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
     final icon =
         _draft.iconName ?? sub?.iconName ?? calendar?.iconName ?? 'calendar';
 
+    final l = L.of(context);
     final repeat = _draft.rrule == null
-        ? 'не повторяется'
-        : recurrenceLabelOf(_draft.toEvent(newId: () => 'preview')) ??
-              'по правилу';
+        ? l.repeatNone
+        : recurrenceLabelOf(l, _draft.toEvent(newId: () => 'preview')) ??
+              l.repeatByRule;
 
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
             _FormBar(
-              title: _draft.isEditing ? 'Событие' : 'Новое событие',
+              title: _draft.isEditing ? l.eventOne : l.newEvent,
               onSave: _draft.isReady ? () => widget.onSave(_draft) : null,
             ),
             Expanded(
               child: _form(
                 context,
+                l,
                 scheme,
                 ink,
                 color,
@@ -325,6 +332,7 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
 
   Widget _form(
     BuildContext context,
+    L l,
     ColorScheme scheme,
     EventInk ink,
     Color color,
@@ -385,7 +393,7 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
                         shape: const StadiumBorder(),
                       ),
                       child: Text(
-                        'Иконка и цвет',
+                        L.of(context).lookTitle,
                         style: TextStyle(
                           fontFamily: AppFonts.body,
                           fontSize: 11,
@@ -416,7 +424,7 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
-                  hintText: 'Название',
+                  hintText: L.of(context).fieldName,
                   hintStyle: TextStyle(
                     fontFamily: AppFonts.display,
                     fontSize: 25,
@@ -446,7 +454,7 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
           children: [
             VRow(
               icon: 'clock',
-              label: 'Когда',
+              label: l.eventWhen,
               value: DateFormat('EEEE, d MMMM', locale).format(_draft.start),
               onTap: _pickDate,
               trailing: Icon(
@@ -465,7 +473,7 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
             const VSep(),
             VRow(
               icon: 'repeat',
-              label: 'Повтор',
+              label: l.eventRepeat,
               value: repeat,
               onTap: _pickRepeat,
               trailing: Icon(
@@ -477,7 +485,7 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
             const VSep(),
             VRow(
               icon: 'calendar',
-              label: 'Календарь и ветка',
+              label: l.eventCalendarAndBranch,
               value: sub == null
                   ? calendar?.name ?? ''
                   : '${calendar?.name} · ${sub.name}',
@@ -491,8 +499,8 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
             const VSep(),
             VRow(
               icon: 'bell',
-              label: 'Напоминание',
-              value: remindersLabel(_draft.reminders),
+              label: l.eventReminder,
+              value: remindersLabel(l, _draft.reminders),
               onTap: _pickReminders,
               trailing: Icon(
                 VehaIcons.byName('chevron'),
@@ -503,8 +511,8 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
             const VSep(),
             VRow(
               icon: 'place',
-              label: 'Место',
-              value: _draft.location ?? 'добавить',
+              label: l.eventPlace,
+              value: _draft.location ?? l.actionAdd,
               onTap: _pickLocation,
               trailing: Icon(
                 VehaIcons.byName('chevron'),
@@ -515,7 +523,7 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
           ],
         ),
         if (_defs.isNotEmpty) ...[
-          const VBlockCap('Свои поля'),
+          VBlockCap(L.of(context).fieldsTitle),
           VBlock(children: [
             for (var i = 0; i < _defs.length; i++) ...[
               if (i > 0) const VSep(),
@@ -532,7 +540,7 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
           TextButton.icon(
             onPressed: widget.onDelete,
             icon: Icon(VehaIcons.byName('trash'), size: 18),
-            label: const Text('Удалить событие'),
+            label: Text(l.eventDelete),
             style: TextButton.styleFrom(foregroundColor: scheme.error),
           ),
         ],
@@ -601,7 +609,7 @@ class _FormBar extends StatelessWidget {
               minimumSize: Size.zero,
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
-            child: const Text('Сохранить'),
+            child: Text(L.of(context).actionSave),
           ),
         ],
       ),
@@ -647,7 +655,7 @@ class _TimeRow extends StatelessWidget {
           ),
           const SizedBox(width: 13),
           Text(
-            'Время',
+            L.of(context).eventTime,
             style: TextStyle(
               fontFamily: AppFonts.body,
               fontSize: 11.5,

@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import '../../core/brand.dart';
 import '../../core/icon_registry.dart';
 import '../../data/models.dart';
+import '../../l10n/app_localizations.dart';
+import '../fields/field_types.dart';
 import '../calendar/widgets/month_header.dart' show AppFonts;
 
 /// Заполнение своего поля. Форма ввода зависит от типа: дату спрашиваем
@@ -39,7 +41,7 @@ Future<String?> askFieldValue(
           '${picked.minute.toString().padLeft(2, '0')}';
 
     case VFieldType.checkbox:
-      return current == 'да' ? '' : 'да';
+      return current == _checked ? '' : _checked;
 
     default:
       return showModalBottomSheet<String>(
@@ -55,21 +57,26 @@ Future<String?> askFieldValue(
   }
 }
 
+/// Отметка флажка в базе. Хранится машинной строкой, а не переводом: язык
+/// меняют, а данные остаются.
+const _checked = 'yes';
+
 /// Как значение показывается в строке. Дата и время хранятся машинными
 /// строками, а читать их человеку — «28 июля».
-String showFieldValue(VFieldDef def, String value) {
+String showFieldValue(L l, VFieldDef def, String value, String locale) {
   switch (def.type) {
     case VFieldType.date:
       final d = _parseDate(value);
-      return d == null ? value : DateFormat('d MMMM', 'ru').format(d);
+      return d == null ? value : DateFormat('d MMMM', locale).format(d);
     case VFieldType.checkbox:
-      return value == 'да' ? 'да' : 'нет';
-    case VFieldType.money:
-      return '$value ₽';
+      return value == _checked ? l.yes : l.no;
     default:
       return value;
   }
 }
+
+/// Стоит ли флажок.
+bool isFieldChecked(String? value) => value == _checked;
 
 DateTime? _parseDate(String? value) =>
     value == null ? null : DateTime.tryParse(value);
@@ -122,6 +129,7 @@ class _TextSheetState extends State<_TextSheet> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final l = L.of(context);
 
     return SafeArea(
       child: Column(
@@ -145,7 +153,7 @@ class _TextSheetState extends State<_TextSheet> {
             padding: const EdgeInsets.fromLTRB(
                 VehaInsets.screen, 0, VehaInsets.screen, 10),
             child: Text(
-              widget.def.type.label,
+              fieldTypeLabel(l, widget.def.type),
               style: TextStyle(
                 fontFamily: AppFonts.body,
                 fontSize: 12.5,
@@ -194,13 +202,13 @@ class _TextSheetState extends State<_TextSheet> {
               children: [
                 TextButton(
                   onPressed: () => Navigator.pop(context, ''),
-                  child: const Text('Стереть'),
+                  child: Text(l.fieldEraseValue),
                 ),
                 const Spacer(),
                 FilledButton.icon(
                   onPressed: () => Navigator.pop(context, _value.text),
                   icon: Icon(VehaIcons.byName('check'), size: 18),
-                  label: const Text('Готово'),
+                  label: Text(l.actionDone),
                 ),
               ],
             ),

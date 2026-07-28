@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/brand.dart';
+import '../../l10n/app_localizations.dart';
 import '../../core/icon_registry.dart';
 import '../calendar/widgets/month_header.dart' show AppFonts;
 
@@ -10,30 +11,23 @@ const List<int> reminderPresets = [0, 5, 10, 15, 30, 60, 120, 1440, 10080];
 
 /// Подпись срока. Значения вне списка приезжают по синхронизации с чужого
 /// устройства, поэтому запасной вариант обязателен.
-String reminderLabel(int minutes) => switch (minutes) {
-      0 => 'В момент начала',
-      5 => 'За 5 минут',
-      10 => 'За 10 минут',
-      15 => 'За 15 минут',
-      30 => 'За 30 минут',
-      60 => 'За час',
-      120 => 'За 2 часа',
-      1440 => 'За день',
-      10080 => 'За неделю',
-      final m when m % 1440 == 0 => 'За ${m ~/ 1440} дн.',
-      final m when m % 60 == 0 => 'За ${m ~/ 60} ч.',
-      final m => 'За $m мин.',
+String reminderLabel(L l, int minutes) => switch (minutes) {
+      0 => l.reminderAtStart,
+      10080 => l.reminderWeek,
+      final m when m % 1440 == 0 => l.reminderDays(m ~/ 1440),
+      final m when m % 60 == 0 => l.reminderHours(m ~/ 60),
+      final m => l.reminderMinutes(m),
     };
 
 /// Строка «Напоминание» в карточке события.
-String remindersLabel(List<int> minutes) {
-  if (minutes.isEmpty) return 'Без напоминания';
+String remindersLabel(L l, List<int> minutes) {
+  if (minutes.isEmpty) return l.reminderNone;
   final sorted = minutes.toList()..sort((a, b) => b.compareTo(a));
   final parts = [
     for (var i = 0; i < sorted.length; i++)
       i == 0
-          ? reminderLabel(sorted[i])
-          : reminderLabel(sorted[i]).toLowerCase(),
+          ? reminderLabel(l, sorted[i])
+          : reminderLabel(l, sorted[i]).toLowerCase(),
   ];
   return parts.join(' · ');
 }
@@ -66,6 +60,7 @@ class _RemindersSheetState extends State<_RemindersSheet> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final l = L.of(context);
     // Сроки, приехавшие с чужого устройства, показываем вместе с готовыми:
     // иначе выбранное человеком пропадает из списка молча.
     final options = <int>{...reminderPresets, ..._chosen}.toList()..sort();
@@ -79,7 +74,7 @@ class _RemindersSheetState extends State<_RemindersSheet> {
             padding: const EdgeInsets.fromLTRB(
                 VehaInsets.screen, 2, VehaInsets.screen, 4),
             child: Text(
-              'Напоминание',
+              l.eventReminder,
               style: TextStyle(
                 fontFamily: AppFonts.display,
                 fontSize: 17,
@@ -92,7 +87,7 @@ class _RemindersSheetState extends State<_RemindersSheet> {
             padding: const EdgeInsets.fromLTRB(
                 VehaInsets.screen, 0, VehaInsets.screen, 12),
             child: Text(
-              'Можно несколько: за день собраться, за десять минут выйти',
+              l.reminderHint,
               style: TextStyle(
                 fontFamily: AppFonts.body,
                 fontSize: 12.5,
@@ -109,7 +104,7 @@ class _RemindersSheetState extends State<_RemindersSheet> {
               children: [
                 for (final m in options)
                   _Chip(
-                    label: reminderLabel(m),
+                    label: reminderLabel(l, m),
                     selected: _chosen.contains(m),
                     onTap: () => setState(() {
                       if (!_chosen.remove(m)) _chosen.add(m);
@@ -127,13 +122,13 @@ class _RemindersSheetState extends State<_RemindersSheet> {
                   onPressed: _chosen.isEmpty
                       ? null
                       : () => setState(_chosen.clear),
-                  child: const Text('Не напоминать'),
+                  child: Text(l.reminderNever),
                 ),
                 const Spacer(),
                 FilledButton.icon(
                   onPressed: () => Navigator.pop(context, _chosen.toList()),
                   icon: Icon(VehaIcons.byName('check'), size: 18),
-                  label: const Text('Готово'),
+                  label: Text(l.actionDone),
                 ),
               ],
             ),

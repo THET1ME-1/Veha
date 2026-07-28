@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/brand.dart';
@@ -67,7 +69,7 @@ class _EditScopeSheetState extends State<_EditScopeSheet> {
             Padding(
               padding: const EdgeInsets.fromLTRB(VehaInsets.screen, 4, VehaInsets.screen, 2),
               child: Text(
-                'Что изменить',
+                L.of(context).scopeTitle,
                 style: TextStyle(
                   fontFamily: AppFonts.display,
                   fontSize: 17,
@@ -79,7 +81,7 @@ class _EditScopeSheetState extends State<_EditScopeSheet> {
             Padding(
               padding: const EdgeInsets.fromLTRB(VehaInsets.screen, 0, VehaInsets.screen, 12),
               child: Text(
-                'Занятие повторяется: ${widget.repeatLabel}',
+                L.of(context).scopeRepeats(widget.repeatLabel),
                 style: TextStyle(
                   fontFamily: AppFonts.body,
                   fontSize: 12.5,
@@ -92,22 +94,22 @@ class _EditScopeSheetState extends State<_EditScopeSheet> {
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: VBlock(children: [
                 VOption(
-                  title: 'Только это занятие',
+                  title: L.of(context).scopeOnly,
                   subtitle: '$day встанет по-новому, остальные не тронутся',
                   selected: _scope == EditScope.single,
                   onTap: () => setState(() => _scope = EditScope.single),
                 ),
                 const VSep(inset: 15),
                 VOption(
-                  title: 'Это и следующие',
-                  subtitle: 'Ряд разделится: прошедшие занятия останутся как были',
+                  title: L.of(context).scopeFollowing,
+                  subtitle: L.of(context).scopeFollowingHint,
                   selected: _scope == EditScope.following,
                   onTap: () => setState(() => _scope = EditScope.following),
                 ),
                 const VSep(inset: 15),
                 VOption(
-                  title: 'Весь ряд',
-                  subtitle: 'Все занятия, включая прошедшие',
+                  title: L.of(context).scopeWhole,
+                  subtitle: L.of(context).scopeWholeHint,
                   selected: _scope == EditScope.series,
                   onTap: () => setState(() => _scope = EditScope.series),
                 ),
@@ -119,13 +121,13 @@ class _EditScopeSheetState extends State<_EditScopeSheet> {
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('Отмена'),
+                    child: Text(L.of(context).actionCancel),
                   ),
                   const Spacer(),
                   FilledButton.icon(
                     onPressed: () => Navigator.pop(context, _scope),
                     icon: Icon(VehaIcons.byName('check'), size: 18),
-                    label: const Text('Сохранить'),
+                    label: Text(L.of(context).actionSave),
                   ),
                 ],
               ),

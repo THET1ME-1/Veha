@@ -18,5 +18,903 @@
   "durationHours": "{hours} h",
   "durationHoursMinutes": "{hours} h {minutes} min",
   "spanDayOf": "day {current} of {total}",
-  "spanUntil": "until {date}"
+  "spanUntil": "until {date}",
+  "actionDone": "Done",
+  "@actionDone": {
+    "description": "actionDone"
+  },
+  "actionCancel": "Cancel",
+  "@actionCancel": {
+    "description": "actionCancel"
+  },
+  "actionDelete": "Delete",
+  "@actionDelete": {
+    "description": "actionDelete"
+  },
+  "actionSave": "Save",
+  "@actionSave": {
+    "description": "actionSave"
+  },
+  "actionAdd": "add",
+  "@actionAdd": {
+    "description": "actionAdd"
+  },
+  "actionEdit": "Edit",
+  "@actionEdit": {
+    "description": "actionEdit"
+  },
+  "actionUndo": "Undo",
+  "@actionUndo": {
+    "description": "actionUndo"
+  },
+  "fieldName": "Name",
+  "@fieldName": {
+    "description": "fieldName"
+  },
+  "calendarsTitle": "Calendars",
+  "@calendarsTitle": {
+    "description": "calendarsTitle"
+  },
+  "calendarOne": "Calendar",
+  "@calendarOne": {
+    "description": "calendarOne"
+  },
+  "calendarNewShort": "New",
+  "@calendarNewShort": {
+    "description": "calendarNewShort"
+  },
+  "calendarNew": "New calendar",
+  "@calendarNew": {
+    "description": "calendarNew"
+  },
+  "calendarCreate": "Create a calendar",
+  "@calendarCreate": {
+    "description": "calendarCreate"
+  },
+  "calendarsEmptyTitle": "No calendars yet",
+  "@calendarsEmptyTitle": {
+    "description": "calendarsEmptyTitle"
+  },
+  "calendarsEmptyBody": "A calendar sets the colour and icon for every event inside it. Three or four is usual: home, work, study, sport.",
+  "@calendarsEmptyBody": {
+    "description": "calendarsEmptyBody"
+  },
+  "branchOne": "Branch",
+  "@branchOne": {
+    "description": "branchOne"
+  },
+  "branchNone": "No branches",
+  "@branchNone": {
+    "description": "branchNone"
+  },
+  "branchAdd": "Add a branch",
+  "@branchAdd": {
+    "description": "branchAdd"
+  },
+  "branchOf": "Branch “{name}”",
+  "@branchOf": {
+    "description": "branchOf",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "branchCount": "{count, plural, one{{count} branch} other{{count} branches}}",
+  "@branchCount": {
+    "description": "branchCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "colorInherits": "inherited",
+  "@colorInherits": {
+    "description": "colorInherits"
+  },
+  "colorOwn": "own colour",
+  "@colorOwn": {
+    "description": "colorOwn"
+  },
+  "fieldsTitle": "Custom fields",
+  "@fieldsTitle": {
+    "description": "fieldsTitle"
+  },
+  "fieldsShared": "Shared by all",
+  "@fieldsShared": {
+    "description": "fieldsShared"
+  },
+  "fieldsSharedRow": "Shared fields",
+  "@fieldsSharedRow": {
+    "description": "fieldsSharedRow"
+  },
+  "fieldsGroups": "Groups",
+  "@fieldsGroups": {
+    "description": "fieldsGroups"
+  },
+  "fieldsNoneYet": "None yet",
+  "@fieldsNoneYet": {
+    "description": "fieldsNoneYet"
+  },
+  "fieldsGroupEmpty": "No custom fields",
+  "@fieldsGroupEmpty": {
+    "description": "fieldsGroupEmpty"
+  },
+  "fieldsGroupCreate": "Create a field group",
+  "@fieldsGroupCreate": {
+    "description": "fieldsGroupCreate"
+  },
+  "fieldsGroupNew": "New group",
+  "@fieldsGroupNew": {
+    "description": "fieldsGroupNew"
+  },
+  "fieldAddTo": "Add a field to “{name}”",
+  "@fieldAddTo": {
+    "description": "fieldAddTo",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldNewIn": "New field in “{name}”",
+  "@fieldNewIn": {
+    "description": "fieldNewIn",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldOne": "Field",
+  "@fieldOne": {
+    "description": "fieldOne"
+  },
+  "fieldShared": "shared",
+  "@fieldShared": {
+    "description": "fieldShared"
+  },
+  "fieldNamePlaceholder": "Field name",
+  "@fieldNamePlaceholder": {
+    "description": "fieldNamePlaceholder"
+  },
+  "fieldKind": "What goes in it",
+  "@fieldKind": {
+    "description": "fieldKind"
+  },
+  "fieldsOwnCount": "{count, plural, one{{count} custom field} other{{count} custom fields}}",
+  "@fieldsOwnCount": {
+    "description": "fieldsOwnCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldsInCard": "in the card: {count}",
+  "@fieldsInCard": {
+    "description": "fieldsInCard",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldEraseValue": "Erase",
+  "@fieldEraseValue": {
+    "description": "fieldEraseValue"
+  },
+  "yes": "yes",
+  "@yes": {
+    "description": "yes"
+  },
+  "no": "no",
+  "@no": {
+    "description": "no"
+  },
+  "typeText": "Text",
+  "@typeText": {
+    "description": "typeText"
+  },
+  "typeNumber": "Number",
+  "@typeNumber": {
+    "description": "typeNumber"
+  },
+  "typeDate": "Date",
+  "@typeDate": {
+    "description": "typeDate"
+  },
+  "typeTime": "Time",
+  "@typeTime": {
+    "description": "typeTime"
+  },
+  "typeDuration": "Duration",
+  "@typeDuration": {
+    "description": "typeDuration"
+  },
+  "typeSelect": "List",
+  "@typeSelect": {
+    "description": "typeSelect"
+  },
+  "typeCheckbox": "Checkbox",
+  "@typeCheckbox": {
+    "description": "typeCheckbox"
+  },
+  "typeUrl": "Link",
+  "@typeUrl": {
+    "description": "typeUrl"
+  },
+  "typePhone": "Phone",
+  "@typePhone": {
+    "description": "typePhone"
+  },
+  "typePerson": "Person",
+  "@typePerson": {
+    "description": "typePerson"
+  },
+  "typeMoney": "Money",
+  "@typeMoney": {
+    "description": "typeMoney"
+  },
+  "searchHint": "Find an event",
+  "@searchHint": {
+    "description": "searchHint"
+  },
+  "searchEmpty": "Search by title, place or a custom field — a room number, for instance.",
+  "@searchEmpty": {
+    "description": "searchEmpty"
+  },
+  "searchNothing": "Nothing found.",
+  "@searchNothing": {
+    "description": "searchNothing"
+  },
+  "allDay": "all day",
+  "@allDay": {
+    "description": "allDay"
+  },
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "settingsTitle"
+  },
+  "settingsAppearance": "Appearance",
+  "@settingsAppearance": {
+    "description": "settingsAppearance"
+  },
+  "settingsTheme": "Theme",
+  "@settingsTheme": {
+    "description": "settingsTheme"
+  },
+  "settingsSystem": "Follow the system",
+  "@settingsSystem": {
+    "description": "settingsSystem"
+  },
+  "settingsLight": "Light",
+  "@settingsLight": {
+    "description": "settingsLight"
+  },
+  "settingsDark": "Dark",
+  "@settingsDark": {
+    "description": "settingsDark"
+  },
+  "settingsChroma": "Saturation",
+  "@settingsChroma": {
+    "description": "settingsChroma"
+  },
+  "settingsChromaHint": "On the brand mint, “Vivid” pushes the pills to an acid tone",
+  "@settingsChromaHint": {
+    "description": "settingsChromaHint"
+  },
+  "settingsExact": "Exact",
+  "@settingsExact": {
+    "description": "settingsExact"
+  },
+  "settingsVivid": "Vivid",
+  "@settingsVivid": {
+    "description": "settingsVivid"
+  },
+  "settingsSeed": "Brand colour",
+  "@settingsSeed": {
+    "description": "settingsSeed"
+  },
+  "settingsCalendarGroup": "Calendar",
+  "@settingsCalendarGroup": {
+    "description": "settingsCalendarGroup"
+  },
+  "settingsWeekDays": "Days in the Week view",
+  "@settingsWeekDays": {
+    "description": "settingsWeekDays"
+  },
+  "settingsWeekFull": "Whole week",
+  "@settingsWeekFull": {
+    "description": "settingsWeekFull"
+  },
+  "settingsWeekdaysOnly": "Weekdays only",
+  "@settingsWeekdaysOnly": {
+    "description": "settingsWeekdaysOnly"
+  },
+  "settingsWeekSome": "{count, plural, one{{count} day a week} other{{count} days a week}}",
+  "@settingsWeekSome": {
+    "description": "settingsWeekSome",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsFieldsHint": "Room, coach, pass number",
+  "@settingsFieldsHint": {
+    "description": "settingsFieldsHint"
+  },
+  "settingsLanguage": "Language",
+  "@settingsLanguage": {
+    "description": "settingsLanguage"
+  },
+  "settingsDataGroup": "Data",
+  "@settingsDataGroup": {
+    "description": "settingsDataGroup"
+  },
+  "settingsAbout": "About",
+  "@settingsAbout": {
+    "description": "settingsAbout"
+  },
+  "settingsVersion": "Version",
+  "@settingsVersion": {
+    "description": "settingsVersion"
+  },
+  "settingsStorage": "Everything stays on the device",
+  "@settingsStorage": {
+    "description": "settingsStorage"
+  },
+  "settingsSource": "Source code",
+  "@settingsSource": {
+    "description": "settingsSource"
+  },
+  "monthViewTitle": "Month view",
+  "@monthViewTitle": {
+    "description": "monthViewTitle"
+  },
+  "monthChips": "Chips with titles",
+  "@monthChips": {
+    "description": "monthChips"
+  },
+  "monthChipsHint": "You see exactly what is on that day",
+  "@monthChipsHint": {
+    "description": "monthChipsHint"
+  },
+  "monthTint": "Tinted cells",
+  "@monthTint": {
+    "description": "monthTint"
+  },
+  "monthTintHint": "You see how busy the day is",
+  "@monthTintHint": {
+    "description": "monthTintHint"
+  },
+  "monthDensity": "Chip density",
+  "@monthDensity": {
+    "description": "monthDensity"
+  },
+  "monthDensityBoth": "Icon and text",
+  "@monthDensityBoth": {
+    "description": "monthDensityBoth"
+  },
+  "monthDensityIcon": "Icon only",
+  "@monthDensityIcon": {
+    "description": "monthDensityIcon"
+  },
+  "monthPerCell": "Events per cell",
+  "@monthPerCell": {
+    "description": "monthPerCell"
+  },
+  "monthPerCellHint": "The rest collapse into “+N”",
+  "@monthPerCellHint": {
+    "description": "monthPerCellHint"
+  },
+  "eventOne": "Event",
+  "@eventOne": {
+    "description": "eventOne"
+  },
+  "eventWhen": "When",
+  "@eventWhen": {
+    "description": "eventWhen"
+  },
+  "eventTime": "Time",
+  "@eventTime": {
+    "description": "eventTime"
+  },
+  "eventRepeat": "Repeat",
+  "@eventRepeat": {
+    "description": "eventRepeat"
+  },
+  "eventCalendarAndBranch": "Calendar and branch",
+  "@eventCalendarAndBranch": {
+    "description": "eventCalendarAndBranch"
+  },
+  "eventReminder": "Reminder",
+  "@eventReminder": {
+    "description": "eventReminder"
+  },
+  "eventPlace": "Place",
+  "@eventPlace": {
+    "description": "eventPlace"
+  },
+  "eventPlaceHint": "Where it happens",
+  "@eventPlaceHint": {
+    "description": "eventPlaceHint"
+  },
+  "eventDelete": "Delete the event",
+  "@eventDelete": {
+    "description": "eventDelete"
+  },
+  "moreDetails": "More",
+  "@moreDetails": {
+    "description": "moreDetails"
+  },
+  "lookTitle": "Icon and colour",
+  "@lookTitle": {
+    "description": "lookTitle"
+  },
+  "lookInherit": "Same as the calendar",
+  "@lookInherit": {
+    "description": "lookInherit"
+  },
+  "lookOwnColor": "Own colour",
+  "@lookOwnColor": {
+    "description": "lookOwnColor"
+  },
+  "inCard": "in the card",
+  "@inCard": {
+    "description": "inCard"
+  },
+  "notesTitle": "Notes",
+  "@notesTitle": {
+    "description": "notesTitle"
+  },
+  "noteOne": "Note",
+  "@noteOne": {
+    "description": "noteOne"
+  },
+  "noteAdd": "Add a note",
+  "@noteAdd": {
+    "description": "noteAdd"
+  },
+  "noteHint": "What not to forget",
+  "@noteHint": {
+    "description": "noteHint"
+  },
+  "repeatNone": "does not repeat",
+  "@repeatNone": {
+    "description": "repeatNone"
+  },
+  "repeatByRule": "by rule",
+  "@repeatByRule": {
+    "description": "repeatByRule"
+  },
+  "repeatTitle": "Repetition",
+  "@repeatTitle": {
+    "description": "repeatTitle"
+  },
+  "repeatDaily": "Every day",
+  "@repeatDaily": {
+    "description": "repeatDaily"
+  },
+  "repeatWeekly": "Every week",
+  "@repeatWeekly": {
+    "description": "repeatWeekly"
+  },
+  "repeatEvery": "Every",
+  "@repeatEvery": {
+    "description": "repeatEvery"
+  },
+  "repeatEndsWhen": "When it ends",
+  "@repeatEndsWhen": {
+    "description": "repeatEndsWhen"
+  },
+  "repeatNextDates": "Next dates",
+  "@repeatNextDates": {
+    "description": "repeatNextDates"
+  },
+  "repeatNever": "Never",
+  "@repeatNever": {
+    "description": "repeatNever"
+  },
+  "repeatUntilDate": "Until a date",
+  "@repeatUntilDate": {
+    "description": "repeatUntilDate"
+  },
+  "repeatAfterCount": "After {count} repeats",
+  "@repeatAfterCount": {
+    "description": "repeatAfterCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "unitDay": "Day",
+  "@unitDay": {
+    "description": "unitDay"
+  },
+  "unitWeek": "Week",
+  "@unitWeek": {
+    "description": "unitWeek"
+  },
+  "unitMonth": "Month",
+  "@unitMonth": {
+    "description": "unitMonth"
+  },
+  "unitYear": "Year",
+  "@unitYear": {
+    "description": "unitYear"
+  },
+  "scopeTitle": "What to change",
+  "@scopeTitle": {
+    "description": "scopeTitle"
+  },
+  "scopeRepeats": "This one repeats: {label}",
+  "@scopeRepeats": {
+    "description": "scopeRepeats",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "scopeOnly": "This one only",
+  "@scopeOnly": {
+    "description": "scopeOnly"
+  },
+  "scopeFollowing": "This and the following",
+  "@scopeFollowing": {
+    "description": "scopeFollowing"
+  },
+  "scopeFollowingHint": "The series splits: past ones stay as they were",
+  "@scopeFollowingHint": {
+    "description": "scopeFollowingHint"
+  },
+  "scopeWhole": "The whole series",
+  "@scopeWhole": {
+    "description": "scopeWhole"
+  },
+  "scopeWholeHint": "Every occurrence, past ones too",
+  "@scopeWholeHint": {
+    "description": "scopeWholeHint"
+  },
+  "msgEventDeleted": "Event deleted",
+  "@msgEventDeleted": {
+    "description": "msgEventDeleted"
+  },
+  "msgSeriesDeleted": "Series deleted",
+  "@msgSeriesDeleted": {
+    "description": "msgSeriesDeleted"
+  },
+  "msgOccurrenceSkipped": "Occurrence cancelled",
+  "@msgOccurrenceSkipped": {
+    "description": "msgOccurrenceSkipped"
+  },
+  "reminderNone": "No reminder",
+  "@reminderNone": {
+    "description": "reminderNone"
+  },
+  "reminderAtStart": "At the start",
+  "@reminderAtStart": {
+    "description": "reminderAtStart"
+  },
+  "reminderNever": "Do not remind",
+  "@reminderNever": {
+    "description": "reminderNever"
+  },
+  "reminderHint": "Several are fine: a day to get ready, ten minutes to head out",
+  "@reminderHint": {
+    "description": "reminderHint"
+  },
+  "reminderMinutes": "{count, plural, one{{count} minute before} other{{count} minutes before}}",
+  "@reminderMinutes": {
+    "description": "reminderMinutes",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderHours": "{count, plural, one{An hour before} other{{count} hours before}}",
+  "@reminderHours": {
+    "description": "reminderHours",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderDays": "{count, plural, one{A day before} other{{count} days before}}",
+  "@reminderDays": {
+    "description": "reminderDays",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderWeek": "A week before",
+  "@reminderWeek": {
+    "description": "reminderWeek"
+  },
+  "reminderStarts": "Starting now",
+  "@reminderStarts": {
+    "description": "reminderStarts"
+  },
+  "reminderStartsAt": "Starts at {time}",
+  "@reminderStartsAt": {
+    "description": "reminderStartsAt",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "icsExport": "Export to .ics",
+  "@icsExport": {
+    "description": "icsExport"
+  },
+  "icsExportHint": "A file for another calendar",
+  "@icsExportHint": {
+    "description": "icsExportHint"
+  },
+  "icsImport": "Import from .ics",
+  "@icsImport": {
+    "description": "icsImport"
+  },
+  "icsImportHint": "Events from another calendar",
+  "@icsImportHint": {
+    "description": "icsImportHint"
+  },
+  "icsSaveTitle": "Where to save the calendar",
+  "@icsSaveTitle": {
+    "description": "icsSaveTitle"
+  },
+  "icsPickTitle": "Choose a calendar file",
+  "@icsPickTitle": {
+    "description": "icsPickTitle"
+  },
+  "icsNothingToExport": "Nothing to export: there are no events.",
+  "@icsNothingToExport": {
+    "description": "icsNothingToExport"
+  },
+  "icsExported": "Events exported: {count}.",
+  "@icsExported": {
+    "description": "icsExported",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "icsImported": "Events imported: {count}.",
+  "@icsImported": {
+    "description": "icsImported",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "icsUnreadable": "The file could not be read.",
+  "@icsUnreadable": {
+    "description": "icsUnreadable"
+  },
+  "icsNoEvents": "No events were found in the file.",
+  "@icsNoEvents": {
+    "description": "icsNoEvents"
+  },
+  "colorPickerOwn": "Own colour",
+  "@colorPickerOwn": {
+    "description": "colorPickerOwn"
+  },
+  "colorHue": "Hue",
+  "@colorHue": {
+    "description": "colorHue"
+  },
+  "colorChroma": "Chroma",
+  "@colorChroma": {
+    "description": "colorChroma"
+  },
+  "colorTone": "Lightness",
+  "@colorTone": {
+    "description": "colorTone"
+  },
+  "colorMine": "My colours",
+  "@colorMine": {
+    "description": "colorMine"
+  },
+  "colorRecent": "Recent",
+  "@colorRecent": {
+    "description": "colorRecent"
+  },
+  "colorSaveMine": "Save",
+  "@colorSaveMine": {
+    "description": "colorSaveMine"
+  },
+  "colorReadout": "Hue {hue}° · chroma {chroma} · lightness {tone}",
+  "@colorReadout": {
+    "description": "colorReadout",
+    "placeholders": {
+      "hue": {
+        "type": "int"
+      },
+      "chroma": {
+        "type": "int"
+      },
+      "tone": {
+        "type": "int"
+      }
+    }
+  },
+  "colorPickerHint": "The dropper picks a colour from your wallpaper or a screenshot. Saved ones live in “My colours” and are available in every picker.",
+  "@colorPickerHint": {
+    "description": "colorPickerHint"
+  },
+  "branchColorTitle": "Branch colour",
+  "@branchColorTitle": {
+    "description": "branchColorTitle"
+  },
+  "branchColorOwnHint": "Set on this branch",
+  "@branchColorOwnHint": {
+    "description": "branchColorOwnHint"
+  },
+  "branchColorOfCalendar": "Colour of “{name}”",
+  "@branchColorOfCalendar": {
+    "description": "branchColorOfCalendar",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "branchColorPickerRow": "Own colour from the picker",
+  "@branchColorPickerRow": {
+    "description": "branchColorPickerRow"
+  },
+  "branchColorPickerHint": "Hue, chroma, hex, dropper",
+  "@branchColorPickerHint": {
+    "description": "branchColorPickerHint"
+  },
+  "branchColorChain": "Recolour “{name}” and every branch and event set to inherit changes with it. Branches with their own colour stay as they are.",
+  "@branchColorChain": {
+    "description": "branchColorChain",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "branchColorEventRow": "Event of the branch",
+  "@branchColorEventRow": {
+    "description": "branchColorEventRow"
+  },
+  "levelCalendar": "calendar",
+  "@levelCalendar": {
+    "description": "levelCalendar"
+  },
+  "levelOwn": "own",
+  "@levelOwn": {
+    "description": "levelOwn"
+  },
+  "ruleDaily": "{count, plural, one{every day} other{every {count} days}}",
+  "@ruleDaily": {
+    "description": "ruleDaily",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleWeekly": "{count, plural, one{every week} other{every {count} weeks}}",
+  "@ruleWeekly": {
+    "description": "ruleWeekly",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleMonthly": "{count, plural, one{every month} other{every {count} months}}",
+  "@ruleMonthly": {
+    "description": "ruleMonthly",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleYearly": "every year",
+  "@ruleYearly": {
+    "description": "ruleYearly"
+  },
+  "ruleWeekDays": "{every}: {days}",
+  "@ruleWeekDays": {
+    "description": "ruleWeekDays",
+    "placeholders": {
+      "every": {
+        "type": "String"
+      },
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleMonthPosition": "{every}: the {ordinal} {weekday}",
+  "@ruleMonthPosition": {
+    "description": "ruleMonthPosition",
+    "placeholders": {
+      "every": {
+        "type": "String"
+      },
+      "ordinal": {
+        "type": "String"
+      },
+      "weekday": {
+        "type": "String"
+      }
+    }
+  },
+  "ordinalLast": "last,last,last,last,last,last,last",
+  "@ordinalLast": {
+    "description": "ordinalLast"
+  },
+  "ordinal1": "first,first,first,first,first,first,first",
+  "@ordinal1": {
+    "description": "ordinal1"
+  },
+  "ordinal2": "second,second,second,second,second,second,second",
+  "@ordinal2": {
+    "description": "ordinal2"
+  },
+  "ordinal3": "third,third,third,third,third,third,third",
+  "@ordinal3": {
+    "description": "ordinal3"
+  },
+  "ordinal4": "fourth,fourth,fourth,fourth,fourth,fourth,fourth",
+  "@ordinal4": {
+    "description": "ordinal4"
+  },
+  "weekSetupTitle": "Which days to show",
+  "@weekSetupTitle": {
+    "description": "weekSetupTitle"
+  },
+  "weekSetupHint": "There will be as many columns as days ticked",
+  "@weekSetupHint": {
+    "description": "weekSetupHint"
+  },
+  "weekSetupAll": "Whole week",
+  "@weekSetupAll": {
+    "description": "weekSetupAll"
+  },
+  "weekSetupWorkdays": "Weekdays",
+  "@weekSetupWorkdays": {
+    "description": "weekSetupWorkdays"
+  },
+  "weekSetupWeekend": "Weekend",
+  "@weekSetupWeekend": {
+    "description": "weekSetupWeekend"
+  },
+  "weekSetupStartsWith": "The week starts on",
+  "@weekSetupStartsWith": {
+    "description": "weekSetupStartsWith"
+  },
+  "accessTitle": "Access",
+  "@accessTitle": {
+    "description": "accessTitle"
+  },
+  "accessCreateKey": "Create a key",
+  "@accessCreateKey": {
+    "description": "accessCreateKey"
+  },
+  "accessRevoke": "Revoke",
+  "@accessRevoke": {
+    "description": "accessRevoke"
+  },
+  "accessHint": "Keys work only while sync is on. A calendar that lives on the phone alone is unreachable from outside — there is nowhere to knock.",
+  "@accessHint": {
+    "description": "accessHint"
+  }
 }

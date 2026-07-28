@@ -18,5 +18,903 @@
   "durationHours": "{hours} h",
   "durationHoursMinutes": "{hours} h {minutes} min",
   "spanDayOf": "ziua {current} din {total}",
-  "spanUntil": "până la {date}"
+  "spanUntil": "până la {date}",
+  "actionDone": "Gata",
+  "@actionDone": {
+    "description": "actionDone"
+  },
+  "actionCancel": "Anulează",
+  "@actionCancel": {
+    "description": "actionCancel"
+  },
+  "actionDelete": "Șterge",
+  "@actionDelete": {
+    "description": "actionDelete"
+  },
+  "actionSave": "Salvează",
+  "@actionSave": {
+    "description": "actionSave"
+  },
+  "actionAdd": "adaugă",
+  "@actionAdd": {
+    "description": "actionAdd"
+  },
+  "actionEdit": "Modifică",
+  "@actionEdit": {
+    "description": "actionEdit"
+  },
+  "actionUndo": "Anulează",
+  "@actionUndo": {
+    "description": "actionUndo"
+  },
+  "fieldName": "Nume",
+  "@fieldName": {
+    "description": "fieldName"
+  },
+  "calendarsTitle": "Calendare",
+  "@calendarsTitle": {
+    "description": "calendarsTitle"
+  },
+  "calendarOne": "Calendar",
+  "@calendarOne": {
+    "description": "calendarOne"
+  },
+  "calendarNewShort": "Nou",
+  "@calendarNewShort": {
+    "description": "calendarNewShort"
+  },
+  "calendarNew": "Calendar nou",
+  "@calendarNew": {
+    "description": "calendarNew"
+  },
+  "calendarCreate": "Creează un calendar",
+  "@calendarCreate": {
+    "description": "calendarCreate"
+  },
+  "calendarsEmptyTitle": "Niciun calendar",
+  "@calendarsEmptyTitle": {
+    "description": "calendarsEmptyTitle"
+  },
+  "calendarsEmptyBody": "Un calendar dă culoarea și pictograma tuturor evenimentelor din el. De obicei sunt trei-patru: acasă, muncă, studiu, sport.",
+  "@calendarsEmptyBody": {
+    "description": "calendarsEmptyBody"
+  },
+  "branchOne": "Ramură",
+  "@branchOne": {
+    "description": "branchOne"
+  },
+  "branchNone": "Fără ramuri",
+  "@branchNone": {
+    "description": "branchNone"
+  },
+  "branchAdd": "Adaugă o ramură",
+  "@branchAdd": {
+    "description": "branchAdd"
+  },
+  "branchOf": "Ramura „{name}”",
+  "@branchOf": {
+    "description": "branchOf",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "branchCount": "{count, plural, one{{count} ramură} other{{count} ramuri}}",
+  "@branchCount": {
+    "description": "branchCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "colorInherits": "moștenit",
+  "@colorInherits": {
+    "description": "colorInherits"
+  },
+  "colorOwn": "culoare proprie",
+  "@colorOwn": {
+    "description": "colorOwn"
+  },
+  "fieldsTitle": "Câmpuri proprii",
+  "@fieldsTitle": {
+    "description": "fieldsTitle"
+  },
+  "fieldsShared": "Comune tuturor",
+  "@fieldsShared": {
+    "description": "fieldsShared"
+  },
+  "fieldsSharedRow": "Câmpuri comune",
+  "@fieldsSharedRow": {
+    "description": "fieldsSharedRow"
+  },
+  "fieldsGroups": "Grupuri",
+  "@fieldsGroups": {
+    "description": "fieldsGroups"
+  },
+  "fieldsNoneYet": "Deocamdată niciunul",
+  "@fieldsNoneYet": {
+    "description": "fieldsNoneYet"
+  },
+  "fieldsGroupEmpty": "Fără câmpuri proprii",
+  "@fieldsGroupEmpty": {
+    "description": "fieldsGroupEmpty"
+  },
+  "fieldsGroupCreate": "Creează un grup de câmpuri",
+  "@fieldsGroupCreate": {
+    "description": "fieldsGroupCreate"
+  },
+  "fieldsGroupNew": "Grup nou",
+  "@fieldsGroupNew": {
+    "description": "fieldsGroupNew"
+  },
+  "fieldAddTo": "Adaugă un câmp în „{name}”",
+  "@fieldAddTo": {
+    "description": "fieldAddTo",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldNewIn": "Câmp nou în „{name}”",
+  "@fieldNewIn": {
+    "description": "fieldNewIn",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldOne": "Câmp",
+  "@fieldOne": {
+    "description": "fieldOne"
+  },
+  "fieldShared": "comun",
+  "@fieldShared": {
+    "description": "fieldShared"
+  },
+  "fieldNamePlaceholder": "Numele câmpului",
+  "@fieldNamePlaceholder": {
+    "description": "fieldNamePlaceholder"
+  },
+  "fieldKind": "Cu ce se completează",
+  "@fieldKind": {
+    "description": "fieldKind"
+  },
+  "fieldsOwnCount": "{count, plural, one{{count} câmp propriu} other{{count} câmpuri proprii}}",
+  "@fieldsOwnCount": {
+    "description": "fieldsOwnCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldsInCard": "în card {count}",
+  "@fieldsInCard": {
+    "description": "fieldsInCard",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldEraseValue": "Șterge",
+  "@fieldEraseValue": {
+    "description": "fieldEraseValue"
+  },
+  "yes": "da",
+  "@yes": {
+    "description": "yes"
+  },
+  "no": "nu",
+  "@no": {
+    "description": "no"
+  },
+  "typeText": "Text",
+  "@typeText": {
+    "description": "typeText"
+  },
+  "typeNumber": "Număr",
+  "@typeNumber": {
+    "description": "typeNumber"
+  },
+  "typeDate": "Dată",
+  "@typeDate": {
+    "description": "typeDate"
+  },
+  "typeTime": "Oră",
+  "@typeTime": {
+    "description": "typeTime"
+  },
+  "typeDuration": "Durată",
+  "@typeDuration": {
+    "description": "typeDuration"
+  },
+  "typeSelect": "Listă",
+  "@typeSelect": {
+    "description": "typeSelect"
+  },
+  "typeCheckbox": "Bifă",
+  "@typeCheckbox": {
+    "description": "typeCheckbox"
+  },
+  "typeUrl": "Link",
+  "@typeUrl": {
+    "description": "typeUrl"
+  },
+  "typePhone": "Telefon",
+  "@typePhone": {
+    "description": "typePhone"
+  },
+  "typePerson": "Persoană",
+  "@typePerson": {
+    "description": "typePerson"
+  },
+  "typeMoney": "Bani",
+  "@typeMoney": {
+    "description": "typeMoney"
+  },
+  "searchHint": "Caută un eveniment",
+  "@searchHint": {
+    "description": "searchHint"
+  },
+  "searchEmpty": "Caută după titlu, loc sau un câmp propriu — de exemplu, după numărul sălii.",
+  "@searchEmpty": {
+    "description": "searchEmpty"
+  },
+  "searchNothing": "Nu s-a găsit nimic.",
+  "@searchNothing": {
+    "description": "searchNothing"
+  },
+  "allDay": "toată ziua",
+  "@allDay": {
+    "description": "allDay"
+  },
+  "settingsTitle": "Setări",
+  "@settingsTitle": {
+    "description": "settingsTitle"
+  },
+  "settingsAppearance": "Aspect",
+  "@settingsAppearance": {
+    "description": "settingsAppearance"
+  },
+  "settingsTheme": "Temă",
+  "@settingsTheme": {
+    "description": "settingsTheme"
+  },
+  "settingsSystem": "Ca în sistem",
+  "@settingsSystem": {
+    "description": "settingsSystem"
+  },
+  "settingsLight": "Deschisă",
+  "@settingsLight": {
+    "description": "settingsLight"
+  },
+  "settingsDark": "Închisă",
+  "@settingsDark": {
+    "description": "settingsDark"
+  },
+  "settingsChroma": "Saturație",
+  "@settingsChroma": {
+    "description": "settingsChroma"
+  },
+  "settingsChromaHint": "Pe menta de brand, „Viu” duce pastilele spre un ton acid",
+  "@settingsChromaHint": {
+    "description": "settingsChromaHint"
+  },
+  "settingsExact": "Exact",
+  "@settingsExact": {
+    "description": "settingsExact"
+  },
+  "settingsVivid": "Viu",
+  "@settingsVivid": {
+    "description": "settingsVivid"
+  },
+  "settingsSeed": "Culoarea de brand",
+  "@settingsSeed": {
+    "description": "settingsSeed"
+  },
+  "settingsCalendarGroup": "Calendar",
+  "@settingsCalendarGroup": {
+    "description": "settingsCalendarGroup"
+  },
+  "settingsWeekDays": "Zilele în vizualizarea „Săptămână”",
+  "@settingsWeekDays": {
+    "description": "settingsWeekDays"
+  },
+  "settingsWeekFull": "Toată săptămâna",
+  "@settingsWeekFull": {
+    "description": "settingsWeekFull"
+  },
+  "settingsWeekdaysOnly": "Doar zilele lucrătoare",
+  "@settingsWeekdaysOnly": {
+    "description": "settingsWeekdaysOnly"
+  },
+  "settingsWeekSome": "{count, plural, one{{count} zi pe săptămână} other{{count} zile pe săptămână}}",
+  "@settingsWeekSome": {
+    "description": "settingsWeekSome",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsFieldsHint": "Sala, antrenorul, numărul abonamentului",
+  "@settingsFieldsHint": {
+    "description": "settingsFieldsHint"
+  },
+  "settingsLanguage": "Limbă",
+  "@settingsLanguage": {
+    "description": "settingsLanguage"
+  },
+  "settingsDataGroup": "Date",
+  "@settingsDataGroup": {
+    "description": "settingsDataGroup"
+  },
+  "settingsAbout": "Despre aplicație",
+  "@settingsAbout": {
+    "description": "settingsAbout"
+  },
+  "settingsVersion": "Versiune",
+  "@settingsVersion": {
+    "description": "settingsVersion"
+  },
+  "settingsStorage": "Totul rămâne pe dispozitiv",
+  "@settingsStorage": {
+    "description": "settingsStorage"
+  },
+  "settingsSource": "Cod sursă",
+  "@settingsSource": {
+    "description": "settingsSource"
+  },
+  "monthViewTitle": "Vizualizarea lunii",
+  "@monthViewTitle": {
+    "description": "monthViewTitle"
+  },
+  "monthChips": "Etichete cu titluri",
+  "@monthChips": {
+    "description": "monthChips"
+  },
+  "monthChipsHint": "Se vede exact ce e în ziua aceea",
+  "@monthChipsHint": {
+    "description": "monthChipsHint"
+  },
+  "monthTint": "Celule colorate",
+  "@monthTint": {
+    "description": "monthTint"
+  },
+  "monthTintHint": "Se vede cu ce e ocupată ziua",
+  "@monthTintHint": {
+    "description": "monthTintHint"
+  },
+  "monthDensity": "Densitatea etichetei",
+  "@monthDensity": {
+    "description": "monthDensity"
+  },
+  "monthDensityBoth": "Pictogramă și text",
+  "@monthDensityBoth": {
+    "description": "monthDensityBoth"
+  },
+  "monthDensityIcon": "Doar pictogramă",
+  "@monthDensityIcon": {
+    "description": "monthDensityIcon"
+  },
+  "monthPerCell": "Evenimente pe celulă",
+  "@monthPerCell": {
+    "description": "monthPerCell"
+  },
+  "monthPerCellHint": "Restul se strâng în „+N”",
+  "@monthPerCellHint": {
+    "description": "monthPerCellHint"
+  },
+  "eventOne": "Eveniment",
+  "@eventOne": {
+    "description": "eventOne"
+  },
+  "eventWhen": "Când",
+  "@eventWhen": {
+    "description": "eventWhen"
+  },
+  "eventTime": "Ora",
+  "@eventTime": {
+    "description": "eventTime"
+  },
+  "eventRepeat": "Repetare",
+  "@eventRepeat": {
+    "description": "eventRepeat"
+  },
+  "eventCalendarAndBranch": "Calendar și ramură",
+  "@eventCalendarAndBranch": {
+    "description": "eventCalendarAndBranch"
+  },
+  "eventReminder": "Memento",
+  "@eventReminder": {
+    "description": "eventReminder"
+  },
+  "eventPlace": "Loc",
+  "@eventPlace": {
+    "description": "eventPlace"
+  },
+  "eventPlaceHint": "Unde va fi",
+  "@eventPlaceHint": {
+    "description": "eventPlaceHint"
+  },
+  "eventDelete": "Șterge evenimentul",
+  "@eventDelete": {
+    "description": "eventDelete"
+  },
+  "moreDetails": "Detalii",
+  "@moreDetails": {
+    "description": "moreDetails"
+  },
+  "lookTitle": "Pictogramă și culoare",
+  "@lookTitle": {
+    "description": "lookTitle"
+  },
+  "lookInherit": "Ca la calendar",
+  "@lookInherit": {
+    "description": "lookInherit"
+  },
+  "lookOwnColor": "Culoare proprie",
+  "@lookOwnColor": {
+    "description": "lookOwnColor"
+  },
+  "inCard": "în card",
+  "@inCard": {
+    "description": "inCard"
+  },
+  "notesTitle": "Notițe",
+  "@notesTitle": {
+    "description": "notesTitle"
+  },
+  "noteOne": "Notiță",
+  "@noteOne": {
+    "description": "noteOne"
+  },
+  "noteAdd": "Adaugă o notiță",
+  "@noteAdd": {
+    "description": "noteAdd"
+  },
+  "noteHint": "Ce să nu uiți",
+  "@noteHint": {
+    "description": "noteHint"
+  },
+  "repeatNone": "nu se repetă",
+  "@repeatNone": {
+    "description": "repeatNone"
+  },
+  "repeatByRule": "după regulă",
+  "@repeatByRule": {
+    "description": "repeatByRule"
+  },
+  "repeatTitle": "Repetare",
+  "@repeatTitle": {
+    "description": "repeatTitle"
+  },
+  "repeatDaily": "În fiecare zi",
+  "@repeatDaily": {
+    "description": "repeatDaily"
+  },
+  "repeatWeekly": "În fiecare săptămână",
+  "@repeatWeekly": {
+    "description": "repeatWeekly"
+  },
+  "repeatEvery": "La fiecare",
+  "@repeatEvery": {
+    "description": "repeatEvery"
+  },
+  "repeatEndsWhen": "Când se termină",
+  "@repeatEndsWhen": {
+    "description": "repeatEndsWhen"
+  },
+  "repeatNextDates": "Următoarele date",
+  "@repeatNextDates": {
+    "description": "repeatNextDates"
+  },
+  "repeatNever": "Niciodată",
+  "@repeatNever": {
+    "description": "repeatNever"
+  },
+  "repeatUntilDate": "Până la o dată",
+  "@repeatUntilDate": {
+    "description": "repeatUntilDate"
+  },
+  "repeatAfterCount": "După {count} repetări",
+  "@repeatAfterCount": {
+    "description": "repeatAfterCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "unitDay": "Zi",
+  "@unitDay": {
+    "description": "unitDay"
+  },
+  "unitWeek": "Săptămână",
+  "@unitWeek": {
+    "description": "unitWeek"
+  },
+  "unitMonth": "Lună",
+  "@unitMonth": {
+    "description": "unitMonth"
+  },
+  "unitYear": "An",
+  "@unitYear": {
+    "description": "unitYear"
+  },
+  "scopeTitle": "Ce se schimbă",
+  "@scopeTitle": {
+    "description": "scopeTitle"
+  },
+  "scopeRepeats": "Se repetă: {label}",
+  "@scopeRepeats": {
+    "description": "scopeRepeats",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "scopeOnly": "Doar această apariție",
+  "@scopeOnly": {
+    "description": "scopeOnly"
+  },
+  "scopeFollowing": "Aceasta și următoarele",
+  "@scopeFollowing": {
+    "description": "scopeFollowing"
+  },
+  "scopeFollowingHint": "Seria se împarte: cele trecute rămân cum au fost",
+  "@scopeFollowingHint": {
+    "description": "scopeFollowingHint"
+  },
+  "scopeWhole": "Toată seria",
+  "@scopeWhole": {
+    "description": "scopeWhole"
+  },
+  "scopeWholeHint": "Toate aparițiile, inclusiv cele trecute",
+  "@scopeWholeHint": {
+    "description": "scopeWholeHint"
+  },
+  "msgEventDeleted": "Eveniment șters",
+  "@msgEventDeleted": {
+    "description": "msgEventDeleted"
+  },
+  "msgSeriesDeleted": "Serie ștearsă",
+  "@msgSeriesDeleted": {
+    "description": "msgSeriesDeleted"
+  },
+  "msgOccurrenceSkipped": "Apariție anulată",
+  "@msgOccurrenceSkipped": {
+    "description": "msgOccurrenceSkipped"
+  },
+  "reminderNone": "Fără memento",
+  "@reminderNone": {
+    "description": "reminderNone"
+  },
+  "reminderAtStart": "La început",
+  "@reminderAtStart": {
+    "description": "reminderAtStart"
+  },
+  "reminderNever": "Fără memento",
+  "@reminderNever": {
+    "description": "reminderNever"
+  },
+  "reminderHint": "Poți pune mai multe: cu o zi să te pregătești, cu zece minute să pleci",
+  "@reminderHint": {
+    "description": "reminderHint"
+  },
+  "reminderMinutes": "{count, plural, one{Cu {count} minut înainte} other{Cu {count} de minute înainte}}",
+  "@reminderMinutes": {
+    "description": "reminderMinutes",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderHours": "{count, plural, one{Cu o oră înainte} other{Cu {count} ore înainte}}",
+  "@reminderHours": {
+    "description": "reminderHours",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderDays": "{count, plural, one{Cu o zi înainte} other{Cu {count} zile înainte}}",
+  "@reminderDays": {
+    "description": "reminderDays",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderWeek": "Cu o săptămână înainte",
+  "@reminderWeek": {
+    "description": "reminderWeek"
+  },
+  "reminderStarts": "Începe",
+  "@reminderStarts": {
+    "description": "reminderStarts"
+  },
+  "reminderStartsAt": "Începe la {time}",
+  "@reminderStartsAt": {
+    "description": "reminderStartsAt",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "icsExport": "Exportă în .ics",
+  "@icsExport": {
+    "description": "icsExport"
+  },
+  "icsExportHint": "Un fișier pentru alt calendar",
+  "@icsExportHint": {
+    "description": "icsExportHint"
+  },
+  "icsImport": "Importă din .ics",
+  "@icsImport": {
+    "description": "icsImport"
+  },
+  "icsImportHint": "Evenimente din alt calendar",
+  "@icsImportHint": {
+    "description": "icsImportHint"
+  },
+  "icsSaveTitle": "Unde salvăm calendarul",
+  "@icsSaveTitle": {
+    "description": "icsSaveTitle"
+  },
+  "icsPickTitle": "Alege un fișier de calendar",
+  "@icsPickTitle": {
+    "description": "icsPickTitle"
+  },
+  "icsNothingToExport": "Nu e nimic de exportat: nu există evenimente.",
+  "@icsNothingToExport": {
+    "description": "icsNothingToExport"
+  },
+  "icsExported": "Evenimente exportate: {count}.",
+  "@icsExported": {
+    "description": "icsExported",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "icsImported": "Evenimente importate: {count}.",
+  "@icsImported": {
+    "description": "icsImported",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "icsUnreadable": "Fișierul nu a putut fi citit.",
+  "@icsUnreadable": {
+    "description": "icsUnreadable"
+  },
+  "icsNoEvents": "În fișier nu s-a găsit niciun eveniment.",
+  "@icsNoEvents": {
+    "description": "icsNoEvents"
+  },
+  "colorPickerOwn": "Culoare proprie",
+  "@colorPickerOwn": {
+    "description": "colorPickerOwn"
+  },
+  "colorHue": "Nuanță",
+  "@colorHue": {
+    "description": "colorHue"
+  },
+  "colorChroma": "Saturație",
+  "@colorChroma": {
+    "description": "colorChroma"
+  },
+  "colorTone": "Luminozitate",
+  "@colorTone": {
+    "description": "colorTone"
+  },
+  "colorMine": "Culorile mele",
+  "@colorMine": {
+    "description": "colorMine"
+  },
+  "colorRecent": "Recente",
+  "@colorRecent": {
+    "description": "colorRecent"
+  },
+  "colorSaveMine": "Salvează",
+  "@colorSaveMine": {
+    "description": "colorSaveMine"
+  },
+  "colorReadout": "Nuanță {hue}° · saturație {chroma} · luminozitate {tone}",
+  "@colorReadout": {
+    "description": "colorReadout",
+    "placeholders": {
+      "hue": {
+        "type": "int"
+      },
+      "chroma": {
+        "type": "int"
+      },
+      "tone": {
+        "type": "int"
+      }
+    }
+  },
+  "colorPickerHint": "Pipeta ia culoarea din fundal sau dintr-o captură. Cele salvate stau în „Culorile mele” și sunt disponibile peste tot.",
+  "@colorPickerHint": {
+    "description": "colorPickerHint"
+  },
+  "branchColorTitle": "Culoarea ramurii",
+  "@branchColorTitle": {
+    "description": "branchColorTitle"
+  },
+  "branchColorOwnHint": "Setată pe această ramură",
+  "@branchColorOwnHint": {
+    "description": "branchColorOwnHint"
+  },
+  "branchColorOfCalendar": "Culoarea „{name}”",
+  "@branchColorOfCalendar": {
+    "description": "branchColorOfCalendar",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "branchColorPickerRow": "Culoare proprie din selector",
+  "@branchColorPickerRow": {
+    "description": "branchColorPickerRow"
+  },
+  "branchColorPickerHint": "Nuanță, saturație, hex, pipetă",
+  "@branchColorPickerHint": {
+    "description": "branchColorPickerHint"
+  },
+  "branchColorChain": "Dacă schimbi culoarea „{name}”, se schimbă toate ramurile și evenimentele care moștenesc. Cele cu culoare proprie rămân la fel.",
+  "@branchColorChain": {
+    "description": "branchColorChain",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "branchColorEventRow": "Eveniment al ramurii",
+  "@branchColorEventRow": {
+    "description": "branchColorEventRow"
+  },
+  "levelCalendar": "calendar",
+  "@levelCalendar": {
+    "description": "levelCalendar"
+  },
+  "levelOwn": "proprie",
+  "@levelOwn": {
+    "description": "levelOwn"
+  },
+  "ruleDaily": "{count, plural, one{în fiecare zi} other{la fiecare {count} zile}}",
+  "@ruleDaily": {
+    "description": "ruleDaily",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleWeekly": "{count, plural, one{în fiecare săptămână} other{la fiecare {count} săptămâni}}",
+  "@ruleWeekly": {
+    "description": "ruleWeekly",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleMonthly": "{count, plural, one{în fiecare lună} other{la fiecare {count} luni}}",
+  "@ruleMonthly": {
+    "description": "ruleMonthly",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleYearly": "în fiecare an",
+  "@ruleYearly": {
+    "description": "ruleYearly"
+  },
+  "ruleWeekDays": "{every}: {days}",
+  "@ruleWeekDays": {
+    "description": "ruleWeekDays",
+    "placeholders": {
+      "every": {
+        "type": "String"
+      },
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleMonthPosition": "{every}: {ordinal} {weekday}",
+  "@ruleMonthPosition": {
+    "description": "ruleMonthPosition",
+    "placeholders": {
+      "every": {
+        "type": "String"
+      },
+      "ordinal": {
+        "type": "String"
+      },
+      "weekday": {
+        "type": "String"
+      }
+    }
+  },
+  "ordinalLast": "ultima,ultima,ultima,ultima,ultima,ultima,ultima",
+  "@ordinalLast": {
+    "description": "ordinalLast"
+  },
+  "ordinal1": "prima,prima,prima,prima,prima,prima,prima",
+  "@ordinal1": {
+    "description": "ordinal1"
+  },
+  "ordinal2": "a doua,a doua,a doua,a doua,a doua,a doua,a doua",
+  "@ordinal2": {
+    "description": "ordinal2"
+  },
+  "ordinal3": "a treia,a treia,a treia,a treia,a treia,a treia,a treia",
+  "@ordinal3": {
+    "description": "ordinal3"
+  },
+  "ordinal4": "a patra,a patra,a patra,a patra,a patra,a patra,a patra",
+  "@ordinal4": {
+    "description": "ordinal4"
+  },
+  "weekSetupTitle": "Ce zile să arătăm",
+  "@weekSetupTitle": {
+    "description": "weekSetupTitle"
+  },
+  "weekSetupHint": "Vor fi atâtea coloane câte zile sunt bifate",
+  "@weekSetupHint": {
+    "description": "weekSetupHint"
+  },
+  "weekSetupAll": "Toată săptămâna",
+  "@weekSetupAll": {
+    "description": "weekSetupAll"
+  },
+  "weekSetupWorkdays": "Zile lucrătoare",
+  "@weekSetupWorkdays": {
+    "description": "weekSetupWorkdays"
+  },
+  "weekSetupWeekend": "Weekend",
+  "@weekSetupWeekend": {
+    "description": "weekSetupWeekend"
+  },
+  "weekSetupStartsWith": "Săptămâna începe cu",
+  "@weekSetupStartsWith": {
+    "description": "weekSetupStartsWith"
+  },
+  "accessTitle": "Acces",
+  "@accessTitle": {
+    "description": "accessTitle"
+  },
+  "accessCreateKey": "Creează o cheie",
+  "@accessCreateKey": {
+    "description": "accessCreateKey"
+  },
+  "accessRevoke": "Revocă",
+  "@accessRevoke": {
+    "description": "accessRevoke"
+  },
+  "accessHint": "Cheile funcționează cât timp sincronizarea e pornită. Un calendar care trăiește doar pe telefon nu e accesibil din afară — nu ai unde să bați.",
+  "@accessHint": {
+    "description": "accessHint"
+  }
 }

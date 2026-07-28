@@ -74,4 +74,691 @@ class LDe extends L {
   String spanUntil(String date) {
     return 'bis $date';
   }
+
+  @override
+  String get actionDone => 'Fertig';
+
+  @override
+  String get actionCancel => 'Abbrechen';
+
+  @override
+  String get actionDelete => 'Löschen';
+
+  @override
+  String get actionSave => 'Speichern';
+
+  @override
+  String get actionAdd => 'hinzufügen';
+
+  @override
+  String get actionEdit => 'Ändern';
+
+  @override
+  String get actionUndo => 'Rückgängig';
+
+  @override
+  String get fieldName => 'Name';
+
+  @override
+  String get calendarsTitle => 'Kalender';
+
+  @override
+  String get calendarOne => 'Kalender';
+
+  @override
+  String get calendarNewShort => 'Neu';
+
+  @override
+  String get calendarNew => 'Neuer Kalender';
+
+  @override
+  String get calendarCreate => 'Kalender anlegen';
+
+  @override
+  String get calendarsEmptyTitle => 'Noch keine Kalender';
+
+  @override
+  String get calendarsEmptyBody =>
+      'Ein Kalender gibt allen Terminen darin Farbe und Symbol. Üblich sind drei bis vier: Zuhause, Arbeit, Studium, Sport.';
+
+  @override
+  String get branchOne => 'Zweig';
+
+  @override
+  String get branchNone => 'Ohne Zweige';
+
+  @override
+  String get branchAdd => 'Zweig hinzufügen';
+
+  @override
+  String branchOf(String name) {
+    return 'Zweig „$name“';
+  }
+
+  @override
+  String branchCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Zweige',
+      one: '$count Zweig',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get colorInherits => 'geerbt';
+
+  @override
+  String get colorOwn => 'eigene Farbe';
+
+  @override
+  String get fieldsTitle => 'Eigene Felder';
+
+  @override
+  String get fieldsShared => 'Für alle gemeinsam';
+
+  @override
+  String get fieldsSharedRow => 'Gemeinsame Felder';
+
+  @override
+  String get fieldsGroups => 'Gruppen';
+
+  @override
+  String get fieldsNoneYet => 'Noch keine';
+
+  @override
+  String get fieldsGroupEmpty => 'Ohne eigene Felder';
+
+  @override
+  String get fieldsGroupCreate => 'Feldgruppe anlegen';
+
+  @override
+  String get fieldsGroupNew => 'Neue Gruppe';
+
+  @override
+  String fieldAddTo(String name) {
+    return 'Feld zu „$name“ hinzufügen';
+  }
+
+  @override
+  String fieldNewIn(String name) {
+    return 'Neues Feld in „$name“';
+  }
+
+  @override
+  String get fieldOne => 'Feld';
+
+  @override
+  String get fieldShared => 'gemeinsam';
+
+  @override
+  String get fieldNamePlaceholder => 'Feldname';
+
+  @override
+  String get fieldKind => 'Was hineinkommt';
+
+  @override
+  String fieldsOwnCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count eigene Felder',
+      one: '$count eigenes Feld',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String fieldsInCard(int count) {
+    return 'in der Karte $count';
+  }
+
+  @override
+  String get fieldEraseValue => 'Löschen';
+
+  @override
+  String get yes => 'ja';
+
+  @override
+  String get no => 'nein';
+
+  @override
+  String get typeText => 'Text';
+
+  @override
+  String get typeNumber => 'Zahl';
+
+  @override
+  String get typeDate => 'Datum';
+
+  @override
+  String get typeTime => 'Uhrzeit';
+
+  @override
+  String get typeDuration => 'Dauer';
+
+  @override
+  String get typeSelect => 'Liste';
+
+  @override
+  String get typeCheckbox => 'Kästchen';
+
+  @override
+  String get typeUrl => 'Link';
+
+  @override
+  String get typePhone => 'Telefon';
+
+  @override
+  String get typePerson => 'Person';
+
+  @override
+  String get typeMoney => 'Geld';
+
+  @override
+  String get searchHint => 'Termin finden';
+
+  @override
+  String get searchEmpty =>
+      'Suche nach Titel, Ort oder einem eigenen Feld — etwa nach der Raumnummer.';
+
+  @override
+  String get searchNothing => 'Nichts gefunden.';
+
+  @override
+  String get allDay => 'ganztägig';
+
+  @override
+  String get settingsTitle => 'Einstellungen';
+
+  @override
+  String get settingsAppearance => 'Aussehen';
+
+  @override
+  String get settingsTheme => 'Design';
+
+  @override
+  String get settingsSystem => 'Wie im System';
+
+  @override
+  String get settingsLight => 'Hell';
+
+  @override
+  String get settingsDark => 'Dunkel';
+
+  @override
+  String get settingsChroma => 'Sättigung';
+
+  @override
+  String get settingsChromaHint =>
+      'Auf dem Marken-Mint dreht „Kräftig“ die Pillen ins Grelle';
+
+  @override
+  String get settingsExact => 'Genau';
+
+  @override
+  String get settingsVivid => 'Kräftig';
+
+  @override
+  String get settingsSeed => 'Markenfarbe';
+
+  @override
+  String get settingsCalendarGroup => 'Kalender';
+
+  @override
+  String get settingsWeekDays => 'Tage in der Wochenansicht';
+
+  @override
+  String get settingsWeekFull => 'Ganze Woche';
+
+  @override
+  String get settingsWeekdaysOnly => 'Nur Werktage';
+
+  @override
+  String settingsWeekSome(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Tage pro Woche',
+      one: '$count Tag pro Woche',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settingsFieldsHint => 'Raum, Trainer, Abo-Nummer';
+
+  @override
+  String get settingsLanguage => 'Sprache';
+
+  @override
+  String get settingsDataGroup => 'Daten';
+
+  @override
+  String get settingsAbout => 'Über die App';
+
+  @override
+  String get settingsVersion => 'Version';
+
+  @override
+  String get settingsStorage => 'Alles bleibt auf dem Gerät';
+
+  @override
+  String get settingsSource => 'Quellcode';
+
+  @override
+  String get monthViewTitle => 'Monatsansicht';
+
+  @override
+  String get monthChips => 'Chips mit Titeln';
+
+  @override
+  String get monthChipsHint => 'Man sieht, was genau an dem Tag ist';
+
+  @override
+  String get monthTint => 'Getönte Zellen';
+
+  @override
+  String get monthTintHint => 'Man sieht, womit der Tag belegt ist';
+
+  @override
+  String get monthDensity => 'Chip-Dichte';
+
+  @override
+  String get monthDensityBoth => 'Symbol und Text';
+
+  @override
+  String get monthDensityIcon => 'Nur Symbol';
+
+  @override
+  String get monthPerCell => 'Termine pro Zelle';
+
+  @override
+  String get monthPerCellHint => 'Der Rest wird zu „+N“';
+
+  @override
+  String get eventOne => 'Termin';
+
+  @override
+  String get eventWhen => 'Wann';
+
+  @override
+  String get eventTime => 'Uhrzeit';
+
+  @override
+  String get eventRepeat => 'Wiederholung';
+
+  @override
+  String get eventCalendarAndBranch => 'Kalender und Zweig';
+
+  @override
+  String get eventReminder => 'Erinnerung';
+
+  @override
+  String get eventPlace => 'Ort';
+
+  @override
+  String get eventPlaceHint => 'Wo es stattfindet';
+
+  @override
+  String get eventDelete => 'Termin löschen';
+
+  @override
+  String get moreDetails => 'Mehr';
+
+  @override
+  String get lookTitle => 'Symbol und Farbe';
+
+  @override
+  String get lookInherit => 'Wie beim Kalender';
+
+  @override
+  String get lookOwnColor => 'Eigene Farbe';
+
+  @override
+  String get inCard => 'in der Karte';
+
+  @override
+  String get notesTitle => 'Notizen';
+
+  @override
+  String get noteOne => 'Notiz';
+
+  @override
+  String get noteAdd => 'Notiz hinzufügen';
+
+  @override
+  String get noteHint => 'Was nicht vergessen';
+
+  @override
+  String get repeatNone => 'wiederholt sich nicht';
+
+  @override
+  String get repeatByRule => 'nach Regel';
+
+  @override
+  String get repeatTitle => 'Wiederholung';
+
+  @override
+  String get repeatDaily => 'Täglich';
+
+  @override
+  String get repeatWeekly => 'Wöchentlich';
+
+  @override
+  String get repeatEvery => 'Alle';
+
+  @override
+  String get repeatEndsWhen => 'Wann es endet';
+
+  @override
+  String get repeatNextDates => 'Nächste Termine';
+
+  @override
+  String get repeatNever => 'Nie';
+
+  @override
+  String get repeatUntilDate => 'Bis zu einem Datum';
+
+  @override
+  String repeatAfterCount(int count) {
+    return 'Nach $count Wiederholungen';
+  }
+
+  @override
+  String get unitDay => 'Tag';
+
+  @override
+  String get unitWeek => 'Woche';
+
+  @override
+  String get unitMonth => 'Monat';
+
+  @override
+  String get unitYear => 'Jahr';
+
+  @override
+  String get scopeTitle => 'Was ändern';
+
+  @override
+  String scopeRepeats(String label) {
+    return 'Wiederholt sich: $label';
+  }
+
+  @override
+  String get scopeOnly => 'Nur dieser Termin';
+
+  @override
+  String get scopeFollowing => 'Dieser und die folgenden';
+
+  @override
+  String get scopeFollowingHint =>
+      'Die Serie teilt sich: Vergangenes bleibt, wie es war';
+
+  @override
+  String get scopeWhole => 'Die ganze Serie';
+
+  @override
+  String get scopeWholeHint => 'Alle Termine, auch vergangene';
+
+  @override
+  String get msgEventDeleted => 'Termin gelöscht';
+
+  @override
+  String get msgSeriesDeleted => 'Serie gelöscht';
+
+  @override
+  String get msgOccurrenceSkipped => 'Termin abgesagt';
+
+  @override
+  String get reminderNone => 'Ohne Erinnerung';
+
+  @override
+  String get reminderAtStart => 'Zum Beginn';
+
+  @override
+  String get reminderNever => 'Nicht erinnern';
+
+  @override
+  String get reminderHint =>
+      'Mehrere sind möglich: einen Tag zum Vorbereiten, zehn Minuten zum Losgehen';
+
+  @override
+  String reminderMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Minuten vorher',
+      one: '$count Minute vorher',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String reminderHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Stunden vorher',
+      one: 'Eine Stunde vorher',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String reminderDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Tage vorher',
+      one: 'Einen Tag vorher',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reminderWeek => 'Eine Woche vorher';
+
+  @override
+  String get reminderStarts => 'Beginnt';
+
+  @override
+  String reminderStartsAt(String time) {
+    return 'Beginn um $time';
+  }
+
+  @override
+  String get icsExport => 'Als .ics exportieren';
+
+  @override
+  String get icsExportHint => 'Eine Datei für einen anderen Kalender';
+
+  @override
+  String get icsImport => 'Aus .ics importieren';
+
+  @override
+  String get icsImportHint => 'Termine aus einem anderen Kalender';
+
+  @override
+  String get icsSaveTitle => 'Wohin den Kalender speichern';
+
+  @override
+  String get icsPickTitle => 'Kalenderdatei wählen';
+
+  @override
+  String get icsNothingToExport => 'Nichts zu exportieren: keine Termine.';
+
+  @override
+  String icsExported(int count) {
+    return 'Exportierte Termine: $count.';
+  }
+
+  @override
+  String icsImported(int count) {
+    return 'Importierte Termine: $count.';
+  }
+
+  @override
+  String get icsUnreadable => 'Die Datei konnte nicht gelesen werden.';
+
+  @override
+  String get icsNoEvents => 'In der Datei wurde kein Termin gefunden.';
+
+  @override
+  String get colorPickerOwn => 'Eigene Farbe';
+
+  @override
+  String get colorHue => 'Farbton';
+
+  @override
+  String get colorChroma => 'Sättigung';
+
+  @override
+  String get colorTone => 'Helligkeit';
+
+  @override
+  String get colorMine => 'Meine Farben';
+
+  @override
+  String get colorRecent => 'Zuletzt';
+
+  @override
+  String get colorSaveMine => 'Merken';
+
+  @override
+  String colorReadout(int hue, int chroma, int tone) {
+    return 'Farbton $hue° · Sättigung $chroma · Helligkeit $tone';
+  }
+
+  @override
+  String get colorPickerHint =>
+      'Die Pipette nimmt eine Farbe vom Hintergrundbild oder Screenshot. Gespeicherte stehen unter „Meine Farben“ überall bereit.';
+
+  @override
+  String get branchColorTitle => 'Zweigfarbe';
+
+  @override
+  String get branchColorOwnHint => 'An diesem Zweig gesetzt';
+
+  @override
+  String branchColorOfCalendar(String name) {
+    return 'Farbe von „$name“';
+  }
+
+  @override
+  String get branchColorPickerRow => 'Eigene Farbe aus dem Wähler';
+
+  @override
+  String get branchColorPickerHint => 'Farbton, Sättigung, Hex, Pipette';
+
+  @override
+  String branchColorChain(String name) {
+    return 'Färbst du „$name“ um, ändern sich alle Zweige und Termine mit Vererbung. Zweige mit eigener Farbe bleiben unverändert.';
+  }
+
+  @override
+  String get branchColorEventRow => 'Termin des Zweigs';
+
+  @override
+  String get levelCalendar => 'Kalender';
+
+  @override
+  String get levelOwn => 'eigene';
+
+  @override
+  String ruleDaily(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'alle $count Tage',
+      one: 'täglich',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String ruleWeekly(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'alle $count Wochen',
+      one: 'wöchentlich',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String ruleMonthly(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'alle $count Monate',
+      one: 'monatlich',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get ruleYearly => 'jährlich';
+
+  @override
+  String ruleWeekDays(String every, String days) {
+    return '$every: $days';
+  }
+
+  @override
+  String ruleMonthPosition(String every, String ordinal, String weekday) {
+    return '$every: $ordinal $weekday';
+  }
+
+  @override
+  String get ordinalLast =>
+      'letzter,letzter,letzter,letzter,letzter,letzter,letzter';
+
+  @override
+  String get ordinal1 => 'erster,erster,erster,erster,erster,erster,erster';
+
+  @override
+  String get ordinal2 =>
+      'zweiter,zweiter,zweiter,zweiter,zweiter,zweiter,zweiter';
+
+  @override
+  String get ordinal3 =>
+      'dritter,dritter,dritter,dritter,dritter,dritter,dritter';
+
+  @override
+  String get ordinal4 =>
+      'vierter,vierter,vierter,vierter,vierter,vierter,vierter';
+
+  @override
+  String get weekSetupTitle => 'Welche Tage zeigen';
+
+  @override
+  String get weekSetupHint => 'So viele Spalten wie angehakte Tage';
+
+  @override
+  String get weekSetupAll => 'Ganze Woche';
+
+  @override
+  String get weekSetupWorkdays => 'Werktage';
+
+  @override
+  String get weekSetupWeekend => 'Wochenende';
+
+  @override
+  String get weekSetupStartsWith => 'Die Woche beginnt am';
+
+  @override
+  String get accessTitle => 'Zugriff';
+
+  @override
+  String get accessCreateKey => 'Schlüssel erstellen';
+
+  @override
+  String get accessRevoke => 'Widerrufen';
+
+  @override
+  String get accessHint =>
+      'Schlüssel funktionieren nur bei eingeschalteter Synchronisierung. Ein Kalender, der allein auf dem Telefon lebt, ist von außen nicht erreichbar.';
 }

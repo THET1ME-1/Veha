@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/brand.dart';
+import '../../l10n/app_localizations.dart';
 import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
 import '../calendar/widgets/month_header.dart' show AppFonts;
@@ -91,6 +92,7 @@ class _NoteSheetState extends State<_NoteSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
+    final l = L.of(context);
     final ink = EventColors.of(_color ?? widget.inheritedColor, theme.brightness);
 
     return SafeArea(
@@ -102,7 +104,7 @@ class _NoteSheetState extends State<_NoteSheet> {
             padding: const EdgeInsets.fromLTRB(
                 VehaInsets.screen, 2, VehaInsets.screen, 12),
             child: Text(
-              'Заметка',
+              l.noteOne,
               style: TextStyle(
                 fontFamily: AppFonts.display,
                 fontSize: 17,
@@ -142,7 +144,7 @@ class _NoteSheetState extends State<_NoteSheet> {
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
                   contentPadding: EdgeInsets.zero,
-                  hintText: 'Что не забыть',
+                  hintText: l.noteHint,
                   hintStyle: TextStyle(
                     fontFamily: AppFonts.body,
                     fontSize: 14.5,
@@ -188,7 +190,7 @@ class _NoteSheetState extends State<_NoteSheet> {
                     onPressed: () =>
                         Navigator.pop(context, const NoteDraft.deleted()),
                     icon: Icon(VehaIcons.byName('trash'), size: 18),
-                    label: const Text('Удалить'),
+                    label: Text(l.actionDelete),
                     style: TextButton.styleFrom(foregroundColor: scheme.error),
                   ),
                 const Spacer(),
@@ -200,7 +202,7 @@ class _NoteSheetState extends State<_NoteSheet> {
                             NoteDraft(text: _text.text.trim(), color: _color),
                           ),
                   icon: Icon(VehaIcons.byName('check'), size: 18),
-                  label: const Text('Готово'),
+                  label: Text(l.actionDone),
                 ),
               ],
             ),

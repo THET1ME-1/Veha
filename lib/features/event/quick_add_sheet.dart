@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/brand.dart';
+import '../../l10n/app_localizations.dart';
 import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
 import '../../data/models.dart';
@@ -130,7 +131,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
-                hintText: 'Название',
+                hintText: L.of(context).fieldName,
                 hintStyle: TextStyle(
                   fontFamily: AppFonts.display,
                   fontSize: 25,
@@ -210,7 +211,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                 TextButton(
                   onPressed: () => widget.onDetails(_draft),
                   child: Text(
-                    'Подробнее',
+                    L.of(context).moreDetails,
                     style: TextStyle(
                       fontFamily: AppFonts.body,
                       fontSize: 13.5,
@@ -223,7 +224,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                 FilledButton.icon(
                   onPressed: _draft.isReady ? _save : null,
                   icon: Icon(VehaIcons.byName('check'), size: 18),
-                  label: const Text('Готово'),
+                  label: Text(L.of(context).actionDone),
                 ),
               ],
             ),

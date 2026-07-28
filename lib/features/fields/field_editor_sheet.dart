@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../core/brand.dart';
 import '../../core/icon_registry.dart';
 import '../../data/models.dart';
+import '../../l10n/app_localizations.dart';
+import 'field_types.dart';
 import '../calendar/widgets/month_header.dart' show AppFonts;
 
 /// Что вернул редактор поля: имя с типом и иконкой либо просьба удалить.
@@ -91,6 +93,7 @@ class _FieldEditorSheetState extends State<_FieldEditorSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
+    final l = L.of(context);
 
     return SafeArea(
       child: ConstrainedBox(
@@ -151,7 +154,7 @@ class _FieldEditorSheetState extends State<_FieldEditorSheet> {
                         border: InputBorder.none,
                         enabledBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
-                        hintText: 'Название поля',
+                        hintText: l.fieldNamePlaceholder,
                         hintStyle: TextStyle(
                           fontFamily: AppFonts.display,
                           fontSize: 20,
@@ -171,7 +174,7 @@ class _FieldEditorSheetState extends State<_FieldEditorSheet> {
               padding:
                   const EdgeInsets.symmetric(horizontal: VehaInsets.screen),
               child: Text(
-                'Чем заполнять',
+                l.fieldKind,
                 style: TextStyle(
                   fontFamily: AppFonts.body,
                   fontSize: 12.5,
@@ -190,7 +193,7 @@ class _FieldEditorSheetState extends State<_FieldEditorSheet> {
                 children: [
                   for (final t in VFieldType.values)
                     _TypeChip(
-                      label: t.label,
+                      label: fieldTypeLabel(l, t),
                       selected: t == _type,
                       onTap: () => setState(() => _type = t),
                     ),
@@ -226,7 +229,7 @@ class _FieldEditorSheetState extends State<_FieldEditorSheet> {
                       onPressed: () =>
                           Navigator.pop(context, const FieldDraft.deleted()),
                       icon: Icon(VehaIcons.byName('trash'), size: 18),
-                      label: const Text('Удалить'),
+                      label: Text(l.actionDelete),
                       style: TextButton.styleFrom(foregroundColor: scheme.error),
                     ),
                   const Spacer(),
@@ -242,7 +245,7 @@ class _FieldEditorSheetState extends State<_FieldEditorSheet> {
                               ),
                             ),
                     icon: Icon(VehaIcons.byName('check'), size: 18),
-                    label: const Text('Готово'),
+                    label: Text(l.actionDone),
                   ),
                 ],
               ),

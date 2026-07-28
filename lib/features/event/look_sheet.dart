@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/brand.dart';
+import '../../l10n/app_localizations.dart';
 import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
 import '../calendar/widgets/month_header.dart' show AppFonts;
@@ -59,6 +60,7 @@ class _LookSheetState extends State<_LookSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
+    final l = L.of(context);
     final color = _color ?? widget.inheritedColor;
     final ink = EventColors.of(color, theme.brightness);
     final icon = _icon ?? widget.inheritedIcon;
@@ -91,7 +93,7 @@ class _LookSheetState extends State<_LookSheet> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Иконка и цвет',
+                      l.lookTitle,
                       style: TextStyle(
                         fontFamily: AppFonts.display,
                         fontSize: 17,
@@ -111,7 +113,7 @@ class _LookSheetState extends State<_LookSheet> {
                       minimumSize: Size.zero,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    child: const Text('Готово'),
+                    child: Text(l.actionDone),
                   ),
                 ],
               ),
@@ -123,7 +125,7 @@ class _LookSheetState extends State<_LookSheet> {
                 runSpacing: 7,
                 children: [
                   _Chip(
-                    label: 'Как у календаря',
+                    label: l.lookInherit,
                     selected: _color == null && _icon == null,
                     onTap: () => setState(() {
                       _color = null;
@@ -131,7 +133,7 @@ class _LookSheetState extends State<_LookSheet> {
                     }),
                   ),
                   _Chip(
-                    label: 'Свой цвет',
+                    label: l.lookOwnColor,
                     selected: _color != null,
                     onTap: _pickColor,
                   ),

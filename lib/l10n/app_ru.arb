@@ -106,5 +106,903 @@
         "type": "String"
       }
     }
+  },
+  "actionDone": "Готово",
+  "@actionDone": {
+    "description": "actionDone"
+  },
+  "actionCancel": "Отмена",
+  "@actionCancel": {
+    "description": "actionCancel"
+  },
+  "actionDelete": "Удалить",
+  "@actionDelete": {
+    "description": "actionDelete"
+  },
+  "actionSave": "Сохранить",
+  "@actionSave": {
+    "description": "actionSave"
+  },
+  "actionAdd": "добавить",
+  "@actionAdd": {
+    "description": "actionAdd"
+  },
+  "actionEdit": "Изменить",
+  "@actionEdit": {
+    "description": "actionEdit"
+  },
+  "actionUndo": "Вернуть",
+  "@actionUndo": {
+    "description": "actionUndo"
+  },
+  "fieldName": "Название",
+  "@fieldName": {
+    "description": "fieldName"
+  },
+  "calendarsTitle": "Календари",
+  "@calendarsTitle": {
+    "description": "calendarsTitle"
+  },
+  "calendarOne": "Календарь",
+  "@calendarOne": {
+    "description": "calendarOne"
+  },
+  "calendarNewShort": "Новый",
+  "@calendarNewShort": {
+    "description": "calendarNewShort"
+  },
+  "calendarNew": "Новый календарь",
+  "@calendarNew": {
+    "description": "calendarNew"
+  },
+  "calendarCreate": "Завести календарь",
+  "@calendarCreate": {
+    "description": "calendarCreate"
+  },
+  "calendarsEmptyTitle": "Ни одного календаря",
+  "@calendarsEmptyTitle": {
+    "description": "calendarsEmptyTitle"
+  },
+  "calendarsEmptyBody": "Календарь задаёт цвет и иконку всем событиям внутри. Обычно их три-четыре: дом, работа, учёба, спорт.",
+  "@calendarsEmptyBody": {
+    "description": "calendarsEmptyBody"
+  },
+  "branchOne": "Ветка",
+  "@branchOne": {
+    "description": "branchOne"
+  },
+  "branchNone": "Без веток",
+  "@branchNone": {
+    "description": "branchNone"
+  },
+  "branchAdd": "Добавить ветку",
+  "@branchAdd": {
+    "description": "branchAdd"
+  },
+  "branchOf": "Ветка «{name}»",
+  "@branchOf": {
+    "description": "branchOf",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "branchCount": "{count, plural, one{{count} ветка} few{{count} ветки} other{{count} веток}}",
+  "@branchCount": {
+    "description": "branchCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "colorInherits": "наследует",
+  "@colorInherits": {
+    "description": "colorInherits"
+  },
+  "colorOwn": "свой цвет",
+  "@colorOwn": {
+    "description": "colorOwn"
+  },
+  "fieldsTitle": "Свои поля",
+  "@fieldsTitle": {
+    "description": "fieldsTitle"
+  },
+  "fieldsShared": "Общие для всех",
+  "@fieldsShared": {
+    "description": "fieldsShared"
+  },
+  "fieldsSharedRow": "Общие поля",
+  "@fieldsSharedRow": {
+    "description": "fieldsSharedRow"
+  },
+  "fieldsGroups": "Группы",
+  "@fieldsGroups": {
+    "description": "fieldsGroups"
+  },
+  "fieldsNoneYet": "Пока ни одного",
+  "@fieldsNoneYet": {
+    "description": "fieldsNoneYet"
+  },
+  "fieldsGroupEmpty": "Без своих полей",
+  "@fieldsGroupEmpty": {
+    "description": "fieldsGroupEmpty"
+  },
+  "fieldsGroupCreate": "Создать группу полей",
+  "@fieldsGroupCreate": {
+    "description": "fieldsGroupCreate"
+  },
+  "fieldsGroupNew": "Новая группа",
+  "@fieldsGroupNew": {
+    "description": "fieldsGroupNew"
+  },
+  "fieldAddTo": "Добавить поле в «{name}»",
+  "@fieldAddTo": {
+    "description": "fieldAddTo",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldNewIn": "Новое поле в «{name}»",
+  "@fieldNewIn": {
+    "description": "fieldNewIn",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldOne": "Поле",
+  "@fieldOne": {
+    "description": "fieldOne"
+  },
+  "fieldShared": "общее",
+  "@fieldShared": {
+    "description": "fieldShared"
+  },
+  "fieldNamePlaceholder": "Название поля",
+  "@fieldNamePlaceholder": {
+    "description": "fieldNamePlaceholder"
+  },
+  "fieldKind": "Чем заполнять",
+  "@fieldKind": {
+    "description": "fieldKind"
+  },
+  "fieldsOwnCount": "{count, plural, one{{count} своё поле} few{{count} своих поля} other{{count} своих полей}}",
+  "@fieldsOwnCount": {
+    "description": "fieldsOwnCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldsInCard": "в карточке {count}",
+  "@fieldsInCard": {
+    "description": "fieldsInCard",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldEraseValue": "Стереть",
+  "@fieldEraseValue": {
+    "description": "fieldEraseValue"
+  },
+  "yes": "да",
+  "@yes": {
+    "description": "yes"
+  },
+  "no": "нет",
+  "@no": {
+    "description": "no"
+  },
+  "typeText": "Текст",
+  "@typeText": {
+    "description": "typeText"
+  },
+  "typeNumber": "Число",
+  "@typeNumber": {
+    "description": "typeNumber"
+  },
+  "typeDate": "Дата",
+  "@typeDate": {
+    "description": "typeDate"
+  },
+  "typeTime": "Время",
+  "@typeTime": {
+    "description": "typeTime"
+  },
+  "typeDuration": "Длительность",
+  "@typeDuration": {
+    "description": "typeDuration"
+  },
+  "typeSelect": "Список",
+  "@typeSelect": {
+    "description": "typeSelect"
+  },
+  "typeCheckbox": "Флажок",
+  "@typeCheckbox": {
+    "description": "typeCheckbox"
+  },
+  "typeUrl": "Ссылка",
+  "@typeUrl": {
+    "description": "typeUrl"
+  },
+  "typePhone": "Телефон",
+  "@typePhone": {
+    "description": "typePhone"
+  },
+  "typePerson": "Человек",
+  "@typePerson": {
+    "description": "typePerson"
+  },
+  "typeMoney": "Деньги",
+  "@typeMoney": {
+    "description": "typeMoney"
+  },
+  "searchHint": "Найти событие",
+  "@searchHint": {
+    "description": "searchHint"
+  },
+  "searchEmpty": "Ищите по названию, месту или своему полю — например по номеру кабинета.",
+  "@searchEmpty": {
+    "description": "searchEmpty"
+  },
+  "searchNothing": "Ничего не нашлось.",
+  "@searchNothing": {
+    "description": "searchNothing"
+  },
+  "allDay": "весь день",
+  "@allDay": {
+    "description": "allDay"
+  },
+  "settingsTitle": "Настройки",
+  "@settingsTitle": {
+    "description": "settingsTitle"
+  },
+  "settingsAppearance": "Оформление",
+  "@settingsAppearance": {
+    "description": "settingsAppearance"
+  },
+  "settingsTheme": "Тема",
+  "@settingsTheme": {
+    "description": "settingsTheme"
+  },
+  "settingsSystem": "Как в системе",
+  "@settingsSystem": {
+    "description": "settingsSystem"
+  },
+  "settingsLight": "Светлая",
+  "@settingsLight": {
+    "description": "settingsLight"
+  },
+  "settingsDark": "Тёмная",
+  "@settingsDark": {
+    "description": "settingsDark"
+  },
+  "settingsChroma": "Насыщенность",
+  "@settingsChroma": {
+    "description": "settingsChroma"
+  },
+  "settingsChromaHint": "На фирменной мяте «Сочно» выкручивает пилюли до кислотного",
+  "@settingsChromaHint": {
+    "description": "settingsChromaHint"
+  },
+  "settingsExact": "Точь-в-точь",
+  "@settingsExact": {
+    "description": "settingsExact"
+  },
+  "settingsVivid": "Сочно",
+  "@settingsVivid": {
+    "description": "settingsVivid"
+  },
+  "settingsSeed": "Фирменный цвет",
+  "@settingsSeed": {
+    "description": "settingsSeed"
+  },
+  "settingsCalendarGroup": "Календарь",
+  "@settingsCalendarGroup": {
+    "description": "settingsCalendarGroup"
+  },
+  "settingsWeekDays": "Дни в виде «Неделя»",
+  "@settingsWeekDays": {
+    "description": "settingsWeekDays"
+  },
+  "settingsWeekFull": "Вся неделя",
+  "@settingsWeekFull": {
+    "description": "settingsWeekFull"
+  },
+  "settingsWeekdaysOnly": "Только будни",
+  "@settingsWeekdaysOnly": {
+    "description": "settingsWeekdaysOnly"
+  },
+  "settingsWeekSome": "{count, plural, one{{count} день в неделе} few{{count} дня в неделе} other{{count} дней в неделе}}",
+  "@settingsWeekSome": {
+    "description": "settingsWeekSome",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsFieldsHint": "Кабинет, тренер, номер абонемента",
+  "@settingsFieldsHint": {
+    "description": "settingsFieldsHint"
+  },
+  "settingsLanguage": "Язык",
+  "@settingsLanguage": {
+    "description": "settingsLanguage"
+  },
+  "settingsDataGroup": "Данные",
+  "@settingsDataGroup": {
+    "description": "settingsDataGroup"
+  },
+  "settingsAbout": "О приложении",
+  "@settingsAbout": {
+    "description": "settingsAbout"
+  },
+  "settingsVersion": "Версия",
+  "@settingsVersion": {
+    "description": "settingsVersion"
+  },
+  "settingsStorage": "Всё хранится на устройстве",
+  "@settingsStorage": {
+    "description": "settingsStorage"
+  },
+  "settingsSource": "Исходный код",
+  "@settingsSource": {
+    "description": "settingsSource"
+  },
+  "monthViewTitle": "Вид месяца",
+  "@monthViewTitle": {
+    "description": "monthViewTitle"
+  },
+  "monthChips": "Чипы с названиями",
+  "@monthChips": {
+    "description": "monthChips"
+  },
+  "monthChipsHint": "Видно, что именно в этот день",
+  "@monthChipsHint": {
+    "description": "monthChipsHint"
+  },
+  "monthTint": "Тонированные ячейки",
+  "@monthTint": {
+    "description": "monthTint"
+  },
+  "monthTintHint": "Видно, чем занят день",
+  "@monthTintHint": {
+    "description": "monthTintHint"
+  },
+  "monthDensity": "Плотность чипа",
+  "@monthDensity": {
+    "description": "monthDensity"
+  },
+  "monthDensityBoth": "Иконка и текст",
+  "@monthDensityBoth": {
+    "description": "monthDensityBoth"
+  },
+  "monthDensityIcon": "Только иконка",
+  "@monthDensityIcon": {
+    "description": "monthDensityIcon"
+  },
+  "monthPerCell": "Событий в ячейке",
+  "@monthPerCell": {
+    "description": "monthPerCell"
+  },
+  "monthPerCellHint": "Дальше сворачивать в «+N»",
+  "@monthPerCellHint": {
+    "description": "monthPerCellHint"
+  },
+  "eventOne": "Событие",
+  "@eventOne": {
+    "description": "eventOne"
+  },
+  "eventWhen": "Когда",
+  "@eventWhen": {
+    "description": "eventWhen"
+  },
+  "eventTime": "Время",
+  "@eventTime": {
+    "description": "eventTime"
+  },
+  "eventRepeat": "Повтор",
+  "@eventRepeat": {
+    "description": "eventRepeat"
+  },
+  "eventCalendarAndBranch": "Календарь и ветка",
+  "@eventCalendarAndBranch": {
+    "description": "eventCalendarAndBranch"
+  },
+  "eventReminder": "Напоминание",
+  "@eventReminder": {
+    "description": "eventReminder"
+  },
+  "eventPlace": "Место",
+  "@eventPlace": {
+    "description": "eventPlace"
+  },
+  "eventPlaceHint": "Где это будет",
+  "@eventPlaceHint": {
+    "description": "eventPlaceHint"
+  },
+  "eventDelete": "Удалить событие",
+  "@eventDelete": {
+    "description": "eventDelete"
+  },
+  "moreDetails": "Подробнее",
+  "@moreDetails": {
+    "description": "moreDetails"
+  },
+  "lookTitle": "Иконка и цвет",
+  "@lookTitle": {
+    "description": "lookTitle"
+  },
+  "lookInherit": "Как у календаря",
+  "@lookInherit": {
+    "description": "lookInherit"
+  },
+  "lookOwnColor": "Свой цвет",
+  "@lookOwnColor": {
+    "description": "lookOwnColor"
+  },
+  "inCard": "в карточке",
+  "@inCard": {
+    "description": "inCard"
+  },
+  "notesTitle": "Заметки",
+  "@notesTitle": {
+    "description": "notesTitle"
+  },
+  "noteOne": "Заметка",
+  "@noteOne": {
+    "description": "noteOne"
+  },
+  "noteAdd": "Добавить заметку",
+  "@noteAdd": {
+    "description": "noteAdd"
+  },
+  "noteHint": "Что не забыть",
+  "@noteHint": {
+    "description": "noteHint"
+  },
+  "repeatNone": "не повторяется",
+  "@repeatNone": {
+    "description": "repeatNone"
+  },
+  "repeatByRule": "по правилу",
+  "@repeatByRule": {
+    "description": "repeatByRule"
+  },
+  "repeatTitle": "Повторение",
+  "@repeatTitle": {
+    "description": "repeatTitle"
+  },
+  "repeatDaily": "Каждый день",
+  "@repeatDaily": {
+    "description": "repeatDaily"
+  },
+  "repeatWeekly": "Каждую неделю",
+  "@repeatWeekly": {
+    "description": "repeatWeekly"
+  },
+  "repeatEvery": "Каждые",
+  "@repeatEvery": {
+    "description": "repeatEvery"
+  },
+  "repeatEndsWhen": "Когда заканчивается",
+  "@repeatEndsWhen": {
+    "description": "repeatEndsWhen"
+  },
+  "repeatNextDates": "Ближайшие даты",
+  "@repeatNextDates": {
+    "description": "repeatNextDates"
+  },
+  "repeatNever": "Никогда",
+  "@repeatNever": {
+    "description": "repeatNever"
+  },
+  "repeatUntilDate": "До даты",
+  "@repeatUntilDate": {
+    "description": "repeatUntilDate"
+  },
+  "repeatAfterCount": "После {count} повторов",
+  "@repeatAfterCount": {
+    "description": "repeatAfterCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "unitDay": "День",
+  "@unitDay": {
+    "description": "unitDay"
+  },
+  "unitWeek": "Неделя",
+  "@unitWeek": {
+    "description": "unitWeek"
+  },
+  "unitMonth": "Месяц",
+  "@unitMonth": {
+    "description": "unitMonth"
+  },
+  "unitYear": "Год",
+  "@unitYear": {
+    "description": "unitYear"
+  },
+  "scopeTitle": "Что изменить",
+  "@scopeTitle": {
+    "description": "scopeTitle"
+  },
+  "scopeRepeats": "Занятие повторяется: {label}",
+  "@scopeRepeats": {
+    "description": "scopeRepeats",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "scopeOnly": "Только это занятие",
+  "@scopeOnly": {
+    "description": "scopeOnly"
+  },
+  "scopeFollowing": "Это и следующие",
+  "@scopeFollowing": {
+    "description": "scopeFollowing"
+  },
+  "scopeFollowingHint": "Ряд разделится: прошедшие занятия останутся как были",
+  "@scopeFollowingHint": {
+    "description": "scopeFollowingHint"
+  },
+  "scopeWhole": "Весь ряд",
+  "@scopeWhole": {
+    "description": "scopeWhole"
+  },
+  "scopeWholeHint": "Все занятия, включая прошедшие",
+  "@scopeWholeHint": {
+    "description": "scopeWholeHint"
+  },
+  "msgEventDeleted": "Событие удалено",
+  "@msgEventDeleted": {
+    "description": "msgEventDeleted"
+  },
+  "msgSeriesDeleted": "Ряд удалён",
+  "@msgSeriesDeleted": {
+    "description": "msgSeriesDeleted"
+  },
+  "msgOccurrenceSkipped": "Занятие отменено",
+  "@msgOccurrenceSkipped": {
+    "description": "msgOccurrenceSkipped"
+  },
+  "reminderNone": "Без напоминания",
+  "@reminderNone": {
+    "description": "reminderNone"
+  },
+  "reminderAtStart": "В момент начала",
+  "@reminderAtStart": {
+    "description": "reminderAtStart"
+  },
+  "reminderNever": "Не напоминать",
+  "@reminderNever": {
+    "description": "reminderNever"
+  },
+  "reminderHint": "Можно несколько: за день собраться, за десять минут выйти",
+  "@reminderHint": {
+    "description": "reminderHint"
+  },
+  "reminderMinutes": "{count, plural, one{За {count} минуту} few{За {count} минуты} other{За {count} минут}}",
+  "@reminderMinutes": {
+    "description": "reminderMinutes",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderHours": "{count, plural, one{За час} few{За {count} часа} other{За {count} часов}}",
+  "@reminderHours": {
+    "description": "reminderHours",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderDays": "{count, plural, one{За день} few{За {count} дня} other{За {count} дней}}",
+  "@reminderDays": {
+    "description": "reminderDays",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderWeek": "За неделю",
+  "@reminderWeek": {
+    "description": "reminderWeek"
+  },
+  "reminderStarts": "Начинается",
+  "@reminderStarts": {
+    "description": "reminderStarts"
+  },
+  "reminderStartsAt": "Начало в {time}",
+  "@reminderStartsAt": {
+    "description": "reminderStartsAt",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "icsExport": "Выгрузить в .ics",
+  "@icsExport": {
+    "description": "icsExport"
+  },
+  "icsExportHint": "Файл для другого календаря",
+  "@icsExportHint": {
+    "description": "icsExportHint"
+  },
+  "icsImport": "Загрузить из .ics",
+  "@icsImport": {
+    "description": "icsImport"
+  },
+  "icsImportHint": "События из чужого календаря",
+  "@icsImportHint": {
+    "description": "icsImportHint"
+  },
+  "icsSaveTitle": "Куда сохранить календарь",
+  "@icsSaveTitle": {
+    "description": "icsSaveTitle"
+  },
+  "icsPickTitle": "Выберите файл календаря",
+  "@icsPickTitle": {
+    "description": "icsPickTitle"
+  },
+  "icsNothingToExport": "Выгружать нечего: событий нет.",
+  "@icsNothingToExport": {
+    "description": "icsNothingToExport"
+  },
+  "icsExported": "Выгружено событий: {count}.",
+  "@icsExported": {
+    "description": "icsExported",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "icsImported": "Загружено событий: {count}.",
+  "@icsImported": {
+    "description": "icsImported",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "icsUnreadable": "Файл не прочитался.",
+  "@icsUnreadable": {
+    "description": "icsUnreadable"
+  },
+  "icsNoEvents": "В файле не нашлось ни одного события.",
+  "@icsNoEvents": {
+    "description": "icsNoEvents"
+  },
+  "colorPickerOwn": "Свой цвет",
+  "@colorPickerOwn": {
+    "description": "colorPickerOwn"
+  },
+  "colorHue": "Оттенок",
+  "@colorHue": {
+    "description": "colorHue"
+  },
+  "colorChroma": "Насыщенность",
+  "@colorChroma": {
+    "description": "colorChroma"
+  },
+  "colorTone": "Светлота",
+  "@colorTone": {
+    "description": "colorTone"
+  },
+  "colorMine": "Мои цвета",
+  "@colorMine": {
+    "description": "colorMine"
+  },
+  "colorRecent": "Последние",
+  "@colorRecent": {
+    "description": "colorRecent"
+  },
+  "colorSaveMine": "В мои",
+  "@colorSaveMine": {
+    "description": "colorSaveMine"
+  },
+  "colorReadout": "Оттенок {hue}° · насыщенность {chroma} · светлота {tone}",
+  "@colorReadout": {
+    "description": "colorReadout",
+    "placeholders": {
+      "hue": {
+        "type": "int"
+      },
+      "chroma": {
+        "type": "int"
+      },
+      "tone": {
+        "type": "int"
+      }
+    }
+  },
+  "colorPickerHint": "Пипетка берёт цвет с обоев или скриншота. Сохранённые живут в «Моих цветах» и доступны из любого пикера в приложении.",
+  "@colorPickerHint": {
+    "description": "colorPickerHint"
+  },
+  "branchColorTitle": "Цвет ветки",
+  "@branchColorTitle": {
+    "description": "branchColorTitle"
+  },
+  "branchColorOwnHint": "Задан у этой ветки",
+  "@branchColorOwnHint": {
+    "description": "branchColorOwnHint"
+  },
+  "branchColorOfCalendar": "Цвет «{name}»",
+  "@branchColorOfCalendar": {
+    "description": "branchColorOfCalendar",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "branchColorPickerRow": "Свой цвет из пикера",
+  "@branchColorPickerRow": {
+    "description": "branchColorPickerRow"
+  },
+  "branchColorPickerHint": "Оттенок, насыщенность, hex, пипетка",
+  "@branchColorPickerHint": {
+    "description": "branchColorPickerHint"
+  },
+  "branchColorChain": "Перекрасите «{name}» — сменят цвет все ветки и события, где стоит наследование. Ветки со своим цветом останутся как есть.",
+  "@branchColorChain": {
+    "description": "branchColorChain",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "branchColorEventRow": "Событие ветки",
+  "@branchColorEventRow": {
+    "description": "branchColorEventRow"
+  },
+  "levelCalendar": "календарь",
+  "@levelCalendar": {
+    "description": "levelCalendar"
+  },
+  "levelOwn": "свой",
+  "@levelOwn": {
+    "description": "levelOwn"
+  },
+  "ruleDaily": "{count, plural, one{каждый день} few{каждые {count} дня} other{каждые {count} дней}}",
+  "@ruleDaily": {
+    "description": "ruleDaily",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleWeekly": "{count, plural, one{каждую неделю} few{каждые {count} недели} other{каждые {count} недель}}",
+  "@ruleWeekly": {
+    "description": "ruleWeekly",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleMonthly": "{count, plural, one{каждый месяц} few{каждые {count} месяца} other{каждые {count} месяцев}}",
+  "@ruleMonthly": {
+    "description": "ruleMonthly",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleYearly": "каждый год",
+  "@ruleYearly": {
+    "description": "ruleYearly"
+  },
+  "ruleWeekDays": "{every}: {days}",
+  "@ruleWeekDays": {
+    "description": "ruleWeekDays",
+    "placeholders": {
+      "every": {
+        "type": "String"
+      },
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleMonthPosition": "{every}: {ordinal} {weekday}",
+  "@ruleMonthPosition": {
+    "description": "ruleMonthPosition",
+    "placeholders": {
+      "every": {
+        "type": "String"
+      },
+      "ordinal": {
+        "type": "String"
+      },
+      "weekday": {
+        "type": "String"
+      }
+    }
+  },
+  "ordinalLast": "последний,последний,последняя,последний,последняя,последняя,последнее",
+  "@ordinalLast": {
+    "description": "ordinalLast"
+  },
+  "ordinal1": "первый,первый,первая,первый,первая,первая,первое",
+  "@ordinal1": {
+    "description": "ordinal1"
+  },
+  "ordinal2": "второй,второй,вторая,второй,вторая,вторая,второе",
+  "@ordinal2": {
+    "description": "ordinal2"
+  },
+  "ordinal3": "третий,третий,третья,третий,третья,третья,третье",
+  "@ordinal3": {
+    "description": "ordinal3"
+  },
+  "ordinal4": "четвёртый,четвёртый,четвёртая,четвёртый,четвёртая,четвёртая,четвёртое",
+  "@ordinal4": {
+    "description": "ordinal4"
+  },
+  "weekSetupTitle": "Какие дни показывать",
+  "@weekSetupTitle": {
+    "description": "weekSetupTitle"
+  },
+  "weekSetupHint": "Колонок будет столько, сколько дней отмечено",
+  "@weekSetupHint": {
+    "description": "weekSetupHint"
+  },
+  "weekSetupAll": "Вся неделя",
+  "@weekSetupAll": {
+    "description": "weekSetupAll"
+  },
+  "weekSetupWorkdays": "Будни",
+  "@weekSetupWorkdays": {
+    "description": "weekSetupWorkdays"
+  },
+  "weekSetupWeekend": "Выходные",
+  "@weekSetupWeekend": {
+    "description": "weekSetupWeekend"
+  },
+  "weekSetupStartsWith": "Неделя начинается с",
+  "@weekSetupStartsWith": {
+    "description": "weekSetupStartsWith"
+  },
+  "accessTitle": "Доступ",
+  "@accessTitle": {
+    "description": "accessTitle"
+  },
+  "accessCreateKey": "Создать ключ",
+  "@accessCreateKey": {
+    "description": "accessCreateKey"
+  },
+  "accessRevoke": "Отозвать",
+  "@accessRevoke": {
+    "description": "accessRevoke"
+  },
+  "accessHint": "Ключи работают, пока включена синхронизация. Календарь, который живёт только на телефоне, снаружи недоступен — стучаться некуда.",
+  "@accessHint": {
+    "description": "accessHint"
   }
 }

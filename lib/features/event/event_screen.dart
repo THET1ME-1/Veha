@@ -7,6 +7,7 @@ import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
+import '../../l10n/app_localizations.dart';
 import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
 import '../calendar/widgets/month_header.dart';
 import 'reminders_sheet.dart' show remindersLabel;
@@ -34,6 +35,7 @@ class EventScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final defs = ref.watch(fieldDefsByIdProvider);
+    final l = L.of(context);
     final locale = Localizations.localeOf(context).toLanguageTag();
     final color = inheritance.colorOfEvent(event);
     final ink = EventColors.of(color, theme.brightness);
@@ -49,13 +51,13 @@ class EventScreen extends ConsumerWidget {
       rows.add(row);
     }
 
-    final repeat = recurrenceLabelOf(event);
+    final repeat = recurrenceLabelOf(l, event, locale: locale);
     if (repeat != null) {
       add(VRow(
         icon: 'repeat',
-        label: 'Повтор',
+        label: l.eventRepeat,
         value: repeat,
-        trailing: const VTag('в карточке'),
+        trailing: VTag(l.inCard),
       ));
     }
     for (final v in event.fields) {
@@ -64,27 +66,27 @@ class EventScreen extends ConsumerWidget {
         icon: def?.iconName ?? 'text',
         label: def?.name ?? v.fieldId,
         value: v.value,
-        trailing: def?.showInCard == true ? const VTag('в карточке') : null,
+        trailing: def?.showInCard == true ? VTag(l.inCard) : null,
       ));
     }
     if (event.location != null) {
-      add(VRow(icon: 'place', label: 'Место', value: event.location));
+      add(VRow(icon: 'place', label: l.eventPlace, value: event.location));
     }
     add(VRow(
       icon: 'bell',
-      label: 'Напоминание',
-      value: remindersLabel(event.reminders),
+      label: l.eventReminder,
+      value: remindersLabel(l, event.reminders),
     ));
     add(VRow(
       icon: 'calendar',
-      label: 'Календарь и ветка',
+      label: l.eventCalendarAndBranch,
       value: sub == null
           ? calendar?.name ?? ''
           : '${calendar?.name} · ${sub.name}',
       // Плашка отвечает на вопрос, откуда у события цвет: со своей ветки
       // или унаследован от календаря.
       trailing: sub != null && inheritance.subcategoryHasOwnColor(sub)
-          ? const VTag('свой цвет')
+          ? VTag(l.colorOwn)
           : null,
     ));
 
@@ -108,7 +110,7 @@ class EventScreen extends ConsumerWidget {
         const SizedBox(height: 14),
         VBlock(children: rows),
         if (notes.isNotEmpty) ...[
-          const VBlockCap('Заметки'),
+          VBlockCap(l.notesTitle),
           for (final n in notes) ...[
             _Note(
               note: n,
@@ -188,7 +190,7 @@ class _Note extends StatelessWidget {
                 shape: const StadiumBorder(),
               ),
               child: Text(
-                'свой',
+                L.of(context).levelOwn,
                 style: TextStyle(
                   fontFamily: AppFonts.body,
                   fontSize: 9.5,
@@ -223,7 +225,7 @@ class _AddNote extends StatelessWidget {
           Icon(VehaIcons.byName('add'), size: 18, color: scheme.primary),
           const SizedBox(width: 8),
           Text(
-            'Добавить заметку',
+            L.of(context).noteAdd,
             style: TextStyle(
               fontFamily: AppFonts.body,
               fontSize: 13,

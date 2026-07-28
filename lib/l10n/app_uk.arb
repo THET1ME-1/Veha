@@ -18,5 +18,903 @@
   "durationHours": "{hours} год",
   "durationHoursMinutes": "{hours} год {minutes} хв",
   "spanDayOf": "{current}-й із {total}",
-  "spanUntil": "до {date}"
+  "spanUntil": "до {date}",
+  "actionDone": "Готово",
+  "@actionDone": {
+    "description": "actionDone"
+  },
+  "actionCancel": "Скасувати",
+  "@actionCancel": {
+    "description": "actionCancel"
+  },
+  "actionDelete": "Видалити",
+  "@actionDelete": {
+    "description": "actionDelete"
+  },
+  "actionSave": "Зберегти",
+  "@actionSave": {
+    "description": "actionSave"
+  },
+  "actionAdd": "додати",
+  "@actionAdd": {
+    "description": "actionAdd"
+  },
+  "actionEdit": "Змінити",
+  "@actionEdit": {
+    "description": "actionEdit"
+  },
+  "actionUndo": "Повернути",
+  "@actionUndo": {
+    "description": "actionUndo"
+  },
+  "fieldName": "Назва",
+  "@fieldName": {
+    "description": "fieldName"
+  },
+  "calendarsTitle": "Календарі",
+  "@calendarsTitle": {
+    "description": "calendarsTitle"
+  },
+  "calendarOne": "Календар",
+  "@calendarOne": {
+    "description": "calendarOne"
+  },
+  "calendarNewShort": "Новий",
+  "@calendarNewShort": {
+    "description": "calendarNewShort"
+  },
+  "calendarNew": "Новий календар",
+  "@calendarNew": {
+    "description": "calendarNew"
+  },
+  "calendarCreate": "Створити календар",
+  "@calendarCreate": {
+    "description": "calendarCreate"
+  },
+  "calendarsEmptyTitle": "Жодного календаря",
+  "@calendarsEmptyTitle": {
+    "description": "calendarsEmptyTitle"
+  },
+  "calendarsEmptyBody": "Календар задає колір та іконку всім подіям усередині. Зазвичай їх три-чотири: дім, робота, навчання, спорт.",
+  "@calendarsEmptyBody": {
+    "description": "calendarsEmptyBody"
+  },
+  "branchOne": "Гілка",
+  "@branchOne": {
+    "description": "branchOne"
+  },
+  "branchNone": "Без гілок",
+  "@branchNone": {
+    "description": "branchNone"
+  },
+  "branchAdd": "Додати гілку",
+  "@branchAdd": {
+    "description": "branchAdd"
+  },
+  "branchOf": "Гілка «{name}»",
+  "@branchOf": {
+    "description": "branchOf",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "branchCount": "{count, plural, one{{count} гілка} few{{count} гілки} other{{count} гілок}}",
+  "@branchCount": {
+    "description": "branchCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "colorInherits": "успадковує",
+  "@colorInherits": {
+    "description": "colorInherits"
+  },
+  "colorOwn": "свій колір",
+  "@colorOwn": {
+    "description": "colorOwn"
+  },
+  "fieldsTitle": "Власні поля",
+  "@fieldsTitle": {
+    "description": "fieldsTitle"
+  },
+  "fieldsShared": "Спільні для всіх",
+  "@fieldsShared": {
+    "description": "fieldsShared"
+  },
+  "fieldsSharedRow": "Спільні поля",
+  "@fieldsSharedRow": {
+    "description": "fieldsSharedRow"
+  },
+  "fieldsGroups": "Групи",
+  "@fieldsGroups": {
+    "description": "fieldsGroups"
+  },
+  "fieldsNoneYet": "Поки жодного",
+  "@fieldsNoneYet": {
+    "description": "fieldsNoneYet"
+  },
+  "fieldsGroupEmpty": "Без власних полів",
+  "@fieldsGroupEmpty": {
+    "description": "fieldsGroupEmpty"
+  },
+  "fieldsGroupCreate": "Створити групу полів",
+  "@fieldsGroupCreate": {
+    "description": "fieldsGroupCreate"
+  },
+  "fieldsGroupNew": "Нова група",
+  "@fieldsGroupNew": {
+    "description": "fieldsGroupNew"
+  },
+  "fieldAddTo": "Додати поле до «{name}»",
+  "@fieldAddTo": {
+    "description": "fieldAddTo",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldNewIn": "Нове поле в «{name}»",
+  "@fieldNewIn": {
+    "description": "fieldNewIn",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldOne": "Поле",
+  "@fieldOne": {
+    "description": "fieldOne"
+  },
+  "fieldShared": "спільне",
+  "@fieldShared": {
+    "description": "fieldShared"
+  },
+  "fieldNamePlaceholder": "Назва поля",
+  "@fieldNamePlaceholder": {
+    "description": "fieldNamePlaceholder"
+  },
+  "fieldKind": "Чим заповнювати",
+  "@fieldKind": {
+    "description": "fieldKind"
+  },
+  "fieldsOwnCount": "{count, plural, one{{count} власне поле} few{{count} власних поля} other{{count} власних полів}}",
+  "@fieldsOwnCount": {
+    "description": "fieldsOwnCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldsInCard": "у картці {count}",
+  "@fieldsInCard": {
+    "description": "fieldsInCard",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldEraseValue": "Стерти",
+  "@fieldEraseValue": {
+    "description": "fieldEraseValue"
+  },
+  "yes": "так",
+  "@yes": {
+    "description": "yes"
+  },
+  "no": "ні",
+  "@no": {
+    "description": "no"
+  },
+  "typeText": "Текст",
+  "@typeText": {
+    "description": "typeText"
+  },
+  "typeNumber": "Число",
+  "@typeNumber": {
+    "description": "typeNumber"
+  },
+  "typeDate": "Дата",
+  "@typeDate": {
+    "description": "typeDate"
+  },
+  "typeTime": "Час",
+  "@typeTime": {
+    "description": "typeTime"
+  },
+  "typeDuration": "Тривалість",
+  "@typeDuration": {
+    "description": "typeDuration"
+  },
+  "typeSelect": "Список",
+  "@typeSelect": {
+    "description": "typeSelect"
+  },
+  "typeCheckbox": "Прапорець",
+  "@typeCheckbox": {
+    "description": "typeCheckbox"
+  },
+  "typeUrl": "Посилання",
+  "@typeUrl": {
+    "description": "typeUrl"
+  },
+  "typePhone": "Телефон",
+  "@typePhone": {
+    "description": "typePhone"
+  },
+  "typePerson": "Людина",
+  "@typePerson": {
+    "description": "typePerson"
+  },
+  "typeMoney": "Гроші",
+  "@typeMoney": {
+    "description": "typeMoney"
+  },
+  "searchHint": "Знайти подію",
+  "@searchHint": {
+    "description": "searchHint"
+  },
+  "searchEmpty": "Шукайте за назвою, місцем або власним полем — наприклад, за номером кабінету.",
+  "@searchEmpty": {
+    "description": "searchEmpty"
+  },
+  "searchNothing": "Нічого не знайшлося.",
+  "@searchNothing": {
+    "description": "searchNothing"
+  },
+  "allDay": "весь день",
+  "@allDay": {
+    "description": "allDay"
+  },
+  "settingsTitle": "Налаштування",
+  "@settingsTitle": {
+    "description": "settingsTitle"
+  },
+  "settingsAppearance": "Оформлення",
+  "@settingsAppearance": {
+    "description": "settingsAppearance"
+  },
+  "settingsTheme": "Тема",
+  "@settingsTheme": {
+    "description": "settingsTheme"
+  },
+  "settingsSystem": "Як у системі",
+  "@settingsSystem": {
+    "description": "settingsSystem"
+  },
+  "settingsLight": "Світла",
+  "@settingsLight": {
+    "description": "settingsLight"
+  },
+  "settingsDark": "Темна",
+  "@settingsDark": {
+    "description": "settingsDark"
+  },
+  "settingsChroma": "Насиченість",
+  "@settingsChroma": {
+    "description": "settingsChroma"
+  },
+  "settingsChromaHint": "На фірмовій м’яті «Соковито» викручує пігулки до кислотного",
+  "@settingsChromaHint": {
+    "description": "settingsChromaHint"
+  },
+  "settingsExact": "Точнісінько",
+  "@settingsExact": {
+    "description": "settingsExact"
+  },
+  "settingsVivid": "Соковито",
+  "@settingsVivid": {
+    "description": "settingsVivid"
+  },
+  "settingsSeed": "Фірмовий колір",
+  "@settingsSeed": {
+    "description": "settingsSeed"
+  },
+  "settingsCalendarGroup": "Календар",
+  "@settingsCalendarGroup": {
+    "description": "settingsCalendarGroup"
+  },
+  "settingsWeekDays": "Дні у вигляді «Тиждень»",
+  "@settingsWeekDays": {
+    "description": "settingsWeekDays"
+  },
+  "settingsWeekFull": "Весь тиждень",
+  "@settingsWeekFull": {
+    "description": "settingsWeekFull"
+  },
+  "settingsWeekdaysOnly": "Лише будні",
+  "@settingsWeekdaysOnly": {
+    "description": "settingsWeekdaysOnly"
+  },
+  "settingsWeekSome": "{count, plural, one{{count} день на тиждень} few{{count} дні на тиждень} other{{count} днів на тиждень}}",
+  "@settingsWeekSome": {
+    "description": "settingsWeekSome",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsFieldsHint": "Кабінет, тренер, номер абонемента",
+  "@settingsFieldsHint": {
+    "description": "settingsFieldsHint"
+  },
+  "settingsLanguage": "Мова",
+  "@settingsLanguage": {
+    "description": "settingsLanguage"
+  },
+  "settingsDataGroup": "Дані",
+  "@settingsDataGroup": {
+    "description": "settingsDataGroup"
+  },
+  "settingsAbout": "Про застосунок",
+  "@settingsAbout": {
+    "description": "settingsAbout"
+  },
+  "settingsVersion": "Версія",
+  "@settingsVersion": {
+    "description": "settingsVersion"
+  },
+  "settingsStorage": "Усе зберігається на пристрої",
+  "@settingsStorage": {
+    "description": "settingsStorage"
+  },
+  "settingsSource": "Вихідний код",
+  "@settingsSource": {
+    "description": "settingsSource"
+  },
+  "monthViewTitle": "Вигляд місяця",
+  "@monthViewTitle": {
+    "description": "monthViewTitle"
+  },
+  "monthChips": "Чіпи з назвами",
+  "@monthChips": {
+    "description": "monthChips"
+  },
+  "monthChipsHint": "Видно, що саме цього дня",
+  "@monthChipsHint": {
+    "description": "monthChipsHint"
+  },
+  "monthTint": "Тоновані комірки",
+  "@monthTint": {
+    "description": "monthTint"
+  },
+  "monthTintHint": "Видно, чим зайнятий день",
+  "@monthTintHint": {
+    "description": "monthTintHint"
+  },
+  "monthDensity": "Щільність чіпа",
+  "@monthDensity": {
+    "description": "monthDensity"
+  },
+  "monthDensityBoth": "Іконка й текст",
+  "@monthDensityBoth": {
+    "description": "monthDensityBoth"
+  },
+  "monthDensityIcon": "Лише іконка",
+  "@monthDensityIcon": {
+    "description": "monthDensityIcon"
+  },
+  "monthPerCell": "Подій у комірці",
+  "@monthPerCell": {
+    "description": "monthPerCell"
+  },
+  "monthPerCellHint": "Далі згортати в «+N»",
+  "@monthPerCellHint": {
+    "description": "monthPerCellHint"
+  },
+  "eventOne": "Подія",
+  "@eventOne": {
+    "description": "eventOne"
+  },
+  "eventWhen": "Коли",
+  "@eventWhen": {
+    "description": "eventWhen"
+  },
+  "eventTime": "Час",
+  "@eventTime": {
+    "description": "eventTime"
+  },
+  "eventRepeat": "Повтор",
+  "@eventRepeat": {
+    "description": "eventRepeat"
+  },
+  "eventCalendarAndBranch": "Календар і гілка",
+  "@eventCalendarAndBranch": {
+    "description": "eventCalendarAndBranch"
+  },
+  "eventReminder": "Нагадування",
+  "@eventReminder": {
+    "description": "eventReminder"
+  },
+  "eventPlace": "Місце",
+  "@eventPlace": {
+    "description": "eventPlace"
+  },
+  "eventPlaceHint": "Де це буде",
+  "@eventPlaceHint": {
+    "description": "eventPlaceHint"
+  },
+  "eventDelete": "Видалити подію",
+  "@eventDelete": {
+    "description": "eventDelete"
+  },
+  "moreDetails": "Докладніше",
+  "@moreDetails": {
+    "description": "moreDetails"
+  },
+  "lookTitle": "Іконка й колір",
+  "@lookTitle": {
+    "description": "lookTitle"
+  },
+  "lookInherit": "Як у календаря",
+  "@lookInherit": {
+    "description": "lookInherit"
+  },
+  "lookOwnColor": "Свій колір",
+  "@lookOwnColor": {
+    "description": "lookOwnColor"
+  },
+  "inCard": "у картці",
+  "@inCard": {
+    "description": "inCard"
+  },
+  "notesTitle": "Нотатки",
+  "@notesTitle": {
+    "description": "notesTitle"
+  },
+  "noteOne": "Нотатка",
+  "@noteOne": {
+    "description": "noteOne"
+  },
+  "noteAdd": "Додати нотатку",
+  "@noteAdd": {
+    "description": "noteAdd"
+  },
+  "noteHint": "Що не забути",
+  "@noteHint": {
+    "description": "noteHint"
+  },
+  "repeatNone": "не повторюється",
+  "@repeatNone": {
+    "description": "repeatNone"
+  },
+  "repeatByRule": "за правилом",
+  "@repeatByRule": {
+    "description": "repeatByRule"
+  },
+  "repeatTitle": "Повторення",
+  "@repeatTitle": {
+    "description": "repeatTitle"
+  },
+  "repeatDaily": "Щодня",
+  "@repeatDaily": {
+    "description": "repeatDaily"
+  },
+  "repeatWeekly": "Щотижня",
+  "@repeatWeekly": {
+    "description": "repeatWeekly"
+  },
+  "repeatEvery": "Кожні",
+  "@repeatEvery": {
+    "description": "repeatEvery"
+  },
+  "repeatEndsWhen": "Коли закінчується",
+  "@repeatEndsWhen": {
+    "description": "repeatEndsWhen"
+  },
+  "repeatNextDates": "Найближчі дати",
+  "@repeatNextDates": {
+    "description": "repeatNextDates"
+  },
+  "repeatNever": "Ніколи",
+  "@repeatNever": {
+    "description": "repeatNever"
+  },
+  "repeatUntilDate": "До дати",
+  "@repeatUntilDate": {
+    "description": "repeatUntilDate"
+  },
+  "repeatAfterCount": "Після {count} повторів",
+  "@repeatAfterCount": {
+    "description": "repeatAfterCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "unitDay": "День",
+  "@unitDay": {
+    "description": "unitDay"
+  },
+  "unitWeek": "Тиждень",
+  "@unitWeek": {
+    "description": "unitWeek"
+  },
+  "unitMonth": "Місяць",
+  "@unitMonth": {
+    "description": "unitMonth"
+  },
+  "unitYear": "Рік",
+  "@unitYear": {
+    "description": "unitYear"
+  },
+  "scopeTitle": "Що змінити",
+  "@scopeTitle": {
+    "description": "scopeTitle"
+  },
+  "scopeRepeats": "Заняття повторюється: {label}",
+  "@scopeRepeats": {
+    "description": "scopeRepeats",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "scopeOnly": "Лише це заняття",
+  "@scopeOnly": {
+    "description": "scopeOnly"
+  },
+  "scopeFollowing": "Це й наступні",
+  "@scopeFollowing": {
+    "description": "scopeFollowing"
+  },
+  "scopeFollowingHint": "Ряд поділиться: минулі заняття залишаться як були",
+  "@scopeFollowingHint": {
+    "description": "scopeFollowingHint"
+  },
+  "scopeWhole": "Весь ряд",
+  "@scopeWhole": {
+    "description": "scopeWhole"
+  },
+  "scopeWholeHint": "Усі заняття, включно з минулими",
+  "@scopeWholeHint": {
+    "description": "scopeWholeHint"
+  },
+  "msgEventDeleted": "Подію видалено",
+  "@msgEventDeleted": {
+    "description": "msgEventDeleted"
+  },
+  "msgSeriesDeleted": "Ряд видалено",
+  "@msgSeriesDeleted": {
+    "description": "msgSeriesDeleted"
+  },
+  "msgOccurrenceSkipped": "Заняття скасовано",
+  "@msgOccurrenceSkipped": {
+    "description": "msgOccurrenceSkipped"
+  },
+  "reminderNone": "Без нагадування",
+  "@reminderNone": {
+    "description": "reminderNone"
+  },
+  "reminderAtStart": "У момент початку",
+  "@reminderAtStart": {
+    "description": "reminderAtStart"
+  },
+  "reminderNever": "Не нагадувати",
+  "@reminderNever": {
+    "description": "reminderNever"
+  },
+  "reminderHint": "Можна кілька: за день зібратися, за десять хвилин вийти",
+  "@reminderHint": {
+    "description": "reminderHint"
+  },
+  "reminderMinutes": "{count, plural, one{За {count} хвилину} few{За {count} хвилини} other{За {count} хвилин}}",
+  "@reminderMinutes": {
+    "description": "reminderMinutes",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderHours": "{count, plural, one{За годину} few{За {count} години} other{За {count} годин}}",
+  "@reminderHours": {
+    "description": "reminderHours",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderDays": "{count, plural, one{За день} few{За {count} дні} other{За {count} днів}}",
+  "@reminderDays": {
+    "description": "reminderDays",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderWeek": "За тиждень",
+  "@reminderWeek": {
+    "description": "reminderWeek"
+  },
+  "reminderStarts": "Починається",
+  "@reminderStarts": {
+    "description": "reminderStarts"
+  },
+  "reminderStartsAt": "Початок о {time}",
+  "@reminderStartsAt": {
+    "description": "reminderStartsAt",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "icsExport": "Вивантажити в .ics",
+  "@icsExport": {
+    "description": "icsExport"
+  },
+  "icsExportHint": "Файл для іншого календаря",
+  "@icsExportHint": {
+    "description": "icsExportHint"
+  },
+  "icsImport": "Завантажити з .ics",
+  "@icsImport": {
+    "description": "icsImport"
+  },
+  "icsImportHint": "Події з чужого календаря",
+  "@icsImportHint": {
+    "description": "icsImportHint"
+  },
+  "icsSaveTitle": "Куди зберегти календар",
+  "@icsSaveTitle": {
+    "description": "icsSaveTitle"
+  },
+  "icsPickTitle": "Виберіть файл календаря",
+  "@icsPickTitle": {
+    "description": "icsPickTitle"
+  },
+  "icsNothingToExport": "Вивантажувати нічого: подій немає.",
+  "@icsNothingToExport": {
+    "description": "icsNothingToExport"
+  },
+  "icsExported": "Вивантажено подій: {count}.",
+  "@icsExported": {
+    "description": "icsExported",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "icsImported": "Завантажено подій: {count}.",
+  "@icsImported": {
+    "description": "icsImported",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "icsUnreadable": "Файл не прочитався.",
+  "@icsUnreadable": {
+    "description": "icsUnreadable"
+  },
+  "icsNoEvents": "У файлі не знайшлося жодної події.",
+  "@icsNoEvents": {
+    "description": "icsNoEvents"
+  },
+  "colorPickerOwn": "Свій колір",
+  "@colorPickerOwn": {
+    "description": "colorPickerOwn"
+  },
+  "colorHue": "Відтінок",
+  "@colorHue": {
+    "description": "colorHue"
+  },
+  "colorChroma": "Насиченість",
+  "@colorChroma": {
+    "description": "colorChroma"
+  },
+  "colorTone": "Світлота",
+  "@colorTone": {
+    "description": "colorTone"
+  },
+  "colorMine": "Мої кольори",
+  "@colorMine": {
+    "description": "colorMine"
+  },
+  "colorRecent": "Останні",
+  "@colorRecent": {
+    "description": "colorRecent"
+  },
+  "colorSaveMine": "До моїх",
+  "@colorSaveMine": {
+    "description": "colorSaveMine"
+  },
+  "colorReadout": "Відтінок {hue}° · насиченість {chroma} · світлота {tone}",
+  "@colorReadout": {
+    "description": "colorReadout",
+    "placeholders": {
+      "hue": {
+        "type": "int"
+      },
+      "chroma": {
+        "type": "int"
+      },
+      "tone": {
+        "type": "int"
+      }
+    }
+  },
+  "colorPickerHint": "Піпетка бере колір із шпалер або скриншота. Збережені живуть у «Моїх кольорах» і доступні з будь-якого пікера.",
+  "@colorPickerHint": {
+    "description": "colorPickerHint"
+  },
+  "branchColorTitle": "Колір гілки",
+  "@branchColorTitle": {
+    "description": "branchColorTitle"
+  },
+  "branchColorOwnHint": "Задано в цій гілці",
+  "@branchColorOwnHint": {
+    "description": "branchColorOwnHint"
+  },
+  "branchColorOfCalendar": "Колір «{name}»",
+  "@branchColorOfCalendar": {
+    "description": "branchColorOfCalendar",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "branchColorPickerRow": "Свій колір із пікера",
+  "@branchColorPickerRow": {
+    "description": "branchColorPickerRow"
+  },
+  "branchColorPickerHint": "Відтінок, насиченість, hex, піпетка",
+  "@branchColorPickerHint": {
+    "description": "branchColorPickerHint"
+  },
+  "branchColorChain": "Перефарбуєте «{name}» — змінять колір усі гілки й події, де стоїть успадкування. Гілки зі своїм кольором залишаться як є.",
+  "@branchColorChain": {
+    "description": "branchColorChain",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "branchColorEventRow": "Подія гілки",
+  "@branchColorEventRow": {
+    "description": "branchColorEventRow"
+  },
+  "levelCalendar": "календар",
+  "@levelCalendar": {
+    "description": "levelCalendar"
+  },
+  "levelOwn": "свій",
+  "@levelOwn": {
+    "description": "levelOwn"
+  },
+  "ruleDaily": "{count, plural, one{щодня} few{кожні {count} дні} other{кожні {count} днів}}",
+  "@ruleDaily": {
+    "description": "ruleDaily",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleWeekly": "{count, plural, one{щотижня} few{кожні {count} тижні} other{кожні {count} тижнів}}",
+  "@ruleWeekly": {
+    "description": "ruleWeekly",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleMonthly": "{count, plural, one{щомісяця} few{кожні {count} місяці} other{кожні {count} місяців}}",
+  "@ruleMonthly": {
+    "description": "ruleMonthly",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleYearly": "щороку",
+  "@ruleYearly": {
+    "description": "ruleYearly"
+  },
+  "ruleWeekDays": "{every}: {days}",
+  "@ruleWeekDays": {
+    "description": "ruleWeekDays",
+    "placeholders": {
+      "every": {
+        "type": "String"
+      },
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleMonthPosition": "{every}: {ordinal} {weekday}",
+  "@ruleMonthPosition": {
+    "description": "ruleMonthPosition",
+    "placeholders": {
+      "every": {
+        "type": "String"
+      },
+      "ordinal": {
+        "type": "String"
+      },
+      "weekday": {
+        "type": "String"
+      }
+    }
+  },
+  "ordinalLast": "останній,останній,остання,останній,остання,остання,остання",
+  "@ordinalLast": {
+    "description": "ordinalLast"
+  },
+  "ordinal1": "перший,перший,перша,перший,перша,перша,перша",
+  "@ordinal1": {
+    "description": "ordinal1"
+  },
+  "ordinal2": "другий,другий,друга,другий,друга,друга,друга",
+  "@ordinal2": {
+    "description": "ordinal2"
+  },
+  "ordinal3": "третій,третій,третя,третій,третя,третя,третя",
+  "@ordinal3": {
+    "description": "ordinal3"
+  },
+  "ordinal4": "четвертий,четвертий,четверта,четвертий,четверта,четверта,четверта",
+  "@ordinal4": {
+    "description": "ordinal4"
+  },
+  "weekSetupTitle": "Які дні показувати",
+  "@weekSetupTitle": {
+    "description": "weekSetupTitle"
+  },
+  "weekSetupHint": "Колонок буде стільки, скільки днів позначено",
+  "@weekSetupHint": {
+    "description": "weekSetupHint"
+  },
+  "weekSetupAll": "Весь тиждень",
+  "@weekSetupAll": {
+    "description": "weekSetupAll"
+  },
+  "weekSetupWorkdays": "Будні",
+  "@weekSetupWorkdays": {
+    "description": "weekSetupWorkdays"
+  },
+  "weekSetupWeekend": "Вихідні",
+  "@weekSetupWeekend": {
+    "description": "weekSetupWeekend"
+  },
+  "weekSetupStartsWith": "Тиждень починається з",
+  "@weekSetupStartsWith": {
+    "description": "weekSetupStartsWith"
+  },
+  "accessTitle": "Доступ",
+  "@accessTitle": {
+    "description": "accessTitle"
+  },
+  "accessCreateKey": "Створити ключ",
+  "@accessCreateKey": {
+    "description": "accessCreateKey"
+  },
+  "accessRevoke": "Відкликати",
+  "@accessRevoke": {
+    "description": "accessRevoke"
+  },
+  "accessHint": "Ключі працюють, поки ввімкнено синхронізацію. Календар, який живе лише на телефоні, ззовні недоступний — стукати нікуди.",
+  "@accessHint": {
+    "description": "accessHint"
+  }
 }

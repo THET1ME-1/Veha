@@ -18,5 +18,903 @@
   "durationHours": "{hours} godz.",
   "durationHoursMinutes": "{hours} godz. {minutes} min",
   "spanDayOf": "{current}. z {total}",
-  "spanUntil": "do {date}"
+  "spanUntil": "do {date}",
+  "actionDone": "Gotowe",
+  "@actionDone": {
+    "description": "actionDone"
+  },
+  "actionCancel": "Anuluj",
+  "@actionCancel": {
+    "description": "actionCancel"
+  },
+  "actionDelete": "Usuń",
+  "@actionDelete": {
+    "description": "actionDelete"
+  },
+  "actionSave": "Zapisz",
+  "@actionSave": {
+    "description": "actionSave"
+  },
+  "actionAdd": "dodaj",
+  "@actionAdd": {
+    "description": "actionAdd"
+  },
+  "actionEdit": "Zmień",
+  "@actionEdit": {
+    "description": "actionEdit"
+  },
+  "actionUndo": "Cofnij",
+  "@actionUndo": {
+    "description": "actionUndo"
+  },
+  "fieldName": "Nazwa",
+  "@fieldName": {
+    "description": "fieldName"
+  },
+  "calendarsTitle": "Kalendarze",
+  "@calendarsTitle": {
+    "description": "calendarsTitle"
+  },
+  "calendarOne": "Kalendarz",
+  "@calendarOne": {
+    "description": "calendarOne"
+  },
+  "calendarNewShort": "Nowy",
+  "@calendarNewShort": {
+    "description": "calendarNewShort"
+  },
+  "calendarNew": "Nowy kalendarz",
+  "@calendarNew": {
+    "description": "calendarNew"
+  },
+  "calendarCreate": "Utwórz kalendarz",
+  "@calendarCreate": {
+    "description": "calendarCreate"
+  },
+  "calendarsEmptyTitle": "Brak kalendarzy",
+  "@calendarsEmptyTitle": {
+    "description": "calendarsEmptyTitle"
+  },
+  "calendarsEmptyBody": "Kalendarz nadaje kolor i ikonę wszystkim wydarzeniom w środku. Zwykle są trzy-cztery: dom, praca, nauka, sport.",
+  "@calendarsEmptyBody": {
+    "description": "calendarsEmptyBody"
+  },
+  "branchOne": "Gałąź",
+  "@branchOne": {
+    "description": "branchOne"
+  },
+  "branchNone": "Bez gałęzi",
+  "@branchNone": {
+    "description": "branchNone"
+  },
+  "branchAdd": "Dodaj gałąź",
+  "@branchAdd": {
+    "description": "branchAdd"
+  },
+  "branchOf": "Gałąź „{name}”",
+  "@branchOf": {
+    "description": "branchOf",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "branchCount": "{count, plural, one{{count} gałąź} few{{count} gałęzie} other{{count} gałęzi}}",
+  "@branchCount": {
+    "description": "branchCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "colorInherits": "dziedziczy",
+  "@colorInherits": {
+    "description": "colorInherits"
+  },
+  "colorOwn": "własny kolor",
+  "@colorOwn": {
+    "description": "colorOwn"
+  },
+  "fieldsTitle": "Własne pola",
+  "@fieldsTitle": {
+    "description": "fieldsTitle"
+  },
+  "fieldsShared": "Wspólne dla wszystkich",
+  "@fieldsShared": {
+    "description": "fieldsShared"
+  },
+  "fieldsSharedRow": "Wspólne pola",
+  "@fieldsSharedRow": {
+    "description": "fieldsSharedRow"
+  },
+  "fieldsGroups": "Grupy",
+  "@fieldsGroups": {
+    "description": "fieldsGroups"
+  },
+  "fieldsNoneYet": "Na razie żadnego",
+  "@fieldsNoneYet": {
+    "description": "fieldsNoneYet"
+  },
+  "fieldsGroupEmpty": "Bez własnych pól",
+  "@fieldsGroupEmpty": {
+    "description": "fieldsGroupEmpty"
+  },
+  "fieldsGroupCreate": "Utwórz grupę pól",
+  "@fieldsGroupCreate": {
+    "description": "fieldsGroupCreate"
+  },
+  "fieldsGroupNew": "Nowa grupa",
+  "@fieldsGroupNew": {
+    "description": "fieldsGroupNew"
+  },
+  "fieldAddTo": "Dodaj pole do „{name}”",
+  "@fieldAddTo": {
+    "description": "fieldAddTo",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldNewIn": "Nowe pole w „{name}”",
+  "@fieldNewIn": {
+    "description": "fieldNewIn",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldOne": "Pole",
+  "@fieldOne": {
+    "description": "fieldOne"
+  },
+  "fieldShared": "wspólne",
+  "@fieldShared": {
+    "description": "fieldShared"
+  },
+  "fieldNamePlaceholder": "Nazwa pola",
+  "@fieldNamePlaceholder": {
+    "description": "fieldNamePlaceholder"
+  },
+  "fieldKind": "Czym wypełniać",
+  "@fieldKind": {
+    "description": "fieldKind"
+  },
+  "fieldsOwnCount": "{count, plural, one{{count} własne pole} few{{count} własne pola} other{{count} własnych pól}}",
+  "@fieldsOwnCount": {
+    "description": "fieldsOwnCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldsInCard": "w karcie {count}",
+  "@fieldsInCard": {
+    "description": "fieldsInCard",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldEraseValue": "Wymaż",
+  "@fieldEraseValue": {
+    "description": "fieldEraseValue"
+  },
+  "yes": "tak",
+  "@yes": {
+    "description": "yes"
+  },
+  "no": "nie",
+  "@no": {
+    "description": "no"
+  },
+  "typeText": "Tekst",
+  "@typeText": {
+    "description": "typeText"
+  },
+  "typeNumber": "Liczba",
+  "@typeNumber": {
+    "description": "typeNumber"
+  },
+  "typeDate": "Data",
+  "@typeDate": {
+    "description": "typeDate"
+  },
+  "typeTime": "Godzina",
+  "@typeTime": {
+    "description": "typeTime"
+  },
+  "typeDuration": "Czas trwania",
+  "@typeDuration": {
+    "description": "typeDuration"
+  },
+  "typeSelect": "Lista",
+  "@typeSelect": {
+    "description": "typeSelect"
+  },
+  "typeCheckbox": "Pole wyboru",
+  "@typeCheckbox": {
+    "description": "typeCheckbox"
+  },
+  "typeUrl": "Odnośnik",
+  "@typeUrl": {
+    "description": "typeUrl"
+  },
+  "typePhone": "Telefon",
+  "@typePhone": {
+    "description": "typePhone"
+  },
+  "typePerson": "Osoba",
+  "@typePerson": {
+    "description": "typePerson"
+  },
+  "typeMoney": "Pieniądze",
+  "@typeMoney": {
+    "description": "typeMoney"
+  },
+  "searchHint": "Znajdź wydarzenie",
+  "@searchHint": {
+    "description": "searchHint"
+  },
+  "searchEmpty": "Szukaj po nazwie, miejscu lub własnym polu — na przykład po numerze sali.",
+  "@searchEmpty": {
+    "description": "searchEmpty"
+  },
+  "searchNothing": "Nic nie znaleziono.",
+  "@searchNothing": {
+    "description": "searchNothing"
+  },
+  "allDay": "cały dzień",
+  "@allDay": {
+    "description": "allDay"
+  },
+  "settingsTitle": "Ustawienia",
+  "@settingsTitle": {
+    "description": "settingsTitle"
+  },
+  "settingsAppearance": "Wygląd",
+  "@settingsAppearance": {
+    "description": "settingsAppearance"
+  },
+  "settingsTheme": "Motyw",
+  "@settingsTheme": {
+    "description": "settingsTheme"
+  },
+  "settingsSystem": "Jak w systemie",
+  "@settingsSystem": {
+    "description": "settingsSystem"
+  },
+  "settingsLight": "Jasny",
+  "@settingsLight": {
+    "description": "settingsLight"
+  },
+  "settingsDark": "Ciemny",
+  "@settingsDark": {
+    "description": "settingsDark"
+  },
+  "settingsChroma": "Nasycenie",
+  "@settingsChroma": {
+    "description": "settingsChroma"
+  },
+  "settingsChromaHint": "Na firmowej mięcie „Soczyście” podkręca pigułki do kwaśnego tonu",
+  "@settingsChromaHint": {
+    "description": "settingsChromaHint"
+  },
+  "settingsExact": "Dokładnie",
+  "@settingsExact": {
+    "description": "settingsExact"
+  },
+  "settingsVivid": "Soczyście",
+  "@settingsVivid": {
+    "description": "settingsVivid"
+  },
+  "settingsSeed": "Kolor firmowy",
+  "@settingsSeed": {
+    "description": "settingsSeed"
+  },
+  "settingsCalendarGroup": "Kalendarz",
+  "@settingsCalendarGroup": {
+    "description": "settingsCalendarGroup"
+  },
+  "settingsWeekDays": "Dni w widoku „Tydzień”",
+  "@settingsWeekDays": {
+    "description": "settingsWeekDays"
+  },
+  "settingsWeekFull": "Cały tydzień",
+  "@settingsWeekFull": {
+    "description": "settingsWeekFull"
+  },
+  "settingsWeekdaysOnly": "Tylko dni robocze",
+  "@settingsWeekdaysOnly": {
+    "description": "settingsWeekdaysOnly"
+  },
+  "settingsWeekSome": "{count, plural, one{{count} dzień w tygodniu} few{{count} dni w tygodniu} other{{count} dni w tygodniu}}",
+  "@settingsWeekSome": {
+    "description": "settingsWeekSome",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsFieldsHint": "Sala, trener, numer karnetu",
+  "@settingsFieldsHint": {
+    "description": "settingsFieldsHint"
+  },
+  "settingsLanguage": "Język",
+  "@settingsLanguage": {
+    "description": "settingsLanguage"
+  },
+  "settingsDataGroup": "Dane",
+  "@settingsDataGroup": {
+    "description": "settingsDataGroup"
+  },
+  "settingsAbout": "O aplikacji",
+  "@settingsAbout": {
+    "description": "settingsAbout"
+  },
+  "settingsVersion": "Wersja",
+  "@settingsVersion": {
+    "description": "settingsVersion"
+  },
+  "settingsStorage": "Wszystko zostaje na urządzeniu",
+  "@settingsStorage": {
+    "description": "settingsStorage"
+  },
+  "settingsSource": "Kod źródłowy",
+  "@settingsSource": {
+    "description": "settingsSource"
+  },
+  "monthViewTitle": "Widok miesiąca",
+  "@monthViewTitle": {
+    "description": "monthViewTitle"
+  },
+  "monthChips": "Etykiety z nazwami",
+  "@monthChips": {
+    "description": "monthChips"
+  },
+  "monthChipsHint": "Widać, co dokładnie jest tego dnia",
+  "@monthChipsHint": {
+    "description": "monthChipsHint"
+  },
+  "monthTint": "Barwione komórki",
+  "@monthTint": {
+    "description": "monthTint"
+  },
+  "monthTintHint": "Widać, czym zajęty jest dzień",
+  "@monthTintHint": {
+    "description": "monthTintHint"
+  },
+  "monthDensity": "Gęstość etykiety",
+  "@monthDensity": {
+    "description": "monthDensity"
+  },
+  "monthDensityBoth": "Ikona i tekst",
+  "@monthDensityBoth": {
+    "description": "monthDensityBoth"
+  },
+  "monthDensityIcon": "Tylko ikona",
+  "@monthDensityIcon": {
+    "description": "monthDensityIcon"
+  },
+  "monthPerCell": "Wydarzeń w komórce",
+  "@monthPerCell": {
+    "description": "monthPerCell"
+  },
+  "monthPerCellHint": "Resztę zwijać w „+N”",
+  "@monthPerCellHint": {
+    "description": "monthPerCellHint"
+  },
+  "eventOne": "Wydarzenie",
+  "@eventOne": {
+    "description": "eventOne"
+  },
+  "eventWhen": "Kiedy",
+  "@eventWhen": {
+    "description": "eventWhen"
+  },
+  "eventTime": "Godzina",
+  "@eventTime": {
+    "description": "eventTime"
+  },
+  "eventRepeat": "Powtarzanie",
+  "@eventRepeat": {
+    "description": "eventRepeat"
+  },
+  "eventCalendarAndBranch": "Kalendarz i gałąź",
+  "@eventCalendarAndBranch": {
+    "description": "eventCalendarAndBranch"
+  },
+  "eventReminder": "Przypomnienie",
+  "@eventReminder": {
+    "description": "eventReminder"
+  },
+  "eventPlace": "Miejsce",
+  "@eventPlace": {
+    "description": "eventPlace"
+  },
+  "eventPlaceHint": "Gdzie to będzie",
+  "@eventPlaceHint": {
+    "description": "eventPlaceHint"
+  },
+  "eventDelete": "Usuń wydarzenie",
+  "@eventDelete": {
+    "description": "eventDelete"
+  },
+  "moreDetails": "Szczegóły",
+  "@moreDetails": {
+    "description": "moreDetails"
+  },
+  "lookTitle": "Ikona i kolor",
+  "@lookTitle": {
+    "description": "lookTitle"
+  },
+  "lookInherit": "Jak w kalendarzu",
+  "@lookInherit": {
+    "description": "lookInherit"
+  },
+  "lookOwnColor": "Własny kolor",
+  "@lookOwnColor": {
+    "description": "lookOwnColor"
+  },
+  "inCard": "w karcie",
+  "@inCard": {
+    "description": "inCard"
+  },
+  "notesTitle": "Notatki",
+  "@notesTitle": {
+    "description": "notesTitle"
+  },
+  "noteOne": "Notatka",
+  "@noteOne": {
+    "description": "noteOne"
+  },
+  "noteAdd": "Dodaj notatkę",
+  "@noteAdd": {
+    "description": "noteAdd"
+  },
+  "noteHint": "O czym nie zapomnieć",
+  "@noteHint": {
+    "description": "noteHint"
+  },
+  "repeatNone": "nie powtarza się",
+  "@repeatNone": {
+    "description": "repeatNone"
+  },
+  "repeatByRule": "według reguły",
+  "@repeatByRule": {
+    "description": "repeatByRule"
+  },
+  "repeatTitle": "Powtarzanie",
+  "@repeatTitle": {
+    "description": "repeatTitle"
+  },
+  "repeatDaily": "Codziennie",
+  "@repeatDaily": {
+    "description": "repeatDaily"
+  },
+  "repeatWeekly": "Co tydzień",
+  "@repeatWeekly": {
+    "description": "repeatWeekly"
+  },
+  "repeatEvery": "Co",
+  "@repeatEvery": {
+    "description": "repeatEvery"
+  },
+  "repeatEndsWhen": "Kiedy się kończy",
+  "@repeatEndsWhen": {
+    "description": "repeatEndsWhen"
+  },
+  "repeatNextDates": "Najbliższe daty",
+  "@repeatNextDates": {
+    "description": "repeatNextDates"
+  },
+  "repeatNever": "Nigdy",
+  "@repeatNever": {
+    "description": "repeatNever"
+  },
+  "repeatUntilDate": "Do daty",
+  "@repeatUntilDate": {
+    "description": "repeatUntilDate"
+  },
+  "repeatAfterCount": "Po {count} powtórzeniach",
+  "@repeatAfterCount": {
+    "description": "repeatAfterCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "unitDay": "Dzień",
+  "@unitDay": {
+    "description": "unitDay"
+  },
+  "unitWeek": "Tydzień",
+  "@unitWeek": {
+    "description": "unitWeek"
+  },
+  "unitMonth": "Miesiąc",
+  "@unitMonth": {
+    "description": "unitMonth"
+  },
+  "unitYear": "Rok",
+  "@unitYear": {
+    "description": "unitYear"
+  },
+  "scopeTitle": "Co zmienić",
+  "@scopeTitle": {
+    "description": "scopeTitle"
+  },
+  "scopeRepeats": "To się powtarza: {label}",
+  "@scopeRepeats": {
+    "description": "scopeRepeats",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "scopeOnly": "Tylko to jedno",
+  "@scopeOnly": {
+    "description": "scopeOnly"
+  },
+  "scopeFollowing": "To i następne",
+  "@scopeFollowing": {
+    "description": "scopeFollowing"
+  },
+  "scopeFollowingHint": "Seria się podzieli: przeszłe zostaną bez zmian",
+  "@scopeFollowingHint": {
+    "description": "scopeFollowingHint"
+  },
+  "scopeWhole": "Cała seria",
+  "@scopeWhole": {
+    "description": "scopeWhole"
+  },
+  "scopeWholeHint": "Wszystkie, także przeszłe",
+  "@scopeWholeHint": {
+    "description": "scopeWholeHint"
+  },
+  "msgEventDeleted": "Wydarzenie usunięte",
+  "@msgEventDeleted": {
+    "description": "msgEventDeleted"
+  },
+  "msgSeriesDeleted": "Seria usunięta",
+  "@msgSeriesDeleted": {
+    "description": "msgSeriesDeleted"
+  },
+  "msgOccurrenceSkipped": "Termin odwołany",
+  "@msgOccurrenceSkipped": {
+    "description": "msgOccurrenceSkipped"
+  },
+  "reminderNone": "Bez przypomnienia",
+  "@reminderNone": {
+    "description": "reminderNone"
+  },
+  "reminderAtStart": "W chwili startu",
+  "@reminderAtStart": {
+    "description": "reminderAtStart"
+  },
+  "reminderNever": "Nie przypominaj",
+  "@reminderNever": {
+    "description": "reminderNever"
+  },
+  "reminderHint": "Można kilka: dzień, żeby się przygotować, dziesięć minut, żeby wyjść",
+  "@reminderHint": {
+    "description": "reminderHint"
+  },
+  "reminderMinutes": "{count, plural, one{{count} minutę wcześniej} few{{count} minuty wcześniej} other{{count} minut wcześniej}}",
+  "@reminderMinutes": {
+    "description": "reminderMinutes",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderHours": "{count, plural, one{Godzinę wcześniej} few{{count} godziny wcześniej} other{{count} godzin wcześniej}}",
+  "@reminderHours": {
+    "description": "reminderHours",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderDays": "{count, plural, one{Dzień wcześniej} few{{count} dni wcześniej} other{{count} dni wcześniej}}",
+  "@reminderDays": {
+    "description": "reminderDays",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderWeek": "Tydzień wcześniej",
+  "@reminderWeek": {
+    "description": "reminderWeek"
+  },
+  "reminderStarts": "Zaczyna się",
+  "@reminderStarts": {
+    "description": "reminderStarts"
+  },
+  "reminderStartsAt": "Początek o {time}",
+  "@reminderStartsAt": {
+    "description": "reminderStartsAt",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "icsExport": "Eksportuj do .ics",
+  "@icsExport": {
+    "description": "icsExport"
+  },
+  "icsExportHint": "Plik dla innego kalendarza",
+  "@icsExportHint": {
+    "description": "icsExportHint"
+  },
+  "icsImport": "Importuj z .ics",
+  "@icsImport": {
+    "description": "icsImport"
+  },
+  "icsImportHint": "Wydarzenia z innego kalendarza",
+  "@icsImportHint": {
+    "description": "icsImportHint"
+  },
+  "icsSaveTitle": "Gdzie zapisać kalendarz",
+  "@icsSaveTitle": {
+    "description": "icsSaveTitle"
+  },
+  "icsPickTitle": "Wybierz plik kalendarza",
+  "@icsPickTitle": {
+    "description": "icsPickTitle"
+  },
+  "icsNothingToExport": "Nie ma czego eksportować: brak wydarzeń.",
+  "@icsNothingToExport": {
+    "description": "icsNothingToExport"
+  },
+  "icsExported": "Wyeksportowano wydarzeń: {count}.",
+  "@icsExported": {
+    "description": "icsExported",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "icsImported": "Zaimportowano wydarzeń: {count}.",
+  "@icsImported": {
+    "description": "icsImported",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "icsUnreadable": "Nie udało się odczytać pliku.",
+  "@icsUnreadable": {
+    "description": "icsUnreadable"
+  },
+  "icsNoEvents": "W pliku nie znaleziono żadnego wydarzenia.",
+  "@icsNoEvents": {
+    "description": "icsNoEvents"
+  },
+  "colorPickerOwn": "Własny kolor",
+  "@colorPickerOwn": {
+    "description": "colorPickerOwn"
+  },
+  "colorHue": "Odcień",
+  "@colorHue": {
+    "description": "colorHue"
+  },
+  "colorChroma": "Nasycenie",
+  "@colorChroma": {
+    "description": "colorChroma"
+  },
+  "colorTone": "Jasność",
+  "@colorTone": {
+    "description": "colorTone"
+  },
+  "colorMine": "Moje kolory",
+  "@colorMine": {
+    "description": "colorMine"
+  },
+  "colorRecent": "Ostatnie",
+  "@colorRecent": {
+    "description": "colorRecent"
+  },
+  "colorSaveMine": "Zapisz",
+  "@colorSaveMine": {
+    "description": "colorSaveMine"
+  },
+  "colorReadout": "Odcień {hue}° · nasycenie {chroma} · jasność {tone}",
+  "@colorReadout": {
+    "description": "colorReadout",
+    "placeholders": {
+      "hue": {
+        "type": "int"
+      },
+      "chroma": {
+        "type": "int"
+      },
+      "tone": {
+        "type": "int"
+      }
+    }
+  },
+  "colorPickerHint": "Zakraplacz pobiera kolor z tapety lub zrzutu ekranu. Zapisane trafiają do „Moich kolorów” i są dostępne wszędzie.",
+  "@colorPickerHint": {
+    "description": "colorPickerHint"
+  },
+  "branchColorTitle": "Kolor gałęzi",
+  "@branchColorTitle": {
+    "description": "branchColorTitle"
+  },
+  "branchColorOwnHint": "Ustawiony na tej gałęzi",
+  "@branchColorOwnHint": {
+    "description": "branchColorOwnHint"
+  },
+  "branchColorOfCalendar": "Kolor „{name}”",
+  "@branchColorOfCalendar": {
+    "description": "branchColorOfCalendar",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "branchColorPickerRow": "Własny kolor z próbnika",
+  "@branchColorPickerRow": {
+    "description": "branchColorPickerRow"
+  },
+  "branchColorPickerHint": "Odcień, nasycenie, hex, zakraplacz",
+  "@branchColorPickerHint": {
+    "description": "branchColorPickerHint"
+  },
+  "branchColorChain": "Zmienisz kolor „{name}” — zmienią go wszystkie gałęzie i wydarzenia z dziedziczeniem. Te z własnym kolorem zostaną bez zmian.",
+  "@branchColorChain": {
+    "description": "branchColorChain",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "branchColorEventRow": "Wydarzenie gałęzi",
+  "@branchColorEventRow": {
+    "description": "branchColorEventRow"
+  },
+  "levelCalendar": "kalendarz",
+  "@levelCalendar": {
+    "description": "levelCalendar"
+  },
+  "levelOwn": "własny",
+  "@levelOwn": {
+    "description": "levelOwn"
+  },
+  "ruleDaily": "{count, plural, one{codziennie} few{co {count} dni} other{co {count} dni}}",
+  "@ruleDaily": {
+    "description": "ruleDaily",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleWeekly": "{count, plural, one{co tydzień} few{co {count} tygodnie} other{co {count} tygodni}}",
+  "@ruleWeekly": {
+    "description": "ruleWeekly",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleMonthly": "{count, plural, one{co miesiąc} few{co {count} miesiące} other{co {count} miesięcy}}",
+  "@ruleMonthly": {
+    "description": "ruleMonthly",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleYearly": "co rok",
+  "@ruleYearly": {
+    "description": "ruleYearly"
+  },
+  "ruleWeekDays": "{every}: {days}",
+  "@ruleWeekDays": {
+    "description": "ruleWeekDays",
+    "placeholders": {
+      "every": {
+        "type": "String"
+      },
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleMonthPosition": "{every}: {ordinal} {weekday}",
+  "@ruleMonthPosition": {
+    "description": "ruleMonthPosition",
+    "placeholders": {
+      "every": {
+        "type": "String"
+      },
+      "ordinal": {
+        "type": "String"
+      },
+      "weekday": {
+        "type": "String"
+      }
+    }
+  },
+  "ordinalLast": "ostatni,ostatni,ostatnia,ostatni,ostatni,ostatnia,ostatnia",
+  "@ordinalLast": {
+    "description": "ordinalLast"
+  },
+  "ordinal1": "pierwszy,pierwszy,pierwsza,pierwszy,pierwszy,pierwsza,pierwsza",
+  "@ordinal1": {
+    "description": "ordinal1"
+  },
+  "ordinal2": "drugi,drugi,druga,drugi,drugi,druga,druga",
+  "@ordinal2": {
+    "description": "ordinal2"
+  },
+  "ordinal3": "trzeci,trzeci,trzecia,trzeci,trzeci,trzecia,trzecia",
+  "@ordinal3": {
+    "description": "ordinal3"
+  },
+  "ordinal4": "czwarty,czwarty,czwarta,czwarty,czwarty,czwarta,czwarta",
+  "@ordinal4": {
+    "description": "ordinal4"
+  },
+  "weekSetupTitle": "Które dni pokazywać",
+  "@weekSetupTitle": {
+    "description": "weekSetupTitle"
+  },
+  "weekSetupHint": "Kolumn będzie tyle, ile zaznaczonych dni",
+  "@weekSetupHint": {
+    "description": "weekSetupHint"
+  },
+  "weekSetupAll": "Cały tydzień",
+  "@weekSetupAll": {
+    "description": "weekSetupAll"
+  },
+  "weekSetupWorkdays": "Dni robocze",
+  "@weekSetupWorkdays": {
+    "description": "weekSetupWorkdays"
+  },
+  "weekSetupWeekend": "Weekend",
+  "@weekSetupWeekend": {
+    "description": "weekSetupWeekend"
+  },
+  "weekSetupStartsWith": "Tydzień zaczyna się od",
+  "@weekSetupStartsWith": {
+    "description": "weekSetupStartsWith"
+  },
+  "accessTitle": "Dostęp",
+  "@accessTitle": {
+    "description": "accessTitle"
+  },
+  "accessCreateKey": "Utwórz klucz",
+  "@accessCreateKey": {
+    "description": "accessCreateKey"
+  },
+  "accessRevoke": "Odwołaj",
+  "@accessRevoke": {
+    "description": "accessRevoke"
+  },
+  "accessHint": "Klucze działają, dopóki włączona jest synchronizacja. Kalendarz, który żyje tylko w telefonie, jest z zewnątrz niedostępny — nie ma dokąd zapukać.",
+  "@accessHint": {
+    "description": "accessHint"
+  }
 }

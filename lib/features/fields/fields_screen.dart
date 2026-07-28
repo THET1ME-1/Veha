@@ -6,6 +6,8 @@ import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
+import '../../l10n/app_localizations.dart';
+import 'field_types.dart';
 import '../calendar/widgets/month_header.dart';
 import '../calendars/calendar_editor_sheet.dart';
 import '../common/blocks.dart';
@@ -22,6 +24,7 @@ class FieldGroupsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l = L.of(context);
     final inheritance = ref.watch(inheritanceProvider).valueOrNull;
     final fields = ref.watch(fieldDefsProvider).valueOrNull;
     if (inheritance == null || fields == null) return const SizedBox.shrink();
@@ -39,7 +42,7 @@ class FieldGroupsScreen extends ConsumerWidget {
             VehaInsets.screen, 0, VehaInsets.screen, 120),
         children: [
           Text(
-            'Свои поля',
+            l.fieldsTitle,
             style: TextStyle(
               fontFamily: AppFonts.display,
               fontSize: 30,
@@ -48,19 +51,19 @@ class FieldGroupsScreen extends ConsumerWidget {
               color: theme.colorScheme.onSurface,
             ),
           ),
-          const VBlockCap('Общие для всех'),
+          VBlockCap(l.fieldsShared),
           VBlock(children: [
             VRow(
               icon: 'text',
-              value: 'Общие поля',
+              value: l.fieldsSharedRow,
               label: shared.isEmpty
-                  ? 'Пока ни одного'
+                  ? l.fieldsNoneYet
                   : shared.map((f) => f.name.toLowerCase()).join(', '),
               labelFirst: false,
               trailing: _Count(shared.length),
             ),
           ]),
-          const VBlockCap('Группы'),
+          VBlockCap(l.fieldsGroups),
           VBlock(children: [
             for (var i = 0; i < calendars.length; i++) ...[
               if (i > 0) const VSep(),
@@ -83,7 +86,7 @@ class FieldGroupsScreen extends ConsumerWidget {
             color: theme.colorScheme.surfaceContainer,
             children: [
               _AddRow(
-                text: 'Создать группу полей',
+                text: l.fieldsGroupCreate,
                 onTap: () => _createGroup(context, ref),
               ),
             ],
@@ -99,7 +102,7 @@ class FieldGroupsScreen extends ConsumerWidget {
   static Future<void> _createGroup(BuildContext context, WidgetRef ref) async {
     final draft = await askCalendarDraft(
       context,
-      title: 'Новая группа',
+      title: L.of(context).fieldsGroupNew,
       inheritedColor: VehaBrand.seed,
     );
     if (draft == null || draft.deleted) return;
@@ -130,6 +133,7 @@ class _GroupRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final ink = EventColors.of(calendar.color, brightness);
     return VRow(
       icon: calendar.iconName,
@@ -137,7 +141,7 @@ class _GroupRow extends StatelessWidget {
       iconColor: ink.foreground,
       value: calendar.name,
       label: fields.isEmpty
-          ? 'Без своих полей'
+          ? l.fieldsGroupEmpty
           : fields.map((f) => f.name.toLowerCase()).join(', '),
       labelFirst: false,
       onTap: onTap,
@@ -181,6 +185,7 @@ class FieldsOfGroupScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
+    final l = L.of(context);
     final all = ref.watch(fieldDefsProvider).valueOrNull;
     if (all == null) return const SizedBox.shrink();
 
@@ -214,7 +219,7 @@ class FieldsOfGroupScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  '${_plural(own)} · в карточке $inCard',
+                  '${l.fieldsOwnCount(own)} · ${l.fieldsInCard(inCard)}',
                   style: TextStyle(
                     fontFamily: AppFonts.body,
                     fontSize: 12.5,
@@ -240,7 +245,7 @@ class FieldsOfGroupScreen extends ConsumerWidget {
             ],
             const VSep(),
             _AddRow(
-              text: 'Добавить поле в «${calendar.name}»',
+              text: l.fieldAddTo(calendar.name),
               onTap: () => _addField(context, ref),
             ),
           ]),
@@ -252,7 +257,7 @@ class FieldsOfGroupScreen extends ConsumerWidget {
   Future<void> _addField(BuildContext context, WidgetRef ref) async {
     final draft = await askFieldDraft(
       context,
-      title: 'Новое поле в «${calendar.name}»',
+      title: L.of(context).fieldNewIn(calendar.name),
     );
     if (draft == null || draft.deleted) return;
 
@@ -275,7 +280,7 @@ class FieldsOfGroupScreen extends ConsumerWidget {
   ) async {
     final draft = await askFieldDraft(
       context,
-      title: 'Поле',
+      title: L.of(context).fieldOne,
       name: def.name,
       type: def.type,
       iconName: def.iconName,
@@ -299,15 +304,6 @@ class FieldsOfGroupScreen extends ConsumerWidget {
     }
   }
 
-  static String _plural(int n) {
-    final mod10 = n % 10;
-    final mod100 = n % 100;
-    if (mod10 == 1 && mod100 != 11) return '$n своё поле';
-    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) {
-      return '$n своих поля';
-    }
-    return '$n своих полей';
-  }
 }
 
 class _FieldRow extends StatelessWidget {
@@ -324,6 +320,7 @@ class _FieldRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final l = L.of(context);
     return InkWell(
       onTap: onTap,
       child: Padding(
@@ -363,13 +360,13 @@ class _FieldRow extends StatelessWidget {
                       ),
                       if (def.isBuiltIn) ...[
                         const SizedBox(width: 7),
-                        const VTag('общее', accent: false),
+                        VTag(l.fieldShared, accent: false),
                       ],
                     ],
                   ),
                   const SizedBox(height: 1),
                   Text(
-                    def.type.label,
+                    fieldTypeLabel(l, def.type),
                     style: TextStyle(
                       fontFamily: AppFonts.body,
                       fontSize: 11.5,

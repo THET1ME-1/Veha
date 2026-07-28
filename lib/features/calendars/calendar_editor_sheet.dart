@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/brand.dart';
+import '../../l10n/app_localizations.dart';
 import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
 import '../calendar/widgets/month_header.dart' show AppFonts;
@@ -97,6 +98,7 @@ class _CalendarEditorSheetState extends State<_CalendarEditorSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
+    final l = L.of(context);
     final color = _color ?? widget.inheritedColor;
     final ink = EventColors.of(color, theme.brightness);
 
@@ -158,7 +160,7 @@ class _CalendarEditorSheetState extends State<_CalendarEditorSheet> {
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
-                      hintText: 'Название',
+                      hintText: l.fieldName,
                       hintStyle: TextStyle(
                         fontFamily: AppFonts.display,
                         fontSize: 20,
@@ -183,7 +185,7 @@ class _CalendarEditorSheetState extends State<_CalendarEditorSheet> {
                     onPressed: () =>
                         Navigator.pop(context, const CalendarDraft.deleted()),
                     icon: Icon(VehaIcons.byName('trash'), size: 18),
-                    label: const Text('Удалить'),
+                    label: Text(l.actionDelete),
                     style:
                         TextButton.styleFrom(foregroundColor: scheme.error),
                   ),
@@ -200,7 +202,7 @@ class _CalendarEditorSheetState extends State<_CalendarEditorSheet> {
                             ),
                           ),
                   icon: Icon(VehaIcons.byName('check'), size: 18),
-                  label: const Text('Готово'),
+                  label: Text(l.actionDone),
                 ),
               ],
             ),

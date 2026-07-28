@@ -200,21 +200,6 @@ class VNote {
 
 enum VFieldType { text, number, date, time, duration, select, checkbox, url, phone, person, money }
 
-extension VFieldTypeLabel on VFieldType {
-  String get label => switch (this) {
-        VFieldType.text => 'Текст',
-        VFieldType.number => 'Число',
-        VFieldType.date => 'Дата',
-        VFieldType.time => 'Время',
-        VFieldType.duration => 'Длительность',
-        VFieldType.select => 'Список',
-        VFieldType.checkbox => 'Флажок',
-        VFieldType.url => 'Ссылка',
-        VFieldType.phone => 'Телефон',
-        VFieldType.person => 'Человек',
-        VFieldType.money => 'Деньги',
-      };
-}
 
 /// Определение своего поля. Принадлежит группе, а не всем событиям сразу:
 /// номер карты нужен абонементу и не нужен уроку английского.
