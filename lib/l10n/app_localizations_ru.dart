@@ -1305,4 +1305,10 @@ class LRu extends L {
   String msgOverlaps(String title) {
     return 'Пересекается: $title';
   }
+
+  @override
+  String get quickPhraseHint => 'Созвон завтра в 15:00 на час';
+
+  @override
+  String get quickPhraseRead => 'Понял из строки';
 }

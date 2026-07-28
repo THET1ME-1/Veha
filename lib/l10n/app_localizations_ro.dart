@@ -1296,4 +1296,10 @@ class LRo extends L {
   String msgOverlaps(String title) {
     return 'Se suprapune: $title';
   }
+
+  @override
+  String get quickPhraseHint => 'Apel mâine la 15:00 o oră';
+
+  @override
+  String get quickPhraseRead => 'Am înțeles din text';
 }

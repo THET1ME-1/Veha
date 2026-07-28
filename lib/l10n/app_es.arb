@@ -1664,5 +1664,13 @@
         "type": "String"
       }
     }
+  },
+  "quickPhraseHint": "Llamada mañana a las 15:00 una hora",
+  "@quickPhraseHint": {
+    "description": "quickPhraseHint"
+  },
+  "quickPhraseRead": "Leído de la frase",
+  "@quickPhraseRead": {
+    "description": "quickPhraseRead"
   }
 }

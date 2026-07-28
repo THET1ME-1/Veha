@@ -1664,5 +1664,13 @@
         "type": "String"
       }
     }
+  },
+  "quickPhraseHint": "Anruf morgen um 15:00 eine Stunde",
+  "@quickPhraseHint": {
+    "description": "quickPhraseHint"
+  },
+  "quickPhraseRead": "Aus dem Satz gelesen",
+  "@quickPhraseRead": {
+    "description": "quickPhraseRead"
   }
 }

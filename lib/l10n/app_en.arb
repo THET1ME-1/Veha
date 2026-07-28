@@ -1664,5 +1664,13 @@
         "type": "String"
       }
     }
+  },
+  "quickPhraseHint": "Call tomorrow at 3 pm for an hour",
+  "@quickPhraseHint": {
+    "description": "quickPhraseHint"
+  },
+  "quickPhraseRead": "Read from the line",
+  "@quickPhraseRead": {
+    "description": "quickPhraseRead"
   }
 }

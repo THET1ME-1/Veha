@@ -1307,4 +1307,10 @@ class LUk extends L {
   String msgOverlaps(String title) {
     return 'Перетинається: $title';
   }
+
+  @override
+  String get quickPhraseHint => 'Дзвінок завтра о 15:00 на годину';
+
+  @override
+  String get quickPhraseRead => 'Зрозумів із рядка';
 }

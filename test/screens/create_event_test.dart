@@ -17,7 +17,8 @@ void main() {
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
 
-    expect(find.text('Название'), findsOneWidget,
+    // Подсказка показывает, что лист понимает фразу целиком.
+    expect(find.text('Созвон завтра в 15:00 на час'), findsOneWidget,
         reason: 'Лист открылся с пустым названием');
 
     await tester.enterText(find.byType(TextField), 'Стрижка');

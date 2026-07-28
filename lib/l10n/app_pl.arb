@@ -1664,5 +1664,13 @@
         "type": "String"
       }
     }
+  },
+  "quickPhraseHint": "Rozmowa jutro o 15:00 na godzinę",
+  "@quickPhraseHint": {
+    "description": "quickPhraseHint"
+  },
+  "quickPhraseRead": "Odczytano z tekstu",
+  "@quickPhraseRead": {
+    "description": "quickPhraseRead"
   }
 }

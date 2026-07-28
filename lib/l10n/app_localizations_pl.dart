@@ -1307,4 +1307,10 @@ class LPl extends L {
   String msgOverlaps(String title) {
     return 'Nakłada się: $title';
   }
+
+  @override
+  String get quickPhraseHint => 'Rozmowa jutro o 15:00 na godzinę';
+
+  @override
+  String get quickPhraseRead => 'Odczytano z tekstu';
 }

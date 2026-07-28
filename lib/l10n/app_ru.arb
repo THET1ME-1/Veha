@@ -1752,5 +1752,13 @@
         "type": "String"
       }
     }
+  },
+  "quickPhraseHint": "Созвон завтра в 15:00 на час",
+  "@quickPhraseHint": {
+    "description": "quickPhraseHint"
+  },
+  "quickPhraseRead": "Понял из строки",
+  "@quickPhraseRead": {
+    "description": "quickPhraseRead"
   }
 }

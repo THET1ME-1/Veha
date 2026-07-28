@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/brand.dart';
+import '../../domain/phrase.dart';
 import '../../l10n/app_localizations.dart';
 import 'look_sheet.dart';
 import '../../core/event_colors.dart';
@@ -38,6 +39,45 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
   late final TextEditingController _title =
       TextEditingController(text: _draft.title);
 
+  /// Время тронули руками — строка его больше не двигает. Разбор фразы
+  /// помогает, но не спорит: последнее слово всегда за человеком.
+  bool _timeTouched = false;
+
+  /// Что вычитано из строки. Показывается плашкой, чтобы человек видел, что
+  /// именно понял календарь, и мог поправить.
+  String? _read;
+
+  /// Строка разбирается на лету: «Созвон завтра в 15:00 на час» ставит день,
+  /// время и длительность, а названием остаётся то, что не разобралось.
+  void _readPhrase(String value) {
+    if (_timeTouched || value.trim().isEmpty) {
+      setState(() {
+        _draft = _draft.withTitle(value);
+        _read = null;
+      });
+      return;
+    }
+
+    // Точка отсчёта — день, на котором открыт лист, а не системное «сейчас»:
+    // ткнули по среде и написали «завтра» — это четверг той же недели.
+    final phrase = parsePhrase(value, now: widget.draft.start);
+    final understood = phrase.title.trim() != value.trim();
+
+    setState(() {
+      _draft = _draft
+          .withTitle(phrase.title.isEmpty ? value : phrase.title)
+          .withStart(phrase.start)
+          .withEnd(phrase.start.add(phrase.duration));
+      _read = understood ? _readLabel(phrase) : null;
+    });
+  }
+
+  String _readLabel(Phrase phrase) {
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final when = DateFormat('EEE d MMMM, HH:mm', locale).format(phrase.start);
+    return '${L.of(context).quickPhraseRead}: $when';
+  }
+
   static const _durations = <(String, Duration)>[
     ('30 мин', Duration(minutes: 30)),
     ('1 ч', Duration(hours: 1)),
@@ -52,6 +92,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
   }
 
   Future<void> _pickTime() async {
+    _timeTouched = true;
     final picked = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(_draft.start),
@@ -67,6 +108,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
   }
 
   Future<void> _pickDate() async {
+    _timeTouched = true;
     final picked = await showDatePicker(
       context: context,
       initialDate: _draft.start,
@@ -167,7 +209,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
-                hintText: L.of(context).fieldName,
+                hintText: L.of(context).quickPhraseHint,
                 hintStyle: TextStyle(
                   fontFamily: AppFonts.display,
                   fontSize: 25,
@@ -176,7 +218,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                   color: scheme.outline,
                 ),
               ),
-              onChanged: (v) => setState(() => _draft = _draft.withTitle(v)),
+              onChanged: _readPhrase,
               onSubmitted: (_) => _save(),
             ),
                 ),
@@ -206,6 +248,18 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                       color: scheme.onSurfaceVariant,
                     )),
                 _TimeChip(text: _hhmm(_draft.end)),
+                // Плашка «понял из строки»: человек видит, что именно
+                // календарь вычитал, и может поправить чипами рядом.
+                if (_read != null)
+                  Text(
+                    _read!,
+                    style: TextStyle(
+                      fontFamily: AppFonts.body,
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w600,
+                      color: scheme.primary,
+                    ),
+                  ),
               ],
             ),
           ),
@@ -220,7 +274,10 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                     label: label,
                     selected: _draft.duration == value,
                     onTap: () =>
-                        setState(() => _draft = _draft.withDuration(value)),
+                        setState(() {
+                          _timeTouched = true;
+                          _draft = _draft.withDuration(value);
+                        }),
                   ),
               ],
             ),

@@ -1664,5 +1664,13 @@
         "type": "String"
       }
     }
+  },
+  "quickPhraseHint": "Apel mâine la 15:00 o oră",
+  "@quickPhraseHint": {
+    "description": "quickPhraseHint"
+  },
+  "quickPhraseRead": "Am înțeles din text",
+  "@quickPhraseRead": {
+    "description": "quickPhraseRead"
   }
 }

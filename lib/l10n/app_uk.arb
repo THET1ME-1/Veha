@@ -1664,5 +1664,13 @@
         "type": "String"
       }
     }
+  },
+  "quickPhraseHint": "Дзвінок завтра о 15:00 на годину",
+  "@quickPhraseHint": {
+    "description": "quickPhraseHint"
+  },
+  "quickPhraseRead": "Зрозумів із рядка",
+  "@quickPhraseRead": {
+    "description": "quickPhraseRead"
   }
 }

@@ -1300,4 +1300,10 @@ class LDe extends L {
   String msgOverlaps(String title) {
     return 'Überschneidet sich: $title';
   }
+
+  @override
+  String get quickPhraseHint => 'Anruf morgen um 15:00 eine Stunde';
+
+  @override
+  String get quickPhraseRead => 'Aus dem Satz gelesen';
 }

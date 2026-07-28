@@ -2320,6 +2320,18 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'Пересекается: {title}'**
   String msgOverlaps(String title);
+
+  /// quickPhraseHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Созвон завтра в 15:00 на час'**
+  String get quickPhraseHint;
+
+  /// quickPhraseRead
+  ///
+  /// In ru, this message translates to:
+  /// **'Понял из строки'**
+  String get quickPhraseRead;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

@@ -1295,4 +1295,10 @@ class LEn extends L {
   String msgOverlaps(String title) {
     return 'Overlaps: $title';
   }
+
+  @override
+  String get quickPhraseHint => 'Call tomorrow at 3 pm for an hour';
+
+  @override
+  String get quickPhraseRead => 'Read from the line';
 }

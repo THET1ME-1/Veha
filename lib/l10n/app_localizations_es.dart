@@ -1295,4 +1295,10 @@ class LEs extends L {
   String msgOverlaps(String title) {
     return 'Se cruza con: $title';
   }
+
+  @override
+  String get quickPhraseHint => 'Llamada mañana a las 15:00 una hora';
+
+  @override
+  String get quickPhraseRead => 'Leído de la frase';
 }
