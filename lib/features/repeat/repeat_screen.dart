@@ -3,173 +3,304 @@ import 'package:intl/intl.dart';
 
 import '../../core/brand.dart';
 import '../../core/icon_registry.dart';
+import '../../domain/recurrence.dart';
 import '../calendar/widgets/month_header.dart';
 import '../common/blocks.dart';
-
-/// Что делать, если экземпляр выпал на выходной или праздник.
-enum HolidayRule { keep, moveToWorkday, skip }
+import 'repeat_rule.dart';
 
 /// Правило повторения. Собирается по частям, а внизу всегда видны ближайшие
 /// даты: ошибку в правиле человек ловит сразу, а не через месяц.
+///
+/// Экран возвращает готовый RRULE либо `null`, если повторение отключили.
 class RepeatScreen extends StatefulWidget {
-  const RepeatScreen({super.key, required this.from});
+  const RepeatScreen({super.key, required this.from, this.initial});
 
   final DateTime from;
+  final String? initial;
 
   @override
   State<RepeatScreen> createState() => _RepeatScreenState();
 }
 
 class _RepeatScreenState extends State<RepeatScreen> {
-  int _every = 2;
-  int _unit = 1; // 0 — день, 1 — неделя, 2 — месяц
-  final Set<int> _weekdays = {1, 4};
-  HolidayRule _holiday = HolidayRule.keep;
+  late RepeatRule _rule = RepeatRule.parse(widget.initial, widget.from);
+
+  static const _units = <RepeatUnit, String>{
+    RepeatUnit.day: 'дня',
+    RepeatUnit.week: 'недели',
+    RepeatUnit.month: 'месяца',
+    RepeatUnit.year: 'года',
+  };
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final locale = Localizations.localeOf(context).toLanguageTag();
+    final rrule = _rule.toRrule(widget.from);
 
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(
-          VehaInsets.screen, 6, VehaInsets.screen, 120),
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 14),
-          child: Text(
-            'Повторение',
-            style: TextStyle(
-              fontFamily: AppFonts.display,
-              fontSize: 27,
-              letterSpacing: -0.8,
-              fontWeight: FontWeight.w800,
-              color: scheme.onSurface,
-            ),
-          ),
-        ),
-        Wrap(
-          spacing: 7,
-          runSpacing: 7,
+    return Scaffold(
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(
+              VehaInsets.screen, 6, VehaInsets.screen, 40),
           children: [
-            for (final p in const ['Не повторять', 'Каждый день', 'По будням'])
-              _Preset(label: p, selected: false),
-            const _Preset(label: 'Своё правило', selected: true),
-          ],
-        ),
-        const SizedBox(height: 14),
-        VBlock(children: [
-          _EveryRow(
-            value: _every,
-            onChanged: (v) => setState(() => _every = v),
-          ),
-          const VSep(inset: 15),
-          _UnitRow(
-            value: _unit,
-            onChanged: (v) => setState(() => _unit = v),
-          ),
-          const VSep(inset: 15),
-          _Weekdays(
-            selected: _weekdays,
-            onToggle: (d) => setState(() {
-              _weekdays.contains(d) ? _weekdays.remove(d) : _weekdays.add(d);
-            }),
-          ),
-        ]),
-        const VBlockCap('Если выпадает на выходной или праздник'),
-        VBlock(children: [
-          VOption(
-            title: 'Оставить как есть',
-            selected: _holiday == HolidayRule.keep,
-            onTap: () => setState(() => _holiday = HolidayRule.keep),
-          ),
-          const VSep(inset: 15),
-          VOption(
-            title: 'Перенести на ближайший будний',
-            subtitle: 'Вперёд, если это не конец правила',
-            selected: _holiday == HolidayRule.moveToWorkday,
-            onTap: () => setState(() => _holiday = HolidayRule.moveToWorkday),
-          ),
-          const VSep(inset: 15),
-          VOption(
-            title: 'Пропустить этот раз',
-            selected: _holiday == HolidayRule.skip,
-            onTap: () => setState(() => _holiday = HolidayRule.skip),
-          ),
-        ]),
-        const VBlockCap('Ближайшие даты'),
-        Wrap(
-          spacing: 7,
-          runSpacing: 7,
-          children: [
-            for (var i = 0; i < nextDates(widget.from, _every, _weekdays, 6).length; i++)
-              _DateChip(
-                text: DateFormat('EEE d MMM', locale)
-                    .format(nextDates(widget.from, _every, _weekdays, 6)[i]),
-                first: i == 0,
+            Padding(
+              padding: const EdgeInsets.only(bottom: 14),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Повторение',
+                      style: TextStyle(
+                        fontFamily: AppFonts.display,
+                        fontSize: 27,
+                        letterSpacing: -0.8,
+                        fontWeight: FontWeight.w800,
+                        color: scheme.onSurface,
+                      ),
+                    ),
+                  ),
+                  FilledButton(
+                    onPressed: () =>
+                        Navigator.of(context).pop(_Result(rrule)),
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 18, vertical: 11),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: const Text('Готово'),
+                  ),
+                ],
               ),
+            ),
+            Wrap(
+              spacing: 7,
+              runSpacing: 7,
+              children: [
+                _Preset(
+                  label: 'Не повторять',
+                  selected: !_rule.repeats,
+                  onTap: () => setState(() => _rule = const RepeatRule.none()),
+                ),
+                _Preset(
+                  label: 'Каждый день',
+                  selected: _rule.unit == RepeatUnit.day && _rule.interval == 1,
+                  onTap: () => setState(() =>
+                      _rule = const RepeatRule(unit: RepeatUnit.day)),
+                ),
+                _Preset(
+                  label: 'По будням',
+                  selected: _rule.unit == RepeatUnit.week &&
+                      _rule.interval == 1 &&
+                      _rule.weekdays.length == 5 &&
+                      _rule.weekdays.every((d) => d <= 5),
+                  onTap: () => setState(() => _rule = const RepeatRule(
+                        unit: RepeatUnit.week,
+                        weekdays: {1, 2, 3, 4, 5},
+                      )),
+                ),
+                _Preset(
+                  label: 'Каждую неделю',
+                  selected: _rule.unit == RepeatUnit.week &&
+                      _rule.interval == 1 &&
+                      _rule.weekdays.length <= 1,
+                  onTap: () => setState(() => _rule = RepeatRule(
+                        unit: RepeatUnit.week,
+                        weekdays: {widget.from.weekday},
+                      )),
+                ),
+              ],
+            ),
+            if (_rule.repeats) ...[
+              const SizedBox(height: 14),
+              VBlock(children: [
+                _EveryRow(
+                  value: _rule.interval,
+                  unit: _units[_rule.unit] ?? '',
+                  onChanged: (v) =>
+                      setState(() => _rule = _rule.copyWith(interval: v)),
+                ),
+                const VSep(inset: 15),
+                _UnitRow(
+                  value: _rule.unit,
+                  onChanged: (v) =>
+                      setState(() => _rule = _rule.copyWith(unit: v)),
+                ),
+                if (_rule.unit == RepeatUnit.week) ...[
+                  const VSep(inset: 15),
+                  _Weekdays(
+                    selected: _rule.weekdays.isEmpty
+                        ? {widget.from.weekday}
+                        : _rule.weekdays,
+                    onToggle: (d) => setState(() {
+                      final next = (_rule.weekdays.isEmpty
+                              ? {widget.from.weekday}
+                              : _rule.weekdays)
+                          .toSet();
+                      next.contains(d) ? next.remove(d) : next.add(d);
+                      _rule = _rule.copyWith(weekdays: next);
+                    }),
+                  ),
+                ],
+              ]),
+              const VBlockCap('Когда заканчивается'),
+              VBlock(children: [
+                VOption(
+                  title: 'Никогда',
+                  selected: _rule.count == null && _rule.until == null,
+                  onTap: () => setState(() =>
+                      _rule = _rule.copyWith(count: null, until: null)),
+                ),
+                const VSep(inset: 15),
+                VOption(
+                  title: 'После нескольких повторов',
+                  subtitle: _rule.count == null ? null : '${_rule.count} раз',
+                  selected: _rule.count != null,
+                  onTap: () => setState(() =>
+                      _rule = _rule.copyWith(count: _rule.count ?? 10, until: null)),
+                ),
+                if (_rule.count != null) ...[
+                  const VSep(inset: 15),
+                  _EveryRow(
+                    value: _rule.count!,
+                    unit: 'раз',
+                    label: 'Повторов',
+                    onChanged: (v) =>
+                        setState(() => _rule = _rule.copyWith(count: v)),
+                  ),
+                ],
+                const VSep(inset: 15),
+                VOption(
+                  title: 'До даты',
+                  subtitle: _rule.until == null
+                      ? null
+                      : DateFormat('d MMMM y', locale).format(_rule.until!),
+                  selected: _rule.until != null,
+                  onTap: _pickUntil,
+                ),
+              ]),
+              const VBlockCap('Ближайшие даты'),
+              _Preview(rrule: rrule, from: widget.from, locale: locale),
+            ],
           ],
         ),
+      ),
+    );
+  }
+
+  Future<void> _pickUntil() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _rule.until ?? widget.from.add(const Duration(days: 90)),
+      firstDate: widget.from,
+      lastDate: DateTime(widget.from.year + 10),
+    );
+    if (picked == null) return;
+    setState(() => _rule = _rule.copyWith(until: picked, count: null));
+  }
+}
+
+/// Результат экрана. Обёртка нужна, чтобы отличить «выбрал не повторять»
+/// (правило `null`) от «вышел кнопкой назад» (весь результат `null`).
+class _Result {
+  const _Result(this.rrule);
+
+  final String? rrule;
+}
+
+/// Возвращает выбранное правило: `null` — человек ушёл, ничего не меняя.
+Future<String?> askRepeatRule(
+  BuildContext context, {
+  required DateTime from,
+  String? initial,
+}) async {
+  final result = await Navigator.of(context).push<_Result>(
+    MaterialPageRoute(
+      builder: (_) => RepeatScreen(from: from, initial: initial),
+    ),
+  );
+  return result?.rrule;
+}
+
+/// Отдельно от экрана: без предпросмотра человек узнаёт об ошибке в правиле
+/// через месяц, когда занятие не пришло.
+class _Preview extends StatelessWidget {
+  const _Preview({required this.rrule, required this.from, required this.locale});
+
+  final String? rrule;
+  final DateTime from;
+  final String locale;
+
+  @override
+  Widget build(BuildContext context) {
+    if (rrule == null) return const SizedBox.shrink();
+
+    final dates = Recurrence.expand(
+      rrule: rrule!,
+      start: from,
+      windowStart: from,
+      windowEnd: from.add(const Duration(days: 400)),
+    ).take(6).toList();
+
+    if (dates.isEmpty) {
+      final scheme = Theme.of(context).colorScheme;
+      return Text(
+        'По такому правилу занятий не будет',
+        style: TextStyle(
+          fontFamily: AppFonts.body,
+          fontSize: 12.5,
+          fontWeight: FontWeight.w600,
+          color: scheme.error,
+        ),
+      );
+    }
+
+    return Wrap(
+      spacing: 7,
+      runSpacing: 7,
+      children: [
+        for (var i = 0; i < dates.length; i++)
+          _DateChip(
+            text: DateFormat('EEE d MMM', locale).format(dates[i]),
+            first: i == 0,
+          ),
       ],
     );
   }
 }
 
-/// Ближайшие даты по правилу «каждые N недель по выбранным дням».
-///
-/// Считается здесь, а не в UI: предпросмотр — единственная защита от
-/// неверного правила, и он должен быть проверяем тестом.
-List<DateTime> nextDates(
-  DateTime from,
-  int everyWeeks,
-  Set<int> weekdays,
-  int count,
-) {
-  if (weekdays.isEmpty || everyWeeks < 1) return const [];
-  final result = <DateTime>[];
-  final startWeek = _weekStart(from);
-  var cursor = DateTime(from.year, from.month, from.day);
-
-  while (result.length < count) {
-    cursor = cursor.add(const Duration(days: 1));
-    if (!weekdays.contains(cursor.weekday)) continue;
-    final weeksPassed =
-        _weekStart(cursor).difference(startWeek).inDays ~/ 7;
-    if (weeksPassed % everyWeeks != 0) continue;
-    result.add(cursor);
-  }
-  return result;
-}
-
-DateTime _weekStart(DateTime d) {
-  final day = DateTime(d.year, d.month, d.day);
-  return day.subtract(Duration(days: day.weekday - 1));
-}
-
 class _Preset extends StatelessWidget {
-  const _Preset({required this.label, required this.selected});
+  const _Preset({required this.label, required this.selected, this.onTap});
 
   final String label;
   final bool selected;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-      decoration: ShapeDecoration(
-        color: selected ? scheme.primaryContainer : scheme.surfaceContainerHigh,
-        shape: const StadiumBorder(),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontFamily: AppFonts.body,
-          fontSize: 12.5,
-          fontWeight: FontWeight.w600,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(99),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+        decoration: ShapeDecoration(
           color: selected
-              ? scheme.onPrimaryContainer
-              : scheme.onSurfaceVariant,
+              ? scheme.primaryContainer
+              : scheme.surfaceContainerHigh,
+          shape: const StadiumBorder(),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontFamily: AppFonts.body,
+            fontSize: 12.5,
+            fontWeight: FontWeight.w700,
+            color: selected
+                ? scheme.onPrimaryContainer
+                : scheme.onSurfaceVariant,
+          ),
         ),
       ),
     );
@@ -177,16 +308,23 @@ class _Preset extends StatelessWidget {
 }
 
 class _EveryRow extends StatelessWidget {
-  const _EveryRow({required this.value, required this.onChanged});
+  const _EveryRow({
+    required this.value,
+    required this.unit,
+    required this.onChanged,
+    this.label = 'Каждые',
+  });
 
   final int value;
+  final String unit;
+  final String label;
   final ValueChanged<int> onChanged;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 11),
       child: Row(
         children: [
           Expanded(
@@ -195,7 +333,16 @@ class _EveryRow extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Повторять каждые',
+                  label,
+                  style: TextStyle(
+                    fontFamily: AppFonts.body,
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w600,
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ),
+                Text(
+                  '$value $unit',
                   style: TextStyle(
                     fontFamily: AppFonts.body,
                     fontSize: 14.5,
@@ -203,50 +350,17 @@ class _EveryRow extends StatelessWidget {
                     color: scheme.onSurface,
                   ),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  'Считается от первой даты',
-                  style: TextStyle(
-                    fontFamily: AppFonts.body,
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w500,
-                    color: scheme.onSurfaceVariant,
-                  ),
-                ),
               ],
             ),
           ),
-          Container(
-            padding: const EdgeInsets.all(4),
-            decoration: ShapeDecoration(
-              color: scheme.surfaceContainerHigh,
-              shape: const StadiumBorder(),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _StepButton(
-                  icon: 'add',
-                  rotated: true,
-                  onTap: () => onChanged(value > 1 ? value - 1 : 1),
-                ),
-                SizedBox(
-                  width: 30,
-                  child: Text(
-                    '$value',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: AppFonts.display,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: scheme.onSurface,
-                      fontFeatures: const [FontFeature.tabularFigures()],
-                    ),
-                  ),
-                ),
-                _StepButton(icon: 'add', onTap: () => onChanged(value + 1)),
-              ],
-            ),
+          _Step(
+            icon: 'add',
+            onTap: value < 99 ? () => onChanged(value + 1) : null,
+          ),
+          const SizedBox(width: 8),
+          _Step(
+            icon: 'undo',
+            onTap: value > 1 ? () => onChanged(value - 1) : null,
           ),
         ],
       ),
@@ -254,36 +368,31 @@ class _EveryRow extends StatelessWidget {
   }
 }
 
-class _StepButton extends StatelessWidget {
-  const _StepButton({
-    required this.icon,
-    required this.onTap,
-    this.rotated = false,
-  });
+class _Step extends StatelessWidget {
+  const _Step({required this.icon, this.onTap});
 
   final String icon;
-  final VoidCallback onTap;
-
-  /// Минус рисуется тем же плюсом, повёрнутым и обрезанным по горизонтали:
-  /// отдельная иконка ради одной черты в белый список не просится.
-  final bool rotated;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return GestureDetector(
+    return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(99),
       child: Container(
-        width: 32,
-        height: 32,
+        width: 40,
+        height: 40,
         alignment: Alignment.center,
         decoration: ShapeDecoration(
           color: scheme.surfaceContainerHighest,
           shape: const CircleBorder(),
         ),
-        child: rotated
-            ? Container(width: 13, height: 2.4, color: scheme.onSurface)
-            : Icon(VehaIcons.byName(icon), size: 15, color: scheme.onSurface),
+        child: Icon(
+          VehaIcons.byName(icon),
+          size: 18,
+          color: onTap == null ? scheme.outline : scheme.onSurfaceVariant,
+        ),
       ),
     );
   }
@@ -292,55 +401,30 @@ class _StepButton extends StatelessWidget {
 class _UnitRow extends StatelessWidget {
   const _UnitRow({required this.value, required this.onChanged});
 
-  final int value;
-  final ValueChanged<int> onChanged;
+  final RepeatUnit value;
+  final ValueChanged<RepeatUnit> onChanged;
+
+  static const _labels = <RepeatUnit, String>{
+    RepeatUnit.day: 'День',
+    RepeatUnit.week: 'Неделя',
+    RepeatUnit.month: 'Месяц',
+    RepeatUnit.year: 'Год',
+  };
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    const labels = ['дня', 'недели', 'месяца'];
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-      child: Row(
+      padding: const EdgeInsets.fromLTRB(15, 4, 15, 12),
+      child: Wrap(
+        spacing: 7,
+        runSpacing: 7,
         children: [
-          Expanded(
-            child: Text(
-              'Единица',
-              style: TextStyle(
-                fontFamily: AppFonts.body,
-                fontSize: 14.5,
-                fontWeight: FontWeight.w600,
-                color: scheme.onSurface,
-              ),
+          for (final entry in _labels.entries)
+            _Preset(
+              label: entry.value,
+              selected: value == entry.key,
+              onTap: () => onChanged(entry.key),
             ),
-          ),
-          for (var i = 0; i < labels.length; i++) ...[
-            const SizedBox(width: 6),
-            GestureDetector(
-              onTap: () => onChanged(i),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                decoration: ShapeDecoration(
-                  color: i == value
-                      ? scheme.primaryContainer
-                      : scheme.surfaceContainerHigh,
-                  shape: const StadiumBorder(),
-                ),
-                child: Text(
-                  labels[i],
-                  style: TextStyle(
-                    fontFamily: AppFonts.body,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: i == value
-                        ? scheme.onPrimaryContainer
-                        : scheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
-            ),
-          ],
         ],
       ),
     );
@@ -357,64 +441,46 @@ class _Weekdays extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final fmt = DateFormat.E(locale);
-    // Понедельник ближайшей недели — просто донор дат для подписей.
-    final monday = DateTime(2026, 7, 27);
+    final short = DateFormat.E(locale);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(15, 12, 15, 0),
-          child: Text(
-            'По дням недели',
-            style: TextStyle(
-              fontFamily: AppFonts.body,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: scheme.onSurfaceVariant,
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(15, 8, 15, 15),
-          child: Row(
-            children: [
-              for (var d = 1; d <= 7; d++) ...[
-                if (d > 1) const SizedBox(width: 6),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => onToggle(d),
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: Container(
-                        alignment: Alignment.center,
-                        decoration: ShapeDecoration(
-                          color: selected.contains(d)
-                              ? scheme.primary
-                              : scheme.surfaceContainerHigh,
-                          shape: const CircleBorder(),
-                        ),
-                        child: Text(
-                          fmt.format(monday.add(Duration(days: d - 1))).toLowerCase(),
-                          style: TextStyle(
-                            fontFamily: AppFonts.body,
-                            fontSize: 12.5,
-                            fontWeight: FontWeight.w700,
-                            color: selected.contains(d)
-                                ? scheme.onPrimary
-                                : scheme.onSurfaceVariant,
-                          ),
-                        ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15, 4, 15, 14),
+      child: Row(
+        children: [
+          for (var d = 1; d <= 7; d++) ...[
+            Expanded(
+              child: InkWell(
+                onTap: () => onToggle(d),
+                borderRadius: BorderRadius.circular(99),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: Container(
+                    alignment: Alignment.center,
+                    decoration: ShapeDecoration(
+                      color: selected.contains(d)
+                          ? scheme.primary
+                          : scheme.surfaceContainerHighest,
+                      shape: const CircleBorder(),
+                    ),
+                    child: Text(
+                      short.format(DateTime(2026, 1, 4 + d)).toLowerCase(),
+                      style: TextStyle(
+                        fontFamily: AppFonts.body,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: selected.contains(d)
+                            ? scheme.onPrimary
+                            : scheme.onSurfaceVariant,
                       ),
                     ),
                   ),
                 ),
-              ],
-            ],
-          ),
-        ),
-      ],
+              ),
+            ),
+            if (d < 7) const SizedBox(width: 6),
+          ],
+        ],
+      ),
     );
   }
 }
@@ -429,7 +495,7 @@ class _DateChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: ShapeDecoration(
         color: first ? scheme.secondaryContainer : scheme.surfaceContainerHigh,
         shape: const StadiumBorder(),
@@ -441,7 +507,6 @@ class _DateChip extends StatelessWidget {
           fontSize: 12,
           fontWeight: FontWeight.w600,
           color: first ? scheme.onSecondaryContainer : scheme.onSurfaceVariant,
-          fontFeatures: const [FontFeature.tabularFigures()],
         ),
       ),
     );

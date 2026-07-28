@@ -96,7 +96,8 @@ class EventDraft {
       _copy(rrule: value, dropRrule: value == null);
   EventDraft withLocation(String? value) =>
       _copy(location: value, dropLocation: value == null);
-  EventDraft withIcon(String? value) => _copy(iconName: value);
+  EventDraft withIcon(String? value) =>
+      _copy(iconName: value, dropIcon: value == null);
   EventDraft withColor(Color? value) => _copy(color: value, dropColor: value == null);
   EventDraft withAllDay(bool value) => _copy(isAllDay: value);
 
@@ -135,6 +136,7 @@ class EventDraft {
     bool? isAllDay,
     bool dropSubcategory = false,
     bool dropColor = false,
+    bool dropIcon = false,
     bool dropRrule = false,
     bool dropLocation = false,
   }) =>
@@ -146,7 +148,7 @@ class EventDraft {
         subcategoryId:
             dropSubcategory ? subcategoryId : subcategoryId ?? this.subcategoryId,
         color: dropColor ? color : color ?? this.color,
-        iconName: iconName ?? this.iconName,
+        iconName: dropIcon ? iconName : iconName ?? this.iconName,
         rrule: dropRrule ? rrule : rrule ?? this.rrule,
         location: dropLocation ? location : location ?? this.location,
         isAllDay: isAllDay ?? this.isAllDay,

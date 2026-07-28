@@ -7,6 +7,9 @@ import '../../core/icon_registry.dart';
 import '../../data/models.dart';
 import '../../domain/draft.dart';
 import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
+import '../repeat/repeat_screen.dart' show askRepeatRule;
+import 'calendar_picker_sheet.dart';
+import 'look_sheet.dart';
 import '../calendar/widgets/month_header.dart' show AppFonts;
 import '../common/blocks.dart';
 
@@ -86,6 +89,41 @@ class _EventEditScreenState extends State<EventEditScreen> {
     );
   }
 
+  Future<void> _pickRepeat() async {
+    final rrule = await askRepeatRule(
+      context,
+      from: _draft.start,
+      initial: _draft.rrule,
+    );
+    if (!mounted) return;
+    setState(() => _draft = _draft.withRrule(rrule));
+  }
+
+  Future<void> _pickCalendar() async {
+    final chosen = await askCalendar(
+      context,
+      inheritance: widget.inheritance,
+      calendarId: _draft.calendarId,
+      subcategoryId: _draft.subcategoryId,
+    );
+    if (chosen == null) return;
+    setState(() => _draft = _draft
+        .withCalendar(chosen.calendarId)
+        .withSubcategory(chosen.subcategoryId));
+  }
+
+  Future<void> _pickLook(Color inheritedColor, String inheritedIcon) async {
+    final look = await askEventLook(
+      context,
+      current: EventLook(iconName: _draft.iconName, color: _draft.color),
+      inheritedColor: inheritedColor,
+      inheritedIcon: inheritedIcon,
+    );
+    if (look == null) return;
+    setState(() =>
+        _draft = _draft.withIcon(look.iconName).withColor(look.color));
+  }
+
   Future<void> _pickLocation() async {
     final controller = TextEditingController(text: _draft.location ?? '');
     final value = await showDialog<String>(
@@ -152,6 +190,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
                 context,
                 scheme,
                 ink,
+                color,
                 icon,
                 locale,
                 calendar,
@@ -169,6 +208,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
     BuildContext context,
     ColorScheme scheme,
     EventInk ink,
+    Color color,
     String icon,
     String locale,
     VCalendar? calendar,
@@ -194,19 +234,49 @@ class _EventEditScreenState extends State<EventEditScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 46,
-                height: 46,
-                alignment: Alignment.center,
-                decoration: ShapeDecoration(
-                  color: ink.foreground.withValues(alpha: 0.15),
-                  shape: const CircleBorder(),
-                ),
-                child: Icon(
-                  VehaIcons.byName(icon),
-                  size: 23,
-                  color: ink.foreground,
-                ),
+              Row(
+                children: [
+                  InkWell(
+                    onTap: () => _pickLook(color, icon),
+                    borderRadius: BorderRadius.circular(99),
+                    child: Container(
+                      width: 46,
+                      height: 46,
+                      alignment: Alignment.center,
+                      decoration: ShapeDecoration(
+                        color: ink.foreground.withValues(alpha: 0.15),
+                        shape: const CircleBorder(),
+                      ),
+                      child: Icon(
+                        VehaIcons.byName(icon),
+                        size: 23,
+                        color: ink.foreground,
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  InkWell(
+                    onTap: () => _pickLook(color, icon),
+                    borderRadius: BorderRadius.circular(99),
+                    child: Container(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                      decoration: ShapeDecoration(
+                        color: ink.foreground.withValues(alpha: 0.14),
+                        shape: const StadiumBorder(),
+                      ),
+                      child: Text(
+                        'Иконка и цвет',
+                        style: TextStyle(
+                          fontFamily: AppFonts.body,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: ink.foreground,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 13),
               TextField(
@@ -278,6 +348,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
               icon: 'repeat',
               label: 'Повтор',
               value: repeat,
+              onTap: _pickRepeat,
               trailing: Icon(
                 VehaIcons.byName('chevron'),
                 size: 17,
@@ -291,6 +362,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
               value: sub == null
                   ? calendar?.name ?? ''
                   : '${calendar?.name} · ${sub.name}',
+              onTap: _pickCalendar,
               trailing: Icon(
                 VehaIcons.byName('chevron'),
                 size: 17,
