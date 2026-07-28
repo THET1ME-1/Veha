@@ -21,6 +21,7 @@ class EventDraft {
     this.location,
     this.isAllDay = false,
     this.reminders = const [30],
+    this.fields = const [],
     this.source,
   });
 
@@ -54,6 +55,7 @@ class EventDraft {
         location: e.location,
         isAllDay: e.isAllDay,
         reminders: e.reminders,
+        fields: e.fields,
         source: e,
       );
 
@@ -72,6 +74,10 @@ class EventDraft {
   /// полчаса: событие, о котором не напомнили, человек пропускает, а лишний
   /// сигнал он снимет сам.
   final List<int> reminders;
+
+  /// Заполненные свои поля. Пустое значение сюда не кладём: поле без текста
+  /// и отсутствующее поле — одно и то же.
+  final List<VFieldValue> fields;
 
   /// Событие, которое правят. `null` — черновик нового события.
   final VEvent? source;
@@ -109,6 +115,22 @@ class EventDraft {
   EventDraft withAllDay(bool value) => _copy(isAllDay: value);
   EventDraft withReminders(List<int> value) => _copy(reminders: value);
 
+  /// Значение своего поля. Пустая строка стирает поле целиком.
+  EventDraft withField(String fieldId, String value) {
+    final rest = [...fields.where((f) => f.fieldId != fieldId)];
+    if (value.trim().isNotEmpty) {
+      rest.add(VFieldValue(fieldId: fieldId, value: value.trim()));
+    }
+    return _copy(fields: rest);
+  }
+
+  String? fieldValue(String fieldId) {
+    for (final f in fields) {
+      if (f.fieldId == fieldId) return f.value;
+    }
+    return null;
+  }
+
   /// Готовое событие. Новому выдаётся ключ, правка сохраняет свой — вместе с
   /// пометкой «экземпляр ряда», по которой репозиторий решает, писать в ряд
   /// или выламывать занятие.
@@ -128,7 +150,7 @@ class EventDraft {
         isVirtual: source?.isVirtual ?? false,
         timezone: source?.timezone ?? 'Europe/Chisinau',
         location: location,
-        fields: source?.fields ?? const [],
+        fields: fields,
         reminders: reminders,
       );
 
@@ -144,6 +166,7 @@ class EventDraft {
     String? location,
     bool? isAllDay,
     List<int>? reminders,
+    List<VFieldValue>? fields,
     bool dropSubcategory = false,
     bool dropColor = false,
     bool dropIcon = false,
@@ -163,6 +186,7 @@ class EventDraft {
         location: dropLocation ? location : location ?? this.location,
         isAllDay: isAllDay ?? this.isAllDay,
         reminders: reminders ?? this.reminders,
+        fields: fields ?? this.fields,
         source: source,
       );
 }

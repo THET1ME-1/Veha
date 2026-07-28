@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/brand.dart';
@@ -9,6 +10,8 @@ import '../../domain/draft.dart';
 import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
 import '../repeat/repeat_screen.dart' show askRepeatRule;
 import 'calendar_picker_sheet.dart';
+import '../../data/providers.dart';
+import 'field_value_sheet.dart';
 import 'look_sheet.dart';
 import 'reminders_sheet.dart';
 import '../calendar/widgets/month_header.dart' show AppFonts;
@@ -18,7 +21,7 @@ import '../common/blocks.dart';
 ///
 /// Читать и править — один макет, поэтому человек не переучивается: строки
 /// стоят на тех же местах, меняется только то, что они теперь нажимаются.
-class EventEditScreen extends StatefulWidget {
+class EventEditScreen extends ConsumerStatefulWidget {
   const EventEditScreen({
     super.key,
     required this.draft,
@@ -33,10 +36,10 @@ class EventEditScreen extends StatefulWidget {
   final VoidCallback? onDelete;
 
   @override
-  State<EventEditScreen> createState() => _EventEditScreenState();
+  ConsumerState<EventEditScreen> createState() => _EventEditScreenState();
 }
 
-class _EventEditScreenState extends State<EventEditScreen> {
+class _EventEditScreenState extends ConsumerState<EventEditScreen> {
   late EventDraft _draft = widget.draft;
   late final TextEditingController _title = TextEditingController(
     text: _draft.title,
@@ -98,6 +101,46 @@ class _EventEditScreenState extends State<EventEditScreen> {
     );
     if (!mounted) return;
     setState(() => _draft = _draft.withRrule(rrule));
+  }
+
+  /// Поля календаря, к которому приписано событие. Список ведёт экран полей,
+  /// здесь его только заполняют.
+  ///
+  /// Встроенные (общие) записи сюда не идут: «Повтор» и «Место» — свойства
+  /// самого события, у них свои строки выше, и второй раз спрашивать их
+  /// значит предлагать две разные правды об одном.
+  List<VFieldDef> get _defs {
+    final all = ref.watch(fieldDefsProvider).valueOrNull ?? const <VFieldDef>[];
+    return [
+      for (final f in all)
+        if (f.calendarId == _draft.calendarId) f,
+    ];
+  }
+
+  Widget _fieldRow(VFieldDef def, ColorScheme scheme) {
+    final value = _draft.fieldValue(def.id);
+    return VRow(
+      icon: def.iconName,
+      label: def.name,
+      value: value == null ? 'добавить' : showFieldValue(def, value),
+      onTap: () => _pickField(def),
+      trailing: def.type == VFieldType.checkbox
+          ? VSwitch(
+              value: value == 'да',
+              onChanged: (_) => _pickField(def),
+            )
+          : Icon(VehaIcons.byName('chevron'), size: 17, color: scheme.outline),
+    );
+  }
+
+  Future<void> _pickField(VFieldDef def) async {
+    final value = await askFieldValue(
+      context,
+      def: def,
+      current: _draft.fieldValue(def.id),
+    );
+    if (value == null) return;
+    setState(() => _draft = _draft.withField(def.id, value));
   }
 
   Future<void> _pickReminders() async {
@@ -402,6 +445,15 @@ class _EventEditScreenState extends State<EventEditScreen> {
             ),
           ],
         ),
+        if (_defs.isNotEmpty) ...[
+          const VBlockCap('Свои поля'),
+          VBlock(children: [
+            for (var i = 0; i < _defs.length; i++) ...[
+              if (i > 0) const VSep(),
+              _fieldRow(_defs[i], scheme),
+            ],
+          ]),
+        ],
         if (widget.onDelete != null) ...[
           const SizedBox(height: 18),
           TextButton.icon(

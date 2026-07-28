@@ -317,8 +317,24 @@ class VehaRepository {
             updatedAt: now,
           ));
       await _writeReminders(id, e.reminders);
+      await _writeFieldValues(id, e.fields);
       await _enqueue('event', id, 'upsert');
     });
+  }
+
+  /// Значения своих полей переписываются целиком, как и напоминания: стёртое
+  /// человеком поле обязано исчезнуть, а не остаться в базе со старым текстом.
+  Future<void> _writeFieldValues(String eventId, List<VFieldValue> fields) async {
+    await (db.delete(db.fieldValues)..where((t) => t.eventId.equals(eventId)))
+        .go();
+    for (final f in fields) {
+      if (f.value.trim().isEmpty) continue;
+      await db.into(db.fieldValues).insert(FieldValuesCompanion.insert(
+            eventId: eventId,
+            fieldId: f.fieldId,
+            value: f.value,
+          ));
+    }
   }
 
   /// Набор напоминаний переписывается целиком: правка отвечает на вопрос

@@ -269,6 +269,48 @@ void main() {
         inheritance.calendars['c-study']!.color);
   });
 
+  test('Значения своих полей сохраняются вместе с событием', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+
+    final id = repo.newId();
+    await repo.upsertEvent(VEvent(
+      id: id,
+      calendarId: 'c-study',
+      title: 'Зачёт',
+      start: DateTime(2026, 7, 28, 10),
+      end: DateTime(2026, 7, 28, 11),
+      fields: const [
+        VFieldValue(fieldId: 'f-room', value: '311'),
+        VFieldValue(fieldId: 'f-teacher', value: 'Мария Л.'),
+      ],
+    ));
+
+    final saved = await _eventById(repo, id, DateTime(2026, 7, 28));
+    expect(
+      {for (final f in saved.fields) f.fieldId: f.value},
+      {'f-room': '311', 'f-teacher': 'Мария Л.'},
+    );
+  });
+
+  test('Стёртое значение поля уходит из события', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+
+    final id = repo.newId();
+    final base = VEvent(
+      id: id,
+      calendarId: 'c-study',
+      title: 'Зачёт',
+      start: DateTime(2026, 7, 28, 10),
+      end: DateTime(2026, 7, 28, 11),
+      fields: const [VFieldValue(fieldId: 'f-room', value: '311')],
+    );
+    await repo.upsertEvent(base);
+    await repo.upsertEvent(base.copyWith(fields: const []));
+
+    final saved = await _eventById(repo, id, DateTime(2026, 7, 28));
+    expect(saved.fields, isEmpty);
+  });
+
   test('Напоминания сохраняются вместе с событием', () async {
     await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
 

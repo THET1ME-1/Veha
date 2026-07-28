@@ -80,6 +80,41 @@ void main() {
         reason: 'Напоминания дошли до базы и вернулись в карточку события');
   });
 
+  testWidgets('Своё поле заполняется и доезжает до базы', (tester) async {
+    await pumpScreen(tester, const HomeShell());
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'Пересдача');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Подробнее'));
+    await tester.pumpAndSettle();
+
+    // «Кабинет» — своё поле группы «Учёба», куда попадает новое событие.
+    await tester.scrollUntilVisible(find.text('Кабинет'), 200,
+        scrollable: find.byType(Scrollable).first);
+    await tester.tap(find.text('Кабинет'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField).last, '415');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Готово'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('415'), findsOneWidget);
+
+    await tester.tap(find.text('Сохранить'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Пересдача').first);
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(find.text('415'), 200,
+        scrollable: find.byType(Scrollable).first);
+    expect(find.text('415'), findsOneWidget,
+        reason: 'Значение дошло до базы и вернулось в форму');
+  });
+
   testWidgets('Снимок быстрого листа', (tester) async {
     await pumpScreen(tester, const HomeShell());
 
