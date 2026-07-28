@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/brand.dart';
 import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
 import '../../data/models.dart';
-import '../../data/seed.dart';
+import '../../data/providers.dart';
 import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
 import '../calendar/widgets/month_header.dart';
 import '../common/blocks.dart';
@@ -14,7 +15,7 @@ import '../common/blocks.dart';
 ///
 /// Плашка «в карточке» отмечает поля, которые видны в таймлайне. Остальные
 /// живут здесь и попадают в поиск наравне с названием.
-class EventScreen extends StatelessWidget {
+class EventScreen extends ConsumerWidget {
   const EventScreen({
     super.key,
     required this.event,
@@ -29,8 +30,9 @@ class EventScreen extends StatelessWidget {
   final DateTime? today;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final defs = ref.watch(fieldDefsByIdProvider);
     final locale = Localizations.localeOf(context).toLanguageTag();
     final color = inheritance.colorOfEvent(event);
     final ink = EventColors.of(color, theme.brightness);
@@ -56,7 +58,7 @@ class EventScreen extends StatelessWidget {
       ));
     }
     for (final v in event.fields) {
-      final def = Seed.fields.where((f) => f.id == v.fieldId).firstOrNull;
+      final def = defs[v.fieldId];
       add(VRow(
         icon: def?.iconName ?? 'text',
         label: def?.name ?? v.fieldId,

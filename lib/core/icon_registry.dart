@@ -83,4 +83,18 @@ class VehaIcons {
       _all[name] ?? _all['circle']!;
 
   static Iterable<String> get names => _all.keys;
+
+  /// Иконки, которые человек выбирает сам — календарю, ветке, полю.
+  ///
+  /// Остальное в списке служебное: стрелку «назад», урну и галочку незачем
+  /// предлагать как знак занятия. Ровно шесть рядов по шесть — сетка выбора
+  /// закрывает ширину телефона без огрызка снизу.
+  static const List<String> pickable = [
+    'alarm', 'fitness', 'restaurant', 'groups', 'coffee', 'school',
+    'pool', 'book', 'work', 'cake', 'pets', 'flight',
+    'shopping', 'health', 'music', 'movie', 'ticket', 'exam',
+    'door', 'person', 'place', 'bell', 'calendar', 'repeat',
+    'cloud', 'note', 'number', 'text', 'toggle', 'clock',
+    'flag', 'key', 'link', 'list', 'today', 'language',
+  ];
 }

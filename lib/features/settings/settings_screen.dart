@@ -10,6 +10,7 @@ import '../calendar/widgets/month_header.dart' show AppFonts;
 import '../calendar/widgets/week_setup_sheet.dart';
 import '../color/color_picker_screen.dart';
 import '../common/blocks.dart';
+import '../fields/fields_screen.dart';
 
 /// Настройки: оформление, неделя, данные, о приложении.
 ///
@@ -91,6 +92,17 @@ class SettingsScreen extends ConsumerWidget {
               if (chosen == null) return;
               await ref.read(weekLayoutProvider.notifier).set(chosen);
             },
+          ),
+          const VSep(),
+          VRow(
+            icon: 'text',
+            label: 'Свои поля',
+            value: 'Кабинет, тренер, номер абонемента',
+            trailing: Icon(VehaIcons.byName('chevron'),
+                size: 17, color: scheme.outline),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const FieldGroupsScreen()),
+            ),
           ),
           const VSep(),
           _ChoiceRow(

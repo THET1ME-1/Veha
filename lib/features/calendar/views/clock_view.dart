@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/brand.dart';
 import '../../../core/event_colors.dart';
 import '../../../core/icon_registry.dart';
 import '../../../data/models.dart';
-import '../../../data/seed.dart';
+import '../../../data/providers.dart';
 import '../widgets/month_header.dart';
 
 /// Часы: настоящая шкала времени.
@@ -212,7 +213,7 @@ class _HourRow extends StatelessWidget {
   }
 }
 
-class _EventBlock extends StatelessWidget {
+class _EventBlock extends ConsumerWidget {
   const _EventBlock({
     required this.placed,
     required this.firstHour,
@@ -234,8 +235,9 @@ class _EventBlock extends StatelessWidget {
   final VoidCallback? onLongPress;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final e = placed.event;
+    final defs = ref.watch(fieldDefsByIdProvider);
     final ink = EventColors.of(color, Theme.of(context).brightness);
 
     final top =
@@ -304,7 +306,7 @@ class _EventBlock extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(top: 2),
                         child: Text(
-                          _subtitle(e),
+                          _subtitle(e, defs),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -328,10 +330,10 @@ class _EventBlock extends StatelessWidget {
 
   /// В блок помещается одна строка: либо время, либо поле, отмеченное
   /// «в карточке». Поле полезнее — время видно по положению на шкале.
-  static String _subtitle(VEvent e) {
+  static String _subtitle(VEvent e, Map<String, VFieldDef> defs) {
     final field = e.fields.firstOrNull;
     if (field != null) {
-      final def = Seed.fields.where((f) => f.id == field.fieldId).firstOrNull;
+      final def = defs[field.fieldId];
       if (def != null && def.showInCard) return field.value;
     }
     return '${_hhmm(e.start)} – ${_hhmm(e.end)}';

@@ -148,7 +148,7 @@ class _LookSheetState extends State<_LookSheet> {
                 mainAxisSpacing: 8,
                 crossAxisSpacing: 8,
                 children: [
-                  for (final name in VehaIcons.names)
+                  for (final name in VehaIcons.pickable)
                     _IconCell(
                       name: name,
                       color: color,

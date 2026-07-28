@@ -269,6 +269,66 @@ void main() {
         inheritance.calendars['c-study']!.color);
   });
 
+  test('Своё поле заводится в группе календаря', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+
+    final id = repo.newId();
+    await repo.upsertFieldDef(VFieldDef(
+      id: id,
+      name: 'Кабинет',
+      type: VFieldType.text,
+      iconName: 'door',
+      calendarId: 'c-sport',
+    ));
+
+    final sport = await repo.fieldsFor('c-sport');
+    expect(sport.where((f) => f.id == id).single.name, 'Кабинет');
+
+    // Поле принадлежит группе: в соседнем календаре его быть не должно.
+    final study = await repo.fieldsFor('c-study');
+    expect(study.where((f) => f.id == id), isEmpty);
+  });
+
+  test('Видимость поля в карточке переключается', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+
+    Future<bool> shownOf(String id) async =>
+        (await repo.fieldsFor('c-study')).firstWhere((f) => f.id == id).showInCard;
+
+    expect(await shownOf('f-pass'), isFalse);
+    await repo.setFieldShownInCard('f-pass', true);
+    expect(await shownOf('f-pass'), isTrue);
+  });
+
+  test('Удалённое поле уходит из группы, а правка ложится в очередь', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+    await repo.deleteFieldDef('f-room');
+
+    final study = await repo.fieldsFor('c-study');
+    expect(study.where((f) => f.id == 'f-room'), isEmpty);
+
+    final queue = await db.select(db.syncQueue).get();
+    expect(
+      queue.where((q) => q.entityType == 'field' && q.entityId == 'f-room').single.operation,
+      'delete',
+    );
+  });
+
+  test('Поток полей просыпается на правку', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+
+    final seen = <int>[];
+    final sub = repo.watchFieldDefs().listen((f) => seen.add(f.length));
+    await pumpEventQueue();
+
+    await repo.deleteFieldDef('f-room');
+    await pumpEventQueue();
+    await sub.cancel();
+
+    expect(seen.length, greaterThanOrEqualTo(2));
+    expect(seen.last, seen.first - 1);
+  });
+
   test('Удаление мягкое и попадает в очередь синхронизации', () async {
     await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
     await repo.deleteEvent('e-eng');

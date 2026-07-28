@@ -171,15 +171,26 @@ class VehaRepository {
   }
 
   Future<List<VFieldDef>> fieldsFor(String? calendarId) async {
-    final rows = await (db.select(db.fieldDefs)
-          ..where((t) => t.deletedAt.isNull())
-          ..orderBy([(t) => OrderingTerm(expression: t.sortOrder)]))
-        .get();
+    final rows = await _fieldDefsQuery().get();
     return [
       for (final f in rows)
         if (f.scopeId == null || f.scopeId == calendarId) _toFieldDef(f),
     ];
   }
+
+  /// Все определения полей потоком: экран полей и карточки событий должны
+  /// узнавать о заведённом поле сами, без обхода через перезапуск.
+  Stream<List<VFieldDef>> watchFieldDefs() =>
+      _fieldDefsQuery().watch().map((rows) => rows.map(_toFieldDef).toList());
+
+  SimpleSelectStatement<FieldDefs, FieldDef> _fieldDefsQuery() =>
+      db.select(db.fieldDefs)
+        ..where((t) => t.deletedAt.isNull())
+        ..orderBy([
+          (t) => OrderingTerm(expression: t.sortOrder),
+          (t) => OrderingTerm(expression: t.createdAt),
+          (t) => OrderingTerm(expression: t.id),
+        ]);
 
   // ---------- запись ----------
 
@@ -311,6 +322,60 @@ class VehaRepository {
       await (db.update(db.events)..where((t) => t.subcategoryId.equals(id)))
           .write(const EventsCompanion(subcategoryId: Value(null)));
       await _enqueue('subcategory', id, 'delete');
+    });
+  }
+
+  // ---------- свои поля ----------
+
+  /// Заведение и правка своего поля. `calendarId == null` — поле общее и
+  /// достаётся каждому событию; иначе оно принадлежит группе календаря.
+  Future<void> upsertFieldDef(VFieldDef f) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await db.transaction(() async {
+      await db.into(db.fieldDefs).insertOnConflictUpdate(
+            FieldDefsCompanion.insert(
+              id: f.id,
+              name: f.name,
+              type: f.type.name,
+              icon: Value(f.iconName),
+              scopeType: Value(f.calendarId == null ? 'global' : 'calendar'),
+              scopeId: Value(f.calendarId),
+              showInCard: Value(f.showInCard),
+              sortOrder: Value(f.sortOrder),
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
+      await _enqueue('field', f.id, 'upsert');
+    });
+  }
+
+  /// Показывать ли поле в свёрнутой карточке события. Отдельным методом, а не
+  /// правкой целиком: экран знает про тумблер, а не про остальные поля записи.
+  Future<void> setFieldShownInCard(String id, bool shown) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await db.transaction(() async {
+      await (db.update(db.fieldDefs)..where((t) => t.id.equals(id))).write(
+        FieldDefsCompanion(
+          showInCard: Value(shown),
+          updatedAt: Value(now),
+        ),
+      );
+      await _enqueue('field', id, 'upsert');
+    });
+  }
+
+  /// Заполненные значения остаются в базе: определение может вернуться по
+  /// синхронизации с другого устройства, и тогда написанное найдётся на месте.
+  Future<void> deleteFieldDef(String id) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await db.transaction(() async {
+      await (db.update(db.fieldDefs)..where((t) => t.id.equals(id)))
+          .write(FieldDefsCompanion(
+        deletedAt: Value(now),
+        updatedAt: Value(now),
+      ));
+      await _enqueue('field', id, 'delete');
     });
   }
 

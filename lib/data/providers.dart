@@ -34,6 +34,20 @@ final inheritanceProvider = StreamProvider<Inheritance>((ref) async* {
   yield* ref.watch(repositoryProvider).watchInheritance();
 });
 
+/// Определения своих полей. Живут отдельно от событий: одно определение
+/// обслуживает сотни записей, и перечитывать его вместе с каждой — впустую.
+final fieldDefsProvider = StreamProvider<List<VFieldDef>>((ref) async* {
+  await ref.watch(bootstrapProvider.future);
+  yield* ref.watch(repositoryProvider).watchFieldDefs();
+});
+
+/// Те же определения под рукой у карточек события: там поле ищут по
+/// идентификатору, а не перебирают список на каждой строке.
+final fieldDefsByIdProvider = Provider<Map<String, VFieldDef>>((ref) => {
+      for (final f in ref.watch(fieldDefsProvider).valueOrNull ?? const [])
+        f.id: f,
+    });
+
 /// События целого диапазона, разложенные по дням: этим живут неделя, месяц и
 /// лента дней. Разложить один раз дешевле, чем на каждой ячейке фильтровать
 /// общий список заново.

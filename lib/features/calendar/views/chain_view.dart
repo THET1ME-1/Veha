@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/brand.dart';
 import '../../../core/event_colors.dart';
 import '../../../core/icon_registry.dart';
 import '../../../data/models.dart';
-import '../../../data/seed.dart';
+import '../../../data/providers.dart';
 import '../../../domain/recurrence.dart';
 import '../../../l10n/app_localizations.dart';
 import '../widgets/month_header.dart';
@@ -229,18 +230,19 @@ class _When extends StatelessWidget {
 
 /// Поля, отмеченные «в карточке». Максимум три: на четырёх строках таймлайн
 /// теряет плотность, ради которой его и делали.
-class _Fields extends StatelessWidget {
+class _Fields extends ConsumerWidget {
   const _Fields({required this.event, required this.scheme});
 
   final VEvent event;
   final ColorScheme scheme;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final defs = ref.watch(fieldDefsByIdProvider);
     final chips = <Widget>[];
 
     for (final v in event.fields) {
-      final def = Seed.fields.where((f) => f.id == v.fieldId).firstOrNull;
+      final def = defs[v.fieldId];
       chips.add(_Chip(
         icon: def?.iconName ?? _fallbackIcon(v.fieldId),
         prefix: def == null ? null : _prefixFor(def),
