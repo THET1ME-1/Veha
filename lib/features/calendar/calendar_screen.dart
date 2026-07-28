@@ -14,6 +14,9 @@ import 'widgets/span_bar.dart';
 import 'widgets/view_switcher.dart';
 import 'widgets/week_strip.dart';
 
+/// Сколько дней показывает лента.
+const _bandsLength = 10;
+
 class CalendarScreen extends ConsumerStatefulWidget {
   const CalendarScreen({super.key});
 
@@ -22,89 +25,115 @@ class CalendarScreen extends ConsumerStatefulWidget {
 }
 
 class _CalendarScreenState extends ConsumerState<CalendarScreen> {
-  /// Демонстрационное «сейчас»: сид собран на 27 июля 2026, и линия должна
-  /// стоять там же, где на макете.
-  static final DateTime _now = DateTime(2026, 7, 27, 9, 41);
-
   CalendarView _view = CalendarView.day;
   final MonthMode _monthMode = MonthMode.chips;
   DayReading _reading = DayReading.chain;
-  DateTime _selected = Seed.today;
+  DateTime? _selected;
 
   List<DateTime> get _week {
-    final monday = _selected.subtract(Duration(days: _selected.weekday - 1));
+    final day = _selected!;
+    final monday = day.subtract(Duration(days: day.weekday - 1));
     return List.generate(7, (i) => monday.add(Duration(days: i)));
+  }
+
+  /// Видимое окно плюс запас: ряды разворачиваются на него, и при листании
+  /// соседний месяц уже посчитан.
+  ({DateTime from, DateTime to}) get _window {
+    final day = _selected!;
+    final (DateTime from, DateTime to) = switch (_view) {
+      CalendarView.day => (day, day.add(const Duration(days: 1))),
+      CalendarView.week => (_week.first, _week.last.add(const Duration(days: 1))),
+      CalendarView.bands => (day, day.add(const Duration(days: _bandsLength))),
+      CalendarView.month => (
+          DateTime(day.year, day.month, 1),
+          DateTime(day.year, day.month + 1, 1),
+        ),
+    };
+    return (
+      from: from.subtract(const Duration(days: 7)),
+      to: to.add(const Duration(days: 7)),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final now = ref.watch(nowProvider);
+    final today = DateTime(now.year, now.month, now.day);
+    _selected ??= today;
+
     // Пока база отдаёт первую порцию, экран показывает каркас без событий:
     // спиннер на пять секунд открытого календаря — худшее, что можно сделать.
     final inheritance =
         ref.watch(inheritanceProvider).valueOrNull ?? Seed.inheritance;
-    final day = ref.watch(dayProvider(_selected)).valueOrNull;
-    final events = day?.timed ?? const <VEvent>[];
-    final spans = day?.spans ?? const <VEvent>[];
+    final range = ref.watch(rangeProvider(_window)).valueOrNull ?? RangeData.empty;
 
     return Column(
       children: [
         MonthHeader(
-          date: _selected,
+          date: _selected!,
           dayReading: _view == CalendarView.day ? _reading : null,
           onReadingChanged: (r) => setState(() => _reading = r),
         ),
         if (_view == CalendarView.day)
           WeekStrip(
             week: _week,
-            selected: _selected,
-            busyDays: const {27, 28, 29, 30, 31},
+            selected: _selected!,
+            busyDays: {
+              for (final d in _week)
+                if (range.eventsOn(d).isNotEmpty) d.day,
+            },
             onSelect: (d) => setState(() => _selected = d),
           ),
         ViewSwitcher(value: _view, onChanged: (v) => setState(() => _view = v)),
         if (_view != CalendarView.week && _view != CalendarView.month)
           SpanBars(
-            events: spans,
-            today: _selected,
+            events: range.spansOn(_selected!),
+            today: _selected!,
             inheritance: inheritance,
           ),
-        Expanded(child: _body(events, inheritance, spans)),
+        Expanded(child: _body(range, inheritance, now, today)),
       ],
     );
   }
 
-  Widget _body(List<VEvent> events, Inheritance inheritance,
-      List<VEvent> spans) {
+  Widget _body(
+    RangeData range,
+    Inheritance inheritance,
+    DateTime now,
+    DateTime today,
+  ) {
     return switch (_view) {
       CalendarView.day when _reading == DayReading.chain => ChainView(
-          events: events,
+          events: range.eventsOn(_selected!),
           inheritance: inheritance,
-          now: _now,
+          now: now,
         ),
       CalendarView.day => ClockView(
-          events: events,
+          events: range.eventsOn(_selected!),
           inheritance: inheritance,
-          now: _now,
+          now: now,
         ),
       CalendarView.month => MonthView(
-          month: _selected,
-          eventsOf: Seed.eventsOn,
-          spans: spans,
+          month: _selected!,
+          eventsOf: range.eventsOn,
+          spans: range.spans,
           inheritance: inheritance,
-          today: Seed.today,
+          today: today,
           mode: _monthMode,
         ),
       CalendarView.week => WeekView(
           week: _week,
-          eventsOf: Seed.eventsOn,
-          spans: spans,
+          eventsOf: range.eventsOn,
+          spans: range.spans,
           inheritance: inheritance,
-          today: Seed.today,
+          today: today,
         ),
       CalendarView.bands => BandsView(
-          days: List.generate(10, (i) => _selected.add(Duration(days: i))),
-          eventsOf: Seed.eventsOn,
+          days: List.generate(
+              _bandsLength, (i) => _selected!.add(Duration(days: i))),
+          eventsOf: range.eventsOn,
           inheritance: inheritance,
-          today: Seed.today,
+          today: today,
         ),
     };
   }

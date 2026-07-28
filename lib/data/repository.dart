@@ -212,9 +212,17 @@ class VehaRepository {
   /// Пустой календарь при первом запуске выглядит сломанным: человек не
   /// понимает, что приложение вообще умеет. Данные помечены обычными
   /// записями и удаляются как любые другие.
-  Future<void> seedIfEmpty() async {
+  /// Данные собраны на 27 июля 2026 и сдвигаются к дню первого запуска целыми
+  /// сутками: иначе человек, поставивший приложение в сентябре, открывает его
+  /// на пустом дне, а демонстрация лежит в прошлом.
+  Future<void> seedIfEmpty({DateTime? today}) async {
     final count = await db.select(db.calendars).get();
     if (count.isNotEmpty) return;
+
+    final start = today ?? DateTime.now();
+    final shift = DateTime(start.year, start.month, start.day)
+        .difference(Seed.today);
+    DateTime moved(DateTime d) => d.add(shift);
 
     final now = DateTime.now().millisecondsSinceEpoch;
     await db.transaction(() async {
@@ -261,9 +269,9 @@ class VehaRepository {
               subcategoryId: Value(e.subcategoryId),
               title: e.title,
               location: Value(e.location),
-              start: e.start.millisecondsSinceEpoch,
-              end: e.end.millisecondsSinceEpoch,
-              timezone: 'Europe/Chisinau',
+              start: moved(e.start).millisecondsSinceEpoch,
+              end: moved(e.end).millisecondsSinceEpoch,
+              timezone: e.timezone,
               isAllDay: Value(e.isAllDay),
               color: Value(e.color?.toARGB32()),
               icon: Value(e.iconName),

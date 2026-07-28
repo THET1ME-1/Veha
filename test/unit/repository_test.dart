@@ -19,17 +19,29 @@ void main() {
   tearDown(() => db.close());
 
   test('Первый запуск наполняет базу и повторный не дублирует', () async {
-    await repo.seedIfEmpty();
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
     final first = await db.select(db.events).get();
     expect(first, isNotEmpty);
 
-    await repo.seedIfEmpty();
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
     final second = await db.select(db.events).get();
     expect(second.length, first.length);
   });
 
+  test('Демо-данные ложатся на день первого запуска', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 9, 15));
+
+    final events = await repo
+        .watchRange(DateTime(2026, 9, 15), DateTime(2026, 9, 16))
+        .first;
+
+    expect(events.map((e) => e.title), contains('Планёрка'));
+    expect(events.firstWhere((e) => e.title == 'Планёрка').start,
+        DateTime(2026, 9, 15, 10));
+  });
+
   test('Цепочка наследования собирается из базы', () async {
-    await repo.seedIfEmpty();
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
     final inheritance = await repo.loadInheritance();
 
     final exam = inheritance.subcategories['s-exam']!;
@@ -45,7 +57,7 @@ void main() {
   });
 
   test('События за период приходят со своими полями', () async {
-    await repo.seedIfEmpty();
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
     final events = await repo
         .watchRange(DateTime(2026, 7, 27), DateTime(2026, 7, 28))
         .first;
@@ -57,7 +69,7 @@ void main() {
   });
 
   test('Ежедневный ряд виден в дни, где своей строки в базе нет', () async {
-    await repo.seedIfEmpty();
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
     final events = await repo
         .watchRange(DateTime(2026, 7, 30), DateTime(2026, 7, 31))
         .first;
@@ -68,7 +80,7 @@ void main() {
   });
 
   test('Отменённое занятие исчезает, а ряд идёт дальше', () async {
-    await repo.seedIfEmpty();
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
     await repo.skipOccurrence('e-wake', DateTime(2026, 7, 30, 7, 30));
 
     final skipped = await repo
@@ -83,7 +95,7 @@ void main() {
   });
 
   test('Перенос одного занятия не трогает остальной ряд', () async {
-    await repo.seedIfEmpty();
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
     final day = await repo
         .watchRange(DateTime(2026, 7, 30), DateTime(2026, 7, 31))
         .first;
@@ -110,7 +122,7 @@ void main() {
   });
 
   test('Удаление мягкое и попадает в очередь синхронизации', () async {
-    await repo.seedIfEmpty();
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
     await repo.deleteEvent('e-eng');
 
     final row = await (db.select(db.events)..where((t) => t.id.equals('e-eng')))
@@ -123,17 +135,18 @@ void main() {
   });
 
   test('Повторные правки схлопываются в одну запись очереди', () async {
-    await repo.seedIfEmpty();
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
     final events = await repo
         .watchRange(DateTime(2026, 7, 27), DateTime(2026, 7, 28))
         .first;
-    final e = events.firstWhere((x) => x.id == 'e-fit');
+    // Разовое событие: у экземпляра ряда своя история правок.
+    final e = events.firstWhere((x) => x.id == 'e-breakfast');
 
     await repo.upsertEvent(e);
     await repo.upsertEvent(e);
     await repo.upsertEvent(e);
 
     final queue = await db.select(db.syncQueue).get();
-    expect(queue.where((q) => q.entityId == 'e-fit'), hasLength(1));
+    expect(queue.where((q) => q.entityId == 'e-breakfast'), hasLength(1));
   });
 }

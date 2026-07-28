@@ -70,12 +70,17 @@ File? _packageFile(String package, String relative) {
 /// Размер экрана телефона из макета: 390×844 логических пикселя.
 const Size phoneSize = Size(390, 844);
 
+/// Момент, на который собраны демо-данные: снимки не должны зависеть от
+/// календаря машины, а сид ложится на «сегодня».
+final DateTime testNow = DateTime(2026, 7, 27, 9, 41);
+
 Future<void> pumpScreen(
   WidgetTester tester,
   Widget child, {
   Brightness brightness = Brightness.light,
   Size size = phoneSize,
   Locale locale = const Locale('ru'),
+  List<Override> overrides = const [],
 }) async {
   tester.view
     ..physicalSize = size * 2
@@ -89,7 +94,11 @@ Future<void> pumpScreen(
 
   await tester.pumpWidget(
     ProviderScope(
-      overrides: [databaseProvider.overrideWithValue(db)],
+      overrides: [
+        databaseProvider.overrideWithValue(db),
+        nowProvider.overrideWithValue(testNow),
+        ...overrides,
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: brightness == Brightness.light

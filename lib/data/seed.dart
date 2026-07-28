@@ -61,6 +61,7 @@ class Seed {
       iconName: 'fitness',
       start: _at(27, 8),
       end: _at(27, 8, 45),
+      rrule: 'FREQ=WEEKLY;BYDAY=MO,WE,FR',
     ),
     VEvent(
       id: 'e-breakfast',
@@ -78,6 +79,7 @@ class Seed {
       iconName: 'groups',
       start: _at(27, 10),
       end: _at(27, 11, 30),
+      rrule: 'FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR',
       fields: const [VFieldValue(fieldId: 'f-people', value: '4')],
     ),
     // Накладка на планёрку: пересечения — самое хрупкое место раскладки,
@@ -124,6 +126,7 @@ class Seed {
       iconName: 'pool',
       start: _at(27, 19),
       end: _at(27, 20, 30),
+      rrule: 'FREQ=WEEKLY;BYDAY=MO,TH',
     ),
   ];
 

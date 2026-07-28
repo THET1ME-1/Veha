@@ -17,9 +17,14 @@ final repositoryProvider = Provider<VehaRepository>(
   (ref) => VehaRepository(ref.watch(databaseProvider)),
 );
 
+/// Сегодняшний день одной точкой на всё приложение: экраны, демо-данные и
+/// снимки экранов должны сходиться в одном «сейчас», иначе golden-тесты
+/// начинают зависеть от календаря машины.
+final nowProvider = Provider<DateTime>((ref) => DateTime.now());
+
 /// Первый запуск: наполняем пустую базу и только потом отдаём экраны.
 final bootstrapProvider = FutureProvider<void>((ref) async {
-  await ref.watch(repositoryProvider).seedIfEmpty();
+  await ref.watch(repositoryProvider).seedIfEmpty(today: ref.watch(nowProvider));
 });
 
 /// Календари и ветки. Нужны на каждом экране, поэтому держатся отдельно от
@@ -29,43 +34,59 @@ final inheritanceProvider = FutureProvider<Inheritance>((ref) async {
   return ref.watch(repositoryProvider).loadInheritance();
 });
 
-/// События за период. Диапазон — параметр: экраны просят ровно то окно,
-/// которое рисуют, плюс запас.
-final eventsProvider =
-    StreamProvider.family<List<VEvent>, ({DateTime from, DateTime to})>(
+/// События целого диапазона, разложенные по дням: этим живут неделя, месяц и
+/// лента дней. Разложить один раз дешевле, чем на каждой ячейке фильтровать
+/// общий список заново.
+final rangeProvider =
+    StreamProvider.family<RangeData, ({DateTime from, DateTime to})>(
   (ref, range) async* {
     await ref.watch(bootstrapProvider.future);
-    yield* ref.watch(repositoryProvider).watchRange(range.from, range.to);
+
+    final repo = ref.watch(repositoryProvider);
+    await for (final events in repo.watchRange(range.from, range.to)) {
+      final byDay = <DateTime, List<VEvent>>{};
+      final spans = <VEvent>[];
+
+      for (final e in events) {
+        if (e.isMultiDay) {
+          spans.add(e);
+          continue;
+        }
+        final key = DateTime(e.start.year, e.start.month, e.start.day);
+        byDay.putIfAbsent(key, () => []).add(e);
+      }
+
+      for (final day in byDay.values) {
+        day.sort((a, b) => a.start.compareTo(b.start));
+      }
+      // Недавно начатые полосы выше: абонемент на месяц актуальнее курса,
+      // идущего с июня.
+      spans.sort((a, b) => b.start.compareTo(a.start));
+
+      yield RangeData(byDay: byDay, spans: spans);
+    }
   },
 );
 
-/// События одного дня и многодневные, которые его захватывают, разделены:
-/// многодневным место над таймлайном, а не в сетке часов.
-final dayProvider = StreamProvider.family<DayData, DateTime>((ref, day) async* {
-  final from = DateTime(day.year, day.month, day.day);
-  final to = from.add(const Duration(days: 1));
-  await ref.watch(bootstrapProvider.future);
+class RangeData {
+  const RangeData({required this.byDay, required this.spans});
 
-  final repo = ref.watch(repositoryProvider);
-  await for (final events in repo.watchRange(from, to)) {
-    yield DayData(
-      timed: [
-        for (final e in events)
-          if (!e.isMultiDay) e,
-      ]..sort((a, b) => a.start.compareTo(b.start)),
-      // Недавно начатые полосы выше: абонемент на месяц актуальнее курса,
-      // идущего с июня.
-      spans: [
-        for (final e in events)
-          if (e.isMultiDay) e,
-      ]..sort((a, b) => b.start.compareTo(a.start)),
-    );
-  }
-});
-
-class DayData {
-  const DayData({required this.timed, required this.spans});
-
-  final List<VEvent> timed;
+  final Map<DateTime, List<VEvent>> byDay;
   final List<VEvent> spans;
+
+  List<VEvent> eventsOn(DateTime day) =>
+      byDay[DateTime(day.year, day.month, day.day)] ?? const [];
+
+  /// Полосы, накрывающие день: абонемент на месяц висит над каждым днём
+  /// месяца, а не только над первым.
+  List<VEvent> spansOn(DateTime day) {
+    final start = DateTime(day.year, day.month, day.day);
+    final end = start.add(const Duration(days: 1));
+    return [
+      for (final e in spans)
+        if (e.start.isBefore(end) && e.end.isAfter(start)) e,
+    ];
+  }
+
+  static const empty = RangeData(byDay: {}, spans: []);
 }
