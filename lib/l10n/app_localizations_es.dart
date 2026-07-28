@@ -758,4 +758,92 @@ class LEs extends L {
   @override
   String get accessHint =>
       'Las claves funcionan mientras la sincronización esté activa. Un calendario que solo vive en el teléfono no es accesible desde fuera.';
+
+  @override
+  String get repeatNever2 => 'No repetir';
+
+  @override
+  String get repeatWeekdays => 'En días laborables';
+
+  @override
+  String get repeatCountLabel => 'Repeticiones';
+
+  @override
+  String get repeatTimes => 'veces';
+
+  @override
+  String get repeatAfterSome => 'Tras varias repeticiones';
+
+  @override
+  String get repeatNoDates => 'Con esta regla no habrá ninguna cita';
+
+  @override
+  String get unitDays => 'días';
+
+  @override
+  String get unitWeeks => 'semanas';
+
+  @override
+  String get unitMonths => 'meses';
+
+  @override
+  String get unitYears => 'años';
+
+  @override
+  String get repeatAdvEnd => 'Final';
+
+  @override
+  String get repeatAdvNotSet => 'Sin elegir';
+
+  @override
+  String get repeatAdvMonthRule => 'Regla del mes';
+
+  @override
+  String get repeatAdvByDate => 'Por fecha';
+
+  @override
+  String get repeatAdvByPosition => 'Por posición';
+
+  @override
+  String get repeatAdvSkipped => 'Fechas omitidas';
+
+  @override
+  String get repeatAdvExceptions => 'Excepciones';
+
+  @override
+  String get repeatAdvShiftFirst => 'Desplazar junto con la primera fecha';
+
+  @override
+  String get repeatAdvShiftHint => 'Mover la primera fecha mueve toda la serie';
+
+  @override
+  String get repeatAdvHolidays => 'No repetir en festivos';
+
+  @override
+  String get repeatAdvHolidaysHint => 'Según los festivos del país';
+
+  @override
+  String get repeatAdvParsed => 'Convertido en regla · toca para aplicar';
+
+  @override
+  String get weekSetupCancel => 'Cancelar';
+
+  @override
+  String get searchInCalendar => 'Buscar';
+
+  @override
+  String monthMore(int count) {
+    return '$count más';
+  }
+
+  @override
+  String eventCancelOn(String date) {
+    return 'Cancelar el $date';
+  }
+
+  @override
+  String get eventDeleteSeries => 'Eliminar toda la serie';
+
+  @override
+  String get untitled => 'Sin título';
 }

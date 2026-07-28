@@ -757,4 +757,93 @@ class LEn extends L {
   @override
   String get accessHint =>
       'Keys work only while sync is on. A calendar that lives on the phone alone is unreachable from outside — there is nowhere to knock.';
+
+  @override
+  String get repeatNever2 => 'Do not repeat';
+
+  @override
+  String get repeatWeekdays => 'On weekdays';
+
+  @override
+  String get repeatCountLabel => 'Repeats';
+
+  @override
+  String get repeatTimes => 'times';
+
+  @override
+  String get repeatAfterSome => 'After a number of repeats';
+
+  @override
+  String get repeatNoDates => 'This rule produces no occurrences';
+
+  @override
+  String get unitDays => 'days';
+
+  @override
+  String get unitWeeks => 'weeks';
+
+  @override
+  String get unitMonths => 'months';
+
+  @override
+  String get unitYears => 'years';
+
+  @override
+  String get repeatAdvEnd => 'Ending';
+
+  @override
+  String get repeatAdvNotSet => 'Not chosen';
+
+  @override
+  String get repeatAdvMonthRule => 'Monthly rule';
+
+  @override
+  String get repeatAdvByDate => 'By date';
+
+  @override
+  String get repeatAdvByPosition => 'By position';
+
+  @override
+  String get repeatAdvSkipped => 'Skipped dates';
+
+  @override
+  String get repeatAdvExceptions => 'Exceptions';
+
+  @override
+  String get repeatAdvShiftFirst => 'Shift with the first date';
+
+  @override
+  String get repeatAdvShiftHint =>
+      'Moving the first date moves the whole series';
+
+  @override
+  String get repeatAdvHolidays => 'Skip public holidays';
+
+  @override
+  String get repeatAdvHolidaysHint => 'Uses the country’s holiday calendar';
+
+  @override
+  String get repeatAdvParsed => 'Parsed into a rule · tap to apply';
+
+  @override
+  String get weekSetupCancel => 'Cancel';
+
+  @override
+  String get searchInCalendar => 'Search';
+
+  @override
+  String monthMore(int count) {
+    return '$count more';
+  }
+
+  @override
+  String eventCancelOn(String date) {
+    return 'Cancel on $date';
+  }
+
+  @override
+  String get eventDeleteSeries => 'Delete the whole series';
+
+  @override
+  String get untitled => 'Untitled';
 }

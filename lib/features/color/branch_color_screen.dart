@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
+
 import '../../core/brand.dart';
 import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
@@ -43,7 +45,7 @@ class _BranchColorScreenState extends State<BranchColorScreen> {
           VehaInsets.screen, 6, VehaInsets.screen, 120),
       children: [
         Text(
-          'Цвет ветки',
+          L.of(context).branchColorTitle,
           style: TextStyle(
             fontFamily: AppFonts.display,
             fontSize: 27,
@@ -65,16 +67,16 @@ class _BranchColorScreenState extends State<BranchColorScreen> {
         const SizedBox(height: 14),
         _Choice(
           color: widget.calendar.color,
-          title: 'Как у календаря',
-          subtitle: 'Цвет «${widget.calendar.name}»',
+          title: L.of(context).lookInherit,
+          subtitle: L.of(context).branchColorOfCalendar(widget.calendar.name),
           selected: !_own,
           onTap: () => setState(() => _own = false),
         ),
         const SizedBox(height: 8),
         _Choice(
           color: _color,
-          title: 'Свой цвет',
-          subtitle: 'Задан у этой ветки',
+          title: L.of(context).lookOwnColor,
+          subtitle: L.of(context).branchColorOwnHint,
           selected: _own,
           onTap: () => setState(() => _own = true),
         ),
@@ -88,7 +90,7 @@ class _BranchColorScreenState extends State<BranchColorScreen> {
           }),
         ),
         if (widget.saved.isNotEmpty) ...[
-          const VBlockCap('Мои цвета'),
+          VBlockCap(L.of(context).colorMine),
           _Swatches(
             colors: widget.saved,
             selected: _own ? _color : null,
@@ -102,8 +104,8 @@ class _BranchColorScreenState extends State<BranchColorScreen> {
         VBlock(children: [
           VRow(
             icon: 'dropper',
-            value: 'Свой цвет из пикера',
-            label: 'Оттенок, насыщенность, hex, пипетка',
+            value: L.of(context).branchColorPickerRow,
+            label: L.of(context).branchColorPickerHint,
             labelFirst: false,
             iconBackground: _color,
             iconColor: EventColors.of(_color, theme.brightness).foreground,
@@ -122,9 +124,7 @@ class _BranchColorScreenState extends State<BranchColorScreen> {
         Padding(
           padding: const EdgeInsets.only(top: 12),
           child: Text(
-            'Перекрасите «${widget.calendar.name}» — сменят цвет все ветки и '
-            'события, где стоит наследование. Ветки со своим цветом останутся '
-            'как есть.',
+            L.of(context).branchColorChain(widget.calendar.name),
             style: TextStyle(
               fontFamily: AppFonts.body,
               fontSize: 12,
@@ -302,10 +302,10 @@ class _Chain extends StatelessWidget {
     final branchColor = own ? color : calendar.color;
 
     final steps = <(double, Color, String, String)>[
-      (0, calendar.color, calendar.name, 'календарь'),
-      (18, branchColor, subcategory.name, own ? 'свой' : 'наследует'),
-      (36, branchColor, 'Событие ветки', 'наследует'),
-      (54, branchColor, '«Заметка внутри»', 'наследует'),
+      (0, calendar.color, calendar.name, L.of(context).levelCalendar),
+      (18, branchColor, subcategory.name, own ? L.of(context).levelOwn : L.of(context).colorInherits),
+      (36, branchColor, L.of(context).branchColorEventRow, L.of(context).colorInherits),
+      (54, branchColor, '«Заметка внутри»', L.of(context).colorInherits),
     ];
 
     return Container(

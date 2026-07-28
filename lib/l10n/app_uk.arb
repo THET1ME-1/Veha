@@ -916,5 +916,127 @@
   "accessHint": "Ключі працюють, поки ввімкнено синхронізацію. Календар, який живе лише на телефоні, ззовні недоступний — стукати нікуди.",
   "@accessHint": {
     "description": "accessHint"
+  },
+  "repeatNever2": "Не повторювати",
+  "@repeatNever2": {
+    "description": "repeatNever2"
+  },
+  "repeatWeekdays": "По буднях",
+  "@repeatWeekdays": {
+    "description": "repeatWeekdays"
+  },
+  "repeatCountLabel": "Повторів",
+  "@repeatCountLabel": {
+    "description": "repeatCountLabel"
+  },
+  "repeatTimes": "разів",
+  "@repeatTimes": {
+    "description": "repeatTimes"
+  },
+  "repeatAfterSome": "Після кількох повторів",
+  "@repeatAfterSome": {
+    "description": "repeatAfterSome"
+  },
+  "repeatNoDates": "За таким правилом занять не буде",
+  "@repeatNoDates": {
+    "description": "repeatNoDates"
+  },
+  "unitDays": "днів",
+  "@unitDays": {
+    "description": "unitDays"
+  },
+  "unitWeeks": "тижнів",
+  "@unitWeeks": {
+    "description": "unitWeeks"
+  },
+  "unitMonths": "місяців",
+  "@unitMonths": {
+    "description": "unitMonths"
+  },
+  "unitYears": "років",
+  "@unitYears": {
+    "description": "unitYears"
+  },
+  "repeatAdvEnd": "Закінчення",
+  "@repeatAdvEnd": {
+    "description": "repeatAdvEnd"
+  },
+  "repeatAdvNotSet": "Не вибрана",
+  "@repeatAdvNotSet": {
+    "description": "repeatAdvNotSet"
+  },
+  "repeatAdvMonthRule": "Правило місяця",
+  "@repeatAdvMonthRule": {
+    "description": "repeatAdvMonthRule"
+  },
+  "repeatAdvByDate": "За числом",
+  "@repeatAdvByDate": {
+    "description": "repeatAdvByDate"
+  },
+  "repeatAdvByPosition": "За позицією",
+  "@repeatAdvByPosition": {
+    "description": "repeatAdvByPosition"
+  },
+  "repeatAdvSkipped": "Пропущені дати",
+  "@repeatAdvSkipped": {
+    "description": "repeatAdvSkipped"
+  },
+  "repeatAdvExceptions": "Винятки",
+  "@repeatAdvExceptions": {
+    "description": "repeatAdvExceptions"
+  },
+  "repeatAdvShiftFirst": "Зсувати разом із першим",
+  "@repeatAdvShiftFirst": {
+    "description": "repeatAdvShiftFirst"
+  },
+  "repeatAdvShiftHint": "Перенесення першої дати рухає весь ряд",
+  "@repeatAdvShiftHint": {
+    "description": "repeatAdvShiftHint"
+  },
+  "repeatAdvHolidays": "Не повторювати у свята",
+  "@repeatAdvHolidays": {
+    "description": "repeatAdvHolidays"
+  },
+  "repeatAdvHolidaysHint": "З урахуванням свят країни",
+  "@repeatAdvHolidaysHint": {
+    "description": "repeatAdvHolidaysHint"
+  },
+  "repeatAdvParsed": "Розібрано в правило · натисніть, щоб застосувати",
+  "@repeatAdvParsed": {
+    "description": "repeatAdvParsed"
+  },
+  "weekSetupCancel": "Скасувати",
+  "@weekSetupCancel": {
+    "description": "weekSetupCancel"
+  },
+  "searchInCalendar": "Пошук",
+  "@searchInCalendar": {
+    "description": "searchInCalendar"
+  },
+  "monthMore": "ще {count}",
+  "@monthMore": {
+    "description": "monthMore",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "eventCancelOn": "Скасувати {date}",
+  "@eventCancelOn": {
+    "description": "eventCancelOn",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "eventDeleteSeries": "Видалити весь ряд",
+  "@eventDeleteSeries": {
+    "description": "eventDeleteSeries"
+  },
+  "untitled": "Без назви",
+  "@untitled": {
+    "description": "untitled"
   }
 }

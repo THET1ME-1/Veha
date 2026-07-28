@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../../l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/brand.dart';
@@ -30,11 +32,12 @@ class _WeekSetupSheet extends StatefulWidget {
 class _WeekSetupSheetState extends State<_WeekSetupSheet> {
   late WeekLayout _layout = widget.layout;
 
-  static const _presets = <(String, Set<int>)>[
-    ('Вся неделя', {1, 2, 3, 4, 5, 6, 7}),
-    ('Будни', {1, 2, 3, 4, 5}),
-    ('Выходные', {6, 7}),
-  ];
+  /// Готовые наборы дней. Функция, а не константа: подписи из словаря.
+  static List<(String, Set<int>)> _presets(L l) => [
+        (l.weekSetupAll, const {1, 2, 3, 4, 5, 6, 7}),
+        (l.weekSetupWorkdays, const {1, 2, 3, 4, 5}),
+        (l.weekSetupWeekend, const {6, 7}),
+      ];
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +57,7 @@ class _WeekSetupSheetState extends State<_WeekSetupSheet> {
           Padding(
             padding: const EdgeInsets.fromLTRB(VehaInsets.screen, 2, VehaInsets.screen, 2),
             child: Text(
-              'Какие дни показывать',
+              L.of(context).weekSetupTitle,
               style: TextStyle(
                 fontFamily: AppFonts.display,
                 fontSize: 17,
@@ -66,7 +69,7 @@ class _WeekSetupSheetState extends State<_WeekSetupSheet> {
           Padding(
             padding: const EdgeInsets.fromLTRB(VehaInsets.screen, 0, VehaInsets.screen, 14),
             child: Text(
-              'Колонок будет столько, сколько дней отмечено',
+              L.of(context).weekSetupHint,
               style: TextStyle(
                 fontFamily: AppFonts.body,
                 fontSize: 12.5,
@@ -81,7 +84,7 @@ class _WeekSetupSheetState extends State<_WeekSetupSheet> {
               spacing: 7,
               runSpacing: 7,
               children: [
-                for (final (label, days) in _presets)
+                for (final (label, days) in _presets(L.of(context)))
                   _Chip(
                     label: label,
                     selected: _layout.weekdays.length == days.length &&
@@ -114,7 +117,7 @@ class _WeekSetupSheetState extends State<_WeekSetupSheet> {
           Padding(
             padding: const EdgeInsets.fromLTRB(VehaInsets.screen, 18, VehaInsets.screen, 4),
             child: Text(
-              'Неделя начинается с',
+              L.of(context).weekSetupStartsWith,
               style: TextStyle(
                 fontFamily: AppFonts.body,
                 fontSize: 12.5,
@@ -144,13 +147,13 @@ class _WeekSetupSheetState extends State<_WeekSetupSheet> {
               children: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Отмена'),
+                  child: Text(L.of(context).actionCancel),
                 ),
                 const Spacer(),
                 FilledButton.icon(
                   onPressed: () => Navigator.pop(context, _layout),
                   icon: Icon(VehaIcons.byName('check'), size: 18),
-                  label: const Text('Готово'),
+                  label: Text(L.of(context).actionDone),
                 ),
               ],
             ),

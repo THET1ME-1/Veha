@@ -768,4 +768,93 @@ class LUk extends L {
   @override
   String get accessHint =>
       'Ключі працюють, поки ввімкнено синхронізацію. Календар, який живе лише на телефоні, ззовні недоступний — стукати нікуди.';
+
+  @override
+  String get repeatNever2 => 'Не повторювати';
+
+  @override
+  String get repeatWeekdays => 'По буднях';
+
+  @override
+  String get repeatCountLabel => 'Повторів';
+
+  @override
+  String get repeatTimes => 'разів';
+
+  @override
+  String get repeatAfterSome => 'Після кількох повторів';
+
+  @override
+  String get repeatNoDates => 'За таким правилом занять не буде';
+
+  @override
+  String get unitDays => 'днів';
+
+  @override
+  String get unitWeeks => 'тижнів';
+
+  @override
+  String get unitMonths => 'місяців';
+
+  @override
+  String get unitYears => 'років';
+
+  @override
+  String get repeatAdvEnd => 'Закінчення';
+
+  @override
+  String get repeatAdvNotSet => 'Не вибрана';
+
+  @override
+  String get repeatAdvMonthRule => 'Правило місяця';
+
+  @override
+  String get repeatAdvByDate => 'За числом';
+
+  @override
+  String get repeatAdvByPosition => 'За позицією';
+
+  @override
+  String get repeatAdvSkipped => 'Пропущені дати';
+
+  @override
+  String get repeatAdvExceptions => 'Винятки';
+
+  @override
+  String get repeatAdvShiftFirst => 'Зсувати разом із першим';
+
+  @override
+  String get repeatAdvShiftHint => 'Перенесення першої дати рухає весь ряд';
+
+  @override
+  String get repeatAdvHolidays => 'Не повторювати у свята';
+
+  @override
+  String get repeatAdvHolidaysHint => 'З урахуванням свят країни';
+
+  @override
+  String get repeatAdvParsed =>
+      'Розібрано в правило · натисніть, щоб застосувати';
+
+  @override
+  String get weekSetupCancel => 'Скасувати';
+
+  @override
+  String get searchInCalendar => 'Пошук';
+
+  @override
+  String monthMore(int count) {
+    return 'ще $count';
+  }
+
+  @override
+  String eventCancelOn(String date) {
+    return 'Скасувати $date';
+  }
+
+  @override
+  String get eventDeleteSeries => 'Видалити весь ряд';
+
+  @override
+  String get untitled => 'Без назви';
 }

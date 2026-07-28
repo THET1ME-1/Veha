@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
+
 import '../../core/brand.dart';
 import '../../core/icon_registry.dart';
 import '../calendar/widgets/month_header.dart';
@@ -38,7 +40,7 @@ class _RepeatAdvancedScreenState extends State<RepeatAdvancedScreen> {
         Padding(
           padding: const EdgeInsets.only(bottom: 14),
           child: Text(
-            'Повторение',
+            L.of(context).repeatTitle,
             style: TextStyle(
               fontFamily: AppFonts.display,
               fontSize: 27,
@@ -75,7 +77,7 @@ class _RepeatAdvancedScreenState extends State<RepeatAdvancedScreen> {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Разобрано в правило · нажмите, чтобы применить',
+                      L.of(context).repeatAdvParsed,
                       style: TextStyle(
                         fontFamily: AppFonts.body,
                         fontSize: 11.5,
@@ -89,17 +91,17 @@ class _RepeatAdvancedScreenState extends State<RepeatAdvancedScreen> {
             ],
           ),
         ),
-        const VBlockCap('Правило месяца'),
+        VBlockCap(L.of(context).repeatAdvMonthRule),
         VBlock(children: [
           VOption(
-            title: 'По числу',
+            title: L.of(context).repeatAdvByDate,
             subtitle: '27-го каждого месяца',
             selected: _rule == MonthRule.byDate,
             onTap: () => setState(() => _rule = MonthRule.byDate),
           ),
           const VSep(inset: 15),
           VOption(
-            title: 'По позиции',
+            title: L.of(context).repeatAdvByPosition,
             subtitle: 'Последняя пятница месяца',
             selected: _rule == MonthRule.byPosition,
             onTap: () => setState(() => _rule = MonthRule.byPosition),
@@ -107,15 +109,15 @@ class _RepeatAdvancedScreenState extends State<RepeatAdvancedScreen> {
           const VSep(inset: 15),
           VOption(
             title: 'Последний рабочий день',
-            subtitle: 'С учётом праздников страны',
+            subtitle: L.of(context).repeatAdvHolidaysHint,
             selected: _rule == MonthRule.lastWorkday,
             onTap: () => setState(() => _rule = MonthRule.lastWorkday),
           ),
         ]),
-        const VBlockCap('Окончание'),
+        VBlockCap(L.of(context).repeatAdvEnd),
         VBlock(children: [
           VOption(
-            title: 'Никогда',
+            title: L.of(context).repeatNever,
             selected: _end == RepeatEnd.never,
             onTap: () => setState(() => _end = RepeatEnd.never),
           ),
@@ -128,17 +130,17 @@ class _RepeatAdvancedScreenState extends State<RepeatAdvancedScreen> {
           ),
           const VSep(inset: 15),
           VOption(
-            title: 'До даты',
-            subtitle: 'Не выбрана',
+            title: L.of(context).repeatUntilDate,
+            subtitle: L.of(context).repeatAdvNotSet,
             selected: _end == RepeatEnd.untilDate,
             onTap: () => setState(() => _end = RepeatEnd.untilDate),
           ),
         ]),
-        const VBlockCap('Исключения'),
+        VBlockCap(L.of(context).repeatAdvExceptions),
         VBlock(children: [
           VRow(
             icon: 'calendar',
-            value: 'Пропущенные даты',
+            value: L.of(context).repeatAdvSkipped,
             label: '4 и 11 августа',
             labelFirst: false,
             trailing: Icon(VehaIcons.byName('chevron'),
@@ -147,7 +149,7 @@ class _RepeatAdvancedScreenState extends State<RepeatAdvancedScreen> {
           const VSep(),
           _ToggleRow(
             icon: 'flag',
-            title: 'Не повторять в праздники',
+            title: L.of(context).repeatAdvHolidays,
             subtitle: 'Календарь праздников Молдовы',
             value: _skipHolidays,
             onChanged: (v) => setState(() => _skipHolidays = v),
@@ -155,8 +157,8 @@ class _RepeatAdvancedScreenState extends State<RepeatAdvancedScreen> {
           const VSep(),
           _ToggleRow(
             icon: 'clock',
-            title: 'Сдвигать вместе с первым',
-            subtitle: 'Перенос первой даты двигает весь ряд',
+            title: L.of(context).repeatAdvShiftFirst,
+            subtitle: L.of(context).repeatAdvShiftHint,
             value: _moveWithFirst,
             onChanged: (v) => setState(() => _moveWithFirst = v),
           ),

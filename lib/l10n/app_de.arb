@@ -916,5 +916,127 @@
   "accessHint": "Schlüssel funktionieren nur bei eingeschalteter Synchronisierung. Ein Kalender, der allein auf dem Telefon lebt, ist von außen nicht erreichbar.",
   "@accessHint": {
     "description": "accessHint"
+  },
+  "repeatNever2": "Nicht wiederholen",
+  "@repeatNever2": {
+    "description": "repeatNever2"
+  },
+  "repeatWeekdays": "An Werktagen",
+  "@repeatWeekdays": {
+    "description": "repeatWeekdays"
+  },
+  "repeatCountLabel": "Wiederholungen",
+  "@repeatCountLabel": {
+    "description": "repeatCountLabel"
+  },
+  "repeatTimes": "mal",
+  "@repeatTimes": {
+    "description": "repeatTimes"
+  },
+  "repeatAfterSome": "Nach mehreren Wiederholungen",
+  "@repeatAfterSome": {
+    "description": "repeatAfterSome"
+  },
+  "repeatNoDates": "Diese Regel ergibt keine Termine",
+  "@repeatNoDates": {
+    "description": "repeatNoDates"
+  },
+  "unitDays": "Tage",
+  "@unitDays": {
+    "description": "unitDays"
+  },
+  "unitWeeks": "Wochen",
+  "@unitWeeks": {
+    "description": "unitWeeks"
+  },
+  "unitMonths": "Monate",
+  "@unitMonths": {
+    "description": "unitMonths"
+  },
+  "unitYears": "Jahre",
+  "@unitYears": {
+    "description": "unitYears"
+  },
+  "repeatAdvEnd": "Ende",
+  "@repeatAdvEnd": {
+    "description": "repeatAdvEnd"
+  },
+  "repeatAdvNotSet": "Nicht gewählt",
+  "@repeatAdvNotSet": {
+    "description": "repeatAdvNotSet"
+  },
+  "repeatAdvMonthRule": "Monatsregel",
+  "@repeatAdvMonthRule": {
+    "description": "repeatAdvMonthRule"
+  },
+  "repeatAdvByDate": "Nach Datum",
+  "@repeatAdvByDate": {
+    "description": "repeatAdvByDate"
+  },
+  "repeatAdvByPosition": "Nach Position",
+  "@repeatAdvByPosition": {
+    "description": "repeatAdvByPosition"
+  },
+  "repeatAdvSkipped": "Ausgelassene Termine",
+  "@repeatAdvSkipped": {
+    "description": "repeatAdvSkipped"
+  },
+  "repeatAdvExceptions": "Ausnahmen",
+  "@repeatAdvExceptions": {
+    "description": "repeatAdvExceptions"
+  },
+  "repeatAdvShiftFirst": "Mit dem ersten Termin verschieben",
+  "@repeatAdvShiftFirst": {
+    "description": "repeatAdvShiftFirst"
+  },
+  "repeatAdvShiftHint": "Das Verschieben des ersten Termins verschiebt die ganze Serie",
+  "@repeatAdvShiftHint": {
+    "description": "repeatAdvShiftHint"
+  },
+  "repeatAdvHolidays": "An Feiertagen aussetzen",
+  "@repeatAdvHolidays": {
+    "description": "repeatAdvHolidays"
+  },
+  "repeatAdvHolidaysHint": "Berücksichtigt die Feiertage des Landes",
+  "@repeatAdvHolidaysHint": {
+    "description": "repeatAdvHolidaysHint"
+  },
+  "repeatAdvParsed": "In eine Regel übersetzt · zum Anwenden tippen",
+  "@repeatAdvParsed": {
+    "description": "repeatAdvParsed"
+  },
+  "weekSetupCancel": "Abbrechen",
+  "@weekSetupCancel": {
+    "description": "weekSetupCancel"
+  },
+  "searchInCalendar": "Suche",
+  "@searchInCalendar": {
+    "description": "searchInCalendar"
+  },
+  "monthMore": "noch {count}",
+  "@monthMore": {
+    "description": "monthMore",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "eventCancelOn": "Am {date} absagen",
+  "@eventCancelOn": {
+    "description": "eventCancelOn",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "eventDeleteSeries": "Ganze Serie löschen",
+  "@eventDeleteSeries": {
+    "description": "eventDeleteSeries"
+  },
+  "untitled": "Ohne Titel",
+  "@untitled": {
+    "description": "untitled"
   }
 }

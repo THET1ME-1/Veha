@@ -769,4 +769,93 @@ class LPl extends L {
   @override
   String get accessHint =>
       'Klucze działają, dopóki włączona jest synchronizacja. Kalendarz, który żyje tylko w telefonie, jest z zewnątrz niedostępny — nie ma dokąd zapukać.';
+
+  @override
+  String get repeatNever2 => 'Nie powtarzaj';
+
+  @override
+  String get repeatWeekdays => 'W dni robocze';
+
+  @override
+  String get repeatCountLabel => 'Powtórzeń';
+
+  @override
+  String get repeatTimes => 'razy';
+
+  @override
+  String get repeatAfterSome => 'Po kilku powtórzeniach';
+
+  @override
+  String get repeatNoDates => 'Przy takiej regule nic nie wypadnie';
+
+  @override
+  String get unitDays => 'dni';
+
+  @override
+  String get unitWeeks => 'tygodni';
+
+  @override
+  String get unitMonths => 'miesięcy';
+
+  @override
+  String get unitYears => 'lat';
+
+  @override
+  String get repeatAdvEnd => 'Zakończenie';
+
+  @override
+  String get repeatAdvNotSet => 'Nie wybrano';
+
+  @override
+  String get repeatAdvMonthRule => 'Reguła miesiąca';
+
+  @override
+  String get repeatAdvByDate => 'Według dnia miesiąca';
+
+  @override
+  String get repeatAdvByPosition => 'Według pozycji';
+
+  @override
+  String get repeatAdvSkipped => 'Pominięte daty';
+
+  @override
+  String get repeatAdvExceptions => 'Wyjątki';
+
+  @override
+  String get repeatAdvShiftFirst => 'Przesuwaj razem z pierwszą datą';
+
+  @override
+  String get repeatAdvShiftHint =>
+      'Przesunięcie pierwszej daty przesuwa całą serię';
+
+  @override
+  String get repeatAdvHolidays => 'Nie powtarzaj w święta';
+
+  @override
+  String get repeatAdvHolidaysHint => 'Uwzględnia święta w kraju';
+
+  @override
+  String get repeatAdvParsed => 'Zamienione w regułę · dotknij, aby zastosować';
+
+  @override
+  String get weekSetupCancel => 'Anuluj';
+
+  @override
+  String get searchInCalendar => 'Szukaj';
+
+  @override
+  String monthMore(int count) {
+    return 'jeszcze $count';
+  }
+
+  @override
+  String eventCancelOn(String date) {
+    return 'Odwołaj $date';
+  }
+
+  @override
+  String get eventDeleteSeries => 'Usuń całą serię';
+
+  @override
+  String get untitled => 'Bez nazwy';
 }

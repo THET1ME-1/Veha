@@ -916,5 +916,127 @@
   "accessHint": "Keys work only while sync is on. A calendar that lives on the phone alone is unreachable from outside — there is nowhere to knock.",
   "@accessHint": {
     "description": "accessHint"
+  },
+  "repeatNever2": "Do not repeat",
+  "@repeatNever2": {
+    "description": "repeatNever2"
+  },
+  "repeatWeekdays": "On weekdays",
+  "@repeatWeekdays": {
+    "description": "repeatWeekdays"
+  },
+  "repeatCountLabel": "Repeats",
+  "@repeatCountLabel": {
+    "description": "repeatCountLabel"
+  },
+  "repeatTimes": "times",
+  "@repeatTimes": {
+    "description": "repeatTimes"
+  },
+  "repeatAfterSome": "After a number of repeats",
+  "@repeatAfterSome": {
+    "description": "repeatAfterSome"
+  },
+  "repeatNoDates": "This rule produces no occurrences",
+  "@repeatNoDates": {
+    "description": "repeatNoDates"
+  },
+  "unitDays": "days",
+  "@unitDays": {
+    "description": "unitDays"
+  },
+  "unitWeeks": "weeks",
+  "@unitWeeks": {
+    "description": "unitWeeks"
+  },
+  "unitMonths": "months",
+  "@unitMonths": {
+    "description": "unitMonths"
+  },
+  "unitYears": "years",
+  "@unitYears": {
+    "description": "unitYears"
+  },
+  "repeatAdvEnd": "Ending",
+  "@repeatAdvEnd": {
+    "description": "repeatAdvEnd"
+  },
+  "repeatAdvNotSet": "Not chosen",
+  "@repeatAdvNotSet": {
+    "description": "repeatAdvNotSet"
+  },
+  "repeatAdvMonthRule": "Monthly rule",
+  "@repeatAdvMonthRule": {
+    "description": "repeatAdvMonthRule"
+  },
+  "repeatAdvByDate": "By date",
+  "@repeatAdvByDate": {
+    "description": "repeatAdvByDate"
+  },
+  "repeatAdvByPosition": "By position",
+  "@repeatAdvByPosition": {
+    "description": "repeatAdvByPosition"
+  },
+  "repeatAdvSkipped": "Skipped dates",
+  "@repeatAdvSkipped": {
+    "description": "repeatAdvSkipped"
+  },
+  "repeatAdvExceptions": "Exceptions",
+  "@repeatAdvExceptions": {
+    "description": "repeatAdvExceptions"
+  },
+  "repeatAdvShiftFirst": "Shift with the first date",
+  "@repeatAdvShiftFirst": {
+    "description": "repeatAdvShiftFirst"
+  },
+  "repeatAdvShiftHint": "Moving the first date moves the whole series",
+  "@repeatAdvShiftHint": {
+    "description": "repeatAdvShiftHint"
+  },
+  "repeatAdvHolidays": "Skip public holidays",
+  "@repeatAdvHolidays": {
+    "description": "repeatAdvHolidays"
+  },
+  "repeatAdvHolidaysHint": "Uses the country’s holiday calendar",
+  "@repeatAdvHolidaysHint": {
+    "description": "repeatAdvHolidaysHint"
+  },
+  "repeatAdvParsed": "Parsed into a rule · tap to apply",
+  "@repeatAdvParsed": {
+    "description": "repeatAdvParsed"
+  },
+  "weekSetupCancel": "Cancel",
+  "@weekSetupCancel": {
+    "description": "weekSetupCancel"
+  },
+  "searchInCalendar": "Search",
+  "@searchInCalendar": {
+    "description": "searchInCalendar"
+  },
+  "monthMore": "{count} more",
+  "@monthMore": {
+    "description": "monthMore",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "eventCancelOn": "Cancel on {date}",
+  "@eventCancelOn": {
+    "description": "eventCancelOn",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "eventDeleteSeries": "Delete the whole series",
+  "@eventDeleteSeries": {
+    "description": "eventDeleteSeries"
+  },
+  "untitled": "Untitled",
+  "@untitled": {
+    "description": "untitled"
   }
 }

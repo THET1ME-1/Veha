@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/brand.dart';
@@ -41,7 +43,7 @@ class CalendarsScreen extends ConsumerWidget {
             children: [
               Expanded(
                 child: Text(
-                  'Календари',
+                  L.of(context).calendarsTitle,
                   style: TextStyle(
                     fontFamily: AppFonts.display,
                     fontSize: 30,
@@ -54,7 +56,7 @@ class CalendarsScreen extends ConsumerWidget {
               FilledButton.icon(
                 onPressed: () => _createCalendar(context, ref),
                 icon: Icon(VehaIcons.byName('add'), size: 18),
-                label: const Text('Новый'),
+                label: Text(L.of(context).calendarNewShort),
                 style: FilledButton.styleFrom(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
@@ -92,7 +94,7 @@ class CalendarsScreen extends ConsumerWidget {
       BuildContext context, WidgetRef ref) async {
     final draft = await askCalendarDraft(
       context,
-      title: 'Новый календарь',
+      title: L.of(context).calendarNew,
       inheritedColor: VehaBrand.seed,
     );
     if (draft == null || draft.deleted) return;
@@ -114,7 +116,7 @@ class CalendarsScreen extends ConsumerWidget {
   ) async {
     final draft = await askCalendarDraft(
       context,
-      title: 'Календарь',
+      title: L.of(context).calendarOne,
       name: calendar.name,
       iconName: calendar.iconName,
       color: calendar.color,
@@ -145,7 +147,7 @@ class CalendarsScreen extends ConsumerWidget {
   ) async {
     final draft = await askCalendarDraft(
       context,
-      title: 'Ветка «${parent.name}»',
+      title: L.of(context).branchOf(parent.name),
       iconName: parent.iconName,
       inheritedColor: parent.color,
       colorOptional: true,
@@ -173,7 +175,7 @@ class CalendarsScreen extends ConsumerWidget {
   ) async {
     final draft = await askCalendarDraft(
       context,
-      title: 'Ветка',
+      title: L.of(context).branchOne,
       name: sub.name,
       iconName: sub.iconName ?? parent.iconName,
       color: sub.color,
@@ -219,7 +221,7 @@ class _Empty extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Ни одного календаря',
+            L.of(context).calendarsEmptyTitle,
             style: TextStyle(
               fontFamily: AppFonts.display,
               fontSize: 17,
@@ -229,8 +231,7 @@ class _Empty extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            'Календарь задаёт цвет и иконку всем событиям внутри. Обычно их '
-            'три-четыре: дом, работа, учёба, спорт.',
+            L.of(context).calendarsEmptyBody,
             style: TextStyle(
               fontFamily: AppFonts.body,
               fontSize: 13,
@@ -243,7 +244,7 @@ class _Empty extends StatelessWidget {
           FilledButton.icon(
             onPressed: onCreate,
             icon: Icon(VehaIcons.byName('add'), size: 18),
-            label: const Text('Завести календарь'),
+            label: Text(L.of(context).calendarCreate),
           ),
         ],
       ),
@@ -292,8 +293,8 @@ class _Group extends StatelessWidget {
             iconColor: ink.foreground,
             value: calendar.name,
             label: subcategories.isEmpty
-                ? 'Без веток'
-                : '${subcategories.length} ${_plural(subcategories.length)}',
+                ? L.of(context).branchNone
+                : L.of(context).branchCount(subcategories.length),
             labelFirst: false,
             onTap: onEdit,
             trailing: VSwitch(value: calendar.isVisible, onChanged: onToggle),
@@ -311,15 +312,6 @@ class _Group extends StatelessWidget {
     );
   }
 
-  static String _plural(int n) {
-    final mod10 = n % 10;
-    final mod100 = n % 100;
-    if (mod10 == 1 && mod100 != 11) return 'ветка';
-    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) {
-      return 'ветки';
-    }
-    return 'веток';
-  }
 }
 
 class _SubRow extends StatelessWidget {
@@ -376,7 +368,7 @@ class _SubRow extends StatelessWidget {
                 ),
               ),
             ),
-            VTag(ownColor ? 'свой цвет' : 'наследует', accent: ownColor),
+            VTag(ownColor ? L.of(context).colorOwn : L.of(context).colorInherits, accent: ownColor),
           ],
         ),
       ),
@@ -402,7 +394,7 @@ class _AddSub extends StatelessWidget {
             Icon(VehaIcons.byName('add'), size: 17, color: scheme.primary),
             const SizedBox(width: 9),
             Text(
-              'Добавить ветку',
+              L.of(context).branchAdd,
               style: TextStyle(
                 fontFamily: AppFonts.body,
                 fontSize: 13,

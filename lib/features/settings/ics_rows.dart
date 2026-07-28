@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/icon_registry.dart';
@@ -26,16 +28,16 @@ class IcsRows extends ConsumerWidget {
       children: [
         VRow(
           icon: 'upload',
-          label: 'Выгрузить в .ics',
-          value: 'Файл для другого календаря',
+          label: L.of(context).icsExport,
+          value: L.of(context).icsExportHint,
           trailing: chevron,
           onTap: () => _export(context, ref),
         ),
         const VSep(),
         VRow(
           icon: 'download',
-          label: 'Загрузить из .ics',
-          value: 'События из чужого календаря',
+          label: L.of(context).icsImport,
+          value: L.of(context).icsImportHint,
           trailing: chevron,
           onTap: () => _import(context, ref),
         ),
@@ -44,13 +46,14 @@ class IcsRows extends ConsumerWidget {
   }
 
   static Future<void> _export(BuildContext context, WidgetRef ref) async {
+    final l = L.of(context);
     final repo = ref.read(repositoryProvider);
     final events = await repo.allEvents();
     final defs = {for (final f in await repo.fieldsFor(null)) f.id: f};
     if (!context.mounted) return;
 
     if (events.isEmpty) {
-      _say(context, 'Выгружать нечего: событий нет.');
+      _say(context, l.icsNothingToExport);
       return;
     }
 
@@ -61,7 +64,7 @@ class IcsRows extends ConsumerWidget {
     final bytes = utf8.encode(toIcs(events, defs: defs));
 
     final path = await FilePicker.platform.saveFile(
-      dialogTitle: 'Куда сохранить календарь',
+      dialogTitle: l.icsSaveTitle,
       fileName: name,
       bytes: bytes,
     );
@@ -73,12 +76,12 @@ class IcsRows extends ConsumerWidget {
       await File(path).writeAsBytes(bytes);
       if (!context.mounted) return;
     }
-    _say(context, 'Выгружено событий: ${events.length}.');
+    _say(context, l.icsExported(events.length));
   }
 
   static Future<void> _import(BuildContext context, WidgetRef ref) async {
     final picked = await FilePicker.platform.pickFiles(
-      dialogTitle: 'Выберите файл календаря',
+      dialogTitle: L.of(context).icsPickTitle,
       type: FileType.any,
       withData: true,
     );
@@ -89,15 +92,18 @@ class IcsRows extends ConsumerWidget {
         (file.path == null ? null : await File(file.path!).readAsBytes());
     if (!context.mounted) return;
     if (bytes == null) {
-      _say(context, 'Файл не прочитался.');
+      _say(context, L.of(context).icsUnreadable);
       return;
     }
 
     // Кодировку файла угадывать не будем: `.ics` по стандарту в UTF-8, а
     // битые байты не должны ронять приложение.
-    final data = parseIcs(utf8.decode(bytes, allowMalformed: true));
+    final data = parseIcs(
+      utf8.decode(bytes, allowMalformed: true),
+      untitled: L.of(context).untitled,
+    );
     if (data.events.isEmpty) {
-      _say(context, 'В файле не нашлось ни одного события.');
+      _say(context, L.of(context).icsNoEvents);
       return;
     }
 
@@ -120,7 +126,7 @@ class IcsRows extends ConsumerWidget {
           fields: data.fields,
         );
     if (!context.mounted) return;
-    _say(context, 'Загружено событий: $added.');
+    _say(context, L.of(context).icsImported(added));
   }
 
   static void _say(BuildContext context, String text) {

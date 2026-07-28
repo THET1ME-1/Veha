@@ -768,4 +768,93 @@ class LRu extends L {
   @override
   String get accessHint =>
       'Ключи работают, пока включена синхронизация. Календарь, который живёт только на телефоне, снаружи недоступен — стучаться некуда.';
+
+  @override
+  String get repeatNever2 => 'Не повторять';
+
+  @override
+  String get repeatWeekdays => 'По будням';
+
+  @override
+  String get repeatCountLabel => 'Повторов';
+
+  @override
+  String get repeatTimes => 'раз';
+
+  @override
+  String get repeatAfterSome => 'После нескольких повторов';
+
+  @override
+  String get repeatNoDates => 'По такому правилу занятий не будет';
+
+  @override
+  String get unitDays => 'дня';
+
+  @override
+  String get unitWeeks => 'недели';
+
+  @override
+  String get unitMonths => 'месяца';
+
+  @override
+  String get unitYears => 'года';
+
+  @override
+  String get repeatAdvEnd => 'Окончание';
+
+  @override
+  String get repeatAdvNotSet => 'Не выбрана';
+
+  @override
+  String get repeatAdvMonthRule => 'Правило месяца';
+
+  @override
+  String get repeatAdvByDate => 'По числу';
+
+  @override
+  String get repeatAdvByPosition => 'По позиции';
+
+  @override
+  String get repeatAdvSkipped => 'Пропущенные даты';
+
+  @override
+  String get repeatAdvExceptions => 'Исключения';
+
+  @override
+  String get repeatAdvShiftFirst => 'Сдвигать вместе с первым';
+
+  @override
+  String get repeatAdvShiftHint => 'Перенос первой даты двигает весь ряд';
+
+  @override
+  String get repeatAdvHolidays => 'Не повторять в праздники';
+
+  @override
+  String get repeatAdvHolidaysHint => 'С учётом праздников страны';
+
+  @override
+  String get repeatAdvParsed =>
+      'Разобрано в правило · нажмите, чтобы применить';
+
+  @override
+  String get weekSetupCancel => 'Отмена';
+
+  @override
+  String get searchInCalendar => 'Поиск';
+
+  @override
+  String monthMore(int count) {
+    return 'ещё $count';
+  }
+
+  @override
+  String eventCancelOn(String date) {
+    return 'Отменить $date';
+  }
+
+  @override
+  String get eventDeleteSeries => 'Удалить весь ряд';
+
+  @override
+  String get untitled => 'Без названия';
 }

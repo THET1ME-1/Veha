@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/brand.dart';
@@ -19,7 +21,7 @@ class MonthSettingsScreen extends ConsumerWidget {
 
   /// Плотность чипа — те же режимы, что и в самом виде. Третьего варианта
   /// («только текст») в коде нет, и предлагать его значит врать.
-  static const _densityLabels = ['Иконка и текст', 'Только иконка'];
+  static List<String> _densityLabels(L l) => [l.monthDensityBoth, l.monthDensityIcon];
   static const _densityModes = [MonthMode.chips, MonthMode.icons];
 
   @override
@@ -36,7 +38,7 @@ class MonthSettingsScreen extends ConsumerWidget {
         Padding(
           padding: const EdgeInsets.only(bottom: 14),
           child: Text(
-            'Вид месяца',
+            L.of(context).monthViewTitle,
             style: TextStyle(
               fontFamily: AppFonts.display,
               fontSize: 27,
@@ -48,26 +50,26 @@ class MonthSettingsScreen extends ConsumerWidget {
         ),
         _ModeCard(
           tinted: false,
-          title: 'Чипы с названиями',
-          subtitle: 'Видно, что именно в этот день',
+          title: L.of(context).monthChips,
+          subtitle: L.of(context).monthChipsHint,
           selected: mode != MonthMode.tint,
           onTap: () => set(MonthMode.chips),
         ),
         const SizedBox(height: 8),
         _ModeCard(
           tinted: true,
-          title: 'Тонированные ячейки',
-          subtitle: 'Видно, чем занят день',
+          title: L.of(context).monthTint,
+          subtitle: L.of(context).monthTintHint,
           selected: mode == MonthMode.tint,
           onTap: () => set(MonthMode.tint),
         ),
         if (mode != MonthMode.tint) ...[
-          const VBlockCap('Плотность чипа'),
+          VBlockCap(L.of(context).monthDensity),
           Wrap(
             spacing: 6,
             runSpacing: 6,
             children: [
-              for (var i = 0; i < _densityLabels.length; i++)
+              for (var i = 0; i < _densityLabels(L.of(context)).length; i++)
                 GestureDetector(
                   onTap: () => set(_densityModes[i]),
                   child: Container(
@@ -80,7 +82,7 @@ class MonthSettingsScreen extends ConsumerWidget {
                       shape: const StadiumBorder(),
                     ),
                     child: Text(
-                      _densityLabels[i],
+                      _densityLabels(L.of(context))[i],
                       style: TextStyle(
                         fontFamily: AppFonts.body,
                         fontSize: 11.5,
@@ -99,8 +101,8 @@ class MonthSettingsScreen extends ConsumerWidget {
         VBlock(children: [
           VRow(
             icon: 'number',
-            value: 'Событий в ячейке',
-            label: 'Дальше сворачивать в «+N»',
+            value: L.of(context).monthPerCell,
+            label: L.of(context).monthPerCellHint,
             labelFirst: false,
             onTap: () => _pickChips(context, ref),
             trailing: Text(

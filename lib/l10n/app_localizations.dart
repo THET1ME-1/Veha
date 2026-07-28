@@ -1372,6 +1372,174 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'Ключи работают, пока включена синхронизация. Календарь, который живёт только на телефоне, снаружи недоступен — стучаться некуда.'**
   String get accessHint;
+
+  /// repeatNever2
+  ///
+  /// In ru, this message translates to:
+  /// **'Не повторять'**
+  String get repeatNever2;
+
+  /// repeatWeekdays
+  ///
+  /// In ru, this message translates to:
+  /// **'По будням'**
+  String get repeatWeekdays;
+
+  /// repeatCountLabel
+  ///
+  /// In ru, this message translates to:
+  /// **'Повторов'**
+  String get repeatCountLabel;
+
+  /// repeatTimes
+  ///
+  /// In ru, this message translates to:
+  /// **'раз'**
+  String get repeatTimes;
+
+  /// repeatAfterSome
+  ///
+  /// In ru, this message translates to:
+  /// **'После нескольких повторов'**
+  String get repeatAfterSome;
+
+  /// repeatNoDates
+  ///
+  /// In ru, this message translates to:
+  /// **'По такому правилу занятий не будет'**
+  String get repeatNoDates;
+
+  /// unitDays
+  ///
+  /// In ru, this message translates to:
+  /// **'дня'**
+  String get unitDays;
+
+  /// unitWeeks
+  ///
+  /// In ru, this message translates to:
+  /// **'недели'**
+  String get unitWeeks;
+
+  /// unitMonths
+  ///
+  /// In ru, this message translates to:
+  /// **'месяца'**
+  String get unitMonths;
+
+  /// unitYears
+  ///
+  /// In ru, this message translates to:
+  /// **'года'**
+  String get unitYears;
+
+  /// repeatAdvEnd
+  ///
+  /// In ru, this message translates to:
+  /// **'Окончание'**
+  String get repeatAdvEnd;
+
+  /// repeatAdvNotSet
+  ///
+  /// In ru, this message translates to:
+  /// **'Не выбрана'**
+  String get repeatAdvNotSet;
+
+  /// repeatAdvMonthRule
+  ///
+  /// In ru, this message translates to:
+  /// **'Правило месяца'**
+  String get repeatAdvMonthRule;
+
+  /// repeatAdvByDate
+  ///
+  /// In ru, this message translates to:
+  /// **'По числу'**
+  String get repeatAdvByDate;
+
+  /// repeatAdvByPosition
+  ///
+  /// In ru, this message translates to:
+  /// **'По позиции'**
+  String get repeatAdvByPosition;
+
+  /// repeatAdvSkipped
+  ///
+  /// In ru, this message translates to:
+  /// **'Пропущенные даты'**
+  String get repeatAdvSkipped;
+
+  /// repeatAdvExceptions
+  ///
+  /// In ru, this message translates to:
+  /// **'Исключения'**
+  String get repeatAdvExceptions;
+
+  /// repeatAdvShiftFirst
+  ///
+  /// In ru, this message translates to:
+  /// **'Сдвигать вместе с первым'**
+  String get repeatAdvShiftFirst;
+
+  /// repeatAdvShiftHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Перенос первой даты двигает весь ряд'**
+  String get repeatAdvShiftHint;
+
+  /// repeatAdvHolidays
+  ///
+  /// In ru, this message translates to:
+  /// **'Не повторять в праздники'**
+  String get repeatAdvHolidays;
+
+  /// repeatAdvHolidaysHint
+  ///
+  /// In ru, this message translates to:
+  /// **'С учётом праздников страны'**
+  String get repeatAdvHolidaysHint;
+
+  /// repeatAdvParsed
+  ///
+  /// In ru, this message translates to:
+  /// **'Разобрано в правило · нажмите, чтобы применить'**
+  String get repeatAdvParsed;
+
+  /// weekSetupCancel
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмена'**
+  String get weekSetupCancel;
+
+  /// searchInCalendar
+  ///
+  /// In ru, this message translates to:
+  /// **'Поиск'**
+  String get searchInCalendar;
+
+  /// monthMore
+  ///
+  /// In ru, this message translates to:
+  /// **'ещё {count}'**
+  String monthMore(int count);
+
+  /// eventCancelOn
+  ///
+  /// In ru, this message translates to:
+  /// **'Отменить {date}'**
+  String eventCancelOn(String date);
+
+  /// eventDeleteSeries
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить весь ряд'**
+  String get eventDeleteSeries;
+
+  /// untitled
+  ///
+  /// In ru, this message translates to:
+  /// **'Без названия'**
+  String get untitled;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

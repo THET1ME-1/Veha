@@ -916,5 +916,127 @@
   "accessHint": "Las claves funcionan mientras la sincronización esté activa. Un calendario que solo vive en el teléfono no es accesible desde fuera.",
   "@accessHint": {
     "description": "accessHint"
+  },
+  "repeatNever2": "No repetir",
+  "@repeatNever2": {
+    "description": "repeatNever2"
+  },
+  "repeatWeekdays": "En días laborables",
+  "@repeatWeekdays": {
+    "description": "repeatWeekdays"
+  },
+  "repeatCountLabel": "Repeticiones",
+  "@repeatCountLabel": {
+    "description": "repeatCountLabel"
+  },
+  "repeatTimes": "veces",
+  "@repeatTimes": {
+    "description": "repeatTimes"
+  },
+  "repeatAfterSome": "Tras varias repeticiones",
+  "@repeatAfterSome": {
+    "description": "repeatAfterSome"
+  },
+  "repeatNoDates": "Con esta regla no habrá ninguna cita",
+  "@repeatNoDates": {
+    "description": "repeatNoDates"
+  },
+  "unitDays": "días",
+  "@unitDays": {
+    "description": "unitDays"
+  },
+  "unitWeeks": "semanas",
+  "@unitWeeks": {
+    "description": "unitWeeks"
+  },
+  "unitMonths": "meses",
+  "@unitMonths": {
+    "description": "unitMonths"
+  },
+  "unitYears": "años",
+  "@unitYears": {
+    "description": "unitYears"
+  },
+  "repeatAdvEnd": "Final",
+  "@repeatAdvEnd": {
+    "description": "repeatAdvEnd"
+  },
+  "repeatAdvNotSet": "Sin elegir",
+  "@repeatAdvNotSet": {
+    "description": "repeatAdvNotSet"
+  },
+  "repeatAdvMonthRule": "Regla del mes",
+  "@repeatAdvMonthRule": {
+    "description": "repeatAdvMonthRule"
+  },
+  "repeatAdvByDate": "Por fecha",
+  "@repeatAdvByDate": {
+    "description": "repeatAdvByDate"
+  },
+  "repeatAdvByPosition": "Por posición",
+  "@repeatAdvByPosition": {
+    "description": "repeatAdvByPosition"
+  },
+  "repeatAdvSkipped": "Fechas omitidas",
+  "@repeatAdvSkipped": {
+    "description": "repeatAdvSkipped"
+  },
+  "repeatAdvExceptions": "Excepciones",
+  "@repeatAdvExceptions": {
+    "description": "repeatAdvExceptions"
+  },
+  "repeatAdvShiftFirst": "Desplazar junto con la primera fecha",
+  "@repeatAdvShiftFirst": {
+    "description": "repeatAdvShiftFirst"
+  },
+  "repeatAdvShiftHint": "Mover la primera fecha mueve toda la serie",
+  "@repeatAdvShiftHint": {
+    "description": "repeatAdvShiftHint"
+  },
+  "repeatAdvHolidays": "No repetir en festivos",
+  "@repeatAdvHolidays": {
+    "description": "repeatAdvHolidays"
+  },
+  "repeatAdvHolidaysHint": "Según los festivos del país",
+  "@repeatAdvHolidaysHint": {
+    "description": "repeatAdvHolidaysHint"
+  },
+  "repeatAdvParsed": "Convertido en regla · toca para aplicar",
+  "@repeatAdvParsed": {
+    "description": "repeatAdvParsed"
+  },
+  "weekSetupCancel": "Cancelar",
+  "@weekSetupCancel": {
+    "description": "weekSetupCancel"
+  },
+  "searchInCalendar": "Buscar",
+  "@searchInCalendar": {
+    "description": "searchInCalendar"
+  },
+  "monthMore": "{count} más",
+  "@monthMore": {
+    "description": "monthMore",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "eventCancelOn": "Cancelar el {date}",
+  "@eventCancelOn": {
+    "description": "eventCancelOn",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "eventDeleteSeries": "Eliminar toda la serie",
+  "@eventDeleteSeries": {
+    "description": "eventDeleteSeries"
+  },
+  "untitled": "Sin título",
+  "@untitled": {
+    "description": "untitled"
   }
 }

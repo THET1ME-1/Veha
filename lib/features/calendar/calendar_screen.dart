@@ -6,6 +6,7 @@ import '../../core/icon_registry.dart';
 
 import '../../data/models.dart';
 import '../../data/providers.dart';
+import '../../l10n/app_localizations.dart';
 import '../../data/settings.dart';
 import '../../domain/week_layout.dart';
 import '../common/blocks.dart' show vBack;
@@ -160,7 +161,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           children: [
             ListTile(
               leading: Icon(VehaIcons.byName('pencil')),
-              title: const Text('Изменить'),
+              title: Text(L.of(context).actionEdit),
               onTap: () {
                 Navigator.pop(sheetContext);
                 flow.edit(event);
@@ -169,7 +170,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             if (event.isOccurrence)
               ListTile(
                 leading: Icon(VehaIcons.byName('repeat')),
-                title: Text('Отменить ${_dayLabel(event.start)}'),
+                title: Text(L.of(context).eventCancelOn(_dayLabel(context, event.start))),
                 onTap: () {
                   Navigator.pop(sheetContext);
                   flow.skip(event);
@@ -179,7 +180,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               leading: Icon(VehaIcons.byName('trash'),
                   color: Theme.of(context).colorScheme.error),
               title: Text(
-                event.isOccurrence ? 'Удалить весь ряд' : 'Удалить событие',
+                event.isOccurrence
+                    ? L.of(context).eventDeleteSeries
+                    : L.of(context).eventDelete,
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
               onTap: () {
@@ -193,8 +196,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     );
   }
 
-  static String _dayLabel(DateTime d) =>
-      DateFormat('d MMMM', 'ru').format(d);
+  static String _dayLabel(BuildContext context, DateTime d) => DateFormat(
+        'd MMMM',
+        Localizations.localeOf(context).toLanguageTag(),
+      ).format(d);
 
   Widget _body(
     RangeData range,

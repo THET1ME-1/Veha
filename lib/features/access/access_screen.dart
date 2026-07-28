@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
+
 import '../../core/brand.dart';
 import '../../core/icon_registry.dart';
 import '../calendar/widgets/month_header.dart';
@@ -45,7 +47,7 @@ class AccessScreen extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(bottom: 14),
           child: Text(
-            'Доступ',
+            L.of(context).accessTitle,
             style: TextStyle(
               fontFamily: AppFonts.display,
               fontSize: 30,
@@ -71,9 +73,7 @@ class AccessScreen extends StatelessWidget {
               const SizedBox(width: 11),
               Expanded(
                 child: Text(
-                  'Ключи работают, пока включена синхронизация. Календарь, '
-                  'который живёт только на телефоне, снаружи недоступен — '
-                  'стучаться некуда.',
+                  L.of(context).accessHint,
                   style: TextStyle(
                     fontFamily: AppFonts.body,
                     fontSize: 12.5,
@@ -106,7 +106,7 @@ class AccessScreen extends StatelessWidget {
               Icon(VehaIcons.byName('add'), size: 19, color: scheme.primary),
               const SizedBox(width: 9),
               Text(
-                'Создать ключ',
+                L.of(context).accessCreateKey,
                 style: TextStyle(
                   fontFamily: AppFonts.body,
                   fontSize: 14,
@@ -225,7 +225,7 @@ class _KeyCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Отозвать',
+                    L.of(context).accessRevoke,
                     style: TextStyle(
                       fontFamily: AppFonts.body,
                       fontSize: 12.5,

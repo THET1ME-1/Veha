@@ -916,5 +916,127 @@
   "accessHint": "Cheile funcționează cât timp sincronizarea e pornită. Un calendar care trăiește doar pe telefon nu e accesibil din afară — nu ai unde să bați.",
   "@accessHint": {
     "description": "accessHint"
+  },
+  "repeatNever2": "Nu repeta",
+  "@repeatNever2": {
+    "description": "repeatNever2"
+  },
+  "repeatWeekdays": "În zilele lucrătoare",
+  "@repeatWeekdays": {
+    "description": "repeatWeekdays"
+  },
+  "repeatCountLabel": "Repetări",
+  "@repeatCountLabel": {
+    "description": "repeatCountLabel"
+  },
+  "repeatTimes": "ori",
+  "@repeatTimes": {
+    "description": "repeatTimes"
+  },
+  "repeatAfterSome": "După câteva repetări",
+  "@repeatAfterSome": {
+    "description": "repeatAfterSome"
+  },
+  "repeatNoDates": "Cu această regulă nu iese nicio apariție",
+  "@repeatNoDates": {
+    "description": "repeatNoDates"
+  },
+  "unitDays": "zile",
+  "@unitDays": {
+    "description": "unitDays"
+  },
+  "unitWeeks": "săptămâni",
+  "@unitWeeks": {
+    "description": "unitWeeks"
+  },
+  "unitMonths": "luni",
+  "@unitMonths": {
+    "description": "unitMonths"
+  },
+  "unitYears": "ani",
+  "@unitYears": {
+    "description": "unitYears"
+  },
+  "repeatAdvEnd": "Sfârșit",
+  "@repeatAdvEnd": {
+    "description": "repeatAdvEnd"
+  },
+  "repeatAdvNotSet": "Nealeasă",
+  "@repeatAdvNotSet": {
+    "description": "repeatAdvNotSet"
+  },
+  "repeatAdvMonthRule": "Regula lunii",
+  "@repeatAdvMonthRule": {
+    "description": "repeatAdvMonthRule"
+  },
+  "repeatAdvByDate": "După dată",
+  "@repeatAdvByDate": {
+    "description": "repeatAdvByDate"
+  },
+  "repeatAdvByPosition": "După poziție",
+  "@repeatAdvByPosition": {
+    "description": "repeatAdvByPosition"
+  },
+  "repeatAdvSkipped": "Date sărite",
+  "@repeatAdvSkipped": {
+    "description": "repeatAdvSkipped"
+  },
+  "repeatAdvExceptions": "Excepții",
+  "@repeatAdvExceptions": {
+    "description": "repeatAdvExceptions"
+  },
+  "repeatAdvShiftFirst": "Mută odată cu prima dată",
+  "@repeatAdvShiftFirst": {
+    "description": "repeatAdvShiftFirst"
+  },
+  "repeatAdvShiftHint": "Mutarea primei date mută toată seria",
+  "@repeatAdvShiftHint": {
+    "description": "repeatAdvShiftHint"
+  },
+  "repeatAdvHolidays": "Nu repeta în sărbători",
+  "@repeatAdvHolidays": {
+    "description": "repeatAdvHolidays"
+  },
+  "repeatAdvHolidaysHint": "Ține cont de sărbătorile țării",
+  "@repeatAdvHolidaysHint": {
+    "description": "repeatAdvHolidaysHint"
+  },
+  "repeatAdvParsed": "Transformat în regulă · atinge pentru a aplica",
+  "@repeatAdvParsed": {
+    "description": "repeatAdvParsed"
+  },
+  "weekSetupCancel": "Anulează",
+  "@weekSetupCancel": {
+    "description": "weekSetupCancel"
+  },
+  "searchInCalendar": "Căutare",
+  "@searchInCalendar": {
+    "description": "searchInCalendar"
+  },
+  "monthMore": "încă {count}",
+  "@monthMore": {
+    "description": "monthMore",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "eventCancelOn": "Anulează pe {date}",
+  "@eventCancelOn": {
+    "description": "eventCancelOn",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "eventDeleteSeries": "Șterge toată seria",
+  "@eventDeleteSeries": {
+    "description": "eventDeleteSeries"
+  },
+  "untitled": "Fără titlu",
+  "@untitled": {
+    "description": "untitled"
   }
 }

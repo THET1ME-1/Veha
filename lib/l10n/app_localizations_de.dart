@@ -761,4 +761,93 @@ class LDe extends L {
   @override
   String get accessHint =>
       'Schlüssel funktionieren nur bei eingeschalteter Synchronisierung. Ein Kalender, der allein auf dem Telefon lebt, ist von außen nicht erreichbar.';
+
+  @override
+  String get repeatNever2 => 'Nicht wiederholen';
+
+  @override
+  String get repeatWeekdays => 'An Werktagen';
+
+  @override
+  String get repeatCountLabel => 'Wiederholungen';
+
+  @override
+  String get repeatTimes => 'mal';
+
+  @override
+  String get repeatAfterSome => 'Nach mehreren Wiederholungen';
+
+  @override
+  String get repeatNoDates => 'Diese Regel ergibt keine Termine';
+
+  @override
+  String get unitDays => 'Tage';
+
+  @override
+  String get unitWeeks => 'Wochen';
+
+  @override
+  String get unitMonths => 'Monate';
+
+  @override
+  String get unitYears => 'Jahre';
+
+  @override
+  String get repeatAdvEnd => 'Ende';
+
+  @override
+  String get repeatAdvNotSet => 'Nicht gewählt';
+
+  @override
+  String get repeatAdvMonthRule => 'Monatsregel';
+
+  @override
+  String get repeatAdvByDate => 'Nach Datum';
+
+  @override
+  String get repeatAdvByPosition => 'Nach Position';
+
+  @override
+  String get repeatAdvSkipped => 'Ausgelassene Termine';
+
+  @override
+  String get repeatAdvExceptions => 'Ausnahmen';
+
+  @override
+  String get repeatAdvShiftFirst => 'Mit dem ersten Termin verschieben';
+
+  @override
+  String get repeatAdvShiftHint =>
+      'Das Verschieben des ersten Termins verschiebt die ganze Serie';
+
+  @override
+  String get repeatAdvHolidays => 'An Feiertagen aussetzen';
+
+  @override
+  String get repeatAdvHolidaysHint => 'Berücksichtigt die Feiertage des Landes';
+
+  @override
+  String get repeatAdvParsed => 'In eine Regel übersetzt · zum Anwenden tippen';
+
+  @override
+  String get weekSetupCancel => 'Abbrechen';
+
+  @override
+  String get searchInCalendar => 'Suche';
+
+  @override
+  String monthMore(int count) {
+    return 'noch $count';
+  }
+
+  @override
+  String eventCancelOn(String date) {
+    return 'Am $date absagen';
+  }
+
+  @override
+  String get eventDeleteSeries => 'Ganze Serie löschen';
+
+  @override
+  String get untitled => 'Ohne Titel';
 }

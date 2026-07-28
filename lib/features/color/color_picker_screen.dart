@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
 
 import '../../core/brand.dart';
@@ -95,7 +97,7 @@ class _ColorPickerScreenState extends State<ColorPickerScreen> {
             children: [
               Expanded(
                 child: Text(
-                  'Свой цвет',
+                  L.of(context).colorPickerOwn,
                   style: TextStyle(
                     fontFamily: AppFonts.display,
                     fontSize: 27,
@@ -115,7 +117,7 @@ class _ColorPickerScreenState extends State<ColorPickerScreen> {
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
-                child: const Text('Готово'),
+                child: Text(L.of(context).actionDone),
               ),
             ],
           ),
@@ -123,7 +125,7 @@ class _ColorPickerScreenState extends State<ColorPickerScreen> {
         _Preview(color: _color, hct: hct, foreground: ink.foreground),
         const SizedBox(height: 14),
         _Scale(
-          label: 'Оттенок',
+          label: L.of(context).colorHue,
           colors: scales.hues,
           columns: 12,
           selectedIndex: (hct.hue / 15).round() % 24,
@@ -132,7 +134,7 @@ class _ColorPickerScreenState extends State<ColorPickerScreen> {
           }),
         ),
         _Scale(
-          label: 'Насыщенность',
+          label: L.of(context).colorChroma,
           colors: scales.chromas,
           columns: 8,
           selectedIndex:
@@ -143,7 +145,7 @@ class _ColorPickerScreenState extends State<ColorPickerScreen> {
           }),
         ),
         _Scale(
-          label: 'Светлота',
+          label: L.of(context).colorTone,
           colors: scales.tones,
           columns: 8,
           selectedIndex: _closestToneIndex(hct.tone),
@@ -155,14 +157,13 @@ class _ColorPickerScreenState extends State<ColorPickerScreen> {
         ),
         const SizedBox(height: 4),
         _HexRow(color: _color),
-        if (widget.saved.isNotEmpty) _Swatches('Мои цвета', widget.saved, onPick: _pick),
+        if (widget.saved.isNotEmpty) _Swatches(L.of(context).colorMine, widget.saved, onPick: _pick),
         if (widget.recent.isNotEmpty)
-          _Swatches('Последние', widget.recent, onPick: _pick),
+          _Swatches(L.of(context).colorRecent, widget.recent, onPick: _pick),
         Padding(
           padding: const EdgeInsets.only(top: 10),
           child: Text(
-            'Пипетка берёт цвет с обоев или скриншота. Сохранённые живут '
-            'в «Моих цветах» и доступны из любого пикера в приложении.',
+            L.of(context).colorPickerHint,
             style: TextStyle(
               fontFamily: AppFonts.body,
               fontSize: 11.5,
@@ -228,7 +229,7 @@ class _Preview extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  'Оттенок ${hct.hue.round()}° · насыщенность ${hct.chroma.round()} · светлота ${hct.tone.round()}',
+                  L.of(context).colorReadout(hct.hue.round(), hct.chroma.round(), hct.tone.round()),
                   style: TextStyle(
                     fontFamily: AppFonts.body,
                     fontSize: 11.5,
@@ -252,7 +253,7 @@ class _Preview extends StatelessWidget {
                 Icon(VehaIcons.byName('add'), size: 15, color: foreground),
                 const SizedBox(width: 6),
                 Text(
-                  'В мои',
+                  L.of(context).colorSaveMine,
                   style: TextStyle(
                     fontFamily: AppFonts.body,
                     fontSize: 12,

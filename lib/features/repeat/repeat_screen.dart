@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/brand.dart';
@@ -25,12 +27,14 @@ class RepeatScreen extends StatefulWidget {
 class _RepeatScreenState extends State<RepeatScreen> {
   late RepeatRule _rule = RepeatRule.parse(widget.initial, widget.from);
 
-  static const _units = <RepeatUnit, String>{
-    RepeatUnit.day: 'дня',
-    RepeatUnit.week: 'недели',
-    RepeatUnit.month: 'месяца',
-    RepeatUnit.year: 'года',
-  };
+  /// Единицы шага повторения. Функция, а не константа: слова приходят из
+  /// словаря, а он знает язык только через контекст.
+  static Map<RepeatUnit, String> _units(L l) => {
+        RepeatUnit.day: l.unitDays,
+        RepeatUnit.week: l.unitWeeks,
+        RepeatUnit.month: l.unitMonths,
+        RepeatUnit.year: l.unitYears,
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +54,7 @@ class _RepeatScreenState extends State<RepeatScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      'Повторение',
+                      L.of(context).repeatTitle,
                       style: TextStyle(
                         fontFamily: AppFonts.display,
                         fontSize: 27,
@@ -69,7 +73,7 @@ class _RepeatScreenState extends State<RepeatScreen> {
                       minimumSize: Size.zero,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    child: const Text('Готово'),
+                    child: Text(L.of(context).actionDone),
                   ),
                 ],
               ),
@@ -79,18 +83,18 @@ class _RepeatScreenState extends State<RepeatScreen> {
               runSpacing: 7,
               children: [
                 _Preset(
-                  label: 'Не повторять',
+                  label: L.of(context).repeatNever2,
                   selected: !_rule.repeats,
                   onTap: () => setState(() => _rule = const RepeatRule.none()),
                 ),
                 _Preset(
-                  label: 'Каждый день',
+                  label: L.of(context).repeatDaily,
                   selected: _rule.unit == RepeatUnit.day && _rule.interval == 1,
                   onTap: () => setState(() =>
                       _rule = const RepeatRule(unit: RepeatUnit.day)),
                 ),
                 _Preset(
-                  label: 'По будням',
+                  label: L.of(context).repeatWeekdays,
                   selected: _rule.unit == RepeatUnit.week &&
                       _rule.interval == 1 &&
                       _rule.weekdays.length == 5 &&
@@ -101,7 +105,7 @@ class _RepeatScreenState extends State<RepeatScreen> {
                       )),
                 ),
                 _Preset(
-                  label: 'Каждую неделю',
+                  label: L.of(context).repeatWeekly,
                   selected: _rule.unit == RepeatUnit.week &&
                       _rule.interval == 1 &&
                       _rule.weekdays.length <= 1,
@@ -117,7 +121,7 @@ class _RepeatScreenState extends State<RepeatScreen> {
               VBlock(children: [
                 _EveryRow(
                   value: _rule.interval,
-                  unit: _units[_rule.unit] ?? '',
+                  unit: _units(L.of(context))[_rule.unit] ?? '',
                   onChanged: (v) =>
                       setState(() => _rule = _rule.copyWith(interval: v)),
                 ),
@@ -144,18 +148,18 @@ class _RepeatScreenState extends State<RepeatScreen> {
                   ),
                 ],
               ]),
-              const VBlockCap('Когда заканчивается'),
+              VBlockCap(L.of(context).repeatEndsWhen),
               VBlock(children: [
                 VOption(
-                  title: 'Никогда',
+                  title: L.of(context).repeatNever,
                   selected: _rule.count == null && _rule.until == null,
                   onTap: () => setState(() =>
                       _rule = _rule.copyWith(count: null, until: null)),
                 ),
                 const VSep(inset: 15),
                 VOption(
-                  title: 'После нескольких повторов',
-                  subtitle: _rule.count == null ? null : '${_rule.count} раз',
+                  title: L.of(context).repeatAfterSome,
+                  subtitle: _rule.count == null ? null : '${_rule.count} ${L.of(context).repeatTimes}',
                   selected: _rule.count != null,
                   onTap: () => setState(() =>
                       _rule = _rule.copyWith(count: _rule.count ?? 10, until: null)),
@@ -164,15 +168,15 @@ class _RepeatScreenState extends State<RepeatScreen> {
                   const VSep(inset: 15),
                   _EveryRow(
                     value: _rule.count!,
-                    unit: 'раз',
-                    label: 'Повторов',
+                    unit: L.of(context).repeatTimes,
+                    label: L.of(context).repeatCountLabel,
                     onChanged: (v) =>
                         setState(() => _rule = _rule.copyWith(count: v)),
                   ),
                 ],
                 const VSep(inset: 15),
                 VOption(
-                  title: 'До даты',
+                  title: L.of(context).repeatUntilDate,
                   subtitle: _rule.until == null
                       ? null
                       : DateFormat('d MMMM y', locale).format(_rule.until!),
@@ -180,7 +184,7 @@ class _RepeatScreenState extends State<RepeatScreen> {
                   onTap: _pickUntil,
                 ),
               ]),
-              const VBlockCap('Ближайшие даты'),
+              VBlockCap(L.of(context).repeatNextDates),
               _Preview(rrule: rrule, from: widget.from, locale: locale),
             ],
           ],
@@ -246,7 +250,7 @@ class _Preview extends StatelessWidget {
     if (dates.isEmpty) {
       final scheme = Theme.of(context).colorScheme;
       return Text(
-        'По такому правилу занятий не будет',
+        L.of(context).repeatNoDates,
         style: TextStyle(
           fontFamily: AppFonts.body,
           fontSize: 12.5,
@@ -312,12 +316,14 @@ class _EveryRow extends StatelessWidget {
     required this.value,
     required this.unit,
     required this.onChanged,
-    this.label = 'Каждые',
+    this.label,
   });
 
   final int value;
   final String unit;
-  final String label;
+
+  /// Подпись строки. `null` — «Каждые» из словаря.
+  final String? label;
   final ValueChanged<int> onChanged;
 
   @override
@@ -333,7 +339,7 @@ class _EveryRow extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  label,
+                  label ?? L.of(context).repeatEvery,
                   style: TextStyle(
                     fontFamily: AppFonts.body,
                     fontSize: 11.5,
@@ -404,12 +410,12 @@ class _UnitRow extends StatelessWidget {
   final RepeatUnit value;
   final ValueChanged<RepeatUnit> onChanged;
 
-  static const _labels = <RepeatUnit, String>{
-    RepeatUnit.day: 'День',
-    RepeatUnit.week: 'Неделя',
-    RepeatUnit.month: 'Месяц',
-    RepeatUnit.year: 'Год',
-  };
+  static Map<RepeatUnit, String> _labels(L l) => {
+        RepeatUnit.day: l.unitDay,
+        RepeatUnit.week: l.unitWeek,
+        RepeatUnit.month: l.unitMonth,
+        RepeatUnit.year: l.unitYear,
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -419,7 +425,7 @@ class _UnitRow extends StatelessWidget {
         spacing: 7,
         runSpacing: 7,
         children: [
-          for (final entry in _labels.entries)
+          for (final entry in _labels(L.of(context)).entries)
             _Preset(
               label: entry.value,
               selected: value == entry.key,

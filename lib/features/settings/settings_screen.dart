@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -31,7 +33,7 @@ class SettingsScreen extends ConsumerWidget {
           VehaInsets.screen, 10, VehaInsets.screen, 120),
       children: [
         Text(
-          'Настройки',
+          L.of(context).settingsTitle,
           style: TextStyle(
             fontFamily: AppFonts.display,
             fontSize: 30,
@@ -40,15 +42,15 @@ class SettingsScreen extends ConsumerWidget {
             color: scheme.onSurface,
           ),
         ),
-        const VBlockCap('Оформление'),
+        VBlockCap(L.of(context).settingsAppearance),
         VBlock(children: [
           _ChoiceRow(
             icon: 'palette',
-            label: 'Тема',
-            options: const {
-              ThemeMode.system: 'Как в системе',
-              ThemeMode.light: 'Светлая',
-              ThemeMode.dark: 'Тёмная',
+            label: L.of(context).settingsTheme,
+            options: {
+              ThemeMode.system: L.of(context).settingsSystem,
+              ThemeMode.light: L.of(context).settingsLight,
+              ThemeMode.dark: L.of(context).settingsDark,
             },
             value: look.themeMode,
             onChanged: (v) =>
@@ -57,9 +59,9 @@ class SettingsScreen extends ConsumerWidget {
           const VSep(),
           _ChoiceRow(
             icon: 'wand',
-            label: 'Насыщенность',
-            hint: 'На фирменной мяте «Сочно» выкручивает пилюли до кислотного',
-            options: const {false: 'Точь-в-точь', true: 'Сочно'},
+            label: L.of(context).settingsChroma,
+            hint: L.of(context).settingsChromaHint,
+            options: {false: L.of(context).settingsExact, true: L.of(context).settingsVivid},
             value: look.vibrant,
             onChanged: (v) =>
                 ref.read(appearanceProvider.notifier).setVibrant(v),
@@ -67,7 +69,7 @@ class SettingsScreen extends ConsumerWidget {
           const VSep(),
           VRow(
             icon: 'dropper',
-            label: 'Фирменный цвет',
+            label: L.of(context).settingsSeed,
             value: _hex(look.seed),
             trailing: Container(
               width: 26,
@@ -80,12 +82,12 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => _pickSeed(context, ref, look.seed),
           ),
         ]),
-        const VBlockCap('Календарь'),
+        VBlockCap(L.of(context).settingsCalendarGroup),
         VBlock(children: [
           VRow(
             icon: 'viewWeek',
-            label: 'Дни в виде «Неделя»',
-            value: _weekLabel(week),
+            label: L.of(context).settingsWeekDays,
+            value: _weekLabel(L.of(context), week),
             trailing: Icon(VehaIcons.byName('chevron'),
                 size: 17, color: scheme.outline),
             onTap: () async {
@@ -97,8 +99,8 @@ class SettingsScreen extends ConsumerWidget {
           const VSep(),
           VRow(
             icon: 'text',
-            label: 'Свои поля',
-            value: 'Кабинет, тренер, номер абонемента',
+            label: L.of(context).fieldsTitle,
+            value: L.of(context).settingsFieldsHint,
             trailing: Icon(VehaIcons.byName('chevron'),
                 size: 17, color: scheme.outline),
             onTap: () => Navigator.of(context).push(
@@ -108,9 +110,9 @@ class SettingsScreen extends ConsumerWidget {
           const VSep(),
           _ChoiceRow(
             icon: 'language',
-            label: 'Язык',
-            options: const {
-              '': 'Как в системе',
+            label: L.of(context).settingsLanguage,
+            options: {
+              '': L.of(context).settingsSystem,
               'ru': 'Русский',
               'en': 'English',
               'uk': 'Українська',
@@ -125,21 +127,21 @@ class SettingsScreen extends ConsumerWidget {
                 .setLocale(v.isEmpty ? null : Locale(v)),
           ),
         ]),
-        const VBlockCap('Данные'),
+        VBlockCap(L.of(context).settingsDataGroup),
         const VBlock(children: [IcsRows()]),
-        const VBlockCap('О приложении'),
+        VBlockCap(L.of(context).settingsAbout),
         VBlock(children: [
           const _VersionRow(),
           const VSep(),
           VRow(
             icon: 'shield',
-            label: 'Данные',
-            value: 'Всё хранится на устройстве',
+            label: L.of(context).settingsDataGroup,
+            value: L.of(context).settingsStorage,
           ),
           const VSep(),
           VRow(
             icon: 'link',
-            label: 'Исходный код',
+            label: L.of(context).settingsSource,
             value: 'THET1ME-1/Veha · GPL-3.0',
           ),
         ]),
@@ -164,13 +166,12 @@ class SettingsScreen extends ConsumerWidget {
   static String _hex(Color c) =>
       '#${c.toARGB32().toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}';
 
-  static String _weekLabel(WeekLayout layout) {
-    if (layout.isFullWeek) return 'Вся неделя';
-    if (layout.weekdays.length == 5 &&
-        layout.weekdays.every((d) => d <= 5)) {
-      return 'Только будни';
+  static String _weekLabel(L l, WeekLayout layout) {
+    if (layout.isFullWeek) return l.settingsWeekFull;
+    if (layout.weekdays.length == 5 && layout.weekdays.every((d) => d <= 5)) {
+      return l.settingsWeekdaysOnly;
     }
-    return '${layout.weekdays.length} дня в неделе';
+    return l.settingsWeekSome(layout.weekdays.length);
   }
 }
 
@@ -273,7 +274,7 @@ class _VersionRow extends StatelessWidget {
         final info = snapshot.data;
         return VRow(
           icon: 'info',
-          label: 'Версия',
+          label: L.of(context).settingsVersion,
           value: info == null
               ? '—'
               : '${info.version} · сборка ${info.buildNumber}',

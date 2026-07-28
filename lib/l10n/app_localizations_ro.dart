@@ -760,4 +760,93 @@ class LRo extends L {
   @override
   String get accessHint =>
       'Cheile funcționează cât timp sincronizarea e pornită. Un calendar care trăiește doar pe telefon nu e accesibil din afară — nu ai unde să bați.';
+
+  @override
+  String get repeatNever2 => 'Nu repeta';
+
+  @override
+  String get repeatWeekdays => 'În zilele lucrătoare';
+
+  @override
+  String get repeatCountLabel => 'Repetări';
+
+  @override
+  String get repeatTimes => 'ori';
+
+  @override
+  String get repeatAfterSome => 'După câteva repetări';
+
+  @override
+  String get repeatNoDates => 'Cu această regulă nu iese nicio apariție';
+
+  @override
+  String get unitDays => 'zile';
+
+  @override
+  String get unitWeeks => 'săptămâni';
+
+  @override
+  String get unitMonths => 'luni';
+
+  @override
+  String get unitYears => 'ani';
+
+  @override
+  String get repeatAdvEnd => 'Sfârșit';
+
+  @override
+  String get repeatAdvNotSet => 'Nealeasă';
+
+  @override
+  String get repeatAdvMonthRule => 'Regula lunii';
+
+  @override
+  String get repeatAdvByDate => 'După dată';
+
+  @override
+  String get repeatAdvByPosition => 'După poziție';
+
+  @override
+  String get repeatAdvSkipped => 'Date sărite';
+
+  @override
+  String get repeatAdvExceptions => 'Excepții';
+
+  @override
+  String get repeatAdvShiftFirst => 'Mută odată cu prima dată';
+
+  @override
+  String get repeatAdvShiftHint => 'Mutarea primei date mută toată seria';
+
+  @override
+  String get repeatAdvHolidays => 'Nu repeta în sărbători';
+
+  @override
+  String get repeatAdvHolidaysHint => 'Ține cont de sărbătorile țării';
+
+  @override
+  String get repeatAdvParsed =>
+      'Transformat în regulă · atinge pentru a aplica';
+
+  @override
+  String get weekSetupCancel => 'Anulează';
+
+  @override
+  String get searchInCalendar => 'Căutare';
+
+  @override
+  String monthMore(int count) {
+    return 'încă $count';
+  }
+
+  @override
+  String eventCancelOn(String date) {
+    return 'Anulează pe $date';
+  }
+
+  @override
+  String get eventDeleteSeries => 'Șterge toată seria';
+
+  @override
+  String get untitled => 'Fără titlu';
 }

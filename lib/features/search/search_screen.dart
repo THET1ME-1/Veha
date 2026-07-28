@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -91,12 +93,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           Expanded(
             child: _query.trim().isEmpty
                 ? _Hint(
-                    text: 'Ищите по названию, месту или своему полю — '
-                        'например по номеру кабинета.',
+                    text: L.of(context).searchEmpty,
                     scheme: scheme,
                   )
                 : results.isEmpty
-                    ? _Hint(text: 'Ничего не нашлось.', scheme: scheme)
+                    ? _Hint(text: L.of(context).searchNothing, scheme: scheme)
                     : _Results(
                         results: results,
                         inheritance: inheritance,
@@ -152,7 +153,7 @@ class _Field extends StatelessWidget {
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
                 contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                hintText: 'Найти событие',
+                hintText: L.of(context).searchHint,
                 hintStyle: TextStyle(
                   fontFamily: AppFonts.body,
                   fontSize: 15.5,
@@ -267,7 +268,7 @@ class _ResultRow extends StatelessWidget {
     final icon = inheritance?.iconOfEvent(event) ?? 'calendar';
 
     final where = event.location;
-    final when = _when(event);
+    final when = _when(event, L.of(context).allDay);
 
     return InkWell(
       onTap: onTap,
@@ -324,13 +325,13 @@ class _ResultRow extends StatelessWidget {
 
   /// Когда это. У полосы на месяц часов нет вовсе, и «00:00 – 00:00» в выдаче
   /// выглядит поломкой: у неё показываем промежуток дат.
-  static String _when(VEvent e) {
+  static String _when(VEvent e, String allDayWord) {
     if (e.isMultiDay || e.isAllDay) {
       final from = DateFormat('d MMMM', 'ru').format(e.start);
       final to = DateFormat('d MMMM', 'ru').format(
         e.end.subtract(const Duration(minutes: 1)),
       );
-      return from == to ? '$from · весь день' : '$from – $to';
+      return from == to ? '$from · $allDayWord' : '$from – $to';
     }
     final day = DateFormat('E d MMMM', 'ru').format(e.start);
     return '$day · ${_hhmm(e.start)} – ${_hhmm(e.end)}';

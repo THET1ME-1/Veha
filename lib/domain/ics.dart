@@ -88,7 +88,7 @@ String toIcs(
 ///
 /// Битый файл даёт пустой список, а не исключение: человек выбрал не тот файл,
 /// и сообщать об этом надо интерфейсом, а не крэшем.
-IcsData parseIcs(String text, {String Function()? newId}) {
+IcsData parseIcs(String text, {String Function()? newId, String untitled = 'Untitled'}) {
   final lines = _unfold(text);
   final out = <VEvent>[];
   final defs = <String, VFieldDef>{};
@@ -109,6 +109,7 @@ IcsData parseIcs(String text, {String Function()? newId}) {
         current,
         fields,
         id: newId?.call() ?? 'ics-${counter++}',
+        untitled: untitled,
       );
       if (event != null) out.add(event);
       current = null;
@@ -151,6 +152,7 @@ VEvent? _toEvent(
   Map<String, _Prop> props,
   List<VFieldValue> fields, {
   required String id,
+  required String untitled,
 }) {
   final start = props['DTSTART'];
   if (start == null) return null;
@@ -166,7 +168,7 @@ VEvent? _toEvent(
     id: id,
     // Календарь назначает тот, кто импортирует: в чужом файле его нет.
     calendarId: '',
-    title: _unescape(props['SUMMARY']?.value ?? 'Без названия'),
+    title: _unescape(props['SUMMARY']?.value ?? untitled),
     start: startAt,
     // Час по умолчанию — соглашение самого RFC для событий без конца.
     end: endAt ?? startAt.add(allDay
