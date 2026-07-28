@@ -91,15 +91,33 @@ class _ColorPickerScreenState extends State<ColorPickerScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.only(bottom: 14),
-          child: Text(
-            'Свой цвет',
-            style: TextStyle(
-              fontFamily: AppFonts.display,
-              fontSize: 27,
-              letterSpacing: -0.8,
-              fontWeight: FontWeight.w800,
-              color: scheme.onSurface,
-            ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Свой цвет',
+                  style: TextStyle(
+                    fontFamily: AppFonts.display,
+                    fontSize: 27,
+                    letterSpacing: -0.8,
+                    fontWeight: FontWeight.w800,
+                    color: scheme.onSurface,
+                  ),
+                ),
+              ),
+              // Экран открывают, чтобы выбрать цвет, — значит он обязан его
+              // вернуть. Без этой кнопки пикер был витриной.
+              FilledButton(
+                onPressed: () => Navigator.of(context).maybePop(_color),
+                style: FilledButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 11),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: const Text('Готово'),
+              ),
+            ],
           ),
         ),
         _Preview(color: _color, hct: hct, foreground: ink.foreground),

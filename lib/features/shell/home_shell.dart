@@ -7,8 +7,8 @@ import '../../data/seed.dart';
 import '../access/access_screen.dart';
 import '../calendar/calendar_screen.dart';
 import '../calendars/calendars_screen.dart';
-import '../calendar/widgets/month_header.dart';
 import '../event/event_flow.dart';
+import '../settings/settings_screen.dart';
 
 /// Оболочка приложения: нижняя навигация на четыре раздела.
 /// Боковой панели нет и не будет — переключение видов живёт в сегментированном
@@ -76,7 +76,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         0 => const CalendarScreen(),
         1 => CalendarsScreen(inheritance: Seed.inheritance),
         2 => AccessScreen(keys: demoKeys),
-        _ => _Stub(label: _labels(context)[_tab]),
+        _ => const SettingsScreen(),
       };
 
   /// Демонстрационные ключи: серверного слоя ещё нет, но экран должен быть
@@ -103,26 +103,4 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       revoked: true,
     ),
   ];
-}
-
-class _Stub extends StatelessWidget {
-  const _Stub({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Center(
-      child: Text(
-        label,
-        style: TextStyle(
-          fontFamily: AppFonts.display,
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-          color: scheme.onSurfaceVariant,
-        ),
-      ),
-    );
-  }
 }
