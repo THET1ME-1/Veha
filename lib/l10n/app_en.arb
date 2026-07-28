@@ -1637,5 +1637,32 @@
   "nothingToShift": "Nothing else that day",
   "@nothingToShift": {
     "description": "nothingToShift"
+  },
+  "msgEventShifted": "Event at {time}",
+  "@msgEventShifted": {
+    "description": "msgEventShifted",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "msgEventResized": "Now until {time}",
+  "@msgEventResized": {
+    "description": "msgEventResized",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "msgOverlaps": "Overlaps: {title}",
+  "@msgOverlaps": {
+    "description": "msgOverlaps",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
   }
 }

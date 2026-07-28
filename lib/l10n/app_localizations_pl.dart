@@ -1292,4 +1292,19 @@ class LPl extends L {
 
   @override
   String get nothingToShift => 'Dalej tego dnia nic nie ma';
+
+  @override
+  String msgEventShifted(String time) {
+    return 'Wydarzenie o $time';
+  }
+
+  @override
+  String msgEventResized(String time) {
+    return 'Teraz do $time';
+  }
+
+  @override
+  String msgOverlaps(String title) {
+    return 'Nakłada się: $title';
+  }
 }

@@ -1285,4 +1285,19 @@ class LDe extends L {
 
   @override
   String get nothingToShift => 'An dem Tag kommt nichts mehr';
+
+  @override
+  String msgEventShifted(String time) {
+    return 'Termin um $time';
+  }
+
+  @override
+  String msgEventResized(String time) {
+    return 'Jetzt bis $time';
+  }
+
+  @override
+  String msgOverlaps(String title) {
+    return 'Überschneidet sich: $title';
+  }
 }

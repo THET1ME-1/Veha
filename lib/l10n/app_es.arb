@@ -1637,5 +1637,32 @@
   "nothingToShift": "No hay nada más ese día",
   "@nothingToShift": {
     "description": "nothingToShift"
+  },
+  "msgEventShifted": "Evento a las {time}",
+  "@msgEventShifted": {
+    "description": "msgEventShifted",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "msgEventResized": "Ahora hasta las {time}",
+  "@msgEventResized": {
+    "description": "msgEventResized",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "msgOverlaps": "Se cruza con: {title}",
+  "@msgOverlaps": {
+    "description": "msgOverlaps",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
   }
 }

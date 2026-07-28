@@ -1280,4 +1280,19 @@ class LEs extends L {
 
   @override
   String get nothingToShift => 'No hay nada más ese día';
+
+  @override
+  String msgEventShifted(String time) {
+    return 'Evento a las $time';
+  }
+
+  @override
+  String msgEventResized(String time) {
+    return 'Ahora hasta las $time';
+  }
+
+  @override
+  String msgOverlaps(String title) {
+    return 'Se cruza con: $title';
+  }
 }

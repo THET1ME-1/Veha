@@ -1725,5 +1725,32 @@
   "nothingToShift": "Дальше в этом дне ничего нет",
   "@nothingToShift": {
     "description": "nothingToShift"
+  },
+  "msgEventShifted": "Событие в {time}",
+  "@msgEventShifted": {
+    "description": "msgEventShifted",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "msgEventResized": "Теперь до {time}",
+  "@msgEventResized": {
+    "description": "msgEventResized",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "msgOverlaps": "Пересекается: {title}",
+  "@msgOverlaps": {
+    "description": "msgOverlaps",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
   }
 }

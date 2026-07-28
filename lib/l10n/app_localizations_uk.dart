@@ -1292,4 +1292,19 @@ class LUk extends L {
 
   @override
   String get nothingToShift => 'Далі цього дня нічого немає';
+
+  @override
+  String msgEventShifted(String time) {
+    return 'Подія о $time';
+  }
+
+  @override
+  String msgEventResized(String time) {
+    return 'Тепер до $time';
+  }
+
+  @override
+  String msgOverlaps(String title) {
+    return 'Перетинається: $title';
+  }
 }

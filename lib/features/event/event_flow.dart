@@ -110,6 +110,77 @@ class EventFlow {
     }
   }
 
+  /// Блок перетащили в сетке. Событие едет молча, полоска предлагает
+  /// вернуть — и заодно докладывает, если оно наехало на соседа.
+  Future<void> moveBy(VEvent event, Duration shift) async {
+    if (shift.inMinutes == 0) return;
+    final repo = ref.read(repositoryProvider);
+    final l = L.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+
+    final moved = _shifted(event, shift);
+    await repo.upsertEvent(moved);
+
+    final clash = await _clashWith(moved);
+    if (!context.mounted) return;
+
+    _offerUndo(
+      clash == null
+          ? l.msgEventShifted(DateFormat.Hm(locale).format(moved.start))
+          : l.msgOverlaps(clash.title),
+      () => repo.upsertEvent(event),
+    );
+  }
+
+  /// Блок потянули за нижний край: другая длительность, то же начало.
+  Future<void> resize(VEvent event, Duration duration) async {
+    final repo = ref.read(repositoryProvider);
+    final l = L.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+
+    final resized = _withEnd(event, event.start.add(duration));
+    await repo.upsertEvent(resized);
+
+    if (!context.mounted) return;
+    _offerUndo(
+      l.msgEventResized(DateFormat.Hm(locale).format(resized.end)),
+      () => repo.upsertEvent(event),
+    );
+  }
+
+  /// С кем событие пересеклось после переноса. Молча наехать на соседа
+  /// календарь не должен — но и запрещать не его дело.
+  Future<VEvent?> _clashWith(VEvent event) async {
+    final day = await ref.read(repositoryProvider).eventsOfDay(event.start);
+    for (final other in day) {
+      if (other.id == event.id || other.isMultiDay) continue;
+      if (other.start.isBefore(event.end) && other.end.isAfter(event.start)) {
+        return other;
+      }
+    }
+    return null;
+  }
+
+  VEvent _withEnd(VEvent event, DateTime end) => VEvent(
+        id: event.id,
+        calendarId: event.calendarId,
+        subcategoryId: event.subcategoryId,
+        title: event.title,
+        start: event.start,
+        end: end,
+        color: event.color,
+        iconName: event.iconName,
+        isAllDay: event.isAllDay,
+        rrule: event.isOccurrence ? null : event.rrule,
+        recurrenceId: event.recurrenceId,
+        originalStart: event.originalStart,
+        isVirtual: event.isVirtual,
+        timezone: event.timezone,
+        location: event.location,
+        fields: event.fields,
+        reminders: event.reminders,
+      );
+
   // ── Действия, каких нет у соседей ──────────────────────────────────────
 
   /// Пауза ряда: занятий не будет столько-то недель, ряд остаётся.

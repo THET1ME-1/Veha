@@ -2302,6 +2302,24 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'Дальше в этом дне ничего нет'**
   String get nothingToShift;
+
+  /// msgEventShifted
+  ///
+  /// In ru, this message translates to:
+  /// **'Событие в {time}'**
+  String msgEventShifted(String time);
+
+  /// msgEventResized
+  ///
+  /// In ru, this message translates to:
+  /// **'Теперь до {time}'**
+  String msgEventResized(String time);
+
+  /// msgOverlaps
+  ///
+  /// In ru, this message translates to:
+  /// **'Пересекается: {title}'**
+  String msgOverlaps(String title);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

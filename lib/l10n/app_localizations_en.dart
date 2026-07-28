@@ -1280,4 +1280,19 @@ class LEn extends L {
 
   @override
   String get nothingToShift => 'Nothing else that day';
+
+  @override
+  String msgEventShifted(String time) {
+    return 'Event at $time';
+  }
+
+  @override
+  String msgEventResized(String time) {
+    return 'Now until $time';
+  }
+
+  @override
+  String msgOverlaps(String title) {
+    return 'Overlaps: $title';
+  }
 }

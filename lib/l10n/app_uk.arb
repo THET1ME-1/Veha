@@ -1637,5 +1637,32 @@
   "nothingToShift": "Далі цього дня нічого немає",
   "@nothingToShift": {
     "description": "nothingToShift"
+  },
+  "msgEventShifted": "Подія о {time}",
+  "@msgEventShifted": {
+    "description": "msgEventShifted",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "msgEventResized": "Тепер до {time}",
+  "@msgEventResized": {
+    "description": "msgEventResized",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "msgOverlaps": "Перетинається: {title}",
+  "@msgOverlaps": {
+    "description": "msgOverlaps",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
   }
 }

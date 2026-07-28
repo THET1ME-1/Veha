@@ -1290,4 +1290,19 @@ class LRu extends L {
 
   @override
   String get nothingToShift => 'Дальше в этом дне ничего нет';
+
+  @override
+  String msgEventShifted(String time) {
+    return 'Событие в $time';
+  }
+
+  @override
+  String msgEventResized(String time) {
+    return 'Теперь до $time';
+  }
+
+  @override
+  String msgOverlaps(String title) {
+    return 'Пересекается: $title';
+  }
 }

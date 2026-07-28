@@ -1281,4 +1281,19 @@ class LRo extends L {
 
   @override
   String get nothingToShift => 'Nimic mai departe în ziua asta';
+
+  @override
+  String msgEventShifted(String time) {
+    return 'Eveniment la $time';
+  }
+
+  @override
+  String msgEventResized(String time) {
+    return 'Acum până la $time';
+  }
+
+  @override
+  String msgOverlaps(String title) {
+    return 'Se suprapune: $title';
+  }
 }

@@ -280,6 +280,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           now: _isToday(today) ? now : null,
           onEventTap: (e) => EventFlow(context, ref).preview(e),
           onEventLongPress: _showEventMenu,
+          // Долгое нажатие отрывает блок и тащит его по сетке, нижний край
+          // тянет длительность. Шаг — пятнадцать минут.
+          onEventMoved: (e, shift) => EventFlow(context, ref).moveBy(e, shift),
+          onEventResized: (e, duration) =>
+              EventFlow(context, ref).resize(e, duration),
           onHourTap: (hour) => EventFlow(context, ref).create(
             at: DateTime(_selected!.year, _selected!.month, _selected!.day, hour),
           ),

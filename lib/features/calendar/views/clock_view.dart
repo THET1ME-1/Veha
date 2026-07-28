@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/brand.dart';
@@ -21,6 +22,8 @@ class ClockView extends StatelessWidget {
     this.onEventTap,
     this.onEventLongPress,
     this.onHourTap,
+    this.onEventMoved,
+    this.onEventResized,
   });
 
   final List<VEvent> events;
@@ -28,6 +31,12 @@ class ClockView extends StatelessWidget {
   final DateTime? now;
   final ValueChanged<VEvent>? onEventTap;
   final ValueChanged<VEvent>? onEventLongPress;
+
+  /// Блок перетащили: событие уехало на столько-то минут.
+  final void Function(VEvent event, Duration shift)? onEventMoved;
+
+  /// Блок потянули за нижний край: длительность стала другой.
+  final void Function(VEvent event, Duration duration)? onEventResized;
 
   /// Тап по свободному часу: сюда и заводят событие, не открывая формы.
   final ValueChanged<int>? onHourTap;
@@ -93,6 +102,8 @@ class ClockView extends StatelessWidget {
                     onLongPress: onEventLongPress == null
                         ? null
                         : () => onEventLongPress!(placed.event),
+                    onMoved: onEventMoved,
+                    onResized: onEventResized,
                   ),
                 if (now != null &&
                     now!.hour >= firstHour &&
@@ -213,7 +224,7 @@ class _HourRow extends StatelessWidget {
   }
 }
 
-class _EventBlock extends ConsumerWidget {
+class _EventBlock extends ConsumerStatefulWidget {
   const _EventBlock({
     required this.placed,
     required this.firstHour,
@@ -223,6 +234,8 @@ class _EventBlock extends ConsumerWidget {
     required this.icon,
     this.onTap,
     this.onLongPress,
+    this.onMoved,
+    this.onResized,
   });
 
   final _Placed placed;
@@ -233,9 +246,47 @@ class _EventBlock extends ConsumerWidget {
   final String icon;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
+  final void Function(VEvent event, Duration shift)? onMoved;
+  final void Function(VEvent event, Duration duration)? onResized;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_EventBlock> createState() => _EventBlockState();
+}
+
+class _EventBlockState extends ConsumerState<_EventBlock> {
+  /// Смещение блока под пальцем. Пока тянут, событие в базе не трогаем:
+  /// правка на каждый кадр — это сотня записей за один жест.
+  double _drag = 0;
+
+  /// Прибавка к высоте, когда тянут за нижний край.
+  double _stretch = 0;
+
+  bool _dragging = false;
+
+  /// Шаг сетки. Пятнадцать минут — то, чем человек мыслит расписание;
+  /// попытки ставить встречу на 10:07 обычно означают промах пальцем.
+  static const int _stepMinutes = 15;
+  static double get _stepPixels =>
+      ClockView.hourHeight * _stepMinutes / 60;
+
+  double _snap(double value) =>
+      (value / _stepPixels).round() * _stepPixels;
+
+  Duration _minutesOf(double pixels) => Duration(
+        minutes: (pixels / ClockView.hourHeight * 60).round(),
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    final placed = widget.placed;
+    final gutter = widget.gutter;
+    final laneWidth = widget.laneWidth;
+    final color = widget.color;
+    final icon = widget.icon;
+    final onTap = widget.onTap;
+    final onLongPress = widget.onLongPress;
+    final firstHour = widget.firstHour;
+    final ref = this.ref;
     final e = placed.event;
     final defs = ref.watch(fieldDefsByIdProvider);
     final ink = EventColors.of(color, Theme.of(context).brightness);
@@ -254,15 +305,47 @@ class _EventBlock extends ConsumerWidget {
     // вместе с отступами, поэтому ниже 54 остаётся только название.
     final tight = height < 54;
 
+    final canDrag = widget.onMoved != null;
+
     return Positioned(
       left: gutter + 10 + placed.lane * laneWidth,
       width: laneWidth - (placed.lanes > 1 ? 6 : 0),
-      top: top,
-      height: height,
+      // Пока блок под пальцем, он живёт своим смещением: правка в базу на
+      // каждый кадр означала бы сотню записей за один жест.
+      top: top + _drag,
+      height: (height + _stretch).clamp(32.0, 2000.0),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         onLongPress: onLongPress,
+        // Перетаскивание начинается только после долгого нажатия: иначе
+        // прокрутка дня превращалась бы в случайные переносы.
+        onLongPressStart: canDrag
+            ? (_) {
+                HapticFeedback.mediumImpact();
+                setState(() => _dragging = true);
+              }
+            : null,
+        onLongPressMoveUpdate: canDrag
+            ? (details) {
+                final next = _snap(details.localOffsetFromOrigin.dy);
+                if (next == _drag) return;
+                // Щелчок на каждом делении: палец чувствует сетку, даже
+                // когда смотрит не на неё.
+                HapticFeedback.selectionClick();
+                setState(() => _drag = next);
+              }
+            : null,
+        onLongPressEnd: canDrag
+            ? (_) {
+                final shift = _minutesOf(_drag);
+                setState(() {
+                  _drag = 0;
+                  _dragging = false;
+                });
+                if (shift.inMinutes != 0) widget.onMoved!(e, shift);
+              }
+            : null,
         child: Container(
           // В поделённой колонке горизонтальные отступы режем: иначе название
           // обрывается там, где оно ещё помещалось.
@@ -271,12 +354,54 @@ class _EventBlock extends ConsumerWidget {
             vertical: tight ? 4 : 9,
           ),
           decoration: ShapeDecoration(
-            color: ink.background,
+            // Оторванный блок светлеет и приподнимается тоном: теней в
+            // приложении нет, глубина строится заливкой.
+            color: _dragging ? ink.foreground.withValues(alpha: 0.22) : ink.background,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(22)),
             ),
           ),
-          child: Row(
+          child: Stack(
+            children: [
+              if (widget.onResized != null)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: -9,
+                  height: 20,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onVerticalDragUpdate: (details) => setState(
+                      () => _stretch = _snap(_stretch + details.delta.dy),
+                    ),
+                    onVerticalDragEnd: (_) {
+                      final grown = _minutesOf(_stretch);
+                      setState(() => _stretch = 0);
+                      if (grown.inMinutes == 0) return;
+                      HapticFeedback.selectionClick();
+                      // Пятнадцать минут — пол длительности: событие короче
+                      // человек всё равно не разглядит в сетке.
+                      final next = e.duration + grown;
+                      widget.onResized!(
+                        e,
+                        next.inMinutes < 15 ? const Duration(minutes: 15) : next,
+                      );
+                    },
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        width: 34,
+                        height: 4,
+                        margin: const EdgeInsets.only(bottom: 3),
+                        decoration: ShapeDecoration(
+                          color: ink.foreground.withValues(alpha: 0.35),
+                          shape: const StadiumBorder(),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              Row(
             crossAxisAlignment: tight
                 ? CrossAxisAlignment.center
                 : CrossAxisAlignment.start,
@@ -321,6 +446,8 @@ class _EventBlock extends ConsumerWidget {
                   ],
                 ),
               ),
+            ],
+          ),
             ],
           ),
         ),
