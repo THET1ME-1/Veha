@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
+import '../../core/icon_registry.dart';
 import '../../l10n/app_localizations.dart';
 import '../../data/seed.dart';
 import '../access/access_screen.dart';
@@ -23,11 +23,11 @@ class HomeShell extends ConsumerStatefulWidget {
 class _HomeShellState extends ConsumerState<HomeShell> {
   int _tab = 0;
 
-  static const _icons = [
-    Symbols.calendar_month_rounded,
-    Symbols.format_list_bulleted_rounded,
-    Symbols.key_rounded,
-    Symbols.tune_rounded,
+  static final _icons = [
+    VehaIcons.byName('calendar'),
+    VehaIcons.byName('list'),
+    VehaIcons.byName('key'),
+    VehaIcons.byName('tune'),
   ];
 
   List<String> _labels(BuildContext context) {
@@ -50,7 +50,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
               focusElevation: 0,
               hoverElevation: 0,
               highlightElevation: 0,
-              child: const Icon(Symbols.add_rounded, size: 28),
+              child: Icon(VehaIcons.byName('add'), size: 28),
             )
           : null,
       bottomNavigationBar: NavigationBar(

@@ -36,7 +36,6 @@ dependencies:
   # Цвет и иконки
   dynamic_color: ^1.7.0
   material_color_utilities: any
-  material_symbols_icons: ^4.2801.0
 
   # Прочее
   shared_preferences: ^2.3.2
@@ -46,6 +45,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  # Только ради шрифта иконок: tool/build_icon_font.py берёт из пакета
+  # вариативный Material Symbols Rounded и режет его по белому списку.
+  # В сборку приложения пакет не попадает.
+  material_symbols_icons: ^4.2801.0
   flutter_lints: ^5.0.0
   drift_dev: ^2.20.0
   build_runner: ^2.4.13
@@ -61,3 +65,8 @@ flutter:
     - family: Onest
       fonts:
         - asset: assets/fonts/Onest.ttf
+    # Собственный набор иконок: 61 глиф, 13 КБ. Собирается скриптом
+    # tool/build_icon_font.py, список — в lib/core/icon_registry.dart.
+    - family: VehaSymbols
+      fonts:
+        - asset: assets/fonts/VehaSymbols.ttf

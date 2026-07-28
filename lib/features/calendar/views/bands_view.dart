@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../core/brand.dart';
 import '../../../core/event_colors.dart';
@@ -362,7 +361,7 @@ class _AddDot extends StatelessWidget {
         color: foreground.withValues(alpha: 0.16),
         shape: const CircleBorder(),
       ),
-      child: Icon(Symbols.add_rounded, size: 14, color: foreground),
+      child: Icon(VehaIcons.byName('add'), size: 14, color: foreground),
     );
   }
 }

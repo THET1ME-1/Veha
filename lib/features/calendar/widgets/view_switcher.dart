@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
+import '../../../core/icon_registry.dart';
 import '../../../core/brand.dart';
 import '../../../l10n/app_localizations.dart';
 import 'month_header.dart';
@@ -16,10 +16,10 @@ extension CalendarViewLabel on CalendarView {
       };
 
   IconData get icon => switch (this) {
-        CalendarView.day => Symbols.calendar_view_day_rounded,
-        CalendarView.bands => Symbols.view_agenda_rounded,
-        CalendarView.week => Symbols.view_week_rounded,
-        CalendarView.month => Symbols.calendar_month_rounded,
+        CalendarView.day => VehaIcons.byName('viewDay'),
+        CalendarView.bands => VehaIcons.byName('viewAgenda'),
+        CalendarView.week => VehaIcons.byName('viewWeek'),
+        CalendarView.month => VehaIcons.byName('calendar'),
       };
 }
 
@@ -53,35 +53,41 @@ class ViewSwitcher extends StatelessWidget {
                   onTap: () => onChanged(v),
                   behavior: HitTestBehavior.opaque,
                   child: Container(
-                    height: 38,
-                    alignment: Alignment.center,
+                    height: 44,
                     decoration: ShapeDecoration(
                       color: v == value
                           ? scheme.secondaryContainer
                           : Colors.transparent,
                       shape: const StadiumBorder(),
                     ),
+                    // Иконка стоит у всех четырёх сегментов, а не у одного
+                    // активного: иначе подпись активного съезжает вправо, и
+                    // при переключении вида дёргаются все четыре слова.
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (v == value) ...[
-                          Icon(v.icon,
-                              size: 16, color: scheme.onSecondaryContainer),
-                          const SizedBox(width: 6),
-                        ],
+                        Icon(
+                          v.icon,
+                          size: 15,
+                          color: v == value
+                              ? scheme.onSecondaryContainer
+                              : scheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(width: 5),
                         Flexible(
                           child: Text(
-                          v.label(l),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontFamily: AppFonts.body,
-                            fontSize: 13.5,
-                            fontWeight: FontWeight.w600,
-                            color: v == value
-                                ? scheme.onSecondaryContainer
-                                : scheme.onSurfaceVariant,
-                          ),
+                            v.label(l),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontFamily: AppFonts.body,
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w600,
+                              color: v == value
+                                  ? scheme.onSecondaryContainer
+                                  : scheme.onSurfaceVariant,
+                            ),
                           ),
                         ),
                       ],

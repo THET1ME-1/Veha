@@ -208,9 +208,12 @@ class _DayColumn extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, c) => Container(
           decoration: ShapeDecoration(
-            // Выходные не получают подложку: колонка и так читается по датам,
-            // а лишняя заливка делает сетку тяжёлой.
-            color: isWeekend ? Colors.transparent : scheme.surfaceContainerLow,
+            // Подложка есть у всех семи колонок, иначе суббота и воскресенье
+            // выглядят оборванными. Выходной отличается тональным уровнем,
+            // а не отсутствием фона.
+            color: isWeekend
+                ? scheme.surfaceContainerLowest
+                : scheme.surfaceContainerLow,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(16)),
             ),

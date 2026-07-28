@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:ffi' show DynamicLibrary;
 import 'dart:io';
 
@@ -25,46 +24,13 @@ Future<void> loadAppFonts() async {
   TestWidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('ru');
   _useSystemSqlite();
-  for (final family in const ['Unbounded', 'Onest']) {
+  // Иконки лежат в своём шрифте рядом с текстовыми: без него вместо каждой
+  // иконки рисуется квадрат-заглушка, и сверять экран с макетом бессмысленно.
+  for (final family in const ['Unbounded', 'Onest', 'VehaSymbols']) {
     final loader = FontLoader(family)
       ..addFont(rootBundle.load('assets/fonts/$family.ttf'));
     await loader.load();
   }
-  // Без этого вместо каждой иконки рисуется квадрат-заглушка, и сверять
-  // экран с макетом бессмысленно. Ассеты чужого пакета в тестовый бандл не
-  // попадают, поэтому файл читается прямо из кеша пакетов.
-  final iconFont = _packageFile(
-    'material_symbols_icons',
-    'lib/fonts/MaterialSymbolsRounded.ttf',
-  );
-  if (iconFont != null) {
-    // У IconData из пакета есть fontPackage, поэтому Flutter ищет семейство
-    // под именем «packages/<пакет>/<семейство>» — под ним и регистрируем.
-    final icons = FontLoader(
-      'packages/material_symbols_icons/MaterialSymbolsRounded',
-    )..addFont(Future.value(iconFont.readAsBytesSync().buffer.asByteData()));
-    await icons.load();
-  }
-}
-
-/// Путь к файлу внутри зависимости — через package_config, который pub
-/// оставляет рядом с проектом.
-File? _packageFile(String package, String relative) {
-  final config = File('.dart_tool/package_config.json');
-  if (!config.existsSync()) return null;
-  final json = jsonDecode(config.readAsStringSync()) as Map<String, dynamic>;
-  for (final p in json['packages'] as List) {
-    if (p['name'] == package) {
-      final root = Uri.parse(p['rootUri'] as String);
-      var base = root.isAbsolute ? root : config.parent.uri.resolveUri(root);
-      // Без завершающего слэша resolve() съедает последний сегмент пути.
-      if (!base.path.endsWith('/')) {
-        base = base.replace(path: '${base.path}/');
-      }
-      return File.fromUri(base.resolve(relative));
-    }
-  }
-  return null;
 }
 
 /// Размер экрана телефона из макета: 390×844 логических пикселя.

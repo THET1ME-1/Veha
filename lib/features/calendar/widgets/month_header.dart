@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../core/icon_registry.dart';
 import 'package:intl/intl.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../core/brand.dart';
 
@@ -100,8 +100,8 @@ class _ReadingSwitch extends StatelessWidget {
                 ),
                 child: Icon(
                   r == DayReading.clock
-                      ? Symbols.schedule_rounded
-                      : Symbols.timeline_rounded,
+                      ? VehaIcons.byName('clock')
+                      : VehaIcons.byName('timeline'),
                   size: 18,
                   color: r == value
                       ? scheme.onSecondaryContainer
@@ -116,6 +116,9 @@ class _ReadingSwitch extends StatelessWidget {
 }
 
 /// Имена шрифтов ДНК. Держим рядом, чтобы не тянуть весь AppTheme ради строки.
+/// Имена семейств те же, что в дизайн-ДНК. Пакет ссылается на них без
+/// префикса `packages/`, поэтому шрифты обязано объявлять само приложение —
+/// иначе тема ДНК остаётся без начертаний и текст рисуется квадратами.
 class AppFonts {
   AppFonts._();
   static const String display = 'Unbounded';
