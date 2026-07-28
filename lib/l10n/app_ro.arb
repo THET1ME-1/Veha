@@ -1689,5 +1689,55 @@
   "msgNoSlot": "Nicio fereastră în următoarele două săptămâni",
   "@msgNoSlot": {
     "description": "msgNoSlot"
+  },
+  "trashTitle": "Coș",
+  "@trashTitle": {
+    "description": "trashTitle"
+  },
+  "trashHint": "Ștersele se păstrează 90 de zile",
+  "@trashHint": {
+    "description": "trashHint"
+  },
+  "trashEmpty": "Coșul e gol",
+  "@trashEmpty": {
+    "description": "trashEmpty"
+  },
+  "trashRestore": "Restaurează",
+  "@trashRestore": {
+    "description": "trashRestore"
+  },
+  "trashClear": "Golește coșul",
+  "@trashClear": {
+    "description": "trashClear"
+  },
+  "msgTrashCleared": "Înregistrări șterse: {count}",
+  "@msgTrashCleared": {
+    "description": "msgTrashCleared",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgRestored": "Restaurat: {title}",
+  "@msgRestored": {
+    "description": "msgRestored",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarDefaults": "Implicite",
+  "@calendarDefaults": {
+    "description": "calendarDefaults"
+  },
+  "calendarDefaultReminder": "Amintire la evenimente noi",
+  "@calendarDefaultReminder": {
+    "description": "calendarDefaultReminder"
+  },
+  "calendarDefaultDuration": "Durata evenimentelor noi",
+  "@calendarDefaultDuration": {
+    "description": "calendarDefaultDuration"
   }
 }

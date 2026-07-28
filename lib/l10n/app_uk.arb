@@ -1689,5 +1689,55 @@
   "msgNoSlot": "Найближчі два тижні вікна немає",
   "@msgNoSlot": {
     "description": "msgNoSlot"
+  },
+  "trashTitle": "Кошик",
+  "@trashTitle": {
+    "description": "trashTitle"
+  },
+  "trashHint": "Видалене зберігається 90 днів",
+  "@trashHint": {
+    "description": "trashHint"
+  },
+  "trashEmpty": "Кошик порожній",
+  "@trashEmpty": {
+    "description": "trashEmpty"
+  },
+  "trashRestore": "Повернути",
+  "@trashRestore": {
+    "description": "trashRestore"
+  },
+  "trashClear": "Очистити кошик",
+  "@trashClear": {
+    "description": "trashClear"
+  },
+  "msgTrashCleared": "Прибрано записів: {count}",
+  "@msgTrashCleared": {
+    "description": "msgTrashCleared",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgRestored": "Повернуто: {title}",
+  "@msgRestored": {
+    "description": "msgRestored",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarDefaults": "За замовчуванням",
+  "@calendarDefaults": {
+    "description": "calendarDefaults"
+  },
+  "calendarDefaultReminder": "Нагадування в нових подіях",
+  "@calendarDefaultReminder": {
+    "description": "calendarDefaultReminder"
+  },
+  "calendarDefaultDuration": "Тривалість нових подій",
+  "@calendarDefaultDuration": {
+    "description": "calendarDefaultDuration"
   }
 }

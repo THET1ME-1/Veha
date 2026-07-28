@@ -1777,5 +1777,55 @@
   "msgNoSlot": "В ближайшие две недели окна нет",
   "@msgNoSlot": {
     "description": "msgNoSlot"
+  },
+  "trashTitle": "Корзина",
+  "@trashTitle": {
+    "description": "trashTitle"
+  },
+  "trashHint": "Удалённое хранится 90 дней",
+  "@trashHint": {
+    "description": "trashHint"
+  },
+  "trashEmpty": "Корзина пуста",
+  "@trashEmpty": {
+    "description": "trashEmpty"
+  },
+  "trashRestore": "Вернуть",
+  "@trashRestore": {
+    "description": "trashRestore"
+  },
+  "trashClear": "Очистить корзину",
+  "@trashClear": {
+    "description": "trashClear"
+  },
+  "msgTrashCleared": "Убрано записей: {count}",
+  "@msgTrashCleared": {
+    "description": "msgTrashCleared",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgRestored": "Возвращено: {title}",
+  "@msgRestored": {
+    "description": "msgRestored",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarDefaults": "По умолчанию",
+  "@calendarDefaults": {
+    "description": "calendarDefaults"
+  },
+  "calendarDefaultReminder": "Напоминание у новых событий",
+  "@calendarDefaultReminder": {
+    "description": "calendarDefaultReminder"
+  },
+  "calendarDefaultDuration": "Длительность у новых событий",
+  "@calendarDefaultDuration": {
+    "description": "calendarDefaultDuration"
   }
 }

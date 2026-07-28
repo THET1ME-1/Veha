@@ -2350,6 +2350,66 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'В ближайшие две недели окна нет'**
   String get msgNoSlot;
+
+  /// trashTitle
+  ///
+  /// In ru, this message translates to:
+  /// **'Корзина'**
+  String get trashTitle;
+
+  /// trashHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалённое хранится 90 дней'**
+  String get trashHint;
+
+  /// trashEmpty
+  ///
+  /// In ru, this message translates to:
+  /// **'Корзина пуста'**
+  String get trashEmpty;
+
+  /// trashRestore
+  ///
+  /// In ru, this message translates to:
+  /// **'Вернуть'**
+  String get trashRestore;
+
+  /// trashClear
+  ///
+  /// In ru, this message translates to:
+  /// **'Очистить корзину'**
+  String get trashClear;
+
+  /// msgTrashCleared
+  ///
+  /// In ru, this message translates to:
+  /// **'Убрано записей: {count}'**
+  String msgTrashCleared(int count);
+
+  /// msgRestored
+  ///
+  /// In ru, this message translates to:
+  /// **'Возвращено: {title}'**
+  String msgRestored(String title);
+
+  /// calendarDefaults
+  ///
+  /// In ru, this message translates to:
+  /// **'По умолчанию'**
+  String get calendarDefaults;
+
+  /// calendarDefaultReminder
+  ///
+  /// In ru, this message translates to:
+  /// **'Напоминание у новых событий'**
+  String get calendarDefaultReminder;
+
+  /// calendarDefaultDuration
+  ///
+  /// In ru, this message translates to:
+  /// **'Длительность у новых событий'**
+  String get calendarDefaultDuration;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

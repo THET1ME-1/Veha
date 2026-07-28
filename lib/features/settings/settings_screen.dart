@@ -14,6 +14,7 @@ import '../calendar/widgets/week_setup_sheet.dart';
 import '../common/blocks.dart';
 import '../fields/fields_screen.dart';
 import '../stats/stats_screen.dart';
+import 'trash_screen.dart';
 import '../calendar/widgets/view_switcher.dart';
 import 'appearance_card.dart';
 import 'ics_rows.dart';
@@ -156,6 +157,25 @@ class SettingsScreen extends ConsumerWidget {
                       leading: vBack(context),
                       leadingWidth: 60),
                   body: const SafeArea(child: AccessScreen()),
+                ),
+              ),
+            ),
+          ),
+          const VSep(),
+          VRow(
+            icon: 'trash',
+            label: L.of(context).trashTitle,
+            value: L.of(context).trashHint,
+            trailing: Icon(VehaIcons.byName('chevron'),
+                size: 17, color: scheme.outline),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => Scaffold(
+                  appBar: AppBar(
+                      toolbarHeight: 56,
+                      leading: vBack(context),
+                      leadingWidth: 60),
+                  body: const SafeArea(child: TrashScreen()),
                 ),
               ),
             ),

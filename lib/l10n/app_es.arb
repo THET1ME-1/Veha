@@ -1689,5 +1689,55 @@
   "msgNoSlot": "No hay hueco en las próximas dos semanas",
   "@msgNoSlot": {
     "description": "msgNoSlot"
+  },
+  "trashTitle": "Papelera",
+  "@trashTitle": {
+    "description": "trashTitle"
+  },
+  "trashHint": "Lo eliminado se guarda 90 días",
+  "@trashHint": {
+    "description": "trashHint"
+  },
+  "trashEmpty": "La papelera está vacía",
+  "@trashEmpty": {
+    "description": "trashEmpty"
+  },
+  "trashRestore": "Restaurar",
+  "@trashRestore": {
+    "description": "trashRestore"
+  },
+  "trashClear": "Vaciar la papelera",
+  "@trashClear": {
+    "description": "trashClear"
+  },
+  "msgTrashCleared": "Registros borrados: {count}",
+  "@msgTrashCleared": {
+    "description": "msgTrashCleared",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgRestored": "Restaurado: {title}",
+  "@msgRestored": {
+    "description": "msgRestored",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarDefaults": "Por defecto",
+  "@calendarDefaults": {
+    "description": "calendarDefaults"
+  },
+  "calendarDefaultReminder": "Aviso en los eventos nuevos",
+  "@calendarDefaultReminder": {
+    "description": "calendarDefaultReminder"
+  },
+  "calendarDefaultDuration": "Duración de los eventos nuevos",
+  "@calendarDefaultDuration": {
+    "description": "calendarDefaultDuration"
   }
 }

@@ -12,6 +12,8 @@ class VCalendar {
     required this.color,
     this.isVisible = true,
     this.sortOrder = 0,
+    this.defaultReminders,
+    this.defaultDuration,
   });
 
   final String id;
@@ -20,6 +22,17 @@ class VCalendar {
   final Color color;
   final bool isVisible;
   final int sortOrder;
+
+  /// Напоминания по умолчанию, минуты до начала.
+  ///
+  /// `null` — не настраивали, событие возьмёт обычные полчаса. Пустой список —
+  /// календарь молчит намеренно: у «Распорядка» будильник на каждый подъём
+  /// не нужен. Различать эти два случая обязательно, иначе «выключил
+  /// напоминания» на следующем событии превращается в «включил заново».
+  final List<int>? defaultReminders;
+
+  /// Длительность нового события в этом календаре. Пусто — час.
+  final Duration? defaultDuration;
 }
 
 /// Ветка внутри календаря: «Учёба» дробится на английский, курсы, экзамены.

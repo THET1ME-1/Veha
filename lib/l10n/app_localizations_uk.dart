@@ -1324,4 +1324,38 @@ class LUk extends L {
 
   @override
   String get msgNoSlot => 'Найближчі два тижні вікна немає';
+
+  @override
+  String get trashTitle => 'Кошик';
+
+  @override
+  String get trashHint => 'Видалене зберігається 90 днів';
+
+  @override
+  String get trashEmpty => 'Кошик порожній';
+
+  @override
+  String get trashRestore => 'Повернути';
+
+  @override
+  String get trashClear => 'Очистити кошик';
+
+  @override
+  String msgTrashCleared(int count) {
+    return 'Прибрано записів: $count';
+  }
+
+  @override
+  String msgRestored(String title) {
+    return 'Повернуто: $title';
+  }
+
+  @override
+  String get calendarDefaults => 'За замовчуванням';
+
+  @override
+  String get calendarDefaultReminder => 'Нагадування в нових подіях';
+
+  @override
+  String get calendarDefaultDuration => 'Тривалість нових подій';
 }

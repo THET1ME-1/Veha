@@ -15,6 +15,15 @@ class Calendars extends Table {
   BoolColumn get isShared => boolean().withDefault(const Constant(false))();
   TextColumn get ownerId => text().nullable()();
   IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+
+  /// Напоминания по умолчанию: минуты через запятую. Пусто — календарь
+  /// молчит. Учёба предупреждает за день, распорядок не предупреждает вовсе,
+  /// и повторять этот выбор в каждом событии человек не должен.
+  TextColumn get defaultReminders => text().nullable()();
+
+  /// Длительность по умолчанию в минутах. Пусто — час, как раньше.
+  IntColumn get defaultDuration => integer().nullable()();
+
   IntColumn get createdAt => integer()();
   IntColumn get updatedAt => integer()();
 
@@ -242,7 +251,7 @@ class VehaDatabase extends _$VehaDatabase {
   VehaDatabase(super.e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -264,6 +273,10 @@ class VehaDatabase extends _$VehaDatabase {
             await m.createTable(tasks);
             await customStatement(
                 'CREATE INDEX idx_tasks_due ON tasks (due, completed_at)');
+          }
+          if (from < 3) {
+            await m.addColumn(calendars, calendars.defaultReminders);
+            await m.addColumn(calendars, calendars.defaultDuration);
           }
         },
         beforeOpen: (details) async {

@@ -1317,4 +1317,38 @@ class LDe extends L {
 
   @override
   String get msgNoSlot => 'In den nächsten zwei Wochen keine Lücke';
+
+  @override
+  String get trashTitle => 'Papierkorb';
+
+  @override
+  String get trashHint => 'Gelöschtes bleibt 90 Tage liegen';
+
+  @override
+  String get trashEmpty => 'Der Papierkorb ist leer';
+
+  @override
+  String get trashRestore => 'Zurückholen';
+
+  @override
+  String get trashClear => 'Papierkorb leeren';
+
+  @override
+  String msgTrashCleared(int count) {
+    return 'Entfernte Einträge: $count';
+  }
+
+  @override
+  String msgRestored(String title) {
+    return 'Zurückgeholt: $title';
+  }
+
+  @override
+  String get calendarDefaults => 'Standardwerte';
+
+  @override
+  String get calendarDefaultReminder => 'Erinnerung bei neuen Terminen';
+
+  @override
+  String get calendarDefaultDuration => 'Dauer neuer Termine';
 }

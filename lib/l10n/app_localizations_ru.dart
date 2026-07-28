@@ -1322,4 +1322,38 @@ class LRu extends L {
 
   @override
   String get msgNoSlot => 'В ближайшие две недели окна нет';
+
+  @override
+  String get trashTitle => 'Корзина';
+
+  @override
+  String get trashHint => 'Удалённое хранится 90 дней';
+
+  @override
+  String get trashEmpty => 'Корзина пуста';
+
+  @override
+  String get trashRestore => 'Вернуть';
+
+  @override
+  String get trashClear => 'Очистить корзину';
+
+  @override
+  String msgTrashCleared(int count) {
+    return 'Убрано записей: $count';
+  }
+
+  @override
+  String msgRestored(String title) {
+    return 'Возвращено: $title';
+  }
+
+  @override
+  String get calendarDefaults => 'По умолчанию';
+
+  @override
+  String get calendarDefaultReminder => 'Напоминание у новых событий';
+
+  @override
+  String get calendarDefaultDuration => 'Длительность у новых событий';
 }

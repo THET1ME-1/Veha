@@ -1313,4 +1313,38 @@ class LRo extends L {
 
   @override
   String get msgNoSlot => 'Nicio fereastră în următoarele două săptămâni';
+
+  @override
+  String get trashTitle => 'Coș';
+
+  @override
+  String get trashHint => 'Ștersele se păstrează 90 de zile';
+
+  @override
+  String get trashEmpty => 'Coșul e gol';
+
+  @override
+  String get trashRestore => 'Restaurează';
+
+  @override
+  String get trashClear => 'Golește coșul';
+
+  @override
+  String msgTrashCleared(int count) {
+    return 'Înregistrări șterse: $count';
+  }
+
+  @override
+  String msgRestored(String title) {
+    return 'Restaurat: $title';
+  }
+
+  @override
+  String get calendarDefaults => 'Implicite';
+
+  @override
+  String get calendarDefaultReminder => 'Amintire la evenimente noi';
+
+  @override
+  String get calendarDefaultDuration => 'Durata evenimentelor noi';
 }

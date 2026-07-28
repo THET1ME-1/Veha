@@ -43,9 +43,14 @@ class EventFlow {
     if (inheritance == null || inheritance.calendars.isEmpty) return;
 
     final calendarId = inheritance.calendars.keys.first;
+    final defaults = inheritance.calendars[calendarId];
     final draft = at == null
-        ? EventDraft.blank(now: ref.read(nowProvider), calendarId: calendarId)
-        : EventDraft.at(at, calendarId: calendarId);
+        ? EventDraft.blank(
+            now: ref.read(nowProvider),
+            calendarId: calendarId,
+            defaults: defaults,
+          )
+        : EventDraft.at(at, calendarId: calendarId, defaults: defaults);
 
     await _openQuickSheet(draft, inheritance);
   }

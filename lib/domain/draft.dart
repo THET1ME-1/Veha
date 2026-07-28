@@ -28,18 +28,33 @@ class EventDraft {
   /// Пустой черновик по кнопке: ближайший круглый час впереди.
   /// Половина событий заводится «на сейчас», и 9:41 в поле времени человеку
   /// приходится править всегда, а 10:00 — почти никогда.
-  factory EventDraft.blank({required DateTime now, required String calendarId}) {
+  factory EventDraft.blank({
+    required DateTime now,
+    required String calendarId,
+    VCalendar? defaults,
+  }) {
     final hour = DateTime(now.year, now.month, now.day, now.hour)
         .add(const Duration(hours: 1));
-    return EventDraft.at(hour, calendarId: calendarId);
+    return EventDraft.at(hour, calendarId: calendarId, defaults: defaults);
   }
 
   /// Черновик от тапа по свободному часу.
-  factory EventDraft.at(DateTime start, {required String calendarId}) =>
+  ///
+  /// Длительность и напоминания берутся у календаря: занятие в «Учёбе» идёт
+  /// полтора часа и предупреждает за день, а «Распорядок» молчит — повторять
+  /// этот выбор в каждом событии человек не должен.
+  factory EventDraft.at(
+    DateTime start, {
+    required String calendarId,
+    VCalendar? defaults,
+  }) =>
       EventDraft(
         calendarId: calendarId,
         start: start,
-        end: start.add(const Duration(hours: 1)),
+        end: start.add(defaults?.defaultDuration ?? const Duration(hours: 1)),
+        // Календарь не настраивали — обычные полчаса; настроили пустым — он
+        // молчит, и это тоже выбор.
+        reminders: defaults?.defaultReminders ?? const [30],
       );
 
   /// Черновик правки: помнит событие, из которого вырос, включая связь с рядом.

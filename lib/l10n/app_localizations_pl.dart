@@ -1324,4 +1324,38 @@ class LPl extends L {
 
   @override
   String get msgNoSlot => 'Przez dwa tygodnie nie ma okna';
+
+  @override
+  String get trashTitle => 'Kosz';
+
+  @override
+  String get trashHint => 'Usunięte leży 90 dni';
+
+  @override
+  String get trashEmpty => 'Kosz jest pusty';
+
+  @override
+  String get trashRestore => 'Przywróć';
+
+  @override
+  String get trashClear => 'Opróżnij kosz';
+
+  @override
+  String msgTrashCleared(int count) {
+    return 'Usunięte wpisy: $count';
+  }
+
+  @override
+  String msgRestored(String title) {
+    return 'Przywrócono: $title';
+  }
+
+  @override
+  String get calendarDefaults => 'Domyślne';
+
+  @override
+  String get calendarDefaultReminder => 'Przypomnienie w nowych wydarzeniach';
+
+  @override
+  String get calendarDefaultDuration => 'Długość nowych wydarzeń';
 }

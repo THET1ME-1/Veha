@@ -1689,5 +1689,55 @@
   "msgNoSlot": "Przez dwa tygodnie nie ma okna",
   "@msgNoSlot": {
     "description": "msgNoSlot"
+  },
+  "trashTitle": "Kosz",
+  "@trashTitle": {
+    "description": "trashTitle"
+  },
+  "trashHint": "Usunięte leży 90 dni",
+  "@trashHint": {
+    "description": "trashHint"
+  },
+  "trashEmpty": "Kosz jest pusty",
+  "@trashEmpty": {
+    "description": "trashEmpty"
+  },
+  "trashRestore": "Przywróć",
+  "@trashRestore": {
+    "description": "trashRestore"
+  },
+  "trashClear": "Opróżnij kosz",
+  "@trashClear": {
+    "description": "trashClear"
+  },
+  "msgTrashCleared": "Usunięte wpisy: {count}",
+  "@msgTrashCleared": {
+    "description": "msgTrashCleared",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgRestored": "Przywrócono: {title}",
+  "@msgRestored": {
+    "description": "msgRestored",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarDefaults": "Domyślne",
+  "@calendarDefaults": {
+    "description": "calendarDefaults"
+  },
+  "calendarDefaultReminder": "Przypomnienie w nowych wydarzeniach",
+  "@calendarDefaultReminder": {
+    "description": "calendarDefaultReminder"
+  },
+  "calendarDefaultDuration": "Długość nowych wydarzeń",
+  "@calendarDefaultDuration": {
+    "description": "calendarDefaultDuration"
   }
 }

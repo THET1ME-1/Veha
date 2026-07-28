@@ -387,6 +387,8 @@ class VehaRepository {
               icon: c.iconName,
               isVisible: Value(c.isVisible),
               sortOrder: Value(c.sortOrder),
+              defaultReminders: Value(c.defaultReminders?.join(',')),
+              defaultDuration: Value(c.defaultDuration?.inMinutes),
               createdAt: now,
               updatedAt: now,
             ),
@@ -1302,6 +1304,35 @@ class VehaRepository {
 
   // ---------- преобразования ----------
 
+  /// Удалённое, что ещё лежит в базе: корзина показывает именно это.
+  ///
+  /// Хранение мягкое и без того — корзина просто даёт на него посмотреть.
+  /// Чистка раз в 90 дней остаётся: она щедрее обещанных тридцати.
+  Future<List<VEvent>> deletedEvents() async {
+    final rows = await (db.select(db.events)
+          ..where((t) => t.deletedAt.isNotNull())
+          ..orderBy([
+            (t) => OrderingTerm(
+                expression: t.deletedAt, mode: OrderingMode.desc),
+          ]))
+        .get();
+    return rows.map(_toEvent).toList();
+  }
+
+  Future<List<VTask>> deletedTasks() async {
+    final rows = await (db.select(db.tasks)
+          ..where((t) => t.deletedAt.isNotNull())
+          ..orderBy([
+            (t) => OrderingTerm(
+                expression: t.deletedAt, mode: OrderingMode.desc),
+          ]))
+        .get();
+    return rows.map(_toTask).toList();
+  }
+
+  /// Очистить корзину целиком — сейчас, а не через 90 дней.
+  Future<int> emptyTrash() => purgeDeleted(olderThan: Duration.zero);
+
   static VCalendar _toCalendar(Calendar c) => VCalendar(
         id: c.id,
         name: c.name,
@@ -1309,7 +1340,25 @@ class VehaRepository {
         color: Color(c.color),
         isVisible: c.isVisible,
         sortOrder: c.sortOrder,
+        defaultReminders: _minutes(c.defaultReminders),
+        defaultDuration: c.defaultDuration == null
+            ? null
+            : Duration(minutes: c.defaultDuration!),
       );
+
+  /// «30,1440» → [30, 1440]. Хранится строкой: список из двух чисел не стоит
+  /// отдельной таблицы, а серверу строка едет как есть.
+  ///
+  /// `null` и пустая строка — разные вещи: первое значит «не настраивали»,
+  /// второе — «молчать».
+  static List<int>? _minutes(String? packed) {
+    if (packed == null) return null;
+    if (packed.trim().isEmpty) return const [];
+    return [
+      for (final part in packed.split(','))
+        if (int.tryParse(part.trim()) != null) int.parse(part.trim()),
+    ];
+  }
 
   static VSubcategory _toSubcategory(Subcategory s) => VSubcategory(
         id: s.id,

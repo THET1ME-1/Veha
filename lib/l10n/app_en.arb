@@ -1689,5 +1689,55 @@
   "msgNoSlot": "No free slot in the next two weeks",
   "@msgNoSlot": {
     "description": "msgNoSlot"
+  },
+  "trashTitle": "Trash",
+  "@trashTitle": {
+    "description": "trashTitle"
+  },
+  "trashHint": "Deleted items are kept for 90 days",
+  "@trashHint": {
+    "description": "trashHint"
+  },
+  "trashEmpty": "The trash is empty",
+  "@trashEmpty": {
+    "description": "trashEmpty"
+  },
+  "trashRestore": "Restore",
+  "@trashRestore": {
+    "description": "trashRestore"
+  },
+  "trashClear": "Empty the trash",
+  "@trashClear": {
+    "description": "trashClear"
+  },
+  "msgTrashCleared": "Records removed: {count}",
+  "@msgTrashCleared": {
+    "description": "msgTrashCleared",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgRestored": "Restored: {title}",
+  "@msgRestored": {
+    "description": "msgRestored",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarDefaults": "Defaults",
+  "@calendarDefaults": {
+    "description": "calendarDefaults"
+  },
+  "calendarDefaultReminder": "Reminder for new events",
+  "@calendarDefaultReminder": {
+    "description": "calendarDefaultReminder"
+  },
+  "calendarDefaultDuration": "Length of new events",
+  "@calendarDefaultDuration": {
+    "description": "calendarDefaultDuration"
   }
 }

@@ -98,6 +98,28 @@ class $CalendarsTable extends Calendars
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _defaultRemindersMeta = const VerificationMeta(
+    'defaultReminders',
+  );
+  @override
+  late final GeneratedColumn<String> defaultReminders = GeneratedColumn<String>(
+    'default_reminders',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _defaultDurationMeta = const VerificationMeta(
+    'defaultDuration',
+  );
+  @override
+  late final GeneratedColumn<int> defaultDuration = GeneratedColumn<int>(
+    'default_duration',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -141,6 +163,8 @@ class $CalendarsTable extends Calendars
     isShared,
     ownerId,
     sortOrder,
+    defaultReminders,
+    defaultDuration,
     createdAt,
     updatedAt,
     deletedAt,
@@ -210,6 +234,24 @@ class $CalendarsTable extends Calendars
         sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
       );
     }
+    if (data.containsKey('default_reminders')) {
+      context.handle(
+        _defaultRemindersMeta,
+        defaultReminders.isAcceptableOrUnknown(
+          data['default_reminders']!,
+          _defaultRemindersMeta,
+        ),
+      );
+    }
+    if (data.containsKey('default_duration')) {
+      context.handle(
+        _defaultDurationMeta,
+        defaultDuration.isAcceptableOrUnknown(
+          data['default_duration']!,
+          _defaultDurationMeta,
+        ),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -273,6 +315,14 @@ class $CalendarsTable extends Calendars
         DriftSqlType.int,
         data['${effectivePrefix}sort_order'],
       )!,
+      defaultReminders: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}default_reminders'],
+      ),
+      defaultDuration: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}default_duration'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}created_at'],
@@ -306,6 +356,14 @@ class Calendar extends DataClass implements Insertable<Calendar> {
   final bool isShared;
   final String? ownerId;
   final int sortOrder;
+
+  /// Напоминания по умолчанию: минуты через запятую. Пусто — календарь
+  /// молчит. Учёба предупреждает за день, распорядок не предупреждает вовсе,
+  /// и повторять этот выбор в каждом событии человек не должен.
+  final String? defaultReminders;
+
+  /// Длительность по умолчанию в минутах. Пусто — час, как раньше.
+  final int? defaultDuration;
   final int createdAt;
   final int updatedAt;
 
@@ -321,6 +379,8 @@ class Calendar extends DataClass implements Insertable<Calendar> {
     required this.isShared,
     this.ownerId,
     required this.sortOrder,
+    this.defaultReminders,
+    this.defaultDuration,
     required this.createdAt,
     required this.updatedAt,
     this.deletedAt,
@@ -338,6 +398,12 @@ class Calendar extends DataClass implements Insertable<Calendar> {
       map['owner_id'] = Variable<String>(ownerId);
     }
     map['sort_order'] = Variable<int>(sortOrder);
+    if (!nullToAbsent || defaultReminders != null) {
+      map['default_reminders'] = Variable<String>(defaultReminders);
+    }
+    if (!nullToAbsent || defaultDuration != null) {
+      map['default_duration'] = Variable<int>(defaultDuration);
+    }
     map['created_at'] = Variable<int>(createdAt);
     map['updated_at'] = Variable<int>(updatedAt);
     if (!nullToAbsent || deletedAt != null) {
@@ -358,6 +424,12 @@ class Calendar extends DataClass implements Insertable<Calendar> {
           ? const Value.absent()
           : Value(ownerId),
       sortOrder: Value(sortOrder),
+      defaultReminders: defaultReminders == null && nullToAbsent
+          ? const Value.absent()
+          : Value(defaultReminders),
+      defaultDuration: defaultDuration == null && nullToAbsent
+          ? const Value.absent()
+          : Value(defaultDuration),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
       deletedAt: deletedAt == null && nullToAbsent
@@ -380,6 +452,8 @@ class Calendar extends DataClass implements Insertable<Calendar> {
       isShared: serializer.fromJson<bool>(json['isShared']),
       ownerId: serializer.fromJson<String?>(json['ownerId']),
       sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      defaultReminders: serializer.fromJson<String?>(json['defaultReminders']),
+      defaultDuration: serializer.fromJson<int?>(json['defaultDuration']),
       createdAt: serializer.fromJson<int>(json['createdAt']),
       updatedAt: serializer.fromJson<int>(json['updatedAt']),
       deletedAt: serializer.fromJson<int?>(json['deletedAt']),
@@ -397,6 +471,8 @@ class Calendar extends DataClass implements Insertable<Calendar> {
       'isShared': serializer.toJson<bool>(isShared),
       'ownerId': serializer.toJson<String?>(ownerId),
       'sortOrder': serializer.toJson<int>(sortOrder),
+      'defaultReminders': serializer.toJson<String?>(defaultReminders),
+      'defaultDuration': serializer.toJson<int?>(defaultDuration),
       'createdAt': serializer.toJson<int>(createdAt),
       'updatedAt': serializer.toJson<int>(updatedAt),
       'deletedAt': serializer.toJson<int?>(deletedAt),
@@ -412,6 +488,8 @@ class Calendar extends DataClass implements Insertable<Calendar> {
     bool? isShared,
     Value<String?> ownerId = const Value.absent(),
     int? sortOrder,
+    Value<String?> defaultReminders = const Value.absent(),
+    Value<int?> defaultDuration = const Value.absent(),
     int? createdAt,
     int? updatedAt,
     Value<int?> deletedAt = const Value.absent(),
@@ -424,6 +502,12 @@ class Calendar extends DataClass implements Insertable<Calendar> {
     isShared: isShared ?? this.isShared,
     ownerId: ownerId.present ? ownerId.value : this.ownerId,
     sortOrder: sortOrder ?? this.sortOrder,
+    defaultReminders: defaultReminders.present
+        ? defaultReminders.value
+        : this.defaultReminders,
+    defaultDuration: defaultDuration.present
+        ? defaultDuration.value
+        : this.defaultDuration,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
@@ -438,6 +522,12 @@ class Calendar extends DataClass implements Insertable<Calendar> {
       isShared: data.isShared.present ? data.isShared.value : this.isShared,
       ownerId: data.ownerId.present ? data.ownerId.value : this.ownerId,
       sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      defaultReminders: data.defaultReminders.present
+          ? data.defaultReminders.value
+          : this.defaultReminders,
+      defaultDuration: data.defaultDuration.present
+          ? data.defaultDuration.value
+          : this.defaultDuration,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
@@ -455,6 +545,8 @@ class Calendar extends DataClass implements Insertable<Calendar> {
           ..write('isShared: $isShared, ')
           ..write('ownerId: $ownerId, ')
           ..write('sortOrder: $sortOrder, ')
+          ..write('defaultReminders: $defaultReminders, ')
+          ..write('defaultDuration: $defaultDuration, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('deletedAt: $deletedAt')
@@ -472,6 +564,8 @@ class Calendar extends DataClass implements Insertable<Calendar> {
     isShared,
     ownerId,
     sortOrder,
+    defaultReminders,
+    defaultDuration,
     createdAt,
     updatedAt,
     deletedAt,
@@ -488,6 +582,8 @@ class Calendar extends DataClass implements Insertable<Calendar> {
           other.isShared == this.isShared &&
           other.ownerId == this.ownerId &&
           other.sortOrder == this.sortOrder &&
+          other.defaultReminders == this.defaultReminders &&
+          other.defaultDuration == this.defaultDuration &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
           other.deletedAt == this.deletedAt);
@@ -502,6 +598,8 @@ class CalendarsCompanion extends UpdateCompanion<Calendar> {
   final Value<bool> isShared;
   final Value<String?> ownerId;
   final Value<int> sortOrder;
+  final Value<String?> defaultReminders;
+  final Value<int?> defaultDuration;
   final Value<int> createdAt;
   final Value<int> updatedAt;
   final Value<int?> deletedAt;
@@ -515,6 +613,8 @@ class CalendarsCompanion extends UpdateCompanion<Calendar> {
     this.isShared = const Value.absent(),
     this.ownerId = const Value.absent(),
     this.sortOrder = const Value.absent(),
+    this.defaultReminders = const Value.absent(),
+    this.defaultDuration = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.deletedAt = const Value.absent(),
@@ -529,6 +629,8 @@ class CalendarsCompanion extends UpdateCompanion<Calendar> {
     this.isShared = const Value.absent(),
     this.ownerId = const Value.absent(),
     this.sortOrder = const Value.absent(),
+    this.defaultReminders = const Value.absent(),
+    this.defaultDuration = const Value.absent(),
     required int createdAt,
     required int updatedAt,
     this.deletedAt = const Value.absent(),
@@ -548,6 +650,8 @@ class CalendarsCompanion extends UpdateCompanion<Calendar> {
     Expression<bool>? isShared,
     Expression<String>? ownerId,
     Expression<int>? sortOrder,
+    Expression<String>? defaultReminders,
+    Expression<int>? defaultDuration,
     Expression<int>? createdAt,
     Expression<int>? updatedAt,
     Expression<int>? deletedAt,
@@ -562,6 +666,8 @@ class CalendarsCompanion extends UpdateCompanion<Calendar> {
       if (isShared != null) 'is_shared': isShared,
       if (ownerId != null) 'owner_id': ownerId,
       if (sortOrder != null) 'sort_order': sortOrder,
+      if (defaultReminders != null) 'default_reminders': defaultReminders,
+      if (defaultDuration != null) 'default_duration': defaultDuration,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (deletedAt != null) 'deleted_at': deletedAt,
@@ -578,6 +684,8 @@ class CalendarsCompanion extends UpdateCompanion<Calendar> {
     Value<bool>? isShared,
     Value<String?>? ownerId,
     Value<int>? sortOrder,
+    Value<String?>? defaultReminders,
+    Value<int?>? defaultDuration,
     Value<int>? createdAt,
     Value<int>? updatedAt,
     Value<int?>? deletedAt,
@@ -592,6 +700,8 @@ class CalendarsCompanion extends UpdateCompanion<Calendar> {
       isShared: isShared ?? this.isShared,
       ownerId: ownerId ?? this.ownerId,
       sortOrder: sortOrder ?? this.sortOrder,
+      defaultReminders: defaultReminders ?? this.defaultReminders,
+      defaultDuration: defaultDuration ?? this.defaultDuration,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       deletedAt: deletedAt ?? this.deletedAt,
@@ -626,6 +736,12 @@ class CalendarsCompanion extends UpdateCompanion<Calendar> {
     if (sortOrder.present) {
       map['sort_order'] = Variable<int>(sortOrder.value);
     }
+    if (defaultReminders.present) {
+      map['default_reminders'] = Variable<String>(defaultReminders.value);
+    }
+    if (defaultDuration.present) {
+      map['default_duration'] = Variable<int>(defaultDuration.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<int>(createdAt.value);
     }
@@ -652,6 +768,8 @@ class CalendarsCompanion extends UpdateCompanion<Calendar> {
           ..write('isShared: $isShared, ')
           ..write('ownerId: $ownerId, ')
           ..write('sortOrder: $sortOrder, ')
+          ..write('defaultReminders: $defaultReminders, ')
+          ..write('defaultDuration: $defaultDuration, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('deletedAt: $deletedAt, ')
@@ -6870,6 +6988,8 @@ typedef $$CalendarsTableCreateCompanionBuilder =
       Value<bool> isShared,
       Value<String?> ownerId,
       Value<int> sortOrder,
+      Value<String?> defaultReminders,
+      Value<int?> defaultDuration,
       required int createdAt,
       required int updatedAt,
       Value<int?> deletedAt,
@@ -6885,6 +7005,8 @@ typedef $$CalendarsTableUpdateCompanionBuilder =
       Value<bool> isShared,
       Value<String?> ownerId,
       Value<int> sortOrder,
+      Value<String?> defaultReminders,
+      Value<int?> defaultDuration,
       Value<int> createdAt,
       Value<int> updatedAt,
       Value<int?> deletedAt,
@@ -7001,6 +7123,16 @@ class $$CalendarsTableFilterComposer
 
   ColumnFilters<int> get sortOrder => $composableBuilder(
     column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get defaultReminders => $composableBuilder(
+    column: $table.defaultReminders,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get defaultDuration => $composableBuilder(
+    column: $table.defaultDuration,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -7144,6 +7276,16 @@ class $$CalendarsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get defaultReminders => $composableBuilder(
+    column: $table.defaultReminders,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get defaultDuration => $composableBuilder(
+    column: $table.defaultDuration,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -7192,6 +7334,16 @@ class $$CalendarsTableAnnotationComposer
 
   GeneratedColumn<int> get sortOrder =>
       $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<String> get defaultReminders => $composableBuilder(
+    column: $table.defaultReminders,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get defaultDuration => $composableBuilder(
+    column: $table.defaultDuration,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -7318,6 +7470,8 @@ class $$CalendarsTableTableManager
                 Value<bool> isShared = const Value.absent(),
                 Value<String?> ownerId = const Value.absent(),
                 Value<int> sortOrder = const Value.absent(),
+                Value<String?> defaultReminders = const Value.absent(),
+                Value<int?> defaultDuration = const Value.absent(),
                 Value<int> createdAt = const Value.absent(),
                 Value<int> updatedAt = const Value.absent(),
                 Value<int?> deletedAt = const Value.absent(),
@@ -7331,6 +7485,8 @@ class $$CalendarsTableTableManager
                 isShared: isShared,
                 ownerId: ownerId,
                 sortOrder: sortOrder,
+                defaultReminders: defaultReminders,
+                defaultDuration: defaultDuration,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 deletedAt: deletedAt,
@@ -7346,6 +7502,8 @@ class $$CalendarsTableTableManager
                 Value<bool> isShared = const Value.absent(),
                 Value<String?> ownerId = const Value.absent(),
                 Value<int> sortOrder = const Value.absent(),
+                Value<String?> defaultReminders = const Value.absent(),
+                Value<int?> defaultDuration = const Value.absent(),
                 required int createdAt,
                 required int updatedAt,
                 Value<int?> deletedAt = const Value.absent(),
@@ -7359,6 +7517,8 @@ class $$CalendarsTableTableManager
                 isShared: isShared,
                 ownerId: ownerId,
                 sortOrder: sortOrder,
+                defaultReminders: defaultReminders,
+                defaultDuration: defaultDuration,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 deletedAt: deletedAt,

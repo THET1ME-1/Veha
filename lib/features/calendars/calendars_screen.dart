@@ -96,6 +96,7 @@ class CalendarsScreen extends ConsumerWidget {
       context,
       title: L.of(context).calendarNew,
       inheritedColor: VehaBrand.seed,
+      withDefaults: true,
     );
     if (draft == null || draft.deleted) return;
 
@@ -106,6 +107,8 @@ class CalendarsScreen extends ConsumerWidget {
       iconName: draft.iconName,
       color: draft.color,
       sortOrder: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      defaultReminders: draft.defaultReminders,
+      defaultDuration: draft.defaultDuration,
     ));
   }
 
@@ -122,6 +125,9 @@ class CalendarsScreen extends ConsumerWidget {
       color: calendar.color,
       inheritedColor: calendar.color,
       canDelete: true,
+      withDefaults: true,
+      defaultReminders: calendar.defaultReminders,
+      defaultDuration: calendar.defaultDuration,
     );
     if (draft == null) return;
 
@@ -136,6 +142,8 @@ class CalendarsScreen extends ConsumerWidget {
         color: draft.color,
         isVisible: calendar.isVisible,
         sortOrder: calendar.sortOrder,
+        defaultReminders: draft.defaultReminders,
+        defaultDuration: draft.defaultDuration,
       ));
     }
   }

@@ -1312,4 +1312,38 @@ class LEn extends L {
 
   @override
   String get msgNoSlot => 'No free slot in the next two weeks';
+
+  @override
+  String get trashTitle => 'Trash';
+
+  @override
+  String get trashHint => 'Deleted items are kept for 90 days';
+
+  @override
+  String get trashEmpty => 'The trash is empty';
+
+  @override
+  String get trashRestore => 'Restore';
+
+  @override
+  String get trashClear => 'Empty the trash';
+
+  @override
+  String msgTrashCleared(int count) {
+    return 'Records removed: $count';
+  }
+
+  @override
+  String msgRestored(String title) {
+    return 'Restored: $title';
+  }
+
+  @override
+  String get calendarDefaults => 'Defaults';
+
+  @override
+  String get calendarDefaultReminder => 'Reminder for new events';
+
+  @override
+  String get calendarDefaultDuration => 'Length of new events';
 }

@@ -1312,4 +1312,38 @@ class LEs extends L {
 
   @override
   String get msgNoSlot => 'No hay hueco en las próximas dos semanas';
+
+  @override
+  String get trashTitle => 'Papelera';
+
+  @override
+  String get trashHint => 'Lo eliminado se guarda 90 días';
+
+  @override
+  String get trashEmpty => 'La papelera está vacía';
+
+  @override
+  String get trashRestore => 'Restaurar';
+
+  @override
+  String get trashClear => 'Vaciar la papelera';
+
+  @override
+  String msgTrashCleared(int count) {
+    return 'Registros borrados: $count';
+  }
+
+  @override
+  String msgRestored(String title) {
+    return 'Restaurado: $title';
+  }
+
+  @override
+  String get calendarDefaults => 'Por defecto';
+
+  @override
+  String get calendarDefaultReminder => 'Aviso en los eventos nuevos';
+
+  @override
+  String get calendarDefaultDuration => 'Duración de los eventos nuevos';
 }

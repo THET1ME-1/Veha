@@ -1689,5 +1689,55 @@
   "msgNoSlot": "In den nächsten zwei Wochen keine Lücke",
   "@msgNoSlot": {
     "description": "msgNoSlot"
+  },
+  "trashTitle": "Papierkorb",
+  "@trashTitle": {
+    "description": "trashTitle"
+  },
+  "trashHint": "Gelöschtes bleibt 90 Tage liegen",
+  "@trashHint": {
+    "description": "trashHint"
+  },
+  "trashEmpty": "Der Papierkorb ist leer",
+  "@trashEmpty": {
+    "description": "trashEmpty"
+  },
+  "trashRestore": "Zurückholen",
+  "@trashRestore": {
+    "description": "trashRestore"
+  },
+  "trashClear": "Papierkorb leeren",
+  "@trashClear": {
+    "description": "trashClear"
+  },
+  "msgTrashCleared": "Entfernte Einträge: {count}",
+  "@msgTrashCleared": {
+    "description": "msgTrashCleared",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgRestored": "Zurückgeholt: {title}",
+  "@msgRestored": {
+    "description": "msgRestored",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarDefaults": "Standardwerte",
+  "@calendarDefaults": {
+    "description": "calendarDefaults"
+  },
+  "calendarDefaultReminder": "Erinnerung bei neuen Terminen",
+  "@calendarDefaultReminder": {
+    "description": "calendarDefaultReminder"
+  },
+  "calendarDefaultDuration": "Dauer neuer Termine",
+  "@calendarDefaultDuration": {
+    "description": "calendarDefaultDuration"
   }
 }
