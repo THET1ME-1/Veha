@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../../core/brand.dart';
 import '../../l10n/app_localizations.dart';
+import 'look_sheet.dart';
 import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
 import '../../data/models.dart';
@@ -77,6 +78,29 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
         picked.day, _draft.start.hour, _draft.start.minute)));
   }
 
+  /// Цвет и иконка будущего события: свои, если человек их выбрал, иначе от
+  /// календаря — ровно та же цепочка, что рисует событие в дне.
+  Color _lookColor() =>
+      _draft.color ??
+      widget.inheritance.calendars[_draft.calendarId]?.color ??
+      VehaBrand.seed;
+
+  String _lookIcon() =>
+      _draft.iconName ??
+      widget.inheritance.calendars[_draft.calendarId]?.iconName ??
+      'calendar';
+
+  Future<void> _pickLook() async {
+    final look = await askEventLook(
+      context,
+      current: EventLook(iconName: _draft.iconName, color: _draft.color),
+      inheritedColor: _lookColor(),
+      inheritedIcon: _lookIcon(),
+    );
+    if (look == null) return;
+    setState(() => _draft = _draft.withIcon(look.iconName).withColor(look.color));
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -112,7 +136,19 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(VehaInsets.screen, 8, VehaInsets.screen, 2),
-            child: TextField(
+            child: Row(
+              children: [
+                // Кружок слева от названия — тот же, что в полной форме: по
+                // нему видно, в какой календарь событие ляжет, ещё до того,
+                // как человек дочитает пилюли ниже.
+                _Look(
+                  color: _lookColor(),
+                  icon: _lookIcon(),
+                  onTap: _pickLook,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: TextField(
               controller: _title,
               autofocus: true,
               textCapitalization: TextCapitalization.sentences,
@@ -142,6 +178,9 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
               ),
               onChanged: (v) => setState(() => _draft = _draft.withTitle(v)),
               onSubmitted: (_) => _save(),
+            ),
+                ),
+              ],
             ),
           ),
           Padding(
@@ -370,6 +409,33 @@ class _CalendarChip extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Кружок с иконкой события. Нажимается: отсюда же меняются иконка и цвет.
+class _Look extends StatelessWidget {
+  const _Look({required this.color, required this.icon, required this.onTap});
+
+  final Color color;
+  final String icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final ink = EventColors.of(color, Theme.of(context).brightness);
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 46,
+        height: 46,
+        alignment: Alignment.center,
+        decoration: ShapeDecoration(
+          color: ink.background,
+          shape: const CircleBorder(),
+        ),
+        child: Icon(VehaIcons.byName(icon), size: 23, color: ink.foreground),
       ),
     );
   }

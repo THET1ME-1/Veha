@@ -88,7 +88,7 @@ class LUk extends L {
   String get actionSave => 'Зберегти';
 
   @override
-  String get actionAdd => 'додати';
+  String get actionAdd => 'Додати';
 
   @override
   String get actionEdit => 'Змінити';
@@ -148,10 +148,10 @@ class LUk extends L {
   }
 
   @override
-  String get colorInherits => 'успадковує';
+  String get colorInherits => 'Успадковує';
 
   @override
-  String get colorOwn => 'свій колір';
+  String get colorOwn => 'Свій колір';
 
   @override
   String get fieldsTitle => 'Власні поля';
@@ -191,7 +191,7 @@ class LUk extends L {
   String get fieldOne => 'Поле';
 
   @override
-  String get fieldShared => 'спільне';
+  String get fieldShared => 'Спільне';
 
   @override
   String get fieldNamePlaceholder => 'Назва поля';
@@ -220,10 +220,10 @@ class LUk extends L {
   String get fieldEraseValue => 'Стерти';
 
   @override
-  String get yes => 'так';
+  String get yes => 'Так';
 
   @override
-  String get no => 'ні';
+  String get no => 'Ні';
 
   @override
   String get typeText => 'Текст';
@@ -420,7 +420,7 @@ class LUk extends L {
   String get lookOwnColor => 'Свій колір';
 
   @override
-  String get inCard => 'у картці';
+  String get inCard => 'У картці';
 
   @override
   String get notesTitle => 'Нотатки';
@@ -435,10 +435,10 @@ class LUk extends L {
   String get noteHint => 'Що не забути';
 
   @override
-  String get repeatNone => 'не повторюється';
+  String get repeatNone => 'Не повторюється';
 
   @override
-  String get repeatByRule => 'за правилом';
+  String get repeatByRule => 'За правилом';
 
   @override
   String get repeatTitle => 'Повторення';
@@ -667,10 +667,10 @@ class LUk extends L {
   String get branchColorEventRow => 'Подія гілки';
 
   @override
-  String get levelCalendar => 'календар';
+  String get levelCalendar => 'Календар';
 
   @override
-  String get levelOwn => 'свій';
+  String get levelOwn => 'Свій';
 
   @override
   String ruleDaily(int count) {
@@ -934,7 +934,7 @@ class LUk extends L {
   String get syncOff => 'Вимкнена, календар лише тут';
 
   @override
-  String get syncClean => 'усе надіслано';
+  String get syncClean => 'Усе надіслано';
 
   @override
   String syncPending(int count) {

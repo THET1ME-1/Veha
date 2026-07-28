@@ -88,7 +88,7 @@ class LEn extends L {
   String get actionSave => 'Save';
 
   @override
-  String get actionAdd => 'add';
+  String get actionAdd => 'Add';
 
   @override
   String get actionEdit => 'Edit';
@@ -147,10 +147,10 @@ class LEn extends L {
   }
 
   @override
-  String get colorInherits => 'inherited';
+  String get colorInherits => 'Inherited';
 
   @override
-  String get colorOwn => 'own colour';
+  String get colorOwn => 'Own colour';
 
   @override
   String get fieldsTitle => 'Custom fields';
@@ -190,7 +190,7 @@ class LEn extends L {
   String get fieldOne => 'Field';
 
   @override
-  String get fieldShared => 'shared';
+  String get fieldShared => 'Shared';
 
   @override
   String get fieldNamePlaceholder => 'Field name';
@@ -218,10 +218,10 @@ class LEn extends L {
   String get fieldEraseValue => 'Erase';
 
   @override
-  String get yes => 'yes';
+  String get yes => 'Yes';
 
   @override
-  String get no => 'no';
+  String get no => 'No';
 
   @override
   String get typeText => 'Text';
@@ -417,7 +417,7 @@ class LEn extends L {
   String get lookOwnColor => 'Own colour';
 
   @override
-  String get inCard => 'in the card';
+  String get inCard => 'In the card';
 
   @override
   String get notesTitle => 'Notes';
@@ -432,10 +432,10 @@ class LEn extends L {
   String get noteHint => 'What not to forget';
 
   @override
-  String get repeatNone => 'does not repeat';
+  String get repeatNone => 'Does not repeat';
 
   @override
-  String get repeatByRule => 'by rule';
+  String get repeatByRule => 'By rule';
 
   @override
   String get repeatTitle => 'Repetition';
@@ -661,10 +661,10 @@ class LEn extends L {
   String get branchColorEventRow => 'Event of the branch';
 
   @override
-  String get levelCalendar => 'calendar';
+  String get levelCalendar => 'Calendar';
 
   @override
-  String get levelOwn => 'own';
+  String get levelOwn => 'Own';
 
   @override
   String ruleDaily(int count) {
@@ -923,7 +923,7 @@ class LEn extends L {
   String get syncOff => 'Off — the calendar lives here only';
 
   @override
-  String get syncClean => 'all sent';
+  String get syncClean => 'All sent';
 
   @override
   String syncPending(int count) {

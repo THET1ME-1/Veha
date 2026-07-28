@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../common/blocks.dart' show vBack;
+
 import '../../l10n/app_localizations.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
 
@@ -87,7 +89,11 @@ class _ColorPickerScreenState extends State<ColorPickerScreen> {
     final hct = Hct.fromInt(_color.toARGB32());
     final ink = EventColors.of(_color, Theme.of(context).brightness);
 
-    return ListView(
+    // Свой Scaffold обязателен: экран открывается маршрутом, а `Text` без
+    // `Material` над собой рисуется жёлтым подчёркиванием на чёрном.
+    return Scaffold(
+      appBar: AppBar(toolbarHeight: 56, leading: vBack(context), leadingWidth: 60),
+      body: ListView(
       padding: const EdgeInsets.fromLTRB(
           VehaInsets.screen, 6, VehaInsets.screen, 120),
       children: [
@@ -174,6 +180,7 @@ class _ColorPickerScreenState extends State<ColorPickerScreen> {
           ),
         ),
       ],
+    ),
     );
   }
 

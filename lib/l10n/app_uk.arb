@@ -35,7 +35,7 @@
   "@actionSave": {
     "description": "actionSave"
   },
-  "actionAdd": "додати",
+  "actionAdd": "Додати",
   "@actionAdd": {
     "description": "actionAdd"
   },
@@ -109,11 +109,11 @@
       }
     }
   },
-  "colorInherits": "успадковує",
+  "colorInherits": "Успадковує",
   "@colorInherits": {
     "description": "colorInherits"
   },
-  "colorOwn": "свій колір",
+  "colorOwn": "Свій колір",
   "@colorOwn": {
     "description": "colorOwn"
   },
@@ -171,7 +171,7 @@
   "@fieldOne": {
     "description": "fieldOne"
   },
-  "fieldShared": "спільне",
+  "fieldShared": "Спільне",
   "@fieldShared": {
     "description": "fieldShared"
   },
@@ -205,11 +205,11 @@
   "@fieldEraseValue": {
     "description": "fieldEraseValue"
   },
-  "yes": "так",
+  "yes": "Так",
   "@yes": {
     "description": "yes"
   },
-  "no": "ні",
+  "no": "Ні",
   "@no": {
     "description": "no"
   },
@@ -462,7 +462,7 @@
   "@lookOwnColor": {
     "description": "lookOwnColor"
   },
-  "inCard": "у картці",
+  "inCard": "У картці",
   "@inCard": {
     "description": "inCard"
   },
@@ -482,11 +482,11 @@
   "@noteHint": {
     "description": "noteHint"
   },
-  "repeatNone": "не повторюється",
+  "repeatNone": "Не повторюється",
   "@repeatNone": {
     "description": "repeatNone"
   },
-  "repeatByRule": "за правилом",
+  "repeatByRule": "За правилом",
   "@repeatByRule": {
     "description": "repeatByRule"
   },
@@ -791,11 +791,11 @@
   "@branchColorEventRow": {
     "description": "branchColorEventRow"
   },
-  "levelCalendar": "календар",
+  "levelCalendar": "Календар",
   "@levelCalendar": {
     "description": "levelCalendar"
   },
-  "levelOwn": "свій",
+  "levelOwn": "Свій",
   "@levelOwn": {
     "description": "levelOwn"
   },
@@ -1133,7 +1133,7 @@
   "@syncOff": {
     "description": "syncOff"
   },
-  "syncClean": "усе надіслано",
+  "syncClean": "Усе надіслано",
   "@syncClean": {
     "description": "syncClean"
   },

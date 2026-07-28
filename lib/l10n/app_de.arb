@@ -35,7 +35,7 @@
   "@actionSave": {
     "description": "actionSave"
   },
-  "actionAdd": "hinzufügen",
+  "actionAdd": "Hinzufügen",
   "@actionAdd": {
     "description": "actionAdd"
   },
@@ -109,11 +109,11 @@
       }
     }
   },
-  "colorInherits": "geerbt",
+  "colorInherits": "Geerbt",
   "@colorInherits": {
     "description": "colorInherits"
   },
-  "colorOwn": "eigene Farbe",
+  "colorOwn": "Eigene Farbe",
   "@colorOwn": {
     "description": "colorOwn"
   },
@@ -171,7 +171,7 @@
   "@fieldOne": {
     "description": "fieldOne"
   },
-  "fieldShared": "gemeinsam",
+  "fieldShared": "Gemeinsam",
   "@fieldShared": {
     "description": "fieldShared"
   },
@@ -205,11 +205,11 @@
   "@fieldEraseValue": {
     "description": "fieldEraseValue"
   },
-  "yes": "ja",
+  "yes": "Ja",
   "@yes": {
     "description": "yes"
   },
-  "no": "nein",
+  "no": "Nein",
   "@no": {
     "description": "no"
   },
@@ -462,7 +462,7 @@
   "@lookOwnColor": {
     "description": "lookOwnColor"
   },
-  "inCard": "in der Karte",
+  "inCard": "In der Karte",
   "@inCard": {
     "description": "inCard"
   },
@@ -482,11 +482,11 @@
   "@noteHint": {
     "description": "noteHint"
   },
-  "repeatNone": "wiederholt sich nicht",
+  "repeatNone": "Wiederholt sich nicht",
   "@repeatNone": {
     "description": "repeatNone"
   },
-  "repeatByRule": "nach Regel",
+  "repeatByRule": "Nach Regel",
   "@repeatByRule": {
     "description": "repeatByRule"
   },
@@ -795,7 +795,7 @@
   "@levelCalendar": {
     "description": "levelCalendar"
   },
-  "levelOwn": "eigene",
+  "levelOwn": "Eigene",
   "@levelOwn": {
     "description": "levelOwn"
   },
@@ -941,19 +941,19 @@
   "@repeatNoDates": {
     "description": "repeatNoDates"
   },
-  "unitDays": "Tage",
+  "unitDays": "tage",
   "@unitDays": {
     "description": "unitDays"
   },
-  "unitWeeks": "Wochen",
+  "unitWeeks": "wochen",
   "@unitWeeks": {
     "description": "unitWeeks"
   },
-  "unitMonths": "Monate",
+  "unitMonths": "monate",
   "@unitMonths": {
     "description": "unitMonths"
   },
-  "unitYears": "Jahre",
+  "unitYears": "jahre",
   "@unitYears": {
     "description": "unitYears"
   },
@@ -1133,7 +1133,7 @@
   "@syncOff": {
     "description": "syncOff"
   },
-  "syncClean": "alles gesendet",
+  "syncClean": "Alles gesendet",
   "@syncClean": {
     "description": "syncClean"
   },

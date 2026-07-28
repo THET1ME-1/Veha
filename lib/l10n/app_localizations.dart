@@ -248,7 +248,7 @@ abstract class L {
   /// actionAdd
   ///
   /// In ru, this message translates to:
-  /// **'добавить'**
+  /// **'Добавить'**
   String get actionAdd;
 
   /// actionEdit
@@ -344,13 +344,13 @@ abstract class L {
   /// colorInherits
   ///
   /// In ru, this message translates to:
-  /// **'наследует'**
+  /// **'Наследует'**
   String get colorInherits;
 
   /// colorOwn
   ///
   /// In ru, this message translates to:
-  /// **'свой цвет'**
+  /// **'Свой цвет'**
   String get colorOwn;
 
   /// fieldsTitle
@@ -422,7 +422,7 @@ abstract class L {
   /// fieldShared
   ///
   /// In ru, this message translates to:
-  /// **'общее'**
+  /// **'Общее'**
   String get fieldShared;
 
   /// fieldNamePlaceholder
@@ -458,13 +458,13 @@ abstract class L {
   /// yes
   ///
   /// In ru, this message translates to:
-  /// **'да'**
+  /// **'Да'**
   String get yes;
 
   /// no
   ///
   /// In ru, this message translates to:
-  /// **'нет'**
+  /// **'Нет'**
   String get no;
 
   /// typeText
@@ -836,7 +836,7 @@ abstract class L {
   /// inCard
   ///
   /// In ru, this message translates to:
-  /// **'в карточке'**
+  /// **'В карточке'**
   String get inCard;
 
   /// notesTitle
@@ -866,13 +866,13 @@ abstract class L {
   /// repeatNone
   ///
   /// In ru, this message translates to:
-  /// **'не повторяется'**
+  /// **'Не повторяется'**
   String get repeatNone;
 
   /// repeatByRule
   ///
   /// In ru, this message translates to:
-  /// **'по правилу'**
+  /// **'По правилу'**
   String get repeatByRule;
 
   /// repeatTitle
@@ -1238,13 +1238,13 @@ abstract class L {
   /// levelCalendar
   ///
   /// In ru, this message translates to:
-  /// **'календарь'**
+  /// **'Календарь'**
   String get levelCalendar;
 
   /// levelOwn
   ///
   /// In ru, this message translates to:
-  /// **'свой'**
+  /// **'Свой'**
   String get levelOwn;
 
   /// ruleDaily
@@ -1670,7 +1670,7 @@ abstract class L {
   /// syncClean
   ///
   /// In ru, this message translates to:
-  /// **'всё отправлено'**
+  /// **'Всё отправлено'**
   String get syncClean;
 
   /// syncPending

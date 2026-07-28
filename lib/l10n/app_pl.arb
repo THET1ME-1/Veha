@@ -35,7 +35,7 @@
   "@actionSave": {
     "description": "actionSave"
   },
-  "actionAdd": "dodaj",
+  "actionAdd": "Dodaj",
   "@actionAdd": {
     "description": "actionAdd"
   },
@@ -109,11 +109,11 @@
       }
     }
   },
-  "colorInherits": "dziedziczy",
+  "colorInherits": "Dziedziczy",
   "@colorInherits": {
     "description": "colorInherits"
   },
-  "colorOwn": "własny kolor",
+  "colorOwn": "Własny kolor",
   "@colorOwn": {
     "description": "colorOwn"
   },
@@ -171,7 +171,7 @@
   "@fieldOne": {
     "description": "fieldOne"
   },
-  "fieldShared": "wspólne",
+  "fieldShared": "Wspólne",
   "@fieldShared": {
     "description": "fieldShared"
   },
@@ -205,11 +205,11 @@
   "@fieldEraseValue": {
     "description": "fieldEraseValue"
   },
-  "yes": "tak",
+  "yes": "Tak",
   "@yes": {
     "description": "yes"
   },
-  "no": "nie",
+  "no": "Nie",
   "@no": {
     "description": "no"
   },
@@ -462,7 +462,7 @@
   "@lookOwnColor": {
     "description": "lookOwnColor"
   },
-  "inCard": "w karcie",
+  "inCard": "W karcie",
   "@inCard": {
     "description": "inCard"
   },
@@ -482,11 +482,11 @@
   "@noteHint": {
     "description": "noteHint"
   },
-  "repeatNone": "nie powtarza się",
+  "repeatNone": "Nie powtarza się",
   "@repeatNone": {
     "description": "repeatNone"
   },
-  "repeatByRule": "według reguły",
+  "repeatByRule": "Według reguły",
   "@repeatByRule": {
     "description": "repeatByRule"
   },
@@ -791,11 +791,11 @@
   "@branchColorEventRow": {
     "description": "branchColorEventRow"
   },
-  "levelCalendar": "kalendarz",
+  "levelCalendar": "Kalendarz",
   "@levelCalendar": {
     "description": "levelCalendar"
   },
-  "levelOwn": "własny",
+  "levelOwn": "Własny",
   "@levelOwn": {
     "description": "levelOwn"
   },
@@ -1133,7 +1133,7 @@
   "@syncOff": {
     "description": "syncOff"
   },
-  "syncClean": "wszystko wysłane",
+  "syncClean": "Wszystko wysłane",
   "@syncClean": {
     "description": "syncClean"
   },

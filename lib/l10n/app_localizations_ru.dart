@@ -88,7 +88,7 @@ class LRu extends L {
   String get actionSave => 'Сохранить';
 
   @override
-  String get actionAdd => 'добавить';
+  String get actionAdd => 'Добавить';
 
   @override
   String get actionEdit => 'Изменить';
@@ -148,10 +148,10 @@ class LRu extends L {
   }
 
   @override
-  String get colorInherits => 'наследует';
+  String get colorInherits => 'Наследует';
 
   @override
-  String get colorOwn => 'свой цвет';
+  String get colorOwn => 'Свой цвет';
 
   @override
   String get fieldsTitle => 'Свои поля';
@@ -191,7 +191,7 @@ class LRu extends L {
   String get fieldOne => 'Поле';
 
   @override
-  String get fieldShared => 'общее';
+  String get fieldShared => 'Общее';
 
   @override
   String get fieldNamePlaceholder => 'Название поля';
@@ -220,10 +220,10 @@ class LRu extends L {
   String get fieldEraseValue => 'Стереть';
 
   @override
-  String get yes => 'да';
+  String get yes => 'Да';
 
   @override
-  String get no => 'нет';
+  String get no => 'Нет';
 
   @override
   String get typeText => 'Текст';
@@ -420,7 +420,7 @@ class LRu extends L {
   String get lookOwnColor => 'Свой цвет';
 
   @override
-  String get inCard => 'в карточке';
+  String get inCard => 'В карточке';
 
   @override
   String get notesTitle => 'Заметки';
@@ -435,10 +435,10 @@ class LRu extends L {
   String get noteHint => 'Что не забыть';
 
   @override
-  String get repeatNone => 'не повторяется';
+  String get repeatNone => 'Не повторяется';
 
   @override
-  String get repeatByRule => 'по правилу';
+  String get repeatByRule => 'По правилу';
 
   @override
   String get repeatTitle => 'Повторение';
@@ -667,10 +667,10 @@ class LRu extends L {
   String get branchColorEventRow => 'Событие ветки';
 
   @override
-  String get levelCalendar => 'календарь';
+  String get levelCalendar => 'Календарь';
 
   @override
-  String get levelOwn => 'свой';
+  String get levelOwn => 'Свой';
 
   @override
   String ruleDaily(int count) {
@@ -934,7 +934,7 @@ class LRu extends L {
   String get syncOff => 'Выключена, календарь только здесь';
 
   @override
-  String get syncClean => 'всё отправлено';
+  String get syncClean => 'Всё отправлено';
 
   @override
   String syncPending(int count) {

@@ -88,7 +88,7 @@ class LPl extends L {
   String get actionSave => 'Zapisz';
 
   @override
-  String get actionAdd => 'dodaj';
+  String get actionAdd => 'Dodaj';
 
   @override
   String get actionEdit => 'Zmień';
@@ -148,10 +148,10 @@ class LPl extends L {
   }
 
   @override
-  String get colorInherits => 'dziedziczy';
+  String get colorInherits => 'Dziedziczy';
 
   @override
-  String get colorOwn => 'własny kolor';
+  String get colorOwn => 'Własny kolor';
 
   @override
   String get fieldsTitle => 'Własne pola';
@@ -191,7 +191,7 @@ class LPl extends L {
   String get fieldOne => 'Pole';
 
   @override
-  String get fieldShared => 'wspólne';
+  String get fieldShared => 'Wspólne';
 
   @override
   String get fieldNamePlaceholder => 'Nazwa pola';
@@ -220,10 +220,10 @@ class LPl extends L {
   String get fieldEraseValue => 'Wymaż';
 
   @override
-  String get yes => 'tak';
+  String get yes => 'Tak';
 
   @override
-  String get no => 'nie';
+  String get no => 'Nie';
 
   @override
   String get typeText => 'Tekst';
@@ -420,7 +420,7 @@ class LPl extends L {
   String get lookOwnColor => 'Własny kolor';
 
   @override
-  String get inCard => 'w karcie';
+  String get inCard => 'W karcie';
 
   @override
   String get notesTitle => 'Notatki';
@@ -435,10 +435,10 @@ class LPl extends L {
   String get noteHint => 'O czym nie zapomnieć';
 
   @override
-  String get repeatNone => 'nie powtarza się';
+  String get repeatNone => 'Nie powtarza się';
 
   @override
-  String get repeatByRule => 'według reguły';
+  String get repeatByRule => 'Według reguły';
 
   @override
   String get repeatTitle => 'Powtarzanie';
@@ -667,10 +667,10 @@ class LPl extends L {
   String get branchColorEventRow => 'Wydarzenie gałęzi';
 
   @override
-  String get levelCalendar => 'kalendarz';
+  String get levelCalendar => 'Kalendarz';
 
   @override
-  String get levelOwn => 'własny';
+  String get levelOwn => 'Własny';
 
   @override
   String ruleDaily(int count) {
@@ -935,7 +935,7 @@ class LPl extends L {
   String get syncOff => 'Wyłączona, kalendarz tylko tutaj';
 
   @override
-  String get syncClean => 'wszystko wysłane';
+  String get syncClean => 'Wszystko wysłane';
 
   @override
   String syncPending(int count) {

@@ -88,7 +88,7 @@ class LDe extends L {
   String get actionSave => 'Speichern';
 
   @override
-  String get actionAdd => 'hinzufügen';
+  String get actionAdd => 'Hinzufügen';
 
   @override
   String get actionEdit => 'Ändern';
@@ -147,10 +147,10 @@ class LDe extends L {
   }
 
   @override
-  String get colorInherits => 'geerbt';
+  String get colorInherits => 'Geerbt';
 
   @override
-  String get colorOwn => 'eigene Farbe';
+  String get colorOwn => 'Eigene Farbe';
 
   @override
   String get fieldsTitle => 'Eigene Felder';
@@ -190,7 +190,7 @@ class LDe extends L {
   String get fieldOne => 'Feld';
 
   @override
-  String get fieldShared => 'gemeinsam';
+  String get fieldShared => 'Gemeinsam';
 
   @override
   String get fieldNamePlaceholder => 'Feldname';
@@ -218,10 +218,10 @@ class LDe extends L {
   String get fieldEraseValue => 'Löschen';
 
   @override
-  String get yes => 'ja';
+  String get yes => 'Ja';
 
   @override
-  String get no => 'nein';
+  String get no => 'Nein';
 
   @override
   String get typeText => 'Text';
@@ -417,7 +417,7 @@ class LDe extends L {
   String get lookOwnColor => 'Eigene Farbe';
 
   @override
-  String get inCard => 'in der Karte';
+  String get inCard => 'In der Karte';
 
   @override
   String get notesTitle => 'Notizen';
@@ -432,10 +432,10 @@ class LDe extends L {
   String get noteHint => 'Was nicht vergessen';
 
   @override
-  String get repeatNone => 'wiederholt sich nicht';
+  String get repeatNone => 'Wiederholt sich nicht';
 
   @override
-  String get repeatByRule => 'nach Regel';
+  String get repeatByRule => 'Nach Regel';
 
   @override
   String get repeatTitle => 'Wiederholung';
@@ -664,7 +664,7 @@ class LDe extends L {
   String get levelCalendar => 'Kalender';
 
   @override
-  String get levelOwn => 'eigene';
+  String get levelOwn => 'Eigene';
 
   @override
   String ruleDaily(int count) {
@@ -781,16 +781,16 @@ class LDe extends L {
   String get repeatNoDates => 'Diese Regel ergibt keine Termine';
 
   @override
-  String get unitDays => 'Tage';
+  String get unitDays => 'tage';
 
   @override
-  String get unitWeeks => 'Wochen';
+  String get unitWeeks => 'wochen';
 
   @override
-  String get unitMonths => 'Monate';
+  String get unitMonths => 'monate';
 
   @override
-  String get unitYears => 'Jahre';
+  String get unitYears => 'jahre';
 
   @override
   String get repeatAdvEnd => 'Ende';
@@ -927,7 +927,7 @@ class LDe extends L {
   String get syncOff => 'Aus — der Kalender lebt nur hier';
 
   @override
-  String get syncClean => 'alles gesendet';
+  String get syncClean => 'Alles gesendet';
 
   @override
   String syncPending(int count) {

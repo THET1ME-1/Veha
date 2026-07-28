@@ -123,7 +123,7 @@
   "@actionSave": {
     "description": "actionSave"
   },
-  "actionAdd": "добавить",
+  "actionAdd": "Добавить",
   "@actionAdd": {
     "description": "actionAdd"
   },
@@ -197,11 +197,11 @@
       }
     }
   },
-  "colorInherits": "наследует",
+  "colorInherits": "Наследует",
   "@colorInherits": {
     "description": "colorInherits"
   },
-  "colorOwn": "свой цвет",
+  "colorOwn": "Свой цвет",
   "@colorOwn": {
     "description": "colorOwn"
   },
@@ -259,7 +259,7 @@
   "@fieldOne": {
     "description": "fieldOne"
   },
-  "fieldShared": "общее",
+  "fieldShared": "Общее",
   "@fieldShared": {
     "description": "fieldShared"
   },
@@ -293,11 +293,11 @@
   "@fieldEraseValue": {
     "description": "fieldEraseValue"
   },
-  "yes": "да",
+  "yes": "Да",
   "@yes": {
     "description": "yes"
   },
-  "no": "нет",
+  "no": "Нет",
   "@no": {
     "description": "no"
   },
@@ -550,7 +550,7 @@
   "@lookOwnColor": {
     "description": "lookOwnColor"
   },
-  "inCard": "в карточке",
+  "inCard": "В карточке",
   "@inCard": {
     "description": "inCard"
   },
@@ -570,11 +570,11 @@
   "@noteHint": {
     "description": "noteHint"
   },
-  "repeatNone": "не повторяется",
+  "repeatNone": "Не повторяется",
   "@repeatNone": {
     "description": "repeatNone"
   },
-  "repeatByRule": "по правилу",
+  "repeatByRule": "По правилу",
   "@repeatByRule": {
     "description": "repeatByRule"
   },
@@ -879,11 +879,11 @@
   "@branchColorEventRow": {
     "description": "branchColorEventRow"
   },
-  "levelCalendar": "календарь",
+  "levelCalendar": "Календарь",
   "@levelCalendar": {
     "description": "levelCalendar"
   },
-  "levelOwn": "свой",
+  "levelOwn": "Свой",
   "@levelOwn": {
     "description": "levelOwn"
   },
@@ -1221,7 +1221,7 @@
   "@syncOff": {
     "description": "syncOff"
   },
-  "syncClean": "всё отправлено",
+  "syncClean": "Всё отправлено",
   "@syncClean": {
     "description": "syncClean"
   },

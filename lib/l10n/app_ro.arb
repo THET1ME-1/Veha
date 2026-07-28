@@ -35,7 +35,7 @@
   "@actionSave": {
     "description": "actionSave"
   },
-  "actionAdd": "adaugă",
+  "actionAdd": "Adaugă",
   "@actionAdd": {
     "description": "actionAdd"
   },
@@ -109,11 +109,11 @@
       }
     }
   },
-  "colorInherits": "moștenit",
+  "colorInherits": "Moștenit",
   "@colorInherits": {
     "description": "colorInherits"
   },
-  "colorOwn": "culoare proprie",
+  "colorOwn": "Culoare proprie",
   "@colorOwn": {
     "description": "colorOwn"
   },
@@ -171,7 +171,7 @@
   "@fieldOne": {
     "description": "fieldOne"
   },
-  "fieldShared": "comun",
+  "fieldShared": "Comun",
   "@fieldShared": {
     "description": "fieldShared"
   },
@@ -205,11 +205,11 @@
   "@fieldEraseValue": {
     "description": "fieldEraseValue"
   },
-  "yes": "da",
+  "yes": "Da",
   "@yes": {
     "description": "yes"
   },
-  "no": "nu",
+  "no": "Nu",
   "@no": {
     "description": "no"
   },
@@ -462,7 +462,7 @@
   "@lookOwnColor": {
     "description": "lookOwnColor"
   },
-  "inCard": "în card",
+  "inCard": "În card",
   "@inCard": {
     "description": "inCard"
   },
@@ -482,11 +482,11 @@
   "@noteHint": {
     "description": "noteHint"
   },
-  "repeatNone": "nu se repetă",
+  "repeatNone": "Nu se repetă",
   "@repeatNone": {
     "description": "repeatNone"
   },
-  "repeatByRule": "după regulă",
+  "repeatByRule": "După regulă",
   "@repeatByRule": {
     "description": "repeatByRule"
   },
@@ -791,11 +791,11 @@
   "@branchColorEventRow": {
     "description": "branchColorEventRow"
   },
-  "levelCalendar": "calendar",
+  "levelCalendar": "Calendar",
   "@levelCalendar": {
     "description": "levelCalendar"
   },
-  "levelOwn": "proprie",
+  "levelOwn": "Proprie",
   "@levelOwn": {
     "description": "levelOwn"
   },
@@ -1133,7 +1133,7 @@
   "@syncOff": {
     "description": "syncOff"
   },
-  "syncClean": "totul trimis",
+  "syncClean": "Totul trimis",
   "@syncClean": {
     "description": "syncClean"
   },

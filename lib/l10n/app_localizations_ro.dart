@@ -88,7 +88,7 @@ class LRo extends L {
   String get actionSave => 'Salvează';
 
   @override
-  String get actionAdd => 'adaugă';
+  String get actionAdd => 'Adaugă';
 
   @override
   String get actionEdit => 'Modifică';
@@ -147,10 +147,10 @@ class LRo extends L {
   }
 
   @override
-  String get colorInherits => 'moștenit';
+  String get colorInherits => 'Moștenit';
 
   @override
-  String get colorOwn => 'culoare proprie';
+  String get colorOwn => 'Culoare proprie';
 
   @override
   String get fieldsTitle => 'Câmpuri proprii';
@@ -190,7 +190,7 @@ class LRo extends L {
   String get fieldOne => 'Câmp';
 
   @override
-  String get fieldShared => 'comun';
+  String get fieldShared => 'Comun';
 
   @override
   String get fieldNamePlaceholder => 'Numele câmpului';
@@ -218,10 +218,10 @@ class LRo extends L {
   String get fieldEraseValue => 'Șterge';
 
   @override
-  String get yes => 'da';
+  String get yes => 'Da';
 
   @override
-  String get no => 'nu';
+  String get no => 'Nu';
 
   @override
   String get typeText => 'Text';
@@ -417,7 +417,7 @@ class LRo extends L {
   String get lookOwnColor => 'Culoare proprie';
 
   @override
-  String get inCard => 'în card';
+  String get inCard => 'În card';
 
   @override
   String get notesTitle => 'Notițe';
@@ -432,10 +432,10 @@ class LRo extends L {
   String get noteHint => 'Ce să nu uiți';
 
   @override
-  String get repeatNone => 'nu se repetă';
+  String get repeatNone => 'Nu se repetă';
 
   @override
-  String get repeatByRule => 'după regulă';
+  String get repeatByRule => 'După regulă';
 
   @override
   String get repeatTitle => 'Repetare';
@@ -662,10 +662,10 @@ class LRo extends L {
   String get branchColorEventRow => 'Eveniment al ramurii';
 
   @override
-  String get levelCalendar => 'calendar';
+  String get levelCalendar => 'Calendar';
 
   @override
-  String get levelOwn => 'proprie';
+  String get levelOwn => 'Proprie';
 
   @override
   String ruleDaily(int count) {
@@ -926,7 +926,7 @@ class LRo extends L {
   String get syncOff => 'Oprită, calendarul e doar aici';
 
   @override
-  String get syncClean => 'totul trimis';
+  String get syncClean => 'Totul trimis';
 
   @override
   String syncPending(int count) {
