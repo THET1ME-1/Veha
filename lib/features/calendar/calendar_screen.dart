@@ -8,8 +8,9 @@ import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../data/settings.dart';
 import '../../domain/week_layout.dart';
-import '../../data/seed.dart';
+import '../common/blocks.dart' show vBack;
 import '../search/search_screen.dart';
+import '../settings/month_settings_screen.dart';
 import '../event/event_flow.dart';
 import 'views/bands_view.dart';
 import 'views/chain_view.dart';
@@ -34,8 +35,6 @@ class CalendarScreen extends ConsumerStatefulWidget {
 
 class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   CalendarView _view = CalendarView.day;
-  final MonthMode _monthMode = MonthMode.chips;
-  DayReading _reading = DayReading.chain;
   DateTime? _selected;
 
   /// Полоска дней над видом «День» — всегда семь суток подряд.
@@ -75,16 +74,20 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
     // Пока база отдаёт первую порцию, экран показывает каркас без событий:
     // спиннер на пять секунд открытого календаря — худшее, что можно сделать.
-    final inheritance =
-        ref.watch(inheritanceProvider).valueOrNull ?? Seed.inheritance;
+    // Пока база отдаёт первую порцию, показываем пустой каркас, а не
+    // демо-данные: чужие календари в первом кадре человек принимает за свои.
+    final inheritance = ref.watch(inheritanceProvider).valueOrNull ??
+        const Inheritance(calendars: {}, subcategories: {});
+    final reading = ref.watch(dayReadingProvider);
+    final monthMode = ref.watch(monthModeProvider);
     final range = ref.watch(rangeProvider(_window)).valueOrNull ?? RangeData.empty;
 
     return Column(
       children: [
         MonthHeader(
           date: _selected!,
-          dayReading: _view == CalendarView.day ? _reading : null,
-          onReadingChanged: (r) => setState(() => _reading = r),
+          dayReading: _view == CalendarView.day ? reading : null,
+          onReadingChanged: (r) => ref.read(dayReadingProvider.notifier).set(r),
           onSearch: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const SearchScreen()),
           ),
@@ -102,7 +105,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         ViewSwitcher(
           value: _view,
           onChanged: (v) => setState(() => _view = v),
-          onSetup: _view == CalendarView.week ? _setupWeek : null,
+          onSetup: switch (_view) {
+            CalendarView.week => _setupWeek,
+            CalendarView.month => _setupMonth,
+            _ => null,
+          },
         ),
         if (_view != CalendarView.week && _view != CalendarView.month)
           SpanBars(
@@ -110,7 +117,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             today: _selected!,
             inheritance: inheritance,
           ),
-        Expanded(child: _body(range, inheritance, now, today)),
+        Expanded(child: _body(range, inheritance, now, today, reading, monthMode)),
       ],
     );
   }
@@ -121,6 +128,18 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         await askWeekLayout(context, ref.read(weekLayoutProvider));
     if (chosen == null) return;
     await ref.read(weekLayoutProvider.notifier).set(chosen);
+  }
+
+  /// Настройка вида «Месяц»: чем показывать занятость дня.
+  Future<void> _setupMonth() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => Scaffold(
+          appBar: AppBar(toolbarHeight: 56, leading: vBack(context), leadingWidth: 60),
+          body: const MonthSettingsScreen(),
+        ),
+      ),
+    );
   }
 
   bool _isToday(DateTime today) =>
@@ -182,9 +201,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     Inheritance inheritance,
     DateTime now,
     DateTime today,
+    DayReading reading,
+    MonthMode monthMode,
   ) {
     return switch (_view) {
-      CalendarView.day when _reading == DayReading.chain => ChainView(
+      CalendarView.day when reading == DayReading.chain => ChainView(
           events: range.eventsOn(_selected!),
           inheritance: inheritance,
           now: _isToday(today) ? now : null,
@@ -207,7 +228,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           spans: range.spans,
           inheritance: inheritance,
           today: today,
-          mode: _monthMode,
+          mode: monthMode,
+          maxChips: ref.watch(monthChipsProvider),
         ),
       CalendarView.week => WeekView(
           week: _weekColumns(ref.watch(weekLayoutProvider)),

@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/brand.dart';
 import '../domain/week_layout.dart';
+import '../features/calendar/views/month_view.dart' show MonthMode;
+import '../features/calendar/widgets/month_header.dart' show DayReading;
 
 /// Пользовательские настройки вида.
 ///
@@ -18,6 +20,7 @@ class VehaSettings {
   static const _weekLayout = 'week_layout';
   static const _dayReading = 'day_reading';
   static const _monthMode = 'month_mode';
+  static const _monthChips = 'month_chips';
   static const _themeMode = 'theme_mode';
   static const _vibrant = 'vibrant';
   static const _seed = 'seed';
@@ -50,13 +53,19 @@ class VehaSettings {
       _prefs.setString(_weekLayout, value.encode());
 
   /// Какое прочтение дня человек оставил открытым: часы или цепочка.
-  int get dayReading => _prefs.getInt(_dayReading) ?? 0;
+  /// `null` — не выбирал ни разу; умолчание решает не хранилище.
+  int? get dayReading => _prefs.getInt(_dayReading);
 
   Future<void> setDayReading(int value) => _prefs.setInt(_dayReading, value);
 
   int get monthMode => _prefs.getInt(_monthMode) ?? 0;
 
   Future<void> setMonthMode(int value) => _prefs.setInt(_monthMode, value);
+
+  /// Сколько событий показывать в ячейке месяца, дальше — «+N».
+  int get monthChips => _prefs.getInt(_monthChips) ?? 2;
+
+  Future<void> setMonthChips(int value) => _prefs.setInt(_monthChips, value);
 }
 
 /// Настройки читаются один раз при запуске: дальше синхронный доступ.
@@ -82,6 +91,74 @@ final weekLayoutProvider =
     StateNotifierProvider<WeekLayoutNotifier, WeekLayout>((ref) {
   final settings = ref.watch(settingsProvider).valueOrNull;
   return WeekLayoutNotifier(settings, settings?.weekLayout ?? WeekLayout.full);
+});
+
+/// Вид месяца отдельным состоянием, как и неделя: выбор человека переживает
+/// закрытие приложения, иначе настройка бессмысленна.
+class MonthModeNotifier extends StateNotifier<MonthMode> {
+  MonthModeNotifier(this._settings, super.state);
+
+  final VehaSettings? _settings;
+
+  Future<void> set(MonthMode value) async {
+    state = value;
+    await _settings?.setMonthMode(value.index);
+  }
+}
+
+final monthModeProvider =
+    StateNotifierProvider<MonthModeNotifier, MonthMode>((ref) {
+  final settings = ref.watch(settingsProvider).valueOrNull;
+  final saved = settings?.monthMode ?? 0;
+  return MonthModeNotifier(
+    settings,
+    MonthMode.values[saved.clamp(0, MonthMode.values.length - 1)],
+  );
+});
+
+/// Сколько событий влезает в ячейку месяца до «+N».
+class MonthChipsNotifier extends StateNotifier<int> {
+  MonthChipsNotifier(this._settings, super.state);
+
+  final VehaSettings? _settings;
+
+  Future<void> set(int value) async {
+    state = value;
+    await _settings?.setMonthChips(value);
+  }
+}
+
+final monthChipsProvider =
+    StateNotifierProvider<MonthChipsNotifier, int>((ref) {
+  final settings = ref.watch(settingsProvider).valueOrNull;
+  return MonthChipsNotifier(settings, (settings?.monthChips ?? 2).clamp(1, 5));
+});
+
+/// Прочтение дня: часы или цепочка. Тоже запоминается — человек выбирает его
+/// один раз и живёт с ним.
+class DayReadingNotifier extends StateNotifier<DayReading> {
+  DayReadingNotifier(this._settings, super.state);
+
+  final VehaSettings? _settings;
+
+  Future<void> set(DayReading value) async {
+    state = value;
+    await _settings?.setDayReading(value.index);
+  }
+}
+
+final dayReadingProvider =
+    StateNotifierProvider<DayReadingNotifier, DayReading>((ref) {
+  final settings = ref.watch(settingsProvider).valueOrNull;
+  final saved = settings?.dayReading;
+  return DayReadingNotifier(
+    settings,
+    // По умолчанию цепочка: она отвечает на вопрос «что у меня сегодня»,
+    // с которым день открывают чаще, чем с «когда я свободен».
+    saved == null
+        ? DayReading.chain
+        : DayReading.values[saved.clamp(0, DayReading.values.length - 1)],
+  );
 });
 
 /// Оформление: тема, режим схемы, фирменный цвет, язык.

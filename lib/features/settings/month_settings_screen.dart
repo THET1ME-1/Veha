@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/brand.dart';
 import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
 import '../../data/seed.dart';
+import '../../data/settings.dart';
 import '../calendar/views/month_view.dart';
 import '../calendar/widgets/month_header.dart';
 import '../common/blocks.dart';
@@ -12,30 +14,20 @@ import '../common/blocks.dart';
 ///
 /// Режим меняется в любой момент, а не выбирается раз и навсегда при первом
 /// запуске: в разные недели полезен разный ответ.
-class MonthSettingsScreen extends StatefulWidget {
-  const MonthSettingsScreen({super.key, this.initial = MonthMode.chips});
+class MonthSettingsScreen extends ConsumerWidget {
+  const MonthSettingsScreen({super.key});
 
-  final MonthMode initial;
-
-  @override
-  State<MonthSettingsScreen> createState() => _MonthSettingsScreenState();
-}
-
-class _MonthSettingsScreenState extends State<MonthSettingsScreen> {
-  late MonthMode _mode = widget.initial;
-  int _density = 0;
-  bool _spans = true;
-  bool _weekNumbers = false;
-
-  static const _densityLabels = [
-    'Иконка и текст',
-    'Только иконка',
-    'Только текст',
-  ];
+  /// Плотность чипа — те же режимы, что и в самом виде. Третьего варианта
+  /// («только текст») в коде нет, и предлагать его значит врать.
+  static const _densityLabels = ['Иконка и текст', 'Только иконка'];
+  static const _densityModes = [MonthMode.chips, MonthMode.icons];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
+    final mode = ref.watch(monthModeProvider);
+    void set(MonthMode value) =>
+        ref.read(monthModeProvider.notifier).set(value);
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(
@@ -58,18 +50,18 @@ class _MonthSettingsScreenState extends State<MonthSettingsScreen> {
           tinted: false,
           title: 'Чипы с названиями',
           subtitle: 'Видно, что именно в этот день',
-          selected: _mode != MonthMode.tint,
-          onTap: () => setState(() => _mode = MonthMode.chips),
+          selected: mode != MonthMode.tint,
+          onTap: () => set(MonthMode.chips),
         ),
         const SizedBox(height: 8),
         _ModeCard(
           tinted: true,
           title: 'Тонированные ячейки',
           subtitle: 'Видно, чем занят день',
-          selected: _mode == MonthMode.tint,
-          onTap: () => setState(() => _mode = MonthMode.tint),
+          selected: mode == MonthMode.tint,
+          onTap: () => set(MonthMode.tint),
         ),
-        if (_mode != MonthMode.tint) ...[
+        if (mode != MonthMode.tint) ...[
           const VBlockCap('Плотность чипа'),
           Wrap(
             spacing: 6,
@@ -77,15 +69,12 @@ class _MonthSettingsScreenState extends State<MonthSettingsScreen> {
             children: [
               for (var i = 0; i < _densityLabels.length; i++)
                 GestureDetector(
-                  onTap: () => setState(() {
-                    _density = i;
-                    _mode = i == 1 ? MonthMode.icons : MonthMode.chips;
-                  }),
+                  onTap: () => set(_densityModes[i]),
                   child: Container(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                     decoration: ShapeDecoration(
-                      color: i == _density
+                      color: _densityModes[i] == mode
                           ? scheme.secondaryContainer
                           : scheme.surfaceContainerHigh,
                       shape: const StadiumBorder(),
@@ -96,7 +85,7 @@ class _MonthSettingsScreenState extends State<MonthSettingsScreen> {
                         fontFamily: AppFonts.body,
                         fontSize: 11.5,
                         fontWeight: FontWeight.w600,
-                        color: i == _density
+                        color: _densityModes[i] == mode
                             ? scheme.onSecondaryContainer
                             : scheme.onSurfaceVariant,
                       ),
@@ -113,8 +102,9 @@ class _MonthSettingsScreenState extends State<MonthSettingsScreen> {
             value: 'Событий в ячейке',
             label: 'Дальше сворачивать в «+N»',
             labelFirst: false,
+            onTap: () => _pickChips(context, ref),
             trailing: Text(
-              '3',
+              '${ref.watch(monthChipsProvider)}',
               style: TextStyle(
                 fontFamily: AppFonts.display,
                 fontSize: 15,
@@ -123,32 +113,35 @@ class _MonthSettingsScreenState extends State<MonthSettingsScreen> {
               ),
             ),
           ),
-          const VSep(),
-          VRow(
-            icon: 'ticket',
-            value: 'Лента многодневных',
-            label: 'Абонементы, отпуска, курсы',
-            labelFirst: false,
-            trailing: VSwitch(
-              value: _spans,
-              onChanged: (v) => setState(() => _spans = v),
-            ),
-          ),
-          const VSep(),
-          VRow(
-            icon: 'calendar',
-            value: 'Номера недель',
-            label: 'Колонка слева от сетки',
-            labelFirst: false,
-            trailing: VSwitch(
-              value: _weekNumbers,
-              onChanged: (v) => setState(() => _weekNumbers = v),
-            ),
-          ),
         ]),
       ],
     );
   }
+}
+
+/// Сколько событий помещать в ячейку. Больше четырёх в ячейку телефона не
+/// влезает физически, меньше одного — бессмысленно.
+Future<void> _pickChips(BuildContext context, WidgetRef ref) async {
+  final current = ref.read(monthChipsProvider);
+  final chosen = await showModalBottomSheet<int>(
+    context: context,
+    showDragHandle: true,
+    builder: (context) => SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (var i = 1; i <= 4; i++)
+            VOption(
+              title: '$i',
+              selected: i == current,
+              onTap: () => Navigator.pop(context, i),
+            ),
+        ],
+      ),
+    ),
+  );
+  if (chosen == null) return;
+  await ref.read(monthChipsProvider.notifier).set(chosen);
 }
 
 /// Мини-превью режима: четыре ячейки из тех же цветов, что и в самом месяце.

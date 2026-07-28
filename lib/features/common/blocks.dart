@@ -450,9 +450,15 @@ class VRoundButton extends StatelessWidget {
 /// стрелки остаётся квадрат.
 Widget vBack(BuildContext context) => Padding(
       padding: const EdgeInsets.only(left: 8),
-      child: VRoundButton(
-        icon: 'back',
-        size: 40,
-        onTap: () => Navigator.of(context).maybePop(),
+      // Подпись для озвучки обязательна: у своей кнопки её нет, а стоковая
+      // `BackButton` подставляет свою сама.
+      child: Semantics(
+        label: MaterialLocalizations.of(context).backButtonTooltip,
+        button: true,
+        child: VRoundButton(
+          icon: 'back',
+          size: 40,
+          onTap: () => Navigator.of(context).maybePop(),
+        ),
       ),
     );
