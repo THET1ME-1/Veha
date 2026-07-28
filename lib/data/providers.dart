@@ -84,6 +84,14 @@ final rangeProvider =
   },
 );
 
+/// Поиск по запросу. Семейство, а не одно состояние: экран поиска живёт
+/// столько же, сколько запрос, и держать его в провайдере вручную незачем.
+final searchProvider =
+    StreamProvider.family<List<VEvent>, String>((ref, query) async* {
+  await ref.watch(bootstrapProvider.future);
+  yield* ref.watch(repositoryProvider).watchSearch(query);
+});
+
 /// Будильники на ближайший месяц.
 ///
 /// Отдельный поток, а не побочное действие сохранения: напоминание должно

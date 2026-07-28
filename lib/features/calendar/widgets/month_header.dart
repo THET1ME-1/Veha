@@ -3,6 +3,7 @@ import '../../../core/icon_registry.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/brand.dart';
+import '../../common/blocks.dart';
 
 /// Заголовок «Июль 2026»: месяц жирным Unbounded, год лёгким Onest акцентным.
 /// Контраст начертаний — фирменная деталь экрана, она же работает в ленте дней.
@@ -12,6 +13,7 @@ class MonthHeader extends StatelessWidget {
     required this.date,
     this.dayReading,
     this.onReadingChanged,
+    this.onSearch,
   });
 
   final DateTime date;
@@ -20,6 +22,10 @@ class MonthHeader extends StatelessWidget {
   /// (на экранах недели и месяца ему нечего переключать).
   final DayReading? dayReading;
   final ValueChanged<DayReading>? onReadingChanged;
+
+  /// Поиск по всему календарю. Живёт в шапке, а не в нижней панели: искать
+  /// хотят из любого вида, а разделов внизу и так четыре.
+  final VoidCallback? onSearch;
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +60,10 @@ class MonthHeader extends StatelessWidget {
               ),
             ),
           ),
+          if (onSearch != null) ...[
+            VRoundButton(icon: 'search', onTap: onSearch!),
+            const SizedBox(width: 8),
+          ],
           if (dayReading != null)
             _ReadingSwitch(
               value: dayReading!,
@@ -64,6 +74,7 @@ class MonthHeader extends StatelessWidget {
     );
   }
 }
+
 
 /// Часы или цепочка. Оба прочтения дня равноправны, поэтому в сегментированном
 /// контроле они занимают одно место, а переключаются здесь.

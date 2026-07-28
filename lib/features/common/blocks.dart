@@ -409,3 +409,50 @@ class VHero extends StatelessWidget {
     );
   }
 }
+
+/// Круглая кнопка с заливкой. Голая иконка кнопкой не читается: в приложении
+/// нет ни обводок, ни теней, и нажимаемое от текста отличает только заливка.
+class VRoundButton extends StatelessWidget {
+  const VRoundButton({
+    super.key,
+    required this.icon,
+    required this.onTap,
+    this.size = 44,
+  });
+
+  final String icon;
+  final VoidCallback onTap;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return InkWell(
+      onTap: onTap,
+      customBorder: const CircleBorder(),
+      child: Container(
+        width: size,
+        height: size,
+        alignment: Alignment.center,
+        decoration: ShapeDecoration(
+          color: scheme.surfaceContainerHigh,
+          shape: const CircleBorder(),
+        ),
+        child: Icon(VehaIcons.byName(icon), size: size * 0.48,
+            color: scheme.onSurface),
+      ),
+    );
+  }
+}
+
+/// Стрелка «назад» для шапки экрана. Своя, а не стоковая: стоковая берёт глиф
+/// из чужого шрифта, а он в сборке урезается до пары символов и на месте
+/// стрелки остаётся квадрат.
+Widget vBack(BuildContext context) => Padding(
+      padding: const EdgeInsets.only(left: 8),
+      child: VRoundButton(
+        icon: 'back',
+        size: 40,
+        onTap: () => Navigator.of(context).maybePop(),
+      ),
+    );

@@ -9,6 +9,7 @@ import '../../data/providers.dart';
 import '../../data/settings.dart';
 import '../../domain/week_layout.dart';
 import '../../data/seed.dart';
+import '../search/search_screen.dart';
 import '../event/event_flow.dart';
 import 'views/bands_view.dart';
 import 'views/chain_view.dart';
@@ -84,6 +85,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           date: _selected!,
           dayReading: _view == CalendarView.day ? _reading : null,
           onReadingChanged: (r) => setState(() => _reading = r),
+          onSearch: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const SearchScreen()),
+          ),
         ),
         if (_view == CalendarView.day)
           WeekStrip(

@@ -33,7 +33,7 @@ class FieldGroupsScreen extends ConsumerWidget {
     return Scaffold(
       // Заголовок крупный и слева, как на остальных экранах: в шапке остаётся
       // только стрелка назад.
-      appBar: AppBar(toolbarHeight: 48),
+      appBar: AppBar(toolbarHeight: 56, leading: vBack(context), leadingWidth: 60),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(
             VehaInsets.screen, 0, VehaInsets.screen, 120),
@@ -192,7 +192,7 @@ class FieldsOfGroupScreen extends ConsumerWidget {
     final inCard = fields.where((f) => f.showInCard).length;
 
     return Scaffold(
-      appBar: AppBar(toolbarHeight: 48),
+      appBar: AppBar(toolbarHeight: 56, leading: vBack(context), leadingWidth: 60),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(
             VehaInsets.screen, 0, VehaInsets.screen, 120),
