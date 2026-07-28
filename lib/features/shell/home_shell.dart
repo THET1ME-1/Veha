@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -7,18 +8,19 @@ import '../access/access_screen.dart';
 import '../calendar/calendar_screen.dart';
 import '../calendars/calendars_screen.dart';
 import '../calendar/widgets/month_header.dart';
+import '../event/event_flow.dart';
 
 /// Оболочка приложения: нижняя навигация на четыре раздела.
 /// Боковой панели нет и не будет — переключение видов живёт в сегментированном
 /// контроле, список календарей в нижнем листе.
-class HomeShell extends StatefulWidget {
+class HomeShell extends ConsumerStatefulWidget {
   const HomeShell({super.key});
 
   @override
-  State<HomeShell> createState() => _HomeShellState();
+  ConsumerState<HomeShell> createState() => _HomeShellState();
 }
 
-class _HomeShellState extends State<HomeShell> {
+class _HomeShellState extends ConsumerState<HomeShell> {
   int _tab = 0;
 
   static const _icons = [
@@ -42,7 +44,7 @@ class _HomeShellState extends State<HomeShell> {
       body: SafeArea(bottom: false, child: _page()),
       floatingActionButton: _tab == 0
           ? FloatingActionButton(
-              onPressed: () {},
+              onPressed: () => EventFlow(context, ref).create(),
               tooltip: L.of(context).newEvent,
               elevation: 0,
               focusElevation: 0,

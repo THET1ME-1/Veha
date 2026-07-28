@@ -48,6 +48,11 @@ class VehaIcons {
     'dropper': Symbols.colorize_rounded,
     'chevron': Symbols.chevron_right_rounded,
     'link': Symbols.link_rounded,
+    'check': Symbols.check_rounded,
+    'back': Symbols.arrow_back_rounded,
+    'undo': Symbols.undo_rounded,
+    'trash': Symbols.delete_rounded,
+    'pencil': Symbols.edit_rounded,
   };
 
   /// Иконка по имени. Неизвестное имя — точка, а не крэш: база может приехать

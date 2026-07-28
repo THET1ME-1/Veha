@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' show Color;
 import 'package:uuid/uuid.dart';
 
 import '../domain/occurrences.dart';
+import '../domain/recurrence.dart';
 import 'db/database.dart';
 import 'models.dart';
 import 'seed.dart';
@@ -189,6 +190,132 @@ class VehaRepository {
       await (db.update(db.events)..where((t) => t.id.equals(id)))
           .write(EventsCompanion(deletedAt: Value(now), updatedAt: Value(now)));
       await _enqueue('event', id, 'delete');
+    });
+  }
+
+  /// Возвращает удалённое событие: полоска «Вернуть» живёт несколько секунд,
+  /// и всё это время строка лежит в базе с пометкой об удалении.
+  Future<void> restoreEvent(String id) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await db.transaction(() async {
+      await (db.update(db.events)..where((t) => t.id.equals(id))).write(
+          const EventsCompanion(deletedAt: Value(null))
+              .copyWith(updatedAt: Value(now)));
+      await _enqueue('event', id, 'upsert');
+    });
+  }
+
+  /// Возвращает отменённое занятие в ряд.
+  Future<void> unskipOccurrence(String seriesId, DateTime originalStart) async {
+    await db.transaction(() async {
+      await (db.delete(db.recurrenceExceptions)
+            ..where((t) =>
+                t.eventId.equals(seriesId) &
+                t.excludedDate
+                    .equals(originalStart.millisecondsSinceEpoch)))
+          .go();
+      await _enqueue('event', seriesId, 'upsert');
+    });
+  }
+
+  /// Правка «весь ряд»: экземпляр отдаёт ряду своё время суток и остальные
+  /// поля, дата начала ряда остаётся прежней.
+  ///
+  /// Двигаем именно время суток, а не всю запись: ряд, начатый в мае, не
+  /// должен перепрыгнуть в август от того, что человек правил августовское
+  /// занятие.
+  Future<void> updateWholeSeries(VEvent instance) async {
+    final seriesId = instance.recurrenceId;
+    if (seriesId == null) {
+      await upsertEvent(instance);
+      return;
+    }
+
+    final series = await (db.select(db.events)
+          ..where((t) => t.id.equals(seriesId)))
+        .getSingleOrNull();
+    if (series == null) {
+      await upsertEvent(instance);
+      return;
+    }
+
+    final seriesStart = DateTime.fromMillisecondsSinceEpoch(series.start);
+    final start = DateTime(
+      seriesStart.year,
+      seriesStart.month,
+      seriesStart.day,
+      instance.start.hour,
+      instance.start.minute,
+    );
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    await db.transaction(() async {
+      await (db.update(db.events)..where((t) => t.id.equals(seriesId)))
+          .write(EventsCompanion(
+        title: Value(instance.title),
+        location: Value(instance.location),
+        start: Value(start.millisecondsSinceEpoch),
+        end: Value(start.add(instance.duration).millisecondsSinceEpoch),
+        isAllDay: Value(instance.isAllDay),
+        color: Value(instance.color?.toARGB32()),
+        icon: Value(instance.iconName),
+        rrule: Value(instance.rrule ?? series.rrule),
+        updatedAt: Value(now),
+      ));
+      await _enqueue('event', seriesId, 'upsert');
+    });
+  }
+
+  /// Правка «это занятие и следующие»: ряд разрезается по дате экземпляра.
+  ///
+  /// Прошедшие занятия остаются на своих местах — их человек уже прожил, и
+  /// задним числом сдвигать их нельзя. Старый ряд получает `UNTIL` на канун
+  /// разреза, новый начинается с правки и наследует остаток правила.
+  Future<void> updateFromOccurrence(VEvent instance) async {
+    final seriesId = instance.recurrenceId;
+    final cut = instance.originalStart;
+    if (seriesId == null || cut == null) {
+      await upsertEvent(instance);
+      return;
+    }
+
+    final series = await (db.select(db.events)
+          ..where((t) => t.id.equals(seriesId)))
+        .getSingleOrNull();
+    if (series?.rrule == null) {
+      await upsertEvent(instance);
+      return;
+    }
+
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final seriesStart = DateTime.fromMillisecondsSinceEpoch(series!.start);
+    final tail = Recurrence.cutBefore(series.rrule!, cut, start: seriesStart);
+    final head = Recurrence.endBefore(series.rrule!, cut, start: seriesStart);
+    final newId = this.newId();
+
+    await db.transaction(() async {
+      await (db.update(db.events)..where((t) => t.id.equals(seriesId)))
+          .write(EventsCompanion(rrule: Value(head), updatedAt: Value(now)));
+
+      await db.into(db.events).insert(EventsCompanion.insert(
+            id: newId,
+            calendarId: instance.calendarId,
+            subcategoryId: Value(instance.subcategoryId),
+            title: instance.title,
+            location: Value(instance.location),
+            start: instance.start.millisecondsSinceEpoch,
+            end: instance.end.millisecondsSinceEpoch,
+            timezone: instance.timezone,
+            isAllDay: Value(instance.isAllDay),
+            color: Value(instance.color?.toARGB32()),
+            icon: Value(instance.iconName),
+            rrule: Value(tail),
+            createdAt: now,
+            updatedAt: now,
+          ));
+
+      await _enqueue('event', seriesId, 'upsert');
+      await _enqueue('event', newId, 'upsert');
     });
   }
 

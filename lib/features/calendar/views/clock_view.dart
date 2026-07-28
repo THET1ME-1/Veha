@@ -17,11 +17,19 @@ class ClockView extends StatelessWidget {
     required this.events,
     required this.inheritance,
     this.now,
+    this.onEventTap,
+    this.onEventLongPress,
+    this.onHourTap,
   });
 
   final List<VEvent> events;
   final Inheritance inheritance;
   final DateTime? now;
+  final ValueChanged<VEvent>? onEventTap;
+  final ValueChanged<VEvent>? onEventLongPress;
+
+  /// Тап по свободному часу: сюда и заводят событие, не открывая формы.
+  final ValueChanged<int>? onHourTap;
 
   /// Высота часа. Меньше 60 — короткое событие превращается в полоску,
   /// в которую не влезает даже название.
@@ -66,6 +74,9 @@ class ClockView extends StatelessWidget {
                     top: i * hourHeight,
                     stripe: i.isEven,
                     gutter: _timeGutter,
+                    onTap: onHourTap == null
+                        ? null
+                        : () => onHourTap!(hours[i]),
                   ),
                 for (final placed in lanes)
                   _EventBlock(
@@ -75,6 +86,12 @@ class ClockView extends StatelessWidget {
                     laneWidth: laneArea / placed.lanes,
                     color: inheritance.colorOfEvent(placed.event),
                     icon: inheritance.iconOfEvent(placed.event),
+                    onTap: onEventTap == null
+                        ? null
+                        : () => onEventTap!(placed.event),
+                    onLongPress: onEventLongPress == null
+                        ? null
+                        : () => onEventLongPress!(placed.event),
                   ),
                 if (now != null &&
                     now!.hour >= firstHour &&
@@ -135,12 +152,14 @@ class _HourRow extends StatelessWidget {
     required this.top,
     required this.stripe,
     required this.gutter,
+    this.onTap,
   });
 
   final int hour;
   final double top;
   final bool stripe;
   final double gutter;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -172,11 +191,17 @@ class _HourRow extends StatelessWidget {
           // Разлиновка чередованием заливок: линии между часами были бы
           // обводкой, а её в приложении нет нигде.
           Expanded(
-            child: Container(
-              decoration: ShapeDecoration(
-                color: stripe ? scheme.surfaceContainerLow : Colors.transparent,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(14)),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: onTap,
+              child: Container(
+                decoration: ShapeDecoration(
+                  color: stripe
+                      ? scheme.surfaceContainerLow
+                      : Colors.transparent,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(14)),
+                  ),
                 ),
               ),
             ),
@@ -195,6 +220,8 @@ class _EventBlock extends StatelessWidget {
     required this.laneWidth,
     required this.color,
     required this.icon,
+    this.onTap,
+    this.onLongPress,
   });
 
   final _Placed placed;
@@ -203,6 +230,8 @@ class _EventBlock extends StatelessWidget {
   final double laneWidth;
   final Color color;
   final String icon;
+  final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -228,65 +257,70 @@ class _EventBlock extends StatelessWidget {
       width: laneWidth - (placed.lanes > 1 ? 6 : 0),
       top: top,
       height: height,
-      child: Container(
-        // В поделённой колонке горизонтальные отступы режем: иначе название
-        // обрывается там, где оно ещё помещалось.
-        padding: EdgeInsets.symmetric(
-          horizontal: placed.lanes > 1 ? 10 : 13,
-          vertical: tight ? 4 : 9,
-        ),
-        decoration: ShapeDecoration(
-          color: ink.background,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(22)),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        onLongPress: onLongPress,
+        child: Container(
+          // В поделённой колонке горизонтальные отступы режем: иначе название
+          // обрывается там, где оно ещё помещалось.
+          padding: EdgeInsets.symmetric(
+            horizontal: placed.lanes > 1 ? 10 : 13,
+            vertical: tight ? 4 : 9,
           ),
-        ),
-        child: Row(
-          crossAxisAlignment: tight
-              ? CrossAxisAlignment.center
-              : CrossAxisAlignment.start,
-          children: [
-            Icon(VehaIcons.byName(icon), size: 19, color: ink.foreground),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    e.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontFamily: AppFonts.display,
-                      fontSize: 14,
-                      height: 1.2,
-                      letterSpacing: -0.14,
-                      fontWeight: FontWeight.w600,
-                      color: ink.foreground,
-                    ),
-                  ),
-                  if (!tight)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2),
-                      child: Text(
-                        _subtitle(e),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontFamily: AppFonts.body,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w500,
-                          color: ink.foreground.withValues(alpha: 0.85),
-                          fontFeatures: const [FontFeature.tabularFigures()],
-                        ),
+          decoration: ShapeDecoration(
+            color: ink.background,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(22)),
+            ),
+          ),
+          child: Row(
+            crossAxisAlignment: tight
+                ? CrossAxisAlignment.center
+                : CrossAxisAlignment.start,
+            children: [
+              Icon(VehaIcons.byName(icon), size: 19, color: ink.foreground),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      e.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: AppFonts.display,
+                        fontSize: 14,
+                        height: 1.2,
+                        letterSpacing: -0.14,
+                        fontWeight: FontWeight.w600,
+                        color: ink.foreground,
                       ),
                     ),
-                ],
+                    if (!tight)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Text(
+                          _subtitle(e),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontFamily: AppFonts.body,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            color: ink.foreground.withValues(alpha: 0.85),
+                            fontFeatures: const [FontFeature.tabularFigures()],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

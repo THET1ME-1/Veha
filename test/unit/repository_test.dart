@@ -121,6 +121,73 @@ void main() {
         reason: 'Соседние дни ряда остались на своём времени');
   });
 
+  test('Возврат отменённого занятия ставит его на место', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+    await repo.skipOccurrence('e-wake', DateTime(2026, 7, 30, 7, 30));
+    await repo.unskipOccurrence('e-wake', DateTime(2026, 7, 30, 7, 30));
+
+    final events = await repo
+        .watchRange(DateTime(2026, 7, 30), DateTime(2026, 7, 31))
+        .first;
+    expect(events.where((e) => e.title == 'Подъём'), hasLength(1));
+  });
+
+  test('Правка «это и следующие» разрезает ряд по дате', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+    final day = await repo
+        .watchRange(DateTime(2026, 8, 3), DateTime(2026, 8, 4))
+        .first;
+    final wake = day.firstWhere((e) => e.title == 'Подъём');
+
+    await repo.updateFromOccurrence(
+      wake.copyWith(
+        start: DateTime(2026, 8, 3, 9),
+        end: DateTime(2026, 8, 3, 9, 15),
+      ),
+    );
+
+    final before = await repo
+        .watchRange(DateTime(2026, 8, 1), DateTime(2026, 8, 2))
+        .first;
+    expect(before.singleWhere((e) => e.title == 'Подъём').start,
+        DateTime(2026, 8, 1, 7, 30),
+        reason: 'Прошедшие занятия ряд не двигает');
+
+    final after = await repo
+        .watchRange(DateTime(2026, 8, 5), DateTime(2026, 8, 6))
+        .first;
+    expect(after.singleWhere((e) => e.title == 'Подъём').start,
+        DateTime(2026, 8, 5, 9),
+        reason: 'Начиная с разреза занятия идут по новому времени');
+  });
+
+  test('Правка «весь ряд» переносит и прошедшие занятия', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+    final day = await repo
+        .watchRange(DateTime(2026, 7, 30), DateTime(2026, 7, 31))
+        .first;
+    final wake = day.firstWhere((e) => e.title == 'Подъём');
+
+    await repo.updateWholeSeries(wake.copyWith(
+      title: 'Подъём пораньше',
+      start: DateTime(2026, 7, 30, 6, 45),
+      end: DateTime(2026, 7, 30, 7),
+    ));
+
+    final first = await repo
+        .watchRange(DateTime(2026, 7, 27), DateTime(2026, 7, 28))
+        .first;
+    final moved = first.singleWhere((e) => e.title == 'Подъём пораньше');
+    expect(moved.start, DateTime(2026, 7, 27, 6, 45));
+    expect(moved.end, DateTime(2026, 7, 27, 7));
+
+    final later = await repo
+        .watchRange(DateTime(2026, 8, 5), DateTime(2026, 8, 6))
+        .first;
+    expect(later.singleWhere((e) => e.title == 'Подъём пораньше').start,
+        DateTime(2026, 8, 5, 6, 45));
+  });
+
   test('Удаление мягкое и попадает в очередь синхронизации', () async {
     await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
     await repo.deleteEvent('e-eng');
@@ -132,6 +199,17 @@ void main() {
     final queue = await db.select(db.syncQueue).get();
     expect(queue.where((q) => q.entityId == 'e-eng' && q.operation == 'delete'),
         hasLength(1));
+  });
+
+  test('Удалённое событие возвращается полоской «Вернуть»', () async {
+    await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+    await repo.deleteEvent('e-breakfast');
+    await repo.restoreEvent('e-breakfast');
+
+    final events = await repo
+        .watchRange(DateTime(2026, 7, 27), DateTime(2026, 7, 28))
+        .first;
+    expect(events.where((e) => e.id == 'e-breakfast'), hasLength(1));
   });
 
   test('Повторные правки схлопываются в одну запись очереди', () async {

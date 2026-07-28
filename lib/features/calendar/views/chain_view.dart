@@ -20,10 +20,14 @@ class ChainView extends StatelessWidget {
     required this.events,
     required this.inheritance,
     this.now,
+    this.onEventTap,
+    this.onEventLongPress,
   });
 
   final List<VEvent> events;
   final Inheritance inheritance;
+  final ValueChanged<VEvent>? onEventTap;
+  final ValueChanged<VEvent>? onEventLongPress;
 
   /// Время линии «сейчас». `null` — линию не рисуем (день не сегодняшний).
   final DateTime? now;
@@ -43,11 +47,17 @@ class ChainView extends StatelessWidget {
         rows.add(_NowLine(now: now!));
       }
 
-      rows.add(_ChainRow(
-        event: e,
-        color: inheritance.colorOfEvent(e),
-        icon: inheritance.iconOfEvent(e),
-        isLast: isLast,
+      rows.add(GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onEventTap == null ? null : () => onEventTap!(e),
+        onLongPress:
+            onEventLongPress == null ? null : () => onEventLongPress!(e),
+        child: _ChainRow(
+          event: e,
+          color: inheritance.colorOfEvent(e),
+          icon: inheritance.iconOfEvent(e),
+          isLast: isLast,
+        ),
       ));
     }
 

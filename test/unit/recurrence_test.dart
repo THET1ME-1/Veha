@@ -94,6 +94,47 @@ void main() {
     });
   });
 
+  group('Разрез ряда', () {
+    test('Старой половине ставится окончание накануне разреза', () {
+      final head = Recurrence.endBefore(
+        'FREQ=WEEKLY;BYDAY=MO',
+        DateTime(2026, 8, 10, 16),
+        start: DateTime(2026, 7, 27, 16),
+      );
+
+      final dates = Recurrence.expand(
+        rrule: head,
+        start: DateTime(2026, 7, 27, 16),
+        windowStart: DateTime(2026, 7, 1),
+        windowEnd: DateTime(2026, 9, 1),
+      );
+      expect(dates.map(d).toList(), ['27.7 16:00', '3.8 16:00']);
+    });
+
+    test('Счётчик повторов делится между половинами', () {
+      // Ряд из шести занятий, разрез перед четвёртым: три и три.
+      const rule = 'FREQ=WEEKLY;BYDAY=MO;COUNT=6';
+      final start = DateTime(2026, 7, 6, 16);
+      final cut = DateTime(2026, 7, 27, 16);
+
+      final head = Recurrence.expand(
+        rrule: Recurrence.endBefore(rule, cut, start: start),
+        start: start,
+        windowStart: DateTime(2026, 7, 1),
+        windowEnd: DateTime(2026, 10, 1),
+      );
+      final tail = Recurrence.expand(
+        rrule: Recurrence.cutBefore(rule, cut, start: start),
+        start: cut,
+        windowStart: DateTime(2026, 7, 1),
+        windowEnd: DateTime(2026, 10, 1),
+      );
+
+      expect(head, hasLength(3));
+      expect(tail, hasLength(3));
+    });
+  });
+
   group('Абсолютный момент', () {
     test('Одно и то же настенное время даёт разный UTC летом и зимой', () {
       final summer = Recurrence.absoluteMoment(

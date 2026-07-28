@@ -104,6 +104,53 @@ class Recurrence {
     ].join(';');
   }
 
+  /// Правило для половины ряда до разреза: занятия идут до кануна [cut].
+  ///
+  /// Счётчик повторов честно делится: у ряда «шесть занятий» после разреза
+  /// перед четвёртым остаётся три, а не шесть.
+  static String endBefore(String rrule, DateTime cut, {required DateTime start}) {
+    final parts = _parts(rrule);
+    final eve = cut.subtract(const Duration(minutes: 1));
+
+    if (parts.containsKey('COUNT')) {
+      parts['COUNT'] = '${_countBefore(rrule, start, cut)}';
+      return _join(parts);
+    }
+
+    parts['UNTIL'] = _utcStamp(eve);
+    return _join(parts);
+  }
+
+  /// Правило для половины ряда после разреза.
+  static String cutBefore(String rrule, DateTime cut, {required DateTime start}) {
+    final parts = _parts(rrule);
+    final count = parts['COUNT'];
+    if (count == null) return _join(parts);
+
+    final total = int.tryParse(count) ?? 0;
+    parts['COUNT'] = '${total - _countBefore(rrule, start, cut)}';
+    return _join(parts);
+  }
+
+  /// Сколько занятий ряд успел провести до разреза.
+  static int _countBefore(String rrule, DateTime start, DateTime cut) => expand(
+        rrule: rrule,
+        start: start,
+        windowStart: start,
+        windowEnd: cut.subtract(const Duration(minutes: 1)),
+      ).length;
+
+  static Map<String, String> _parts(String rrule) {
+    final body = rrule.startsWith('RRULE:') ? rrule.substring(6) : rrule;
+    return {
+      for (final p in body.split(';'))
+        if (p.contains('=')) p.split('=').first: p.split('=').sublist(1).join('='),
+    };
+  }
+
+  static String _join(Map<String, String> parts) =>
+      parts.entries.map((e) => '${e.key}=${e.value}').join(';');
+
   static tz.Location _location(String name) {
     try {
       return tz.getLocation(name);

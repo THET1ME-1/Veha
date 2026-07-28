@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+
+import '../../core/icon_registry.dart';
 
 import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../data/seed.dart';
+import '../event/event_flow.dart';
 import 'views/bands_view.dart';
 import 'views/chain_view.dart';
 import 'views/clock_view.dart';
@@ -96,6 +100,60 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     );
   }
 
+  bool _isToday(DateTime today) =>
+      _selected!.year == today.year &&
+      _selected!.month == today.month &&
+      _selected!.day == today.day;
+
+  /// Долгое нажатие: то, ради чего не стоит открывать форму — отменить одно
+  /// занятие ряда или удалить событие целиком.
+  Future<void> _showEventMenu(VEvent event) async {
+    final flow = EventFlow(context, ref);
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: Icon(VehaIcons.byName('pencil')),
+              title: const Text('Изменить'),
+              onTap: () {
+                Navigator.pop(sheetContext);
+                flow.edit(event);
+              },
+            ),
+            if (event.isOccurrence)
+              ListTile(
+                leading: Icon(VehaIcons.byName('repeat')),
+                title: Text('Отменить ${_dayLabel(event.start)}'),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  flow.skip(event);
+                },
+              ),
+            ListTile(
+              leading: Icon(VehaIcons.byName('trash'),
+                  color: Theme.of(context).colorScheme.error),
+              title: Text(
+                event.isOccurrence ? 'Удалить весь ряд' : 'Удалить событие',
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+              onTap: () {
+                Navigator.pop(sheetContext);
+                flow.deleteWhole(event);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static String _dayLabel(DateTime d) =>
+      DateFormat('d MMMM', 'ru').format(d);
+
   Widget _body(
     RangeData range,
     Inheritance inheritance,
@@ -106,12 +164,19 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       CalendarView.day when _reading == DayReading.chain => ChainView(
           events: range.eventsOn(_selected!),
           inheritance: inheritance,
-          now: now,
+          now: _isToday(today) ? now : null,
+          onEventTap: (e) => EventFlow(context, ref).edit(e),
+          onEventLongPress: _showEventMenu,
         ),
       CalendarView.day => ClockView(
           events: range.eventsOn(_selected!),
           inheritance: inheritance,
-          now: now,
+          now: _isToday(today) ? now : null,
+          onEventTap: (e) => EventFlow(context, ref).edit(e),
+          onEventLongPress: _showEventMenu,
+          onHourTap: (hour) => EventFlow(context, ref).create(
+            at: DateTime(_selected!.year, _selected!.month, _selected!.day, hour),
+          ),
         ),
       CalendarView.month => MonthView(
           month: _selected!,
