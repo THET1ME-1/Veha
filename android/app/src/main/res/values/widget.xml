@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Цвета виджетов. Своими ресурсами, а не темой приложения: виджет живёт на
+     рабочем столе, тему Flutter туда не дотянуть. -->
+<resources>
+    <color name="widget_background">#F2F7F4</color>
+    <color name="widget_text">#101413</color>
+    <color name="widget_muted">#5A6663</color>
+    <color name="widget_accent">#0F7B6C</color>
+    <dimen name="widget_radius">24dp</dimen>
+</resources>

@@ -7,6 +7,7 @@ import '../services/photo_service.dart';
 import '../services/place_service.dart';
 import '../services/sync_api.dart';
 import '../services/sync_service.dart';
+import '../services/widget_service.dart';
 import 'settings.dart';
 import '../services/reminder_service.dart';
 import 'db/connection.dart';
@@ -195,6 +196,10 @@ final placeSourceProvider =
 
 final reminderServiceProvider =
     Provider<ReminderService>((ref) => ReminderService());
+
+/// Виджеты рабочего стола. Подменяется в тестах: канала платформы там нет.
+final widgetServiceProvider =
+    Provider<WidgetService>((ref) => const WidgetService());
 
 class RangeData {
   const RangeData({required this.byDay, required this.spans});
