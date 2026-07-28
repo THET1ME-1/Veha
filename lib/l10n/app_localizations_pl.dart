@@ -863,4 +863,25 @@ class LPl extends L {
   String msgCancelledNamed(String title) {
     return '„$title” odwołane';
   }
+
+  @override
+  String get iconPickerTitle => 'Ikona';
+
+  @override
+  String get iconSearchHint => 'Znajdź ikonę (po angielsku)';
+
+  @override
+  String get iconPickerCommon => 'Popularne';
+
+  @override
+  String iconFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Znaleziono $count',
+      few: 'Znaleziono $count',
+      one: 'Znaleziono $count',
+    );
+    return '$_temp0';
+  }
 }

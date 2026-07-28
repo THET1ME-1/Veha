@@ -1546,6 +1546,30 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'«{title}» отменено'**
   String msgCancelledNamed(String title);
+
+  /// iconPickerTitle
+  ///
+  /// In ru, this message translates to:
+  /// **'Иконка'**
+  String get iconPickerTitle;
+
+  /// iconSearchHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Найти иконку (по-английски)'**
+  String get iconSearchHint;
+
+  /// iconPickerCommon
+  ///
+  /// In ru, this message translates to:
+  /// **'Ходовые'**
+  String get iconPickerCommon;
+
+  /// iconFound
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{Нашлась {count}} few{Нашлось {count}} other{Нашлось {count}}}'**
+  String iconFound(int count);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

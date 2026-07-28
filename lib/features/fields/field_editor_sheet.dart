@@ -5,6 +5,7 @@ import '../../core/icon_registry.dart';
 import '../../data/models.dart';
 import '../../l10n/app_localizations.dart';
 import 'field_types.dart';
+import '../common/icon_picker_sheet.dart';
 import '../calendar/widgets/month_header.dart' show AppFonts;
 
 /// Что вернул редактор поля: имя с типом и иконкой либо просьба удалить.
@@ -89,6 +90,14 @@ class _FieldEditorSheetState extends State<_FieldEditorSheet> {
     super.dispose();
   }
 
+  /// Иконка выбирается тапом по кружку слева от названия: отдельная строка
+  /// «Иконка» в коротком листе только мешает.
+  Future<void> _pickIcon() async {
+    final picked = await askIcon(context, current: _icon);
+    if (picked == null) return;
+    setState(() => _icon = picked);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -122,16 +131,19 @@ class _FieldEditorSheetState extends State<_FieldEditorSheet> {
                   const EdgeInsets.symmetric(horizontal: VehaInsets.screen),
               child: Row(
                 children: [
-                  Container(
-                    width: 52,
-                    height: 52,
-                    alignment: Alignment.center,
-                    decoration: ShapeDecoration(
-                      color: scheme.surfaceContainerHigh,
-                      shape: const CircleBorder(),
+                  GestureDetector(
+                    onTap: _pickIcon,
+                    child: Container(
+                      width: 52,
+                      height: 52,
+                      alignment: Alignment.center,
+                      decoration: ShapeDecoration(
+                        color: scheme.surfaceContainerHigh,
+                        shape: const CircleBorder(),
+                      ),
+                      child: Icon(VehaIcons.byName(_icon),
+                          size: 24, color: scheme.onSurfaceVariant),
                     ),
-                    child: Icon(VehaIcons.byName(_icon),
-                        size: 24, color: scheme.onSurfaceVariant),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -201,24 +213,6 @@ class _FieldEditorSheetState extends State<_FieldEditorSheet> {
               ),
             ),
             const SizedBox(height: 14),
-            Flexible(
-              child: GridView.count(
-                shrinkWrap: true,
-                padding: const EdgeInsets.fromLTRB(
-                    VehaInsets.screen, 0, VehaInsets.screen, 8),
-                crossAxisCount: 6,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                children: [
-                  for (final name in VehaIcons.pickable)
-                    _IconCell(
-                      name: name,
-                      selected: name == _icon,
-                      onTap: () => setState(() => _icon = name),
-                    ),
-                ],
-              ),
-            ),
             Padding(
               padding: const EdgeInsets.fromLTRB(
                   VehaInsets.screen, 6, VehaInsets.screen, 14),
@@ -297,37 +291,3 @@ class _TypeChip extends StatelessWidget {
   }
 }
 
-class _IconCell extends StatelessWidget {
-  const _IconCell({
-    required this.name,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final String name;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        alignment: Alignment.center,
-        decoration: ShapeDecoration(
-          color: selected
-              ? scheme.secondaryContainer
-              : scheme.surfaceContainerHigh,
-          shape: const CircleBorder(),
-        ),
-        child: Icon(
-          VehaIcons.byName(name),
-          size: 20,
-          color:
-              selected ? scheme.onSecondaryContainer : scheme.onSurfaceVariant,
-        ),
-      ),
-    );
-  }
-}

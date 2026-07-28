@@ -854,4 +854,24 @@ class LRo extends L {
   String msgCancelledNamed(String title) {
     return '„$title” anulat';
   }
+
+  @override
+  String get iconPickerTitle => 'Pictogramă';
+
+  @override
+  String get iconSearchHint => 'Caută o pictogramă (în engleză)';
+
+  @override
+  String get iconPickerCommon => 'Frecvente';
+
+  @override
+  String iconFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count găsite',
+      one: '$count găsită',
+    );
+    return '$_temp0';
+  }
 }

@@ -1047,5 +1047,26 @@
         "type": "String"
       }
     }
+  },
+  "iconPickerTitle": "Symbol",
+  "@iconPickerTitle": {
+    "description": "iconPickerTitle"
+  },
+  "iconSearchHint": "Symbol suchen (englisch)",
+  "@iconSearchHint": {
+    "description": "iconSearchHint"
+  },
+  "iconPickerCommon": "Häufige",
+  "@iconPickerCommon": {
+    "description": "iconPickerCommon"
+  },
+  "iconFound": "{count, plural, one{{count} gefunden} other{{count} gefunden}}",
+  "@iconFound": {
+    "description": "iconFound",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

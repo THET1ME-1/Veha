@@ -1047,5 +1047,26 @@
         "type": "String"
       }
     }
+  },
+  "iconPickerTitle": "Pictogramă",
+  "@iconPickerTitle": {
+    "description": "iconPickerTitle"
+  },
+  "iconSearchHint": "Caută o pictogramă (în engleză)",
+  "@iconSearchHint": {
+    "description": "iconSearchHint"
+  },
+  "iconPickerCommon": "Frecvente",
+  "@iconPickerCommon": {
+    "description": "iconPickerCommon"
+  },
+  "iconFound": "{count, plural, one{{count} găsită} other{{count} găsite}}",
+  "@iconFound": {
+    "description": "iconFound",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

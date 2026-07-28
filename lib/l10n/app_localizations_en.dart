@@ -851,4 +851,24 @@ class LEn extends L {
   String msgCancelledNamed(String title) {
     return '“$title” cancelled';
   }
+
+  @override
+  String get iconPickerTitle => 'Icon';
+
+  @override
+  String get iconSearchHint => 'Find an icon';
+
+  @override
+  String get iconPickerCommon => 'Common';
+
+  @override
+  String iconFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count found',
+      one: '$count found',
+    );
+    return '$_temp0';
+  }
 }

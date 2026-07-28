@@ -862,4 +862,25 @@ class LRu extends L {
   String msgCancelledNamed(String title) {
     return '«$title» отменено';
   }
+
+  @override
+  String get iconPickerTitle => 'Иконка';
+
+  @override
+  String get iconSearchHint => 'Найти иконку (по-английски)';
+
+  @override
+  String get iconPickerCommon => 'Ходовые';
+
+  @override
+  String iconFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Нашлось $count',
+      few: 'Нашлось $count',
+      one: 'Нашлась $count',
+    );
+    return '$_temp0';
+  }
 }

@@ -862,4 +862,25 @@ class LUk extends L {
   String msgCancelledNamed(String title) {
     return '«$title» скасовано';
   }
+
+  @override
+  String get iconPickerTitle => 'Іконка';
+
+  @override
+  String get iconSearchHint => 'Знайти іконку (англійською)';
+
+  @override
+  String get iconPickerCommon => 'Ходові';
+
+  @override
+  String iconFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Знайшлося $count',
+      few: 'Знайшлося $count',
+      one: 'Знайшлася $count',
+    );
+    return '$_temp0';
+  }
 }

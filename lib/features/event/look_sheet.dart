@@ -6,6 +6,7 @@ import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
 import '../calendar/widgets/month_header.dart' show AppFonts;
 import '../color/color_picker_screen.dart';
+import '../common/icon_picker_sheet.dart';
 
 /// Внешность события: иконка и цвет.
 ///
@@ -137,33 +138,29 @@ class _LookSheetState extends State<_LookSheet> {
                     selected: _color != null,
                     onTap: _pickColor,
                   ),
+                  _Chip(
+                    label: l.iconPickerTitle,
+                    selected: _icon != null,
+                    onTap: _pickIcon,
+                  ),
                 ],
               ),
             ),
             const SizedBox(height: 12),
-            Flexible(
-              child: GridView.count(
-                shrinkWrap: true,
-                padding: const EdgeInsets.fromLTRB(
-                    VehaInsets.screen, 0, VehaInsets.screen, 20),
-                crossAxisCount: 6,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                children: [
-                  for (final name in VehaIcons.pickable)
-                    _IconCell(
-                      name: name,
-                      color: color,
-                      selected: name == _icon,
-                      onTap: () => setState(() => _icon = name),
-                    ),
-                ],
-              ),
-            ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _pickIcon() async {
+    final picked = await askIcon(
+      context,
+      current: _icon ?? widget.inheritedIcon,
+      tint: _color ?? widget.inheritedColor,
+    );
+    if (picked == null) return;
+    setState(() => _icon = picked);
   }
 
   Future<void> _pickColor() async {
@@ -216,40 +213,3 @@ class _Chip extends StatelessWidget {
   }
 }
 
-class _IconCell extends StatelessWidget {
-  const _IconCell({
-    required this.name,
-    required this.color,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final String name;
-  final Color color;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    final ink = EventColors.of(color, theme.brightness);
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(99),
-      child: Container(
-        alignment: Alignment.center,
-        decoration: ShapeDecoration(
-          color: selected ? ink.background : scheme.surfaceContainerHigh,
-          shape: const CircleBorder(),
-        ),
-        child: Icon(
-          VehaIcons.byName(name),
-          size: 20,
-          color: selected ? ink.foreground : scheme.onSurfaceVariant,
-        ),
-      ),
-    );
-  }
-}

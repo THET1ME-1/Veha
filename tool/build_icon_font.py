@@ -4,11 +4,15 @@
 Зачем свой шрифт. Пакет material_symbols_icons тащит в сборку три вариативных
 шрифта на 34 мегабайта, а его иконки выбираются по имени, и tree-shaking
 режет глифы вслепую: в релизной сборке пропали иконки навигации и части
-событий. Вместо этого берём ровно те иконки, что перечислены в белом списке,
-инстанцируем вариативный шрифт в одном начертании и складываем в assets.
+событий. Здесь вариативный шрифт схлопывается в одно начертание — все 4300
+иконок весят 1,7 МБ, и качать по сети нечего.
+
+Берём весь набор, а не белый список: человеку нужна его иконка, а угадать её
+заранее нельзя. Короткие имена Veha («fitness», «trash») остаются псевдонимами
+поверх настоящих — по ним записаны события в уже existing базах.
 
 Запуск: python3 tool/build_icon_font.py
-После правки списка иконок в ICONS перезапустить и закоммитить шрифт.
+После обновления пакета перезапустить и закоммитить шрифт с реестром.
 """
 
 from __future__ import annotations
@@ -90,6 +94,17 @@ OUT_DART = ROOT / 'lib' / 'core' / 'icon_registry.dart'
 FAMILY = 'VehaSymbols'
 
 
+# Ходовой ряд: с него открывается выбор, остальное — через поиск.
+PICKABLE = [
+    'alarm', 'fitness', 'restaurant', 'groups', 'coffee', 'school',
+    'pool', 'book', 'work', 'cake', 'pets', 'flight',
+    'shopping', 'health', 'music', 'movie', 'ticket', 'exam',
+    'door', 'person', 'place', 'bell', 'calendar', 'repeat',
+    'cloud', 'note', 'number', 'text', 'toggle', 'clock',
+    'flag', 'key', 'link', 'list', 'today', 'language',
+]
+
+
 def pub_cache_font() -> tuple[Path, Path]:
     """Путь к вариативному шрифту и карте кодов внутри material_symbols_icons."""
     config = json.loads((ROOT / '.dart_tool' / 'package_config.json').read_text())
@@ -113,11 +128,10 @@ def codepoints(name_map: Path) -> dict[str, int]:
         for match in re.finditer(r"'([\w]+)':\s*0x([0-9a-fA-F]+)", source)
     }
 
-    wanted = set(ICONS.values())
-    missing = wanted - all_codes.keys()
+    missing = set(ICONS.values()) - all_codes.keys()
     if missing:
         raise SystemExit(f'Не нашлись иконки: {sorted(missing)}')
-    return {name: all_codes[name] for name in wanted}
+    return all_codes
 
 
 def subset(font: Path, codes: list[int]) -> None:
@@ -142,6 +156,7 @@ def subset(font: Path, codes: list[int]) -> None:
             str(OUT_FONT),
             f'--unicodes={unicodes}',
             '--no-layout-closure',
+            '--desubroutinize',
             f'--output-file={OUT_FONT}',
         ],
         check=True,
@@ -153,35 +168,58 @@ def write_dart(codes: dict[str, int]) -> None:
     lines = [
         "import 'package:flutter/widgets.dart';",
         '',
-        '/// Белый список иконок Veha.',
+        '/// Иконки Veha: весь набор Material Symbols Rounded.',
         '///',
         '/// Иконка события хранится в базе строкой, и tree-shaking такие',
-        '/// обращения не видит. Раньше здесь лежали константы чужого пакета, и',
-        '/// в релизной сборке половина иконок исчезала, а три вариативных',
-        '/// шрифта занимали 34 мегабайта. Теперь глифы живут в своём шрифте',
+        '/// обращения не видит — поэтому глифы живут в своём шрифте',
         '/// `assets/fonts/VehaSymbols.ttf`, собранном скриптом',
-        '/// `tool/build_icon_font.py` ровно по этому списку.',
+        '/// `tool/build_icon_font.py`. Файл сгенерирован, править руками',
+        '/// бессмысленно: изменения затрёт следующий запуск.',
         'class VehaIcons {',
         '  VehaIcons._();',
         '',
         f"  static const String fontFamily = '{FAMILY}';",
         '',
-        '  static const Map<String, IconData> _all = {',
+        '  /// Короткие имена, которыми Veha пользовалась до полного набора.',
+        '  /// Ими записаны события в уже заведённых базах, поэтому остаются',
+        '  /// навсегда: переименование осиротит чужие записи.',
+        '  static const Map<String, String> _aliases = {',
     ]
     for veha, material in ICONS.items():
-        code = codes[material]
+        if veha != material:
+            lines.append(f"    '{veha}': '{material}',")
+    lines += [
+        '  };',
+        '',
+        '  static const Map<String, IconData> _all = {',
+    ]
+    for name in sorted(codes):
         lines.append(
-            f"    '{veha}': IconData(0x{code:x}, fontFamily: fontFamily),"
+            f"    '{name}': IconData(0x{codes[name]:x}, fontFamily: fontFamily),"
         )
     lines += [
         '  };',
         '',
         '  /// Иконка по имени. Неизвестное имя — точка, а не крэш: база может',
-        '  /// приехать с чужого устройства, где список шире.',
-        '  static IconData byName(String? name) =>',
-        "      _all[name] ?? _all['circle']!;",
+        '  /// приехать с чужого устройства, где набор шире.',
+        '  static IconData byName(String? name) {',
+        '    if (name == null) return _all[fallback]!;',
+        '    return _all[_aliases[name] ?? name] ?? _all[fallback]!;',
+        '  }',
         '',
+        "  static const String fallback = 'circle';",
+        '',
+        '  /// Все имена набора. По ним же идёт поиск в выборе иконки.',
         '  static Iterable<String> get names => _all.keys;',
+        '',
+        '  /// Ходовые иконки: их показывают первыми, до поиска. Порядок',
+        '  /// осмысленный — люди, занятия, еда, дорога, знаки.',
+        '  static const List<String> pickable = [',
+    ]
+    for veha in PICKABLE:
+        lines.append(f"    '{ICONS.get(veha, veha)}',")
+    lines += [
+        '  ];',
         '}',
         '',
     ]
@@ -194,7 +232,7 @@ def main() -> None:
     subset(font, sorted(codes.values()))
     write_dart(codes)
     size = OUT_FONT.stat().st_size / 1024
-    print(f'{OUT_FONT.relative_to(ROOT)}: {len(ICONS)} иконок, {size:.0f} КБ')
+    print(f'{OUT_FONT.relative_to(ROOT)}: {len(codes)} иконок, {size:.0f} КБ')
 
 
 if __name__ == '__main__':

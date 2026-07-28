@@ -7,6 +7,15 @@ import 'golden_harness.dart';
 void main() {
   setUpAll(loadAppFonts);
 
+  // Снимок берём с ходового ряда: четыре тысячи глифов в один кадр не лезут,
+  // а проверяем мы одно — что глиф рисуется, а не квадрат-заглушка.
+  test('В наборе весь Material Symbols', () {
+    expect(VehaIcons.names.length, greaterThan(4000));
+    expect(VehaIcons.byName('scuba_diving'), isNot(VehaIcons.byName('circle')));
+    // Короткие имена старых записей продолжают работать.
+    expect(VehaIcons.byName('fitness'), VehaIcons.byName('fitness_center'));
+  });
+
   testWidgets('Реестр иконок', (tester) async {
     await pumpScreen(
       tester,
@@ -17,7 +26,7 @@ void main() {
             spacing: 10,
             runSpacing: 10,
             children: [
-              for (final n in VehaIcons.names)
+              for (final n in VehaIcons.pickable)
                 SizedBox(
                   width: 80,
                   child: Column(children: [

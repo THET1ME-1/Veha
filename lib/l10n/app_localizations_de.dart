@@ -855,4 +855,24 @@ class LDe extends L {
   String msgCancelledNamed(String title) {
     return '„$title“ abgesagt';
   }
+
+  @override
+  String get iconPickerTitle => 'Symbol';
+
+  @override
+  String get iconSearchHint => 'Symbol suchen (englisch)';
+
+  @override
+  String get iconPickerCommon => 'Häufige';
+
+  @override
+  String iconFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count gefunden',
+      one: '$count gefunden',
+    );
+    return '$_temp0';
+  }
 }
