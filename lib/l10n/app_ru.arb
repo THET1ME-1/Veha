@@ -1350,5 +1350,176 @@
   "accessLogEmpty": "Ключ пока ничего не трогал",
   "@accessLogEmpty": {
     "description": "accessLogEmpty"
+  },
+  "photosTitle": "Снимки",
+  "@photosTitle": {
+    "description": "photosTitle"
+  },
+  "photoAdd": "Добавить снимок",
+  "@photoAdd": {
+    "description": "photoAdd"
+  },
+  "photoCamera": "Снять",
+  "@photoCamera": {
+    "description": "photoCamera"
+  },
+  "photoGallery": "Из галереи",
+  "@photoGallery": {
+    "description": "photoGallery"
+  },
+  "photoRemove": "Убрать снимок",
+  "@photoRemove": {
+    "description": "photoRemove"
+  },
+  "photoRemoveAsk": "Убрать этот снимок?",
+  "@photoRemoveAsk": {
+    "description": "photoRemoveAsk"
+  },
+  "photoNeedsSave": "Снимки появятся, когда событие сохранено",
+  "@photoNeedsSave": {
+    "description": "photoNeedsSave"
+  },
+  "navTasks": "Задачи",
+  "@navTasks": {
+    "description": "navTasks"
+  },
+  "tasksEmpty": "Задач пока нет",
+  "@tasksEmpty": {
+    "description": "tasksEmpty"
+  },
+  "tasksEmptyHint": "Кнопка внизу заводит первую",
+  "@tasksEmptyHint": {
+    "description": "tasksEmptyHint"
+  },
+  "taskNew": "Новая задача",
+  "@taskNew": {
+    "description": "taskNew"
+  },
+  "taskOne": "Задача",
+  "@taskOne": {
+    "description": "taskOne"
+  },
+  "taskTitleHint": "Что сделать",
+  "@taskTitleHint": {
+    "description": "taskTitleHint"
+  },
+  "taskDue": "Срок",
+  "@taskDue": {
+    "description": "taskDue"
+  },
+  "taskNoDue": "Без срока",
+  "@taskNoDue": {
+    "description": "taskNoDue"
+  },
+  "taskAtTime": "Ко времени",
+  "@taskAtTime": {
+    "description": "taskAtTime"
+  },
+  "taskNotes": "Заметка",
+  "@taskNotes": {
+    "description": "taskNotes"
+  },
+  "taskNotesHint": "Подробности",
+  "@taskNotesHint": {
+    "description": "taskNotesHint"
+  },
+  "taskDelete": "Удалить задачу",
+  "@taskDelete": {
+    "description": "taskDelete"
+  },
+  "taskOverdue": "Просрочена",
+  "@taskOverdue": {
+    "description": "taskOverdue"
+  },
+  "tasksDoneSection": "Сделанные",
+  "@tasksDoneSection": {
+    "description": "tasksDoneSection"
+  },
+  "tasksOpenCount": "{count} в работе",
+  "@tasksOpenCount": {
+    "description": "tasksOpenCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgTaskDeleted": "Задача удалена",
+  "@msgTaskDeleted": {
+    "description": "msgTaskDeleted"
+  },
+  "dueToday": "Сегодня",
+  "@dueToday": {
+    "description": "dueToday"
+  },
+  "dueTomorrow": "Завтра",
+  "@dueTomorrow": {
+    "description": "dueTomorrow"
+  },
+  "statsTitle": "Статистика",
+  "@statsTitle": {
+    "description": "statsTitle"
+  },
+  "statsWeek": "Неделя",
+  "@statsWeek": {
+    "description": "statsWeek"
+  },
+  "statsMonth": "Месяц",
+  "@statsMonth": {
+    "description": "statsMonth"
+  },
+  "statsYear": "Год",
+  "@statsYear": {
+    "description": "statsYear"
+  },
+  "statsBusyTime": "Занято времени",
+  "@statsBusyTime": {
+    "description": "statsBusyTime"
+  },
+  "statsEventCount": "Событий",
+  "@statsEventCount": {
+    "description": "statsEventCount"
+  },
+  "statsTasksClosed": "Задач закрыто",
+  "@statsTasksClosed": {
+    "description": "statsTasksClosed"
+  },
+  "statsPerDay": "В среднем за день",
+  "@statsPerDay": {
+    "description": "statsPerDay"
+  },
+  "statsByCalendar": "По календарям",
+  "@statsByCalendar": {
+    "description": "statsByCalendar"
+  },
+  "statsByWeekday": "По дням недели",
+  "@statsByWeekday": {
+    "description": "statsByWeekday"
+  },
+  "statsBusiestDay": "Самый плотный день",
+  "@statsBusiestDay": {
+    "description": "statsBusiestDay"
+  },
+  "statsEmpty": "За этот период записей нет",
+  "@statsEmpty": {
+    "description": "statsEmpty"
+  },
+  "statsHoursShort": "{hours} ч",
+  "@statsHoursShort": {
+    "description": "statsHoursShort",
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "statsShare": "{percent}%",
+  "@statsShare": {
+    "description": "statsShare",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
   }
 }

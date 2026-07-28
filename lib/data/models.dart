@@ -198,6 +198,95 @@ class VNote {
   final int sortOrder;
 }
 
+/// Снимок события. [path] относительный: абсолютный путь протухает после
+/// переустановки, а папка приложения переезжает вместе с данными.
+@immutable
+class VPhoto {
+  const VPhoto({
+    required this.id,
+    required this.eventId,
+    required this.path,
+    this.sortOrder = 0,
+  });
+
+  final String id;
+  final String eventId;
+  final String path;
+  final int sortOrder;
+}
+
+/// Задача. Событие либо состоялось, либо нет, а задачу закрывают — поэтому
+/// отметка выполнения есть здесь и её нет у события.
+@immutable
+class VTask {
+  const VTask({
+    required this.id,
+    required this.calendarId,
+    required this.title,
+    this.subcategoryId,
+    this.notes,
+    this.due,
+    this.hasTime = false,
+    this.completedAt,
+    this.color,
+    this.iconName,
+    this.sortOrder = 0,
+  });
+
+  final String id;
+  final String calendarId;
+  final String? subcategoryId;
+  final String title;
+  final String? notes;
+
+  /// Срок. Пустой — задача живёт в списке и в календаре не показывается.
+  final DateTime? due;
+
+  /// У срока названо время, а не только день.
+  final bool hasTime;
+  final DateTime? completedAt;
+  final Color? color;
+  final String? iconName;
+  final int sortOrder;
+
+  bool get isDone => completedAt != null;
+
+  /// Просрочена: срок в прошлом, а отметки нет.
+  bool isOverdue(DateTime now) =>
+      due != null && completedAt == null && due!.isBefore(now);
+
+  VTask copyWith({
+    String? calendarId,
+    Object? subcategoryId = _keep,
+    String? title,
+    Object? notes = _keep,
+    Object? due = _keep,
+    bool? hasTime,
+    Object? completedAt = _keep,
+    Object? color = _keep,
+    Object? iconName = _keep,
+    int? sortOrder,
+  }) =>
+      VTask(
+        id: id,
+        calendarId: calendarId ?? this.calendarId,
+        subcategoryId: identical(subcategoryId, _keep)
+            ? this.subcategoryId
+            : subcategoryId as String?,
+        title: title ?? this.title,
+        notes: identical(notes, _keep) ? this.notes : notes as String?,
+        due: identical(due, _keep) ? this.due : due as DateTime?,
+        hasTime: hasTime ?? this.hasTime,
+        completedAt: identical(completedAt, _keep)
+            ? this.completedAt
+            : completedAt as DateTime?,
+        color: identical(color, _keep) ? this.color : color as Color?,
+        iconName:
+            identical(iconName, _keep) ? this.iconName : iconName as String?,
+        sortOrder: sortOrder ?? this.sortOrder,
+      );
+}
+
 enum VFieldType { text, number, date, time, duration, select, checkbox, url, phone, person, money }
 
 
@@ -250,6 +339,20 @@ class Inheritance {
   }
 
   Color colorOfNote(VNote n, VEvent e) => n.color ?? colorOfEvent(e);
+
+  Color colorOfTask(VTask t) {
+    if (t.color != null) return t.color!;
+    final sub = t.subcategoryId == null ? null : subcategories[t.subcategoryId];
+    if (sub?.color != null) return sub!.color!;
+    return calendars[t.calendarId]?.color ?? const Color(0xFF41CCB5);
+  }
+
+  String iconOfTask(VTask t) {
+    if (t.iconName != null) return t.iconName!;
+    final sub = t.subcategoryId == null ? null : subcategories[t.subcategoryId];
+    if (sub?.iconName != null) return sub!.iconName!;
+    return calendars[t.calendarId]?.iconName ?? 'check';
+  }
 
   String iconOfEvent(VEvent e) {
     if (e.iconName != null) return e.iconName!;

@@ -1834,6 +1834,240 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'Ключ пока ничего не трогал'**
   String get accessLogEmpty;
+
+  /// photosTitle
+  ///
+  /// In ru, this message translates to:
+  /// **'Снимки'**
+  String get photosTitle;
+
+  /// photoAdd
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить снимок'**
+  String get photoAdd;
+
+  /// photoCamera
+  ///
+  /// In ru, this message translates to:
+  /// **'Снять'**
+  String get photoCamera;
+
+  /// photoGallery
+  ///
+  /// In ru, this message translates to:
+  /// **'Из галереи'**
+  String get photoGallery;
+
+  /// photoRemove
+  ///
+  /// In ru, this message translates to:
+  /// **'Убрать снимок'**
+  String get photoRemove;
+
+  /// photoRemoveAsk
+  ///
+  /// In ru, this message translates to:
+  /// **'Убрать этот снимок?'**
+  String get photoRemoveAsk;
+
+  /// photoNeedsSave
+  ///
+  /// In ru, this message translates to:
+  /// **'Снимки появятся, когда событие сохранено'**
+  String get photoNeedsSave;
+
+  /// navTasks
+  ///
+  /// In ru, this message translates to:
+  /// **'Задачи'**
+  String get navTasks;
+
+  /// tasksEmpty
+  ///
+  /// In ru, this message translates to:
+  /// **'Задач пока нет'**
+  String get tasksEmpty;
+
+  /// tasksEmptyHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Кнопка внизу заводит первую'**
+  String get tasksEmptyHint;
+
+  /// taskNew
+  ///
+  /// In ru, this message translates to:
+  /// **'Новая задача'**
+  String get taskNew;
+
+  /// taskOne
+  ///
+  /// In ru, this message translates to:
+  /// **'Задача'**
+  String get taskOne;
+
+  /// taskTitleHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Что сделать'**
+  String get taskTitleHint;
+
+  /// taskDue
+  ///
+  /// In ru, this message translates to:
+  /// **'Срок'**
+  String get taskDue;
+
+  /// taskNoDue
+  ///
+  /// In ru, this message translates to:
+  /// **'Без срока'**
+  String get taskNoDue;
+
+  /// taskAtTime
+  ///
+  /// In ru, this message translates to:
+  /// **'Ко времени'**
+  String get taskAtTime;
+
+  /// taskNotes
+  ///
+  /// In ru, this message translates to:
+  /// **'Заметка'**
+  String get taskNotes;
+
+  /// taskNotesHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Подробности'**
+  String get taskNotesHint;
+
+  /// taskDelete
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить задачу'**
+  String get taskDelete;
+
+  /// taskOverdue
+  ///
+  /// In ru, this message translates to:
+  /// **'Просрочена'**
+  String get taskOverdue;
+
+  /// tasksDoneSection
+  ///
+  /// In ru, this message translates to:
+  /// **'Сделанные'**
+  String get tasksDoneSection;
+
+  /// tasksOpenCount
+  ///
+  /// In ru, this message translates to:
+  /// **'{count} в работе'**
+  String tasksOpenCount(int count);
+
+  /// msgTaskDeleted
+  ///
+  /// In ru, this message translates to:
+  /// **'Задача удалена'**
+  String get msgTaskDeleted;
+
+  /// dueToday
+  ///
+  /// In ru, this message translates to:
+  /// **'Сегодня'**
+  String get dueToday;
+
+  /// dueTomorrow
+  ///
+  /// In ru, this message translates to:
+  /// **'Завтра'**
+  String get dueTomorrow;
+
+  /// statsTitle
+  ///
+  /// In ru, this message translates to:
+  /// **'Статистика'**
+  String get statsTitle;
+
+  /// statsWeek
+  ///
+  /// In ru, this message translates to:
+  /// **'Неделя'**
+  String get statsWeek;
+
+  /// statsMonth
+  ///
+  /// In ru, this message translates to:
+  /// **'Месяц'**
+  String get statsMonth;
+
+  /// statsYear
+  ///
+  /// In ru, this message translates to:
+  /// **'Год'**
+  String get statsYear;
+
+  /// statsBusyTime
+  ///
+  /// In ru, this message translates to:
+  /// **'Занято времени'**
+  String get statsBusyTime;
+
+  /// statsEventCount
+  ///
+  /// In ru, this message translates to:
+  /// **'Событий'**
+  String get statsEventCount;
+
+  /// statsTasksClosed
+  ///
+  /// In ru, this message translates to:
+  /// **'Задач закрыто'**
+  String get statsTasksClosed;
+
+  /// statsPerDay
+  ///
+  /// In ru, this message translates to:
+  /// **'В среднем за день'**
+  String get statsPerDay;
+
+  /// statsByCalendar
+  ///
+  /// In ru, this message translates to:
+  /// **'По календарям'**
+  String get statsByCalendar;
+
+  /// statsByWeekday
+  ///
+  /// In ru, this message translates to:
+  /// **'По дням недели'**
+  String get statsByWeekday;
+
+  /// statsBusiestDay
+  ///
+  /// In ru, this message translates to:
+  /// **'Самый плотный день'**
+  String get statsBusiestDay;
+
+  /// statsEmpty
+  ///
+  /// In ru, this message translates to:
+  /// **'За этот период записей нет'**
+  String get statsEmpty;
+
+  /// statsHoursShort
+  ///
+  /// In ru, this message translates to:
+  /// **'{hours} ч'**
+  String statsHoursShort(String hours);
+
+  /// statsShare
+  ///
+  /// In ru, this message translates to:
+  /// **'{percent}%'**
+  String statsShare(int percent);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

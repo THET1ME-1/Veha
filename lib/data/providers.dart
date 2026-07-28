@@ -3,6 +3,7 @@ import 'dart:ui' show PlatformDispatcher;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../domain/reminder_plan.dart';
+import '../services/photo_service.dart';
 import '../services/place_service.dart';
 import '../services/sync_api.dart';
 import '../services/sync_service.dart';
@@ -110,6 +111,33 @@ final notesProvider =
   await ref.watch(bootstrapProvider.future);
   yield* ref.watch(repositoryProvider).watchNotes(eventId);
 });
+
+/// Снимки события. Семейство по ключу события — как и заметки.
+final photosProvider =
+    StreamProvider.family<List<VPhoto>, String>((ref, eventId) async* {
+  await ref.watch(bootstrapProvider.future);
+  yield* ref.watch(repositoryProvider).watchPhotos(eventId);
+});
+
+/// Камера и галерея. Подменяется в тестах: плагина выбора файлов в
+/// `flutter test` нет.
+final photoServiceProvider = Provider<PhotoService>((ref) => PhotoService());
+
+/// Все задачи: список показывает и сделанные, поэтому фильтрует экран, а не
+/// запрос — иначе отметка выполнения выкидывала бы строку из-под пальца.
+final tasksProvider = StreamProvider<List<VTask>>((ref) async* {
+  await ref.watch(bootstrapProvider.future);
+  yield* ref.watch(repositoryProvider).watchTasks();
+});
+
+/// Задачи со сроком внутри окна — для видов календаря.
+final tasksInRangeProvider =
+    StreamProvider.family<List<VTask>, ({DateTime from, DateTime to})>(
+  (ref, range) async* {
+    await ref.watch(bootstrapProvider.future);
+    yield* ref.watch(repositoryProvider).watchTasksInRange(range.from, range.to);
+  },
+);
 
 /// Поиск по запросу. Семейство, а не одно состояние: экран поиска живёт
 /// столько же, сколько запрос, и держать его в провайдере вручную незачем.

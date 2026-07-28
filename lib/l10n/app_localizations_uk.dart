@@ -1032,4 +1032,127 @@ class LUk extends L {
 
   @override
   String get accessLogEmpty => 'Ключ поки нічого не чіпав';
+
+  @override
+  String get photosTitle => 'Знімки';
+
+  @override
+  String get photoAdd => 'Додати знімок';
+
+  @override
+  String get photoCamera => 'Зняти';
+
+  @override
+  String get photoGallery => 'З галереї';
+
+  @override
+  String get photoRemove => 'Прибрати знімок';
+
+  @override
+  String get photoRemoveAsk => 'Прибрати цей знімок?';
+
+  @override
+  String get photoNeedsSave => 'Знімки з’являться, коли подію збережено';
+
+  @override
+  String get navTasks => 'Завдання';
+
+  @override
+  String get tasksEmpty => 'Завдань поки немає';
+
+  @override
+  String get tasksEmptyHint => 'Кнопка внизу створює першу';
+
+  @override
+  String get taskNew => 'Нове завдання';
+
+  @override
+  String get taskOne => 'Завдання';
+
+  @override
+  String get taskTitleHint => 'Що зробити';
+
+  @override
+  String get taskDue => 'Термін';
+
+  @override
+  String get taskNoDue => 'Без терміну';
+
+  @override
+  String get taskAtTime => 'На час';
+
+  @override
+  String get taskNotes => 'Нотатка';
+
+  @override
+  String get taskNotesHint => 'Подробиці';
+
+  @override
+  String get taskDelete => 'Видалити завдання';
+
+  @override
+  String get taskOverdue => 'Прострочено';
+
+  @override
+  String get tasksDoneSection => 'Зроблені';
+
+  @override
+  String tasksOpenCount(int count) {
+    return '$count у роботі';
+  }
+
+  @override
+  String get msgTaskDeleted => 'Завдання видалено';
+
+  @override
+  String get dueToday => 'Сьогодні';
+
+  @override
+  String get dueTomorrow => 'Завтра';
+
+  @override
+  String get statsTitle => 'Статистика';
+
+  @override
+  String get statsWeek => 'Тиждень';
+
+  @override
+  String get statsMonth => 'Місяць';
+
+  @override
+  String get statsYear => 'Рік';
+
+  @override
+  String get statsBusyTime => 'Зайнято часу';
+
+  @override
+  String get statsEventCount => 'Подій';
+
+  @override
+  String get statsTasksClosed => 'Завдань закрито';
+
+  @override
+  String get statsPerDay => 'У середньому за день';
+
+  @override
+  String get statsByCalendar => 'За календарями';
+
+  @override
+  String get statsByWeekday => 'За днями тижня';
+
+  @override
+  String get statsBusiestDay => 'Найщільніший день';
+
+  @override
+  String get statsEmpty => 'За цей період записів немає';
+
+  @override
+  String statsHoursShort(String hours) {
+    return '$hours год';
+  }
+
+  @override
+  String statsShare(int percent) {
+    return '$percent%';
+  }
 }

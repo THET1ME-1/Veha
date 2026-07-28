@@ -113,6 +113,48 @@ class EventNotes extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// Снимок, приложенный к событию.
+///
+/// Не уезжает на сервер: фотография — файл, а сервер хранит записи и отдаёт
+/// дельты, хранилища файлов у него нет. Путь относительный от папки
+/// приложения: абсолютный протухает после переустановки.
+class EventPhotos extends Table {
+  TextColumn get id => text()();
+  TextColumn get eventId => text().references(Events, #id)();
+  TextColumn get path => text()();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  IntColumn get createdAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// Задача. Отличается от события отметкой выполнения и тем, что срок
+/// необязателен: «когда-нибудь купить лампу» живёт в списке без даты.
+class Tasks extends Table {
+  TextColumn get id => text()();
+  TextColumn get calendarId => text().references(Calendars, #id)();
+  TextColumn get subcategoryId => text().nullable()();
+  TextColumn get title => text()();
+  TextColumn get notes => text().nullable()();
+
+  /// Срок. Пустой — задача без даты, она видна только в списке.
+  IntColumn get due => integer().nullable()();
+
+  /// У срока есть время, а не только день.
+  BoolColumn get hasTime => boolean().withDefault(const Constant(false))();
+  IntColumn get completedAt => integer().nullable()();
+  IntColumn get color => integer().nullable()();
+  TextColumn get icon => text().nullable()();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  IntColumn get createdAt => integer()();
+  IntColumn get updatedAt => integer()();
+  IntColumn get deletedAt => integer().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 /// Определение своего поля. Принадлежит группе: `scopeId` пустой — поле общее.
 class FieldDefs extends Table {
   TextColumn get id => text()();
@@ -187,6 +229,8 @@ class SyncQueue extends Table {
     RecurrenceExceptions,
     Reminders,
     EventNotes,
+    EventPhotos,
+    Tasks,
     FieldDefs,
     FieldValues,
     EventTypes,
@@ -198,7 +242,7 @@ class VehaDatabase extends _$VehaDatabase {
   VehaDatabase(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -211,6 +255,16 @@ class VehaDatabase extends _$VehaDatabase {
               'CREATE INDEX idx_events_range ON events (start, "end")');
           await customStatement(
               'CREATE INDEX idx_events_deleted ON events (deleted_at)');
+          await customStatement(
+              'CREATE INDEX idx_tasks_due ON tasks (due, completed_at)');
+        },
+        onUpgrade: (m, from, to) async {
+          if (from < 2) {
+            await m.createTable(eventPhotos);
+            await m.createTable(tasks);
+            await customStatement(
+                'CREATE INDEX idx_tasks_due ON tasks (due, completed_at)');
+          }
         },
         beforeOpen: (details) async {
           // Внешние ключи в SQLite выключены по умолчанию, и мягкое удаление

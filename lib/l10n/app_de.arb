@@ -1262,5 +1262,176 @@
   "accessLogEmpty": "Der Schlüssel hat noch nichts angefasst",
   "@accessLogEmpty": {
     "description": "accessLogEmpty"
+  },
+  "photosTitle": "Fotos",
+  "@photosTitle": {
+    "description": "photosTitle"
+  },
+  "photoAdd": "Foto hinzufügen",
+  "@photoAdd": {
+    "description": "photoAdd"
+  },
+  "photoCamera": "Aufnehmen",
+  "@photoCamera": {
+    "description": "photoCamera"
+  },
+  "photoGallery": "Aus der Galerie",
+  "@photoGallery": {
+    "description": "photoGallery"
+  },
+  "photoRemove": "Foto entfernen",
+  "@photoRemove": {
+    "description": "photoRemove"
+  },
+  "photoRemoveAsk": "Dieses Foto entfernen?",
+  "@photoRemoveAsk": {
+    "description": "photoRemoveAsk"
+  },
+  "photoNeedsSave": "Fotos gibt es, sobald der Termin gespeichert ist",
+  "@photoNeedsSave": {
+    "description": "photoNeedsSave"
+  },
+  "navTasks": "Aufgaben",
+  "@navTasks": {
+    "description": "navTasks"
+  },
+  "tasksEmpty": "Noch keine Aufgaben",
+  "@tasksEmpty": {
+    "description": "tasksEmpty"
+  },
+  "tasksEmptyHint": "Der Knopf unten legt die erste an",
+  "@tasksEmptyHint": {
+    "description": "tasksEmptyHint"
+  },
+  "taskNew": "Neue Aufgabe",
+  "@taskNew": {
+    "description": "taskNew"
+  },
+  "taskOne": "Aufgabe",
+  "@taskOne": {
+    "description": "taskOne"
+  },
+  "taskTitleHint": "Was zu tun ist",
+  "@taskTitleHint": {
+    "description": "taskTitleHint"
+  },
+  "taskDue": "Frist",
+  "@taskDue": {
+    "description": "taskDue"
+  },
+  "taskNoDue": "Ohne Frist",
+  "@taskNoDue": {
+    "description": "taskNoDue"
+  },
+  "taskAtTime": "Zu einer Uhrzeit",
+  "@taskAtTime": {
+    "description": "taskAtTime"
+  },
+  "taskNotes": "Notiz",
+  "@taskNotes": {
+    "description": "taskNotes"
+  },
+  "taskNotesHint": "Einzelheiten",
+  "@taskNotesHint": {
+    "description": "taskNotesHint"
+  },
+  "taskDelete": "Aufgabe löschen",
+  "@taskDelete": {
+    "description": "taskDelete"
+  },
+  "taskOverdue": "Überfällig",
+  "@taskOverdue": {
+    "description": "taskOverdue"
+  },
+  "tasksDoneSection": "Erledigt",
+  "@tasksDoneSection": {
+    "description": "tasksDoneSection"
+  },
+  "tasksOpenCount": "{count} offen",
+  "@tasksOpenCount": {
+    "description": "tasksOpenCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgTaskDeleted": "Aufgabe gelöscht",
+  "@msgTaskDeleted": {
+    "description": "msgTaskDeleted"
+  },
+  "dueToday": "Heute",
+  "@dueToday": {
+    "description": "dueToday"
+  },
+  "dueTomorrow": "Morgen",
+  "@dueTomorrow": {
+    "description": "dueTomorrow"
+  },
+  "statsTitle": "Statistik",
+  "@statsTitle": {
+    "description": "statsTitle"
+  },
+  "statsWeek": "Woche",
+  "@statsWeek": {
+    "description": "statsWeek"
+  },
+  "statsMonth": "Monat",
+  "@statsMonth": {
+    "description": "statsMonth"
+  },
+  "statsYear": "Jahr",
+  "@statsYear": {
+    "description": "statsYear"
+  },
+  "statsBusyTime": "Belegte Zeit",
+  "@statsBusyTime": {
+    "description": "statsBusyTime"
+  },
+  "statsEventCount": "Termine",
+  "@statsEventCount": {
+    "description": "statsEventCount"
+  },
+  "statsTasksClosed": "Aufgaben erledigt",
+  "@statsTasksClosed": {
+    "description": "statsTasksClosed"
+  },
+  "statsPerDay": "Im Schnitt pro Tag",
+  "@statsPerDay": {
+    "description": "statsPerDay"
+  },
+  "statsByCalendar": "Nach Kalendern",
+  "@statsByCalendar": {
+    "description": "statsByCalendar"
+  },
+  "statsByWeekday": "Nach Wochentagen",
+  "@statsByWeekday": {
+    "description": "statsByWeekday"
+  },
+  "statsBusiestDay": "Vollster Tag",
+  "@statsBusiestDay": {
+    "description": "statsBusiestDay"
+  },
+  "statsEmpty": "Für diesen Zeitraum gibt es nichts",
+  "@statsEmpty": {
+    "description": "statsEmpty"
+  },
+  "statsHoursShort": "{hours} Std.",
+  "@statsHoursShort": {
+    "description": "statsHoursShort",
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "statsShare": "{percent} %",
+  "@statsShare": {
+    "description": "statsShare",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
   }
 }

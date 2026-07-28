@@ -1021,4 +1021,128 @@ class LRo extends L {
 
   @override
   String get accessLogEmpty => 'Cheia nu a atins nimic încă';
+
+  @override
+  String get photosTitle => 'Fotografii';
+
+  @override
+  String get photoAdd => 'Adaugă o fotografie';
+
+  @override
+  String get photoCamera => 'Fotografiază';
+
+  @override
+  String get photoGallery => 'Din galerie';
+
+  @override
+  String get photoRemove => 'Șterge fotografia';
+
+  @override
+  String get photoRemoveAsk => 'Ștergi această fotografie?';
+
+  @override
+  String get photoNeedsSave =>
+      'Fotografiile apar după ce evenimentul este salvat';
+
+  @override
+  String get navTasks => 'Sarcini';
+
+  @override
+  String get tasksEmpty => 'Deocamdată nicio sarcină';
+
+  @override
+  String get tasksEmptyHint => 'Butonul de jos o adaugă pe prima';
+
+  @override
+  String get taskNew => 'Sarcină nouă';
+
+  @override
+  String get taskOne => 'Sarcină';
+
+  @override
+  String get taskTitleHint => 'Ce ai de făcut';
+
+  @override
+  String get taskDue => 'Termen';
+
+  @override
+  String get taskNoDue => 'Fără termen';
+
+  @override
+  String get taskAtTime => 'La o oră';
+
+  @override
+  String get taskNotes => 'Notă';
+
+  @override
+  String get taskNotesHint => 'Detalii';
+
+  @override
+  String get taskDelete => 'Șterge sarcina';
+
+  @override
+  String get taskOverdue => 'Depășit';
+
+  @override
+  String get tasksDoneSection => 'Făcute';
+
+  @override
+  String tasksOpenCount(int count) {
+    return '$count în lucru';
+  }
+
+  @override
+  String get msgTaskDeleted => 'Sarcina a fost ștearsă';
+
+  @override
+  String get dueToday => 'Azi';
+
+  @override
+  String get dueTomorrow => 'Mâine';
+
+  @override
+  String get statsTitle => 'Statistici';
+
+  @override
+  String get statsWeek => 'Săptămână';
+
+  @override
+  String get statsMonth => 'Lună';
+
+  @override
+  String get statsYear => 'An';
+
+  @override
+  String get statsBusyTime => 'Timp ocupat';
+
+  @override
+  String get statsEventCount => 'Evenimente';
+
+  @override
+  String get statsTasksClosed => 'Sarcini încheiate';
+
+  @override
+  String get statsPerDay => 'În medie pe zi';
+
+  @override
+  String get statsByCalendar => 'Pe calendare';
+
+  @override
+  String get statsByWeekday => 'Pe zilele săptămânii';
+
+  @override
+  String get statsBusiestDay => 'Cea mai plină zi';
+
+  @override
+  String get statsEmpty => 'Nimic în această perioadă';
+
+  @override
+  String statsHoursShort(String hours) {
+    return '$hours h';
+  }
+
+  @override
+  String statsShare(int percent) {
+    return '$percent%';
+  }
 }

@@ -1033,4 +1033,127 @@ class LPl extends L {
 
   @override
   String get accessLogEmpty => 'Klucz jeszcze niczego nie ruszał';
+
+  @override
+  String get photosTitle => 'Zdjęcia';
+
+  @override
+  String get photoAdd => 'Dodaj zdjęcie';
+
+  @override
+  String get photoCamera => 'Zrób zdjęcie';
+
+  @override
+  String get photoGallery => 'Z galerii';
+
+  @override
+  String get photoRemove => 'Usuń zdjęcie';
+
+  @override
+  String get photoRemoveAsk => 'Usunąć to zdjęcie?';
+
+  @override
+  String get photoNeedsSave => 'Zdjęcia pojawią się po zapisaniu wydarzenia';
+
+  @override
+  String get navTasks => 'Zadania';
+
+  @override
+  String get tasksEmpty => 'Na razie brak zadań';
+
+  @override
+  String get tasksEmptyHint => 'Przycisk na dole tworzy pierwsze';
+
+  @override
+  String get taskNew => 'Nowe zadanie';
+
+  @override
+  String get taskOne => 'Zadanie';
+
+  @override
+  String get taskTitleHint => 'Co zrobić';
+
+  @override
+  String get taskDue => 'Termin';
+
+  @override
+  String get taskNoDue => 'Bez terminu';
+
+  @override
+  String get taskAtTime => 'O godzinie';
+
+  @override
+  String get taskNotes => 'Notatka';
+
+  @override
+  String get taskNotesHint => 'Szczegóły';
+
+  @override
+  String get taskDelete => 'Usuń zadanie';
+
+  @override
+  String get taskOverdue => 'Po terminie';
+
+  @override
+  String get tasksDoneSection => 'Zrobione';
+
+  @override
+  String tasksOpenCount(int count) {
+    return '$count w toku';
+  }
+
+  @override
+  String get msgTaskDeleted => 'Zadanie usunięte';
+
+  @override
+  String get dueToday => 'Dziś';
+
+  @override
+  String get dueTomorrow => 'Jutro';
+
+  @override
+  String get statsTitle => 'Statystyki';
+
+  @override
+  String get statsWeek => 'Tydzień';
+
+  @override
+  String get statsMonth => 'Miesiąc';
+
+  @override
+  String get statsYear => 'Rok';
+
+  @override
+  String get statsBusyTime => 'Zajęty czas';
+
+  @override
+  String get statsEventCount => 'Wydarzenia';
+
+  @override
+  String get statsTasksClosed => 'Zamknięte zadania';
+
+  @override
+  String get statsPerDay => 'Średnio dziennie';
+
+  @override
+  String get statsByCalendar => 'Wedle kalendarzy';
+
+  @override
+  String get statsByWeekday => 'Wedle dni tygodnia';
+
+  @override
+  String get statsBusiestDay => 'Najgęstszy dzień';
+
+  @override
+  String get statsEmpty => 'W tym okresie nic nie ma';
+
+  @override
+  String statsHoursShort(String hours) {
+    return '$hours godz.';
+  }
+
+  @override
+  String statsShare(int percent) {
+    return '$percent%';
+  }
 }

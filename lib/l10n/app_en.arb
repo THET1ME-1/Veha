@@ -1262,5 +1262,176 @@
   "accessLogEmpty": "The key has not touched anything yet",
   "@accessLogEmpty": {
     "description": "accessLogEmpty"
+  },
+  "photosTitle": "Photos",
+  "@photosTitle": {
+    "description": "photosTitle"
+  },
+  "photoAdd": "Add a photo",
+  "@photoAdd": {
+    "description": "photoAdd"
+  },
+  "photoCamera": "Take a photo",
+  "@photoCamera": {
+    "description": "photoCamera"
+  },
+  "photoGallery": "From gallery",
+  "@photoGallery": {
+    "description": "photoGallery"
+  },
+  "photoRemove": "Remove the photo",
+  "@photoRemove": {
+    "description": "photoRemove"
+  },
+  "photoRemoveAsk": "Remove this photo?",
+  "@photoRemoveAsk": {
+    "description": "photoRemoveAsk"
+  },
+  "photoNeedsSave": "Photos become available once the event is saved",
+  "@photoNeedsSave": {
+    "description": "photoNeedsSave"
+  },
+  "navTasks": "Tasks",
+  "@navTasks": {
+    "description": "navTasks"
+  },
+  "tasksEmpty": "No tasks yet",
+  "@tasksEmpty": {
+    "description": "tasksEmpty"
+  },
+  "tasksEmptyHint": "The button below adds the first one",
+  "@tasksEmptyHint": {
+    "description": "tasksEmptyHint"
+  },
+  "taskNew": "New task",
+  "@taskNew": {
+    "description": "taskNew"
+  },
+  "taskOne": "Task",
+  "@taskOne": {
+    "description": "taskOne"
+  },
+  "taskTitleHint": "What to do",
+  "@taskTitleHint": {
+    "description": "taskTitleHint"
+  },
+  "taskDue": "Due",
+  "@taskDue": {
+    "description": "taskDue"
+  },
+  "taskNoDue": "No due date",
+  "@taskNoDue": {
+    "description": "taskNoDue"
+  },
+  "taskAtTime": "At a time",
+  "@taskAtTime": {
+    "description": "taskAtTime"
+  },
+  "taskNotes": "Note",
+  "@taskNotes": {
+    "description": "taskNotes"
+  },
+  "taskNotesHint": "Details",
+  "@taskNotesHint": {
+    "description": "taskNotesHint"
+  },
+  "taskDelete": "Delete the task",
+  "@taskDelete": {
+    "description": "taskDelete"
+  },
+  "taskOverdue": "Overdue",
+  "@taskOverdue": {
+    "description": "taskOverdue"
+  },
+  "tasksDoneSection": "Done",
+  "@tasksDoneSection": {
+    "description": "tasksDoneSection"
+  },
+  "tasksOpenCount": "{count} open",
+  "@tasksOpenCount": {
+    "description": "tasksOpenCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgTaskDeleted": "Task deleted",
+  "@msgTaskDeleted": {
+    "description": "msgTaskDeleted"
+  },
+  "dueToday": "Today",
+  "@dueToday": {
+    "description": "dueToday"
+  },
+  "dueTomorrow": "Tomorrow",
+  "@dueTomorrow": {
+    "description": "dueTomorrow"
+  },
+  "statsTitle": "Statistics",
+  "@statsTitle": {
+    "description": "statsTitle"
+  },
+  "statsWeek": "Week",
+  "@statsWeek": {
+    "description": "statsWeek"
+  },
+  "statsMonth": "Month",
+  "@statsMonth": {
+    "description": "statsMonth"
+  },
+  "statsYear": "Year",
+  "@statsYear": {
+    "description": "statsYear"
+  },
+  "statsBusyTime": "Time booked",
+  "@statsBusyTime": {
+    "description": "statsBusyTime"
+  },
+  "statsEventCount": "Events",
+  "@statsEventCount": {
+    "description": "statsEventCount"
+  },
+  "statsTasksClosed": "Tasks closed",
+  "@statsTasksClosed": {
+    "description": "statsTasksClosed"
+  },
+  "statsPerDay": "Per day on average",
+  "@statsPerDay": {
+    "description": "statsPerDay"
+  },
+  "statsByCalendar": "By calendar",
+  "@statsByCalendar": {
+    "description": "statsByCalendar"
+  },
+  "statsByWeekday": "By weekday",
+  "@statsByWeekday": {
+    "description": "statsByWeekday"
+  },
+  "statsBusiestDay": "Busiest day",
+  "@statsBusiestDay": {
+    "description": "statsBusiestDay"
+  },
+  "statsEmpty": "Nothing recorded for this period",
+  "@statsEmpty": {
+    "description": "statsEmpty"
+  },
+  "statsHoursShort": "{hours} h",
+  "@statsHoursShort": {
+    "description": "statsHoursShort",
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "statsShare": "{percent}%",
+  "@statsShare": {
+    "description": "statsShare",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
   }
 }

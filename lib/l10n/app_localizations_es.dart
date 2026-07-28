@@ -1020,4 +1020,128 @@ class LEs extends L {
 
   @override
   String get accessLogEmpty => 'La clave aún no ha tocado nada';
+
+  @override
+  String get photosTitle => 'Fotos';
+
+  @override
+  String get photoAdd => 'Añadir foto';
+
+  @override
+  String get photoCamera => 'Hacer una foto';
+
+  @override
+  String get photoGallery => 'De la galería';
+
+  @override
+  String get photoRemove => 'Quitar la foto';
+
+  @override
+  String get photoRemoveAsk => '¿Quitar esta foto?';
+
+  @override
+  String get photoNeedsSave =>
+      'Las fotos aparecen cuando el evento está guardado';
+
+  @override
+  String get navTasks => 'Tareas';
+
+  @override
+  String get tasksEmpty => 'Todavía no hay tareas';
+
+  @override
+  String get tasksEmptyHint => 'El botón de abajo crea la primera';
+
+  @override
+  String get taskNew => 'Tarea nueva';
+
+  @override
+  String get taskOne => 'Tarea';
+
+  @override
+  String get taskTitleHint => 'Qué hacer';
+
+  @override
+  String get taskDue => 'Plazo';
+
+  @override
+  String get taskNoDue => 'Sin plazo';
+
+  @override
+  String get taskAtTime => 'A una hora';
+
+  @override
+  String get taskNotes => 'Nota';
+
+  @override
+  String get taskNotesHint => 'Detalles';
+
+  @override
+  String get taskDelete => 'Eliminar la tarea';
+
+  @override
+  String get taskOverdue => 'Vencida';
+
+  @override
+  String get tasksDoneSection => 'Hechas';
+
+  @override
+  String tasksOpenCount(int count) {
+    return '$count pendientes';
+  }
+
+  @override
+  String get msgTaskDeleted => 'Tarea eliminada';
+
+  @override
+  String get dueToday => 'Hoy';
+
+  @override
+  String get dueTomorrow => 'Mañana';
+
+  @override
+  String get statsTitle => 'Estadísticas';
+
+  @override
+  String get statsWeek => 'Semana';
+
+  @override
+  String get statsMonth => 'Mes';
+
+  @override
+  String get statsYear => 'Año';
+
+  @override
+  String get statsBusyTime => 'Tiempo ocupado';
+
+  @override
+  String get statsEventCount => 'Eventos';
+
+  @override
+  String get statsTasksClosed => 'Tareas cerradas';
+
+  @override
+  String get statsPerDay => 'Media por día';
+
+  @override
+  String get statsByCalendar => 'Por calendarios';
+
+  @override
+  String get statsByWeekday => 'Por días de la semana';
+
+  @override
+  String get statsBusiestDay => 'El día más lleno';
+
+  @override
+  String get statsEmpty => 'No hay nada en este periodo';
+
+  @override
+  String statsHoursShort(String hours) {
+    return '$hours h';
+  }
+
+  @override
+  String statsShare(int percent) {
+    return '$percent %';
+  }
 }

@@ -1262,5 +1262,176 @@
   "accessLogEmpty": "La clave aún no ha tocado nada",
   "@accessLogEmpty": {
     "description": "accessLogEmpty"
+  },
+  "photosTitle": "Fotos",
+  "@photosTitle": {
+    "description": "photosTitle"
+  },
+  "photoAdd": "Añadir foto",
+  "@photoAdd": {
+    "description": "photoAdd"
+  },
+  "photoCamera": "Hacer una foto",
+  "@photoCamera": {
+    "description": "photoCamera"
+  },
+  "photoGallery": "De la galería",
+  "@photoGallery": {
+    "description": "photoGallery"
+  },
+  "photoRemove": "Quitar la foto",
+  "@photoRemove": {
+    "description": "photoRemove"
+  },
+  "photoRemoveAsk": "¿Quitar esta foto?",
+  "@photoRemoveAsk": {
+    "description": "photoRemoveAsk"
+  },
+  "photoNeedsSave": "Las fotos aparecen cuando el evento está guardado",
+  "@photoNeedsSave": {
+    "description": "photoNeedsSave"
+  },
+  "navTasks": "Tareas",
+  "@navTasks": {
+    "description": "navTasks"
+  },
+  "tasksEmpty": "Todavía no hay tareas",
+  "@tasksEmpty": {
+    "description": "tasksEmpty"
+  },
+  "tasksEmptyHint": "El botón de abajo crea la primera",
+  "@tasksEmptyHint": {
+    "description": "tasksEmptyHint"
+  },
+  "taskNew": "Tarea nueva",
+  "@taskNew": {
+    "description": "taskNew"
+  },
+  "taskOne": "Tarea",
+  "@taskOne": {
+    "description": "taskOne"
+  },
+  "taskTitleHint": "Qué hacer",
+  "@taskTitleHint": {
+    "description": "taskTitleHint"
+  },
+  "taskDue": "Plazo",
+  "@taskDue": {
+    "description": "taskDue"
+  },
+  "taskNoDue": "Sin plazo",
+  "@taskNoDue": {
+    "description": "taskNoDue"
+  },
+  "taskAtTime": "A una hora",
+  "@taskAtTime": {
+    "description": "taskAtTime"
+  },
+  "taskNotes": "Nota",
+  "@taskNotes": {
+    "description": "taskNotes"
+  },
+  "taskNotesHint": "Detalles",
+  "@taskNotesHint": {
+    "description": "taskNotesHint"
+  },
+  "taskDelete": "Eliminar la tarea",
+  "@taskDelete": {
+    "description": "taskDelete"
+  },
+  "taskOverdue": "Vencida",
+  "@taskOverdue": {
+    "description": "taskOverdue"
+  },
+  "tasksDoneSection": "Hechas",
+  "@tasksDoneSection": {
+    "description": "tasksDoneSection"
+  },
+  "tasksOpenCount": "{count} pendientes",
+  "@tasksOpenCount": {
+    "description": "tasksOpenCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgTaskDeleted": "Tarea eliminada",
+  "@msgTaskDeleted": {
+    "description": "msgTaskDeleted"
+  },
+  "dueToday": "Hoy",
+  "@dueToday": {
+    "description": "dueToday"
+  },
+  "dueTomorrow": "Mañana",
+  "@dueTomorrow": {
+    "description": "dueTomorrow"
+  },
+  "statsTitle": "Estadísticas",
+  "@statsTitle": {
+    "description": "statsTitle"
+  },
+  "statsWeek": "Semana",
+  "@statsWeek": {
+    "description": "statsWeek"
+  },
+  "statsMonth": "Mes",
+  "@statsMonth": {
+    "description": "statsMonth"
+  },
+  "statsYear": "Año",
+  "@statsYear": {
+    "description": "statsYear"
+  },
+  "statsBusyTime": "Tiempo ocupado",
+  "@statsBusyTime": {
+    "description": "statsBusyTime"
+  },
+  "statsEventCount": "Eventos",
+  "@statsEventCount": {
+    "description": "statsEventCount"
+  },
+  "statsTasksClosed": "Tareas cerradas",
+  "@statsTasksClosed": {
+    "description": "statsTasksClosed"
+  },
+  "statsPerDay": "Media por día",
+  "@statsPerDay": {
+    "description": "statsPerDay"
+  },
+  "statsByCalendar": "Por calendarios",
+  "@statsByCalendar": {
+    "description": "statsByCalendar"
+  },
+  "statsByWeekday": "Por días de la semana",
+  "@statsByWeekday": {
+    "description": "statsByWeekday"
+  },
+  "statsBusiestDay": "El día más lleno",
+  "@statsBusiestDay": {
+    "description": "statsBusiestDay"
+  },
+  "statsEmpty": "No hay nada en este periodo",
+  "@statsEmpty": {
+    "description": "statsEmpty"
+  },
+  "statsHoursShort": "{hours} h",
+  "@statsHoursShort": {
+    "description": "statsHoursShort",
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "statsShare": "{percent} %",
+  "@statsShare": {
+    "description": "statsShare",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
   }
 }

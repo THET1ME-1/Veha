@@ -1262,5 +1262,176 @@
   "accessLogEmpty": "Ключ поки нічого не чіпав",
   "@accessLogEmpty": {
     "description": "accessLogEmpty"
+  },
+  "photosTitle": "Знімки",
+  "@photosTitle": {
+    "description": "photosTitle"
+  },
+  "photoAdd": "Додати знімок",
+  "@photoAdd": {
+    "description": "photoAdd"
+  },
+  "photoCamera": "Зняти",
+  "@photoCamera": {
+    "description": "photoCamera"
+  },
+  "photoGallery": "З галереї",
+  "@photoGallery": {
+    "description": "photoGallery"
+  },
+  "photoRemove": "Прибрати знімок",
+  "@photoRemove": {
+    "description": "photoRemove"
+  },
+  "photoRemoveAsk": "Прибрати цей знімок?",
+  "@photoRemoveAsk": {
+    "description": "photoRemoveAsk"
+  },
+  "photoNeedsSave": "Знімки з’являться, коли подію збережено",
+  "@photoNeedsSave": {
+    "description": "photoNeedsSave"
+  },
+  "navTasks": "Завдання",
+  "@navTasks": {
+    "description": "navTasks"
+  },
+  "tasksEmpty": "Завдань поки немає",
+  "@tasksEmpty": {
+    "description": "tasksEmpty"
+  },
+  "tasksEmptyHint": "Кнопка внизу створює першу",
+  "@tasksEmptyHint": {
+    "description": "tasksEmptyHint"
+  },
+  "taskNew": "Нове завдання",
+  "@taskNew": {
+    "description": "taskNew"
+  },
+  "taskOne": "Завдання",
+  "@taskOne": {
+    "description": "taskOne"
+  },
+  "taskTitleHint": "Що зробити",
+  "@taskTitleHint": {
+    "description": "taskTitleHint"
+  },
+  "taskDue": "Термін",
+  "@taskDue": {
+    "description": "taskDue"
+  },
+  "taskNoDue": "Без терміну",
+  "@taskNoDue": {
+    "description": "taskNoDue"
+  },
+  "taskAtTime": "На час",
+  "@taskAtTime": {
+    "description": "taskAtTime"
+  },
+  "taskNotes": "Нотатка",
+  "@taskNotes": {
+    "description": "taskNotes"
+  },
+  "taskNotesHint": "Подробиці",
+  "@taskNotesHint": {
+    "description": "taskNotesHint"
+  },
+  "taskDelete": "Видалити завдання",
+  "@taskDelete": {
+    "description": "taskDelete"
+  },
+  "taskOverdue": "Прострочено",
+  "@taskOverdue": {
+    "description": "taskOverdue"
+  },
+  "tasksDoneSection": "Зроблені",
+  "@tasksDoneSection": {
+    "description": "tasksDoneSection"
+  },
+  "tasksOpenCount": "{count} у роботі",
+  "@tasksOpenCount": {
+    "description": "tasksOpenCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgTaskDeleted": "Завдання видалено",
+  "@msgTaskDeleted": {
+    "description": "msgTaskDeleted"
+  },
+  "dueToday": "Сьогодні",
+  "@dueToday": {
+    "description": "dueToday"
+  },
+  "dueTomorrow": "Завтра",
+  "@dueTomorrow": {
+    "description": "dueTomorrow"
+  },
+  "statsTitle": "Статистика",
+  "@statsTitle": {
+    "description": "statsTitle"
+  },
+  "statsWeek": "Тиждень",
+  "@statsWeek": {
+    "description": "statsWeek"
+  },
+  "statsMonth": "Місяць",
+  "@statsMonth": {
+    "description": "statsMonth"
+  },
+  "statsYear": "Рік",
+  "@statsYear": {
+    "description": "statsYear"
+  },
+  "statsBusyTime": "Зайнято часу",
+  "@statsBusyTime": {
+    "description": "statsBusyTime"
+  },
+  "statsEventCount": "Подій",
+  "@statsEventCount": {
+    "description": "statsEventCount"
+  },
+  "statsTasksClosed": "Завдань закрито",
+  "@statsTasksClosed": {
+    "description": "statsTasksClosed"
+  },
+  "statsPerDay": "У середньому за день",
+  "@statsPerDay": {
+    "description": "statsPerDay"
+  },
+  "statsByCalendar": "За календарями",
+  "@statsByCalendar": {
+    "description": "statsByCalendar"
+  },
+  "statsByWeekday": "За днями тижня",
+  "@statsByWeekday": {
+    "description": "statsByWeekday"
+  },
+  "statsBusiestDay": "Найщільніший день",
+  "@statsBusiestDay": {
+    "description": "statsBusiestDay"
+  },
+  "statsEmpty": "За цей період записів немає",
+  "@statsEmpty": {
+    "description": "statsEmpty"
+  },
+  "statsHoursShort": "{hours} год",
+  "@statsHoursShort": {
+    "description": "statsHoursShort",
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "statsShare": "{percent}%",
+  "@statsShare": {
+    "description": "statsShare",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
   }
 }

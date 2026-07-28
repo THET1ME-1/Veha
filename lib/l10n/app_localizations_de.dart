@@ -1024,4 +1024,128 @@ class LDe extends L {
 
   @override
   String get accessLogEmpty => 'Der Schlüssel hat noch nichts angefasst';
+
+  @override
+  String get photosTitle => 'Fotos';
+
+  @override
+  String get photoAdd => 'Foto hinzufügen';
+
+  @override
+  String get photoCamera => 'Aufnehmen';
+
+  @override
+  String get photoGallery => 'Aus der Galerie';
+
+  @override
+  String get photoRemove => 'Foto entfernen';
+
+  @override
+  String get photoRemoveAsk => 'Dieses Foto entfernen?';
+
+  @override
+  String get photoNeedsSave =>
+      'Fotos gibt es, sobald der Termin gespeichert ist';
+
+  @override
+  String get navTasks => 'Aufgaben';
+
+  @override
+  String get tasksEmpty => 'Noch keine Aufgaben';
+
+  @override
+  String get tasksEmptyHint => 'Der Knopf unten legt die erste an';
+
+  @override
+  String get taskNew => 'Neue Aufgabe';
+
+  @override
+  String get taskOne => 'Aufgabe';
+
+  @override
+  String get taskTitleHint => 'Was zu tun ist';
+
+  @override
+  String get taskDue => 'Frist';
+
+  @override
+  String get taskNoDue => 'Ohne Frist';
+
+  @override
+  String get taskAtTime => 'Zu einer Uhrzeit';
+
+  @override
+  String get taskNotes => 'Notiz';
+
+  @override
+  String get taskNotesHint => 'Einzelheiten';
+
+  @override
+  String get taskDelete => 'Aufgabe löschen';
+
+  @override
+  String get taskOverdue => 'Überfällig';
+
+  @override
+  String get tasksDoneSection => 'Erledigt';
+
+  @override
+  String tasksOpenCount(int count) {
+    return '$count offen';
+  }
+
+  @override
+  String get msgTaskDeleted => 'Aufgabe gelöscht';
+
+  @override
+  String get dueToday => 'Heute';
+
+  @override
+  String get dueTomorrow => 'Morgen';
+
+  @override
+  String get statsTitle => 'Statistik';
+
+  @override
+  String get statsWeek => 'Woche';
+
+  @override
+  String get statsMonth => 'Monat';
+
+  @override
+  String get statsYear => 'Jahr';
+
+  @override
+  String get statsBusyTime => 'Belegte Zeit';
+
+  @override
+  String get statsEventCount => 'Termine';
+
+  @override
+  String get statsTasksClosed => 'Aufgaben erledigt';
+
+  @override
+  String get statsPerDay => 'Im Schnitt pro Tag';
+
+  @override
+  String get statsByCalendar => 'Nach Kalendern';
+
+  @override
+  String get statsByWeekday => 'Nach Wochentagen';
+
+  @override
+  String get statsBusiestDay => 'Vollster Tag';
+
+  @override
+  String get statsEmpty => 'Für diesen Zeitraum gibt es nichts';
+
+  @override
+  String statsHoursShort(String hours) {
+    return '$hours Std.';
+  }
+
+  @override
+  String statsShare(int percent) {
+    return '$percent %';
+  }
 }

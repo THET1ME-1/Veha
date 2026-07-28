@@ -14,6 +14,7 @@ import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
 import 'field_value_sheet.dart';
 import 'note_sheet.dart';
+import 'photos_block.dart';
 import 'place_sheet.dart';
 import 'look_sheet.dart';
 import 'reminders_sheet.dart';
@@ -508,10 +509,16 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
             ],
           ]),
         ],
-        // Заметки принадлежат сохранённому событию: у нового ещё нет ключа,
-        // к которому их привязать, и держать их в черновике значит заводить
-        // вторую правду о том же.
-        if (_draft.isEditing) _notes(color),
+        // Заметки и снимки принадлежат сохранённому событию: у нового ещё нет
+        // ключа, к которому их привязать, и держать их в черновике значит
+        // заводить вторую правду о том же.
+        if (_draft.isEditing) ...[
+          PhotosBlock(
+            eventId: _draft.source!.recurrenceId ?? _draft.source!.id,
+            color: color,
+          ),
+          _notes(color),
+        ],
         if (widget.onDelete != null) ...[
           const SizedBox(height: 18),
           TextButton.icon(

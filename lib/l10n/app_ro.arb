@@ -1262,5 +1262,176 @@
   "accessLogEmpty": "Cheia nu a atins nimic încă",
   "@accessLogEmpty": {
     "description": "accessLogEmpty"
+  },
+  "photosTitle": "Fotografii",
+  "@photosTitle": {
+    "description": "photosTitle"
+  },
+  "photoAdd": "Adaugă o fotografie",
+  "@photoAdd": {
+    "description": "photoAdd"
+  },
+  "photoCamera": "Fotografiază",
+  "@photoCamera": {
+    "description": "photoCamera"
+  },
+  "photoGallery": "Din galerie",
+  "@photoGallery": {
+    "description": "photoGallery"
+  },
+  "photoRemove": "Șterge fotografia",
+  "@photoRemove": {
+    "description": "photoRemove"
+  },
+  "photoRemoveAsk": "Ștergi această fotografie?",
+  "@photoRemoveAsk": {
+    "description": "photoRemoveAsk"
+  },
+  "photoNeedsSave": "Fotografiile apar după ce evenimentul este salvat",
+  "@photoNeedsSave": {
+    "description": "photoNeedsSave"
+  },
+  "navTasks": "Sarcini",
+  "@navTasks": {
+    "description": "navTasks"
+  },
+  "tasksEmpty": "Deocamdată nicio sarcină",
+  "@tasksEmpty": {
+    "description": "tasksEmpty"
+  },
+  "tasksEmptyHint": "Butonul de jos o adaugă pe prima",
+  "@tasksEmptyHint": {
+    "description": "tasksEmptyHint"
+  },
+  "taskNew": "Sarcină nouă",
+  "@taskNew": {
+    "description": "taskNew"
+  },
+  "taskOne": "Sarcină",
+  "@taskOne": {
+    "description": "taskOne"
+  },
+  "taskTitleHint": "Ce ai de făcut",
+  "@taskTitleHint": {
+    "description": "taskTitleHint"
+  },
+  "taskDue": "Termen",
+  "@taskDue": {
+    "description": "taskDue"
+  },
+  "taskNoDue": "Fără termen",
+  "@taskNoDue": {
+    "description": "taskNoDue"
+  },
+  "taskAtTime": "La o oră",
+  "@taskAtTime": {
+    "description": "taskAtTime"
+  },
+  "taskNotes": "Notă",
+  "@taskNotes": {
+    "description": "taskNotes"
+  },
+  "taskNotesHint": "Detalii",
+  "@taskNotesHint": {
+    "description": "taskNotesHint"
+  },
+  "taskDelete": "Șterge sarcina",
+  "@taskDelete": {
+    "description": "taskDelete"
+  },
+  "taskOverdue": "Depășit",
+  "@taskOverdue": {
+    "description": "taskOverdue"
+  },
+  "tasksDoneSection": "Făcute",
+  "@tasksDoneSection": {
+    "description": "tasksDoneSection"
+  },
+  "tasksOpenCount": "{count} în lucru",
+  "@tasksOpenCount": {
+    "description": "tasksOpenCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgTaskDeleted": "Sarcina a fost ștearsă",
+  "@msgTaskDeleted": {
+    "description": "msgTaskDeleted"
+  },
+  "dueToday": "Azi",
+  "@dueToday": {
+    "description": "dueToday"
+  },
+  "dueTomorrow": "Mâine",
+  "@dueTomorrow": {
+    "description": "dueTomorrow"
+  },
+  "statsTitle": "Statistici",
+  "@statsTitle": {
+    "description": "statsTitle"
+  },
+  "statsWeek": "Săptămână",
+  "@statsWeek": {
+    "description": "statsWeek"
+  },
+  "statsMonth": "Lună",
+  "@statsMonth": {
+    "description": "statsMonth"
+  },
+  "statsYear": "An",
+  "@statsYear": {
+    "description": "statsYear"
+  },
+  "statsBusyTime": "Timp ocupat",
+  "@statsBusyTime": {
+    "description": "statsBusyTime"
+  },
+  "statsEventCount": "Evenimente",
+  "@statsEventCount": {
+    "description": "statsEventCount"
+  },
+  "statsTasksClosed": "Sarcini încheiate",
+  "@statsTasksClosed": {
+    "description": "statsTasksClosed"
+  },
+  "statsPerDay": "În medie pe zi",
+  "@statsPerDay": {
+    "description": "statsPerDay"
+  },
+  "statsByCalendar": "Pe calendare",
+  "@statsByCalendar": {
+    "description": "statsByCalendar"
+  },
+  "statsByWeekday": "Pe zilele săptămânii",
+  "@statsByWeekday": {
+    "description": "statsByWeekday"
+  },
+  "statsBusiestDay": "Cea mai plină zi",
+  "@statsBusiestDay": {
+    "description": "statsBusiestDay"
+  },
+  "statsEmpty": "Nimic în această perioadă",
+  "@statsEmpty": {
+    "description": "statsEmpty"
+  },
+  "statsHoursShort": "{hours} h",
+  "@statsHoursShort": {
+    "description": "statsHoursShort",
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "statsShare": "{percent}%",
+  "@statsShare": {
+    "description": "statsShare",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
   }
 }

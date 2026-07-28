@@ -3449,6 +3449,1179 @@ class EventNotesCompanion extends UpdateCompanion<EventNote> {
   }
 }
 
+class $EventPhotosTable extends EventPhotos
+    with TableInfo<$EventPhotosTable, EventPhoto> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EventPhotosTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _eventIdMeta = const VerificationMeta(
+    'eventId',
+  );
+  @override
+  late final GeneratedColumn<String> eventId = GeneratedColumn<String>(
+    'event_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES events (id)',
+    ),
+  );
+  static const VerificationMeta _pathMeta = const VerificationMeta('path');
+  @override
+  late final GeneratedColumn<String> path = GeneratedColumn<String>(
+    'path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    eventId,
+    path,
+    sortOrder,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'event_photos';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EventPhoto> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('event_id')) {
+      context.handle(
+        _eventIdMeta,
+        eventId.isAcceptableOrUnknown(data['event_id']!, _eventIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_eventIdMeta);
+    }
+    if (data.containsKey('path')) {
+      context.handle(
+        _pathMeta,
+        path.isAcceptableOrUnknown(data['path']!, _pathMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pathMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  EventPhoto map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EventPhoto(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      eventId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}event_id'],
+      )!,
+      path: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}path'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $EventPhotosTable createAlias(String alias) {
+    return $EventPhotosTable(attachedDatabase, alias);
+  }
+}
+
+class EventPhoto extends DataClass implements Insertable<EventPhoto> {
+  final String id;
+  final String eventId;
+  final String path;
+  final int sortOrder;
+  final int createdAt;
+  const EventPhoto({
+    required this.id,
+    required this.eventId,
+    required this.path,
+    required this.sortOrder,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['event_id'] = Variable<String>(eventId);
+    map['path'] = Variable<String>(path);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<int>(createdAt);
+    return map;
+  }
+
+  EventPhotosCompanion toCompanion(bool nullToAbsent) {
+    return EventPhotosCompanion(
+      id: Value(id),
+      eventId: Value(eventId),
+      path: Value(path),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory EventPhoto.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EventPhoto(
+      id: serializer.fromJson<String>(json['id']),
+      eventId: serializer.fromJson<String>(json['eventId']),
+      path: serializer.fromJson<String>(json['path']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'eventId': serializer.toJson<String>(eventId),
+      'path': serializer.toJson<String>(path),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<int>(createdAt),
+    };
+  }
+
+  EventPhoto copyWith({
+    String? id,
+    String? eventId,
+    String? path,
+    int? sortOrder,
+    int? createdAt,
+  }) => EventPhoto(
+    id: id ?? this.id,
+    eventId: eventId ?? this.eventId,
+    path: path ?? this.path,
+    sortOrder: sortOrder ?? this.sortOrder,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  EventPhoto copyWithCompanion(EventPhotosCompanion data) {
+    return EventPhoto(
+      id: data.id.present ? data.id.value : this.id,
+      eventId: data.eventId.present ? data.eventId.value : this.eventId,
+      path: data.path.present ? data.path.value : this.path,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EventPhoto(')
+          ..write('id: $id, ')
+          ..write('eventId: $eventId, ')
+          ..write('path: $path, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, eventId, path, sortOrder, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EventPhoto &&
+          other.id == this.id &&
+          other.eventId == this.eventId &&
+          other.path == this.path &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt);
+}
+
+class EventPhotosCompanion extends UpdateCompanion<EventPhoto> {
+  final Value<String> id;
+  final Value<String> eventId;
+  final Value<String> path;
+  final Value<int> sortOrder;
+  final Value<int> createdAt;
+  final Value<int> rowid;
+  const EventPhotosCompanion({
+    this.id = const Value.absent(),
+    this.eventId = const Value.absent(),
+    this.path = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EventPhotosCompanion.insert({
+    required String id,
+    required String eventId,
+    required String path,
+    this.sortOrder = const Value.absent(),
+    required int createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       eventId = Value(eventId),
+       path = Value(path),
+       createdAt = Value(createdAt);
+  static Insertable<EventPhoto> custom({
+    Expression<String>? id,
+    Expression<String>? eventId,
+    Expression<String>? path,
+    Expression<int>? sortOrder,
+    Expression<int>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (eventId != null) 'event_id': eventId,
+      if (path != null) 'path': path,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EventPhotosCompanion copyWith({
+    Value<String>? id,
+    Value<String>? eventId,
+    Value<String>? path,
+    Value<int>? sortOrder,
+    Value<int>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return EventPhotosCompanion(
+      id: id ?? this.id,
+      eventId: eventId ?? this.eventId,
+      path: path ?? this.path,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (eventId.present) {
+      map['event_id'] = Variable<String>(eventId.value);
+    }
+    if (path.present) {
+      map['path'] = Variable<String>(path.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EventPhotosCompanion(')
+          ..write('id: $id, ')
+          ..write('eventId: $eventId, ')
+          ..write('path: $path, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TasksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _calendarIdMeta = const VerificationMeta(
+    'calendarId',
+  );
+  @override
+  late final GeneratedColumn<String> calendarId = GeneratedColumn<String>(
+    'calendar_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES calendars (id)',
+    ),
+  );
+  static const VerificationMeta _subcategoryIdMeta = const VerificationMeta(
+    'subcategoryId',
+  );
+  @override
+  late final GeneratedColumn<String> subcategoryId = GeneratedColumn<String>(
+    'subcategory_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dueMeta = const VerificationMeta('due');
+  @override
+  late final GeneratedColumn<int> due = GeneratedColumn<int>(
+    'due',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _hasTimeMeta = const VerificationMeta(
+    'hasTime',
+  );
+  @override
+  late final GeneratedColumn<bool> hasTime = GeneratedColumn<bool>(
+    'has_time',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("has_time" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _completedAtMeta = const VerificationMeta(
+    'completedAt',
+  );
+  @override
+  late final GeneratedColumn<int> completedAt = GeneratedColumn<int>(
+    'completed_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _colorMeta = const VerificationMeta('color');
+  @override
+  late final GeneratedColumn<int> color = GeneratedColumn<int>(
+    'color',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _iconMeta = const VerificationMeta('icon');
+  @override
+  late final GeneratedColumn<String> icon = GeneratedColumn<String>(
+    'icon',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<int> deletedAt = GeneratedColumn<int>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    calendarId,
+    subcategoryId,
+    title,
+    notes,
+    due,
+    hasTime,
+    completedAt,
+    color,
+    icon,
+    sortOrder,
+    createdAt,
+    updatedAt,
+    deletedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'tasks';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Task> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('calendar_id')) {
+      context.handle(
+        _calendarIdMeta,
+        calendarId.isAcceptableOrUnknown(data['calendar_id']!, _calendarIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_calendarIdMeta);
+    }
+    if (data.containsKey('subcategory_id')) {
+      context.handle(
+        _subcategoryIdMeta,
+        subcategoryId.isAcceptableOrUnknown(
+          data['subcategory_id']!,
+          _subcategoryIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('due')) {
+      context.handle(
+        _dueMeta,
+        due.isAcceptableOrUnknown(data['due']!, _dueMeta),
+      );
+    }
+    if (data.containsKey('has_time')) {
+      context.handle(
+        _hasTimeMeta,
+        hasTime.isAcceptableOrUnknown(data['has_time']!, _hasTimeMeta),
+      );
+    }
+    if (data.containsKey('completed_at')) {
+      context.handle(
+        _completedAtMeta,
+        completedAt.isAcceptableOrUnknown(
+          data['completed_at']!,
+          _completedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('color')) {
+      context.handle(
+        _colorMeta,
+        color.isAcceptableOrUnknown(data['color']!, _colorMeta),
+      );
+    }
+    if (data.containsKey('icon')) {
+      context.handle(
+        _iconMeta,
+        icon.isAcceptableOrUnknown(data['icon']!, _iconMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Task map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Task(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      calendarId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}calendar_id'],
+      )!,
+      subcategoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}subcategory_id'],
+      ),
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      due: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}due'],
+      ),
+      hasTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}has_time'],
+      )!,
+      completedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}completed_at'],
+      ),
+      color: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}color'],
+      ),
+      icon: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}icon'],
+      ),
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}deleted_at'],
+      ),
+    );
+  }
+
+  @override
+  $TasksTable createAlias(String alias) {
+    return $TasksTable(attachedDatabase, alias);
+  }
+}
+
+class Task extends DataClass implements Insertable<Task> {
+  final String id;
+  final String calendarId;
+  final String? subcategoryId;
+  final String title;
+  final String? notes;
+
+  /// Срок. Пустой — задача без даты, она видна только в списке.
+  final int? due;
+
+  /// У срока есть время, а не только день.
+  final bool hasTime;
+  final int? completedAt;
+  final int? color;
+  final String? icon;
+  final int sortOrder;
+  final int createdAt;
+  final int updatedAt;
+  final int? deletedAt;
+  const Task({
+    required this.id,
+    required this.calendarId,
+    this.subcategoryId,
+    required this.title,
+    this.notes,
+    this.due,
+    required this.hasTime,
+    this.completedAt,
+    this.color,
+    this.icon,
+    required this.sortOrder,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['calendar_id'] = Variable<String>(calendarId);
+    if (!nullToAbsent || subcategoryId != null) {
+      map['subcategory_id'] = Variable<String>(subcategoryId);
+    }
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    if (!nullToAbsent || due != null) {
+      map['due'] = Variable<int>(due);
+    }
+    map['has_time'] = Variable<bool>(hasTime);
+    if (!nullToAbsent || completedAt != null) {
+      map['completed_at'] = Variable<int>(completedAt);
+    }
+    if (!nullToAbsent || color != null) {
+      map['color'] = Variable<int>(color);
+    }
+    if (!nullToAbsent || icon != null) {
+      map['icon'] = Variable<String>(icon);
+    }
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<int>(deletedAt);
+    }
+    return map;
+  }
+
+  TasksCompanion toCompanion(bool nullToAbsent) {
+    return TasksCompanion(
+      id: Value(id),
+      calendarId: Value(calendarId),
+      subcategoryId: subcategoryId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(subcategoryId),
+      title: Value(title),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      due: due == null && nullToAbsent ? const Value.absent() : Value(due),
+      hasTime: Value(hasTime),
+      completedAt: completedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(completedAt),
+      color: color == null && nullToAbsent
+          ? const Value.absent()
+          : Value(color),
+      icon: icon == null && nullToAbsent ? const Value.absent() : Value(icon),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+    );
+  }
+
+  factory Task.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Task(
+      id: serializer.fromJson<String>(json['id']),
+      calendarId: serializer.fromJson<String>(json['calendarId']),
+      subcategoryId: serializer.fromJson<String?>(json['subcategoryId']),
+      title: serializer.fromJson<String>(json['title']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      due: serializer.fromJson<int?>(json['due']),
+      hasTime: serializer.fromJson<bool>(json['hasTime']),
+      completedAt: serializer.fromJson<int?>(json['completedAt']),
+      color: serializer.fromJson<int?>(json['color']),
+      icon: serializer.fromJson<String?>(json['icon']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+      deletedAt: serializer.fromJson<int?>(json['deletedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'calendarId': serializer.toJson<String>(calendarId),
+      'subcategoryId': serializer.toJson<String?>(subcategoryId),
+      'title': serializer.toJson<String>(title),
+      'notes': serializer.toJson<String?>(notes),
+      'due': serializer.toJson<int?>(due),
+      'hasTime': serializer.toJson<bool>(hasTime),
+      'completedAt': serializer.toJson<int?>(completedAt),
+      'color': serializer.toJson<int?>(color),
+      'icon': serializer.toJson<String?>(icon),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+      'deletedAt': serializer.toJson<int?>(deletedAt),
+    };
+  }
+
+  Task copyWith({
+    String? id,
+    String? calendarId,
+    Value<String?> subcategoryId = const Value.absent(),
+    String? title,
+    Value<String?> notes = const Value.absent(),
+    Value<int?> due = const Value.absent(),
+    bool? hasTime,
+    Value<int?> completedAt = const Value.absent(),
+    Value<int?> color = const Value.absent(),
+    Value<String?> icon = const Value.absent(),
+    int? sortOrder,
+    int? createdAt,
+    int? updatedAt,
+    Value<int?> deletedAt = const Value.absent(),
+  }) => Task(
+    id: id ?? this.id,
+    calendarId: calendarId ?? this.calendarId,
+    subcategoryId: subcategoryId.present
+        ? subcategoryId.value
+        : this.subcategoryId,
+    title: title ?? this.title,
+    notes: notes.present ? notes.value : this.notes,
+    due: due.present ? due.value : this.due,
+    hasTime: hasTime ?? this.hasTime,
+    completedAt: completedAt.present ? completedAt.value : this.completedAt,
+    color: color.present ? color.value : this.color,
+    icon: icon.present ? icon.value : this.icon,
+    sortOrder: sortOrder ?? this.sortOrder,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+  );
+  Task copyWithCompanion(TasksCompanion data) {
+    return Task(
+      id: data.id.present ? data.id.value : this.id,
+      calendarId: data.calendarId.present
+          ? data.calendarId.value
+          : this.calendarId,
+      subcategoryId: data.subcategoryId.present
+          ? data.subcategoryId.value
+          : this.subcategoryId,
+      title: data.title.present ? data.title.value : this.title,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      due: data.due.present ? data.due.value : this.due,
+      hasTime: data.hasTime.present ? data.hasTime.value : this.hasTime,
+      completedAt: data.completedAt.present
+          ? data.completedAt.value
+          : this.completedAt,
+      color: data.color.present ? data.color.value : this.color,
+      icon: data.icon.present ? data.icon.value : this.icon,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Task(')
+          ..write('id: $id, ')
+          ..write('calendarId: $calendarId, ')
+          ..write('subcategoryId: $subcategoryId, ')
+          ..write('title: $title, ')
+          ..write('notes: $notes, ')
+          ..write('due: $due, ')
+          ..write('hasTime: $hasTime, ')
+          ..write('completedAt: $completedAt, ')
+          ..write('color: $color, ')
+          ..write('icon: $icon, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    calendarId,
+    subcategoryId,
+    title,
+    notes,
+    due,
+    hasTime,
+    completedAt,
+    color,
+    icon,
+    sortOrder,
+    createdAt,
+    updatedAt,
+    deletedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Task &&
+          other.id == this.id &&
+          other.calendarId == this.calendarId &&
+          other.subcategoryId == this.subcategoryId &&
+          other.title == this.title &&
+          other.notes == this.notes &&
+          other.due == this.due &&
+          other.hasTime == this.hasTime &&
+          other.completedAt == this.completedAt &&
+          other.color == this.color &&
+          other.icon == this.icon &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt);
+}
+
+class TasksCompanion extends UpdateCompanion<Task> {
+  final Value<String> id;
+  final Value<String> calendarId;
+  final Value<String?> subcategoryId;
+  final Value<String> title;
+  final Value<String?> notes;
+  final Value<int?> due;
+  final Value<bool> hasTime;
+  final Value<int?> completedAt;
+  final Value<int?> color;
+  final Value<String?> icon;
+  final Value<int> sortOrder;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int?> deletedAt;
+  final Value<int> rowid;
+  const TasksCompanion({
+    this.id = const Value.absent(),
+    this.calendarId = const Value.absent(),
+    this.subcategoryId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.due = const Value.absent(),
+    this.hasTime = const Value.absent(),
+    this.completedAt = const Value.absent(),
+    this.color = const Value.absent(),
+    this.icon = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TasksCompanion.insert({
+    required String id,
+    required String calendarId,
+    this.subcategoryId = const Value.absent(),
+    required String title,
+    this.notes = const Value.absent(),
+    this.due = const Value.absent(),
+    this.hasTime = const Value.absent(),
+    this.completedAt = const Value.absent(),
+    this.color = const Value.absent(),
+    this.icon = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       calendarId = Value(calendarId),
+       title = Value(title),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<Task> custom({
+    Expression<String>? id,
+    Expression<String>? calendarId,
+    Expression<String>? subcategoryId,
+    Expression<String>? title,
+    Expression<String>? notes,
+    Expression<int>? due,
+    Expression<bool>? hasTime,
+    Expression<int>? completedAt,
+    Expression<int>? color,
+    Expression<String>? icon,
+    Expression<int>? sortOrder,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? deletedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (calendarId != null) 'calendar_id': calendarId,
+      if (subcategoryId != null) 'subcategory_id': subcategoryId,
+      if (title != null) 'title': title,
+      if (notes != null) 'notes': notes,
+      if (due != null) 'due': due,
+      if (hasTime != null) 'has_time': hasTime,
+      if (completedAt != null) 'completed_at': completedAt,
+      if (color != null) 'color': color,
+      if (icon != null) 'icon': icon,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TasksCompanion copyWith({
+    Value<String>? id,
+    Value<String>? calendarId,
+    Value<String?>? subcategoryId,
+    Value<String>? title,
+    Value<String?>? notes,
+    Value<int?>? due,
+    Value<bool>? hasTime,
+    Value<int?>? completedAt,
+    Value<int?>? color,
+    Value<String?>? icon,
+    Value<int>? sortOrder,
+    Value<int>? createdAt,
+    Value<int>? updatedAt,
+    Value<int?>? deletedAt,
+    Value<int>? rowid,
+  }) {
+    return TasksCompanion(
+      id: id ?? this.id,
+      calendarId: calendarId ?? this.calendarId,
+      subcategoryId: subcategoryId ?? this.subcategoryId,
+      title: title ?? this.title,
+      notes: notes ?? this.notes,
+      due: due ?? this.due,
+      hasTime: hasTime ?? this.hasTime,
+      completedAt: completedAt ?? this.completedAt,
+      color: color ?? this.color,
+      icon: icon ?? this.icon,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (calendarId.present) {
+      map['calendar_id'] = Variable<String>(calendarId.value);
+    }
+    if (subcategoryId.present) {
+      map['subcategory_id'] = Variable<String>(subcategoryId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (due.present) {
+      map['due'] = Variable<int>(due.value);
+    }
+    if (hasTime.present) {
+      map['has_time'] = Variable<bool>(hasTime.value);
+    }
+    if (completedAt.present) {
+      map['completed_at'] = Variable<int>(completedAt.value);
+    }
+    if (color.present) {
+      map['color'] = Variable<int>(color.value);
+    }
+    if (icon.present) {
+      map['icon'] = Variable<String>(icon.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<int>(deletedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TasksCompanion(')
+          ..write('id: $id, ')
+          ..write('calendarId: $calendarId, ')
+          ..write('subcategoryId: $subcategoryId, ')
+          ..write('title: $title, ')
+          ..write('notes: $notes, ')
+          ..write('due: $due, ')
+          ..write('hasTime: $hasTime, ')
+          ..write('completedAt: $completedAt, ')
+          ..write('color: $color, ')
+          ..write('icon: $icon, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $FieldDefsTable extends FieldDefs
     with TableInfo<$FieldDefsTable, FieldDef> {
   @override
@@ -5659,6 +6832,8 @@ abstract class _$VehaDatabase extends GeneratedDatabase {
       $RecurrenceExceptionsTable(this);
   late final $RemindersTable reminders = $RemindersTable(this);
   late final $EventNotesTable eventNotes = $EventNotesTable(this);
+  late final $EventPhotosTable eventPhotos = $EventPhotosTable(this);
+  late final $TasksTable tasks = $TasksTable(this);
   late final $FieldDefsTable fieldDefs = $FieldDefsTable(this);
   late final $FieldValuesTable fieldValues = $FieldValuesTable(this);
   late final $EventTypesTable eventTypes = $EventTypesTable(this);
@@ -5675,6 +6850,8 @@ abstract class _$VehaDatabase extends GeneratedDatabase {
     recurrenceExceptions,
     reminders,
     eventNotes,
+    eventPhotos,
+    tasks,
     fieldDefs,
     fieldValues,
     eventTypes,
@@ -5753,6 +6930,25 @@ final class $$CalendarsTableReferences
     ).filter((f) => f.calendarId.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_eventsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$TasksTable, List<Task>> _tasksRefsTable(
+    _$VehaDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.tasks,
+    aliasName: $_aliasNameGenerator(db.calendars.id, db.tasks.calendarId),
+  );
+
+  $$TasksTableProcessedTableManager get tasksRefs {
+    final manager = $$TasksTableTableManager(
+      $_db,
+      $_db.tasks,
+    ).filter((f) => f.calendarId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_tasksRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -5864,6 +7060,31 @@ class $$CalendarsTableFilterComposer
           }) => $$EventsTableFilterComposer(
             $db: $db,
             $table: $db.events,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> tasksRefs(
+    Expression<bool> Function($$TasksTableFilterComposer f) f,
+  ) {
+    final $$TasksTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.tasks,
+      getReferencedColumn: (t) => t.calendarId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TasksTableFilterComposer(
+            $db: $db,
+            $table: $db.tasks,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -6030,6 +7251,31 @@ class $$CalendarsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> tasksRefs<T extends Object>(
+    Expression<T> Function($$TasksTableAnnotationComposer a) f,
+  ) {
+    final $$TasksTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.tasks,
+      getReferencedColumn: (t) => t.calendarId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TasksTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tasks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$CalendarsTableTableManager
@@ -6045,7 +7291,11 @@ class $$CalendarsTableTableManager
           $$CalendarsTableUpdateCompanionBuilder,
           (Calendar, $$CalendarsTableReferences),
           Calendar,
-          PrefetchHooks Function({bool subcategoriesRefs, bool eventsRefs})
+          PrefetchHooks Function({
+            bool subcategoriesRefs,
+            bool eventsRefs,
+            bool tasksRefs,
+          })
         > {
   $$CalendarsTableTableManager(_$VehaDatabase db, $CalendarsTable table)
     : super(
@@ -6123,12 +7373,17 @@ class $$CalendarsTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({subcategoriesRefs = false, eventsRefs = false}) {
+              ({
+                subcategoriesRefs = false,
+                eventsRefs = false,
+                tasksRefs = false,
+              }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (subcategoriesRefs) db.subcategories,
                     if (eventsRefs) db.events,
+                    if (tasksRefs) db.tasks,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -6175,6 +7430,27 @@ class $$CalendarsTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (tasksRefs)
+                        await $_getPrefetchedData<
+                          Calendar,
+                          $CalendarsTable,
+                          Task
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CalendarsTableReferences
+                              ._tasksRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CalendarsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).tasksRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.calendarId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -6195,7 +7471,11 @@ typedef $$CalendarsTableProcessedTableManager =
       $$CalendarsTableUpdateCompanionBuilder,
       (Calendar, $$CalendarsTableReferences),
       Calendar,
-      PrefetchHooks Function({bool subcategoriesRefs, bool eventsRefs})
+      PrefetchHooks Function({
+        bool subcategoriesRefs,
+        bool eventsRefs,
+        bool tasksRefs,
+      })
     >;
 typedef $$SubcategoriesTableCreateCompanionBuilder =
     SubcategoriesCompanion Function({
@@ -6732,6 +8012,24 @@ final class $$EventsTableReferences
     );
   }
 
+  static MultiTypedResultKey<$EventPhotosTable, List<EventPhoto>>
+  _eventPhotosRefsTable(_$VehaDatabase db) => MultiTypedResultKey.fromTable(
+    db.eventPhotos,
+    aliasName: $_aliasNameGenerator(db.events.id, db.eventPhotos.eventId),
+  );
+
+  $$EventPhotosTableProcessedTableManager get eventPhotosRefs {
+    final manager = $$EventPhotosTableTableManager(
+      $_db,
+      $_db.eventPhotos,
+    ).filter((f) => f.eventId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_eventPhotosRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
   static MultiTypedResultKey<$FieldValuesTable, List<FieldValue>>
   _fieldValuesRefsTable(_$VehaDatabase db) => MultiTypedResultKey.fromTable(
     db.fieldValues,
@@ -6949,6 +8247,31 @@ class $$EventsTableFilterComposer
           }) => $$EventNotesTableFilterComposer(
             $db: $db,
             $table: $db.eventNotes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> eventPhotosRefs(
+    Expression<bool> Function($$EventPhotosTableFilterComposer f) f,
+  ) {
+    final $$EventPhotosTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.eventPhotos,
+      getReferencedColumn: (t) => t.eventId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$EventPhotosTableFilterComposer(
+            $db: $db,
+            $table: $db.eventPhotos,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -7297,6 +8620,31 @@ class $$EventsTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> eventPhotosRefs<T extends Object>(
+    Expression<T> Function($$EventPhotosTableAnnotationComposer a) f,
+  ) {
+    final $$EventPhotosTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.eventPhotos,
+      getReferencedColumn: (t) => t.eventId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$EventPhotosTableAnnotationComposer(
+            $db: $db,
+            $table: $db.eventPhotos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
   Expression<T> fieldValuesRefs<T extends Object>(
     Expression<T> Function($$FieldValuesTableAnnotationComposer a) f,
   ) {
@@ -7341,6 +8689,7 @@ class $$EventsTableTableManager
             bool recurrenceExceptionsRefs,
             bool remindersRefs,
             bool eventNotesRefs,
+            bool eventPhotosRefs,
             bool fieldValuesRefs,
           })
         > {
@@ -7463,6 +8812,7 @@ class $$EventsTableTableManager
                 recurrenceExceptionsRefs = false,
                 remindersRefs = false,
                 eventNotesRefs = false,
+                eventPhotosRefs = false,
                 fieldValuesRefs = false,
               }) {
                 return PrefetchHooks(
@@ -7471,6 +8821,7 @@ class $$EventsTableTableManager
                     if (recurrenceExceptionsRefs) db.recurrenceExceptions,
                     if (remindersRefs) db.reminders,
                     if (eventNotesRefs) db.eventNotes,
+                    if (eventPhotosRefs) db.eventPhotos,
                     if (fieldValuesRefs) db.fieldValues,
                   ],
                   addJoins:
@@ -7570,6 +8921,27 @@ class $$EventsTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (eventPhotosRefs)
+                        await $_getPrefetchedData<
+                          Event,
+                          $EventsTable,
+                          EventPhoto
+                        >(
+                          currentTable: table,
+                          referencedTable: $$EventsTableReferences
+                              ._eventPhotosRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$EventsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).eventPhotosRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.eventId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                       if (fieldValuesRefs)
                         await $_getPrefetchedData<
                           Event,
@@ -7616,6 +8988,7 @@ typedef $$EventsTableProcessedTableManager =
         bool recurrenceExceptionsRefs,
         bool remindersRefs,
         bool eventNotesRefs,
+        bool eventPhotosRefs,
         bool fieldValuesRefs,
       })
     >;
@@ -8576,6 +9949,813 @@ typedef $$EventNotesTableProcessedTableManager =
       (EventNote, $$EventNotesTableReferences),
       EventNote,
       PrefetchHooks Function({bool eventId})
+    >;
+typedef $$EventPhotosTableCreateCompanionBuilder =
+    EventPhotosCompanion Function({
+      required String id,
+      required String eventId,
+      required String path,
+      Value<int> sortOrder,
+      required int createdAt,
+      Value<int> rowid,
+    });
+typedef $$EventPhotosTableUpdateCompanionBuilder =
+    EventPhotosCompanion Function({
+      Value<String> id,
+      Value<String> eventId,
+      Value<String> path,
+      Value<int> sortOrder,
+      Value<int> createdAt,
+      Value<int> rowid,
+    });
+
+final class $$EventPhotosTableReferences
+    extends BaseReferences<_$VehaDatabase, $EventPhotosTable, EventPhoto> {
+  $$EventPhotosTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $EventsTable _eventIdTable(_$VehaDatabase db) => db.events.createAlias(
+    $_aliasNameGenerator(db.eventPhotos.eventId, db.events.id),
+  );
+
+  $$EventsTableProcessedTableManager get eventId {
+    final $_column = $_itemColumn<String>('event_id')!;
+
+    final manager = $$EventsTableTableManager(
+      $_db,
+      $_db.events,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_eventIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$EventPhotosTableFilterComposer
+    extends Composer<_$VehaDatabase, $EventPhotosTable> {
+  $$EventPhotosTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get path => $composableBuilder(
+    column: $table.path,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$EventsTableFilterComposer get eventId {
+    final $$EventsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.eventId,
+      referencedTable: $db.events,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$EventsTableFilterComposer(
+            $db: $db,
+            $table: $db.events,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$EventPhotosTableOrderingComposer
+    extends Composer<_$VehaDatabase, $EventPhotosTable> {
+  $$EventPhotosTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get path => $composableBuilder(
+    column: $table.path,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$EventsTableOrderingComposer get eventId {
+    final $$EventsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.eventId,
+      referencedTable: $db.events,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$EventsTableOrderingComposer(
+            $db: $db,
+            $table: $db.events,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$EventPhotosTableAnnotationComposer
+    extends Composer<_$VehaDatabase, $EventPhotosTable> {
+  $$EventPhotosTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get path =>
+      $composableBuilder(column: $table.path, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$EventsTableAnnotationComposer get eventId {
+    final $$EventsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.eventId,
+      referencedTable: $db.events,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$EventsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.events,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$EventPhotosTableTableManager
+    extends
+        RootTableManager<
+          _$VehaDatabase,
+          $EventPhotosTable,
+          EventPhoto,
+          $$EventPhotosTableFilterComposer,
+          $$EventPhotosTableOrderingComposer,
+          $$EventPhotosTableAnnotationComposer,
+          $$EventPhotosTableCreateCompanionBuilder,
+          $$EventPhotosTableUpdateCompanionBuilder,
+          (EventPhoto, $$EventPhotosTableReferences),
+          EventPhoto,
+          PrefetchHooks Function({bool eventId})
+        > {
+  $$EventPhotosTableTableManager(_$VehaDatabase db, $EventPhotosTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EventPhotosTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$EventPhotosTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$EventPhotosTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> eventId = const Value.absent(),
+                Value<String> path = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EventPhotosCompanion(
+                id: id,
+                eventId: eventId,
+                path: path,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String eventId,
+                required String path,
+                Value<int> sortOrder = const Value.absent(),
+                required int createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => EventPhotosCompanion.insert(
+                id: id,
+                eventId: eventId,
+                path: path,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$EventPhotosTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({eventId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (eventId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.eventId,
+                                referencedTable: $$EventPhotosTableReferences
+                                    ._eventIdTable(db),
+                                referencedColumn: $$EventPhotosTableReferences
+                                    ._eventIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$EventPhotosTableProcessedTableManager =
+    ProcessedTableManager<
+      _$VehaDatabase,
+      $EventPhotosTable,
+      EventPhoto,
+      $$EventPhotosTableFilterComposer,
+      $$EventPhotosTableOrderingComposer,
+      $$EventPhotosTableAnnotationComposer,
+      $$EventPhotosTableCreateCompanionBuilder,
+      $$EventPhotosTableUpdateCompanionBuilder,
+      (EventPhoto, $$EventPhotosTableReferences),
+      EventPhoto,
+      PrefetchHooks Function({bool eventId})
+    >;
+typedef $$TasksTableCreateCompanionBuilder =
+    TasksCompanion Function({
+      required String id,
+      required String calendarId,
+      Value<String?> subcategoryId,
+      required String title,
+      Value<String?> notes,
+      Value<int?> due,
+      Value<bool> hasTime,
+      Value<int?> completedAt,
+      Value<int?> color,
+      Value<String?> icon,
+      Value<int> sortOrder,
+      required int createdAt,
+      required int updatedAt,
+      Value<int?> deletedAt,
+      Value<int> rowid,
+    });
+typedef $$TasksTableUpdateCompanionBuilder =
+    TasksCompanion Function({
+      Value<String> id,
+      Value<String> calendarId,
+      Value<String?> subcategoryId,
+      Value<String> title,
+      Value<String?> notes,
+      Value<int?> due,
+      Value<bool> hasTime,
+      Value<int?> completedAt,
+      Value<int?> color,
+      Value<String?> icon,
+      Value<int> sortOrder,
+      Value<int> createdAt,
+      Value<int> updatedAt,
+      Value<int?> deletedAt,
+      Value<int> rowid,
+    });
+
+final class $$TasksTableReferences
+    extends BaseReferences<_$VehaDatabase, $TasksTable, Task> {
+  $$TasksTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $CalendarsTable _calendarIdTable(_$VehaDatabase db) => db.calendars
+      .createAlias($_aliasNameGenerator(db.tasks.calendarId, db.calendars.id));
+
+  $$CalendarsTableProcessedTableManager get calendarId {
+    final $_column = $_itemColumn<String>('calendar_id')!;
+
+    final manager = $$CalendarsTableTableManager(
+      $_db,
+      $_db.calendars,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_calendarIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$TasksTableFilterComposer extends Composer<_$VehaDatabase, $TasksTable> {
+  $$TasksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get subcategoryId => $composableBuilder(
+    column: $table.subcategoryId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get due => $composableBuilder(
+    column: $table.due,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get hasTime => $composableBuilder(
+    column: $table.hasTime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get icon => $composableBuilder(
+    column: $table.icon,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$CalendarsTableFilterComposer get calendarId {
+    final $$CalendarsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.calendarId,
+      referencedTable: $db.calendars,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CalendarsTableFilterComposer(
+            $db: $db,
+            $table: $db.calendars,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TasksTableOrderingComposer
+    extends Composer<_$VehaDatabase, $TasksTable> {
+  $$TasksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get subcategoryId => $composableBuilder(
+    column: $table.subcategoryId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get due => $composableBuilder(
+    column: $table.due,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get hasTime => $composableBuilder(
+    column: $table.hasTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get icon => $composableBuilder(
+    column: $table.icon,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$CalendarsTableOrderingComposer get calendarId {
+    final $$CalendarsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.calendarId,
+      referencedTable: $db.calendars,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CalendarsTableOrderingComposer(
+            $db: $db,
+            $table: $db.calendars,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TasksTableAnnotationComposer
+    extends Composer<_$VehaDatabase, $TasksTable> {
+  $$TasksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get subcategoryId => $composableBuilder(
+    column: $table.subcategoryId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<int> get due =>
+      $composableBuilder(column: $table.due, builder: (column) => column);
+
+  GeneratedColumn<bool> get hasTime =>
+      $composableBuilder(column: $table.hasTime, builder: (column) => column);
+
+  GeneratedColumn<int> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
+
+  GeneratedColumn<String> get icon =>
+      $composableBuilder(column: $table.icon, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  $$CalendarsTableAnnotationComposer get calendarId {
+    final $$CalendarsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.calendarId,
+      referencedTable: $db.calendars,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CalendarsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.calendars,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TasksTableTableManager
+    extends
+        RootTableManager<
+          _$VehaDatabase,
+          $TasksTable,
+          Task,
+          $$TasksTableFilterComposer,
+          $$TasksTableOrderingComposer,
+          $$TasksTableAnnotationComposer,
+          $$TasksTableCreateCompanionBuilder,
+          $$TasksTableUpdateCompanionBuilder,
+          (Task, $$TasksTableReferences),
+          Task,
+          PrefetchHooks Function({bool calendarId})
+        > {
+  $$TasksTableTableManager(_$VehaDatabase db, $TasksTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TasksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TasksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TasksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> calendarId = const Value.absent(),
+                Value<String?> subcategoryId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<int?> due = const Value.absent(),
+                Value<bool> hasTime = const Value.absent(),
+                Value<int?> completedAt = const Value.absent(),
+                Value<int?> color = const Value.absent(),
+                Value<String?> icon = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TasksCompanion(
+                id: id,
+                calendarId: calendarId,
+                subcategoryId: subcategoryId,
+                title: title,
+                notes: notes,
+                due: due,
+                hasTime: hasTime,
+                completedAt: completedAt,
+                color: color,
+                icon: icon,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String calendarId,
+                Value<String?> subcategoryId = const Value.absent(),
+                required String title,
+                Value<String?> notes = const Value.absent(),
+                Value<int?> due = const Value.absent(),
+                Value<bool> hasTime = const Value.absent(),
+                Value<int?> completedAt = const Value.absent(),
+                Value<int?> color = const Value.absent(),
+                Value<String?> icon = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                required int createdAt,
+                required int updatedAt,
+                Value<int?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TasksCompanion.insert(
+                id: id,
+                calendarId: calendarId,
+                subcategoryId: subcategoryId,
+                title: title,
+                notes: notes,
+                due: due,
+                hasTime: hasTime,
+                completedAt: completedAt,
+                color: color,
+                icon: icon,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) =>
+                    (e.readTable(table), $$TasksTableReferences(db, table, e)),
+              )
+              .toList(),
+          prefetchHooksCallback: ({calendarId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (calendarId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.calendarId,
+                                referencedTable: $$TasksTableReferences
+                                    ._calendarIdTable(db),
+                                referencedColumn: $$TasksTableReferences
+                                    ._calendarIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$TasksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$VehaDatabase,
+      $TasksTable,
+      Task,
+      $$TasksTableFilterComposer,
+      $$TasksTableOrderingComposer,
+      $$TasksTableAnnotationComposer,
+      $$TasksTableCreateCompanionBuilder,
+      $$TasksTableUpdateCompanionBuilder,
+      (Task, $$TasksTableReferences),
+      Task,
+      PrefetchHooks Function({bool calendarId})
     >;
 typedef $$FieldDefsTableCreateCompanionBuilder =
     FieldDefsCompanion Function({
@@ -10053,6 +12233,10 @@ class $VehaDatabaseManager {
       $$RemindersTableTableManager(_db, _db.reminders);
   $$EventNotesTableTableManager get eventNotes =>
       $$EventNotesTableTableManager(_db, _db.eventNotes);
+  $$EventPhotosTableTableManager get eventPhotos =>
+      $$EventPhotosTableTableManager(_db, _db.eventPhotos);
+  $$TasksTableTableManager get tasks =>
+      $$TasksTableTableManager(_db, _db.tasks);
   $$FieldDefsTableTableManager get fieldDefs =>
       $$FieldDefsTableTableManager(_db, _db.fieldDefs);
   $$FieldValuesTableTableManager get fieldValues =>

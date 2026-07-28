@@ -614,6 +614,161 @@ class VehaRepository {
     });
   }
 
+  // ---------- снимки ----------
+
+  /// Снимки события потоком: их добавляют на том же экране, где показывают.
+  Stream<List<VPhoto>> watchPhotos(String eventId) =>
+      (db.select(db.eventPhotos)
+            ..where((t) => t.eventId.equals(eventId))
+            ..orderBy([
+              (t) => OrderingTerm(expression: t.sortOrder),
+              (t) => OrderingTerm(expression: t.createdAt),
+              (t) => OrderingTerm(expression: t.id),
+            ]))
+          .watch()
+          .map((rows) => [
+                for (final r in rows)
+                  VPhoto(
+                    id: r.id,
+                    eventId: r.eventId,
+                    path: r.path,
+                    sortOrder: r.sortOrder,
+                  ),
+              ]);
+
+  /// В очередь синхронизации не идёт: сервер хранит записи, а не файлы.
+  Future<void> addPhoto(VPhoto photo) => db
+      .into(db.eventPhotos)
+      .insertOnConflictUpdate(EventPhotosCompanion.insert(
+        id: photo.id,
+        eventId: photo.eventId,
+        path: photo.path,
+        sortOrder: Value(photo.sortOrder),
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+      ));
+
+  /// Возвращает путь удалённой строки, чтобы вызывающий убрал файл: работа с
+  /// диском репозиторию не принадлежит.
+  Future<String?> deletePhoto(String id) async {
+    final row = await (db.select(db.eventPhotos)..where((t) => t.id.equals(id)))
+        .getSingleOrNull();
+    if (row == null) return null;
+    await (db.delete(db.eventPhotos)..where((t) => t.id.equals(id))).go();
+    return row.path;
+  }
+
+  // ---------- задачи ----------
+
+  /// Задачи потоком. Невыполненные впереди, дальше по сроку: задача без срока
+  /// не всплывает над завтрашней, но и не тонет под сделанными.
+  Stream<List<VTask>> watchTasks({bool includeDone = true}) {
+    final query = db.select(db.tasks)
+      ..where((t) => t.deletedAt.isNull())
+      ..orderBy([
+        (t) => OrderingTerm(expression: t.completedAt.isNotNull()),
+        (t) => OrderingTerm(expression: t.due.isNull()),
+        (t) => OrderingTerm(expression: t.due),
+        (t) => OrderingTerm(expression: t.sortOrder),
+        (t) => OrderingTerm(expression: t.createdAt),
+        (t) => OrderingTerm(expression: t.id),
+      ]);
+    if (!includeDone) query.where((t) => t.completedAt.isNull());
+    return query.watch().map((rows) => rows.map(_toTask).toList());
+  }
+
+  /// Задачи со сроком внутри окна — для видов календаря.
+  Stream<List<VTask>> watchTasksInRange(DateTime from, DateTime to) =>
+      (db.select(db.tasks)
+            ..where((t) =>
+                t.deletedAt.isNull() &
+                t.due.isBiggerOrEqualValue(from.millisecondsSinceEpoch) &
+                t.due.isSmallerThanValue(to.millisecondsSinceEpoch))
+            ..orderBy([
+              (t) => OrderingTerm(expression: t.due),
+              (t) => OrderingTerm(expression: t.sortOrder),
+              (t) => OrderingTerm(expression: t.createdAt),
+              (t) => OrderingTerm(expression: t.id),
+            ]))
+          .watch()
+          .map((rows) => rows.map(_toTask).toList());
+
+  Future<void> upsertTask(VTask t) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await db.transaction(() async {
+      await db.into(db.tasks).insertOnConflictUpdate(TasksCompanion.insert(
+            id: t.id,
+            calendarId: t.calendarId,
+            subcategoryId: Value(t.subcategoryId),
+            title: t.title,
+            notes: Value(t.notes),
+            due: Value(t.due?.millisecondsSinceEpoch),
+            hasTime: Value(t.hasTime),
+            completedAt: Value(t.completedAt?.millisecondsSinceEpoch),
+            color: Value(t.color?.toARGB32()),
+            icon: Value(t.iconName),
+            sortOrder: Value(t.sortOrder),
+            createdAt: now,
+            updatedAt: now,
+          ));
+      await _enqueue('task', t.id, 'upsert');
+    });
+  }
+
+  /// Отметка выполнения. Отдельным методом: чекбокс знает про одну колонку,
+  /// а не про всю запись, и правка целиком затёрла бы чужие изменения.
+  Future<void> setTaskDone(String id, bool done) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await db.transaction(() async {
+      await (db.update(db.tasks)..where((t) => t.id.equals(id))).write(
+        TasksCompanion(
+          completedAt: Value(done ? now : null),
+          updatedAt: Value(now),
+        ),
+      );
+      await _enqueue('task', id, 'upsert');
+    });
+  }
+
+  Future<void> deleteTask(String id) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await db.transaction(() async {
+      await (db.update(db.tasks)..where((t) => t.id.equals(id)))
+          .write(TasksCompanion(
+        deletedAt: Value(now),
+        updatedAt: Value(now),
+      ));
+      await _enqueue('task', id, 'delete');
+    });
+  }
+
+  Future<void> restoreTask(String id) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await db.transaction(() async {
+      await (db.update(db.tasks)..where((t) => t.id.equals(id)))
+          .write(TasksCompanion(
+        deletedAt: const Value(null),
+        updatedAt: Value(now),
+      ));
+      await _enqueue('task', id, 'upsert');
+    });
+  }
+
+  static VTask _toTask(Task t) => VTask(
+        id: t.id,
+        calendarId: t.calendarId,
+        subcategoryId: t.subcategoryId,
+        title: t.title,
+        notes: t.notes,
+        due: t.due == null ? null : DateTime.fromMillisecondsSinceEpoch(t.due!),
+        hasTime: t.hasTime,
+        completedAt: t.completedAt == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(t.completedAt!),
+        color: t.color == null ? null : Color(t.color!),
+        iconName: t.icon,
+        sortOrder: t.sortOrder,
+      );
+
   // ---------- свои поля ----------
 
   /// Заведение и правка своего поля. `calendarId == null` — поле общее и

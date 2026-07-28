@@ -10,6 +10,7 @@ import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
 import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
 import '../calendar/widgets/month_header.dart';
+import 'photos_block.dart';
 import 'reminders_sheet.dart' show remindersLabel;
 import '../common/blocks.dart';
 
@@ -109,6 +110,10 @@ class EventScreen extends ConsumerWidget {
         ),
         const SizedBox(height: 14),
         VBlock(children: rows),
+        PhotosBlock(
+          eventId: event.recurrenceId ?? event.id,
+          color: color,
+        ),
         if (notes.isNotEmpty) ...[
           VBlockCap(l.notesTitle),
           for (final n in notes) ...[
