@@ -454,6 +454,77 @@ class VehaRepository {
     });
   }
 
+  // ---------- обмен файлами ----------
+
+  /// Все события для выгрузки: строки как есть, без развёртки рядов.
+  ///
+  /// В файл уходит правило, а не тысяча его занятий: так меньше файл, а чужой
+  /// календарь развернёт ряд сам. Скрытые календари выгружаются наравне с
+  /// видимыми — скрытие про показ, а не про содержимое.
+  Future<List<VEvent>> allEvents() async {
+    final rows = await (db.select(db.events)
+          ..where((t) => t.deletedAt.isNull())
+          ..orderBy([(t) => OrderingTerm(expression: t.start)]))
+        .get();
+    final values = await db.select(db.fieldValues).get();
+
+    final byEvent = <String, List<VFieldValue>>{};
+    for (final v in values) {
+      byEvent
+          .putIfAbsent(v.eventId, () => [])
+          .add(VFieldValue(fieldId: v.fieldId, value: v.value));
+    }
+
+    return [
+      for (final e in rows)
+        _withDetails(_toEvent(e), fields: byEvent[e.id] ?? const []),
+    ];
+  }
+
+  /// Загрузка из файла. Все события ложатся в указанный календарь: в чужом
+  /// файле календаря нет, а раскладывать наугад хуже, чем сложить в одну
+  /// стопку, которую человек разберёт сам.
+  ///
+  /// [fields] — определения своих полей из того же файла. Недостающие
+  /// заводятся в этом же календаре: без определения значение показать негде.
+  Future<int> importEvents(
+    List<VEvent> events, {
+    required String calendarId,
+    List<VFieldDef> fields = const [],
+  }) async {
+    final known = {
+      for (final f in await _fieldDefsQuery().get()) f.id,
+    };
+    for (final f in fields) {
+      if (known.contains(f.id)) continue;
+      await upsertFieldDef(VFieldDef(
+        id: f.id,
+        name: f.name,
+        type: f.type,
+        iconName: f.iconName,
+        calendarId: calendarId,
+      ));
+    }
+
+    var added = 0;
+    for (final e in events) {
+      await upsertEvent(VEvent(
+        id: newId(),
+        calendarId: calendarId,
+        title: e.title,
+        start: e.start,
+        end: e.end,
+        isAllDay: e.isAllDay,
+        rrule: e.rrule,
+        timezone: e.timezone,
+        location: e.location,
+        fields: e.fields,
+      ));
+      added++;
+    }
+    return added;
+  }
+
   // ---------- заметки ----------
 
   /// Заметка внутри события. Свой цвет — четвёртый уровень наследования:

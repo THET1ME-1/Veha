@@ -1,0 +1,327 @@
+import 'dart:convert';
+
+import '../data/models.dart';
+
+/// Обмен с чужими календарями по RFC 5545.
+///
+/// Свой формат для бэкапа был бы проще, но бесполезен: человек уносит события
+/// в Google, Proton или Thunderbird, а они понимают только `.ics`.
+///
+/// Чего здесь намеренно нет: VALARM (напоминания — дело устройства, а не
+/// файла), VTIMEZONE (полное описание правил перевода часов; пояс уходит
+/// именем в `TZID`, и все известные разборщики его понимают), участников и
+/// вложений — их в модели нет.
+const _productId = '-//THET1ME-1//Veha//RU';
+
+/// Разобранный файл: события и определения полей, которых им не хватает.
+class IcsData {
+  const IcsData({required this.events, required this.fields});
+
+  final List<VEvent> events;
+
+  /// Определения своих полей, восстановленные из файла. Без них значение
+  /// показать негде: строка «312» без подписи «Кабинет» ничего не значит.
+  final List<VFieldDef> fields;
+
+  static const empty = IcsData(events: [], fields: []);
+}
+
+/// События в текст `.ics`.
+///
+/// [defs] нужны, чтобы своё поле пережило круг: в файл уходит не только
+/// значение, но имя с типом — иначе на другом устройстве его негде показать.
+String toIcs(
+  List<VEvent> events, {
+  DateTime? stamp,
+  Map<String, VFieldDef> defs = const {},
+}) {
+  final out = StringBuffer()
+    ..write(_line('BEGIN:VCALENDAR'))
+    ..write(_line('VERSION:2.0'))
+    ..write(_line('PRODID:$_productId'))
+    ..write(_line('CALSCALE:GREGORIAN'));
+
+  final now = _utcStamp(stamp ?? DateTime.now().toUtc());
+
+  for (final e in events) {
+    out
+      ..write(_line('BEGIN:VEVENT'))
+      ..write(_line('UID:${e.id}@veha'))
+      ..write(_line('DTSTAMP:$now'))
+      ..write(_line('SUMMARY:${_escape(e.title)}'));
+
+    if (e.isAllDay) {
+      out
+        ..write(_line('DTSTART;VALUE=DATE:${_date(e.start)}'))
+        ..write(_line('DTEND;VALUE=DATE:${_date(e.end)}'));
+    } else {
+      out
+        ..write(_line('DTSTART;TZID=${e.timezone}:${_dateTime(e.start)}'))
+        ..write(_line('DTEND;TZID=${e.timezone}:${_dateTime(e.end)}'));
+    }
+
+    if (e.rrule != null) out.write(_line('RRULE:${e.rrule}'));
+    if (e.location != null) {
+      out.write(_line('LOCATION:${_escape(e.location!)}'));
+    }
+
+    // Свои поля — расширение с префиксом `X-`: чужой календарь их пропустит
+    // мимо, а Veha прочитает обратно вместе с определением.
+    for (final f in e.fields) {
+      final def = defs[f.fieldId];
+      final name = def == null ? '' : ';X-VEHA-NAME="${_param(def.name)}"';
+      final type = def == null ? '' : ';X-VEHA-TYPE=${def.type.name}';
+      final icon = def == null ? '' : ';X-VEHA-ICON=${def.iconName}';
+      out.write(_line(
+        'X-VEHA-FIELD;X-VEHA-ID=${f.fieldId}$name$type$icon:${_escape(f.value)}',
+      ));
+    }
+
+    out.write(_line('END:VEVENT'));
+  }
+
+  out.write(_line('END:VCALENDAR'));
+  return out.toString();
+}
+
+/// Текст `.ics` в события.
+///
+/// Битый файл даёт пустой список, а не исключение: человек выбрал не тот файл,
+/// и сообщать об этом надо интерфейсом, а не крэшем.
+IcsData parseIcs(String text, {String Function()? newId}) {
+  final lines = _unfold(text);
+  final out = <VEvent>[];
+  final defs = <String, VFieldDef>{};
+
+  Map<String, _Prop>? current;
+  var fields = <VFieldValue>[];
+  var counter = 0;
+
+  for (final line in lines) {
+    if (line == 'BEGIN:VEVENT') {
+      current = {};
+      fields = [];
+      continue;
+    }
+    if (line == 'END:VEVENT') {
+      if (current == null) continue;
+      final event = _toEvent(
+        current,
+        fields,
+        id: newId?.call() ?? 'ics-${counter++}',
+      );
+      if (event != null) out.add(event);
+      current = null;
+      continue;
+    }
+    if (current == null) continue;
+
+    final prop = _Prop.parse(line);
+    if (prop == null) continue;
+    if (prop.name == 'X-VEHA-FIELD') {
+      final id = prop.params['X-VEHA-ID'];
+      if (id != null) {
+        fields.add(VFieldValue(fieldId: id, value: _unescape(prop.value)));
+        final name = prop.params['X-VEHA-NAME'];
+        if (name != null) {
+          defs[id] = VFieldDef(
+            id: id,
+            name: name,
+            type: VFieldType.values.firstWhere(
+              (t) => t.name == prop.params['X-VEHA-TYPE'],
+              orElse: () => VFieldType.text,
+            ),
+            iconName: prop.params['X-VEHA-ICON'] ?? 'text',
+          );
+        }
+      }
+      continue;
+    }
+    current[prop.name] = prop;
+  }
+
+  return IcsData(events: out, fields: defs.values.toList());
+}
+
+/// Значение параметра в кавычках: запятая и точка с запятой там разделители,
+/// а в имени поля они законны («Кабинет, корпус»).
+String _param(String value) => value.replaceAll('"', "'");
+
+VEvent? _toEvent(
+  Map<String, _Prop> props,
+  List<VFieldValue> fields, {
+  required String id,
+}) {
+  final start = props['DTSTART'];
+  if (start == null) return null;
+
+  final startAt = _parseMoment(start);
+  if (startAt == null) return null;
+
+  final allDay = start.params['VALUE'] == 'DATE';
+  final endProp = props['DTEND'];
+  final endAt = endProp == null ? null : _parseMoment(endProp);
+
+  return VEvent(
+    id: id,
+    // Календарь назначает тот, кто импортирует: в чужом файле его нет.
+    calendarId: '',
+    title: _unescape(props['SUMMARY']?.value ?? 'Без названия'),
+    start: startAt,
+    // Час по умолчанию — соглашение самого RFC для событий без конца.
+    end: endAt ?? startAt.add(allDay
+        ? const Duration(days: 1)
+        : const Duration(hours: 1)),
+    isAllDay: allDay,
+    rrule: props['RRULE']?.value,
+    location: props['LOCATION'] == null
+        ? null
+        : _unescape(props['LOCATION']!.value),
+    timezone: start.params['TZID'] ?? 'UTC',
+    fields: fields,
+  );
+}
+
+DateTime? _parseMoment(_Prop prop) {
+  final v = prop.value;
+  if (prop.params['VALUE'] == 'DATE' || v.length == 8) {
+    final y = int.tryParse(v.substring(0, 4));
+    final m = int.tryParse(v.substring(4, 6));
+    final d = int.tryParse(v.substring(6, 8));
+    if (y == null || m == null || d == null) return null;
+    return DateTime(y, m, d);
+  }
+  if (v.length < 15) return null;
+
+  final y = int.tryParse(v.substring(0, 4));
+  final mo = int.tryParse(v.substring(4, 6));
+  final d = int.tryParse(v.substring(6, 8));
+  final h = int.tryParse(v.substring(9, 11));
+  final mi = int.tryParse(v.substring(11, 13));
+  final s = int.tryParse(v.substring(13, 15));
+  if ([y, mo, d, h, mi, s].contains(null)) return null;
+
+  // Хвостовая Z означает UTC. Без неё время «настенное»: пояс приезжает
+  // отдельным параметром, а сам момент трогать нельзя.
+  return v.endsWith('Z')
+      ? DateTime.utc(y!, mo!, d!, h!, mi!, s!).toLocal()
+      : DateTime(y!, mo!, d!, h!, mi!, s!);
+}
+
+/// Свойство строки: имя, параметры и значение.
+class _Prop {
+  const _Prop(this.name, this.params, this.value);
+
+  final String name;
+  final Map<String, String> params;
+  final String value;
+
+  static _Prop? parse(String line) {
+    // Двоеточие внутри значения встречается сплошь и рядом («LOCATION:г. Х:5»),
+    // поэтому режем по первому, и только за пределами кавычек.
+    var colon = -1;
+    var quoted = false;
+    for (var i = 0; i < line.length; i++) {
+      final c = line[i];
+      if (c == '"') quoted = !quoted;
+      if (c == ':' && !quoted) {
+        colon = i;
+        break;
+      }
+    }
+    if (colon <= 0) return null;
+
+    final head = line.substring(0, colon);
+    final value = line.substring(colon + 1);
+    final parts = head.split(';');
+    final params = <String, String>{};
+
+    for (final p in parts.skip(1)) {
+      final eq = p.indexOf('=');
+      if (eq <= 0) continue;
+      params[p.substring(0, eq).toUpperCase()] =
+          p.substring(eq + 1).replaceAll('"', '');
+    }
+    return _Prop(parts.first.toUpperCase(), params, value);
+  }
+}
+
+/// Складывание длинных строк. Считать надо октеты, а не символы: кириллица в
+/// UTF-8 занимает по два байта, и по символам строка вылезет за предел вдвое.
+String _line(String value) {
+  final bytes = utf8.encode(value);
+  if (bytes.length <= 75) return '$value\r\n';
+
+  final out = StringBuffer();
+  var start = 0;
+  var limit = 75;
+
+  while (start < bytes.length) {
+    var end = start + limit;
+    if (end >= bytes.length) {
+      end = bytes.length;
+    } else {
+      // Резать посреди многобайтового символа нельзя: продолжения начинаются
+      // с битов 10xxxxxx, отступаем до начала символа.
+      while (end > start && (bytes[end] & 0xC0) == 0x80) {
+        end--;
+      }
+    }
+    final chunk = utf8.decode(bytes.sublist(start, end));
+    out.write(start == 0 ? chunk : ' $chunk');
+    out.write('\r\n');
+    start = end;
+    // У продолжения первый октет занят пробелом.
+    limit = 74;
+  }
+  return out.toString();
+}
+
+/// Склейка сложенных строк обратно.
+List<String> _unfold(String text) {
+  final out = <String>[];
+  for (final raw in text.split('\n')) {
+    final line = raw.endsWith('\r') ? raw.substring(0, raw.length - 1) : raw;
+    if (line.isEmpty) continue;
+    if ((line.startsWith(' ') || line.startsWith('\t')) && out.isNotEmpty) {
+      out[out.length - 1] = out.last + line.substring(1);
+    } else {
+      out.add(line);
+    }
+  }
+  return out;
+}
+
+String _escape(String value) => value
+    .replaceAll('\\', '\\\\')
+    .replaceAll('\n', '\\n')
+    .replaceAll(',', '\\,')
+    .replaceAll(';', '\\;');
+
+String _unescape(String value) {
+  final out = StringBuffer();
+  for (var i = 0; i < value.length; i++) {
+    if (value[i] != '\\' || i + 1 >= value.length) {
+      out.write(value[i]);
+      continue;
+    }
+    final next = value[++i];
+    out.write(switch (next) {
+      'n' || 'N' => '\n',
+      '\\' => '\\',
+      ',' => ',',
+      ';' => ';',
+      _ => next,
+    });
+  }
+  return out.toString();
+}
+
+String _two(int v) => v.toString().padLeft(2, '0');
+
+String _date(DateTime d) => '${d.year}${_two(d.month)}${_two(d.day)}';
+
+String _dateTime(DateTime d) =>
+    '${_date(d)}T${_two(d.hour)}${_two(d.minute)}${_two(d.second)}';
+
+String _utcStamp(DateTime d) => '${_dateTime(d.toUtc())}Z';

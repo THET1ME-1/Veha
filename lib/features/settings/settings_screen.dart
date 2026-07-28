@@ -11,6 +11,7 @@ import '../calendar/widgets/week_setup_sheet.dart';
 import '../color/color_picker_screen.dart';
 import '../common/blocks.dart';
 import '../fields/fields_screen.dart';
+import 'ics_rows.dart';
 
 /// Настройки: оформление, неделя, данные, о приложении.
 ///
@@ -124,6 +125,8 @@ class SettingsScreen extends ConsumerWidget {
                 .setLocale(v.isEmpty ? null : Locale(v)),
           ),
         ]),
+        const VBlockCap('Данные'),
+        const VBlock(children: [IcsRows()]),
         const VBlockCap('О приложении'),
         VBlock(children: [
           const _VersionRow(),
