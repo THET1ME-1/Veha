@@ -127,6 +127,33 @@ Future<void> pumpScreen(
     ),
   );
   await tester.pumpAndSettle();
+
+  await _warmImages(tester);
+}
+
+/// Прогрев картинок с диска.
+///
+/// Сам по себе снимок в тестах не появляется: декодер работает в настоящем
+/// цикле событий, а `flutter_test` держит поддельные часы. Внутри `runAsync`
+/// цикл настоящий, но кадры оттуда не идут сами — поэтому `pump` вызывается
+/// руками после каждой картинки. Без этого обложка выходит пустой, и глазами
+/// это читается как поломка вёрстки.
+///
+/// Ожидание с потолком: `precacheImage` завершается на кадре, и стоит цепочке
+/// разойтись — тест виснет молча и навсегда. Полсекунды на картинку хватает
+/// с запасом, а зависнуть уже не даёт.
+Future<void> _warmImages(WidgetTester tester) async {
+  final images = find.byType(Image).evaluate().toList();
+  if (images.isEmpty) return;
+
+  await tester.runAsync(() async {
+    for (final element in images) {
+      await precacheImage((element.widget as Image).image, element)
+          .timeout(const Duration(milliseconds: 500), onTimeout: () {});
+      await tester.pump();
+    }
+  });
+  await tester.pumpAndSettle();
 }
 
 /// Пишет PNG рядом с тестами, чтобы картинку можно было открыть глазами.

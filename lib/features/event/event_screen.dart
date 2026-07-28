@@ -10,7 +10,7 @@ import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
 import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
 import '../calendar/widgets/month_header.dart';
-import 'photos_block.dart';
+import 'event_cover.dart';
 import 'reminders_sheet.dart' show remindersLabel;
 import '../common/blocks.dart';
 
@@ -40,6 +40,9 @@ class EventScreen extends ConsumerWidget {
     final locale = Localizations.localeOf(context).toLanguageTag();
     final color = inheritance.colorOfEvent(event);
     final ink = EventColors.of(color, theme.brightness);
+
+    final coverId = event.recurrenceId ?? event.id;
+    final cover = ref.watch(coverProvider(coverId));
 
     final calendar = inheritance.calendars[event.calendarId];
     final sub = event.subcategoryId == null
@@ -107,13 +110,11 @@ class EventScreen extends ConsumerWidget {
           background: ink.background,
           foreground: ink.foreground,
           progress: progress,
+          image: cover,
+          action: CoverButton(eventId: coverId, ink: ink),
         ),
         const SizedBox(height: 14),
         VBlock(children: rows),
-        PhotosBlock(
-          eventId: event.recurrenceId ?? event.id,
-          color: color,
-        ),
         if (notes.isNotEmpty) ...[
           VBlockCap(l.notesTitle),
           for (final n in notes) ...[

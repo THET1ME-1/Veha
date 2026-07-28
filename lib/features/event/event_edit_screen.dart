@@ -14,7 +14,7 @@ import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
 import 'field_value_sheet.dart';
 import 'note_sheet.dart';
-import 'photos_block.dart';
+import 'event_cover.dart';
 import 'place_sheet.dart';
 import 'look_sheet.dart';
 import 'reminders_sheet.dart';
@@ -328,14 +328,13 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
         40,
       ),
       children: [
-        Container(
-          padding: const EdgeInsets.fromLTRB(18, 16, 18, 18),
-          decoration: ShapeDecoration(
-            color: ink.background,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(30)),
-            ),
-          ),
+        _CoverCard(
+          ink: ink,
+          // Обложка живёт у сохранённого события: у нового ещё нет ключа,
+          // к которому её привязать.
+          eventId: _draft.isEditing
+              ? (_draft.source!.recurrenceId ?? _draft.source!.id)
+              : null,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -360,6 +359,15 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
                     ),
                   ),
                   const Spacer(),
+                  if (_draft.isEditing) ...[
+                    CoverButton(
+                      eventId:
+                          _draft.source!.recurrenceId ?? _draft.source!.id,
+                      ink: ink,
+                      size: 36,
+                    ),
+                    const SizedBox(width: 8),
+                  ],
                   InkWell(
                     onTap: () => _pickLook(color, icon),
                     borderRadius: BorderRadius.circular(99),
@@ -512,13 +520,7 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
         // Заметки и снимки принадлежат сохранённому событию: у нового ещё нет
         // ключа, к которому их привязать, и держать их в черновике значит
         // заводить вторую правду о том же.
-        if (_draft.isEditing) ...[
-          PhotosBlock(
-            eventId: _draft.source!.recurrenceId ?? _draft.source!.id,
-            color: color,
-          ),
-          _notes(color),
-        ],
+        if (_draft.isEditing) _notes(color),
         if (widget.onDelete != null) ...[
           const SizedBox(height: 18),
           TextButton.icon(
@@ -745,6 +747,41 @@ class _NoteRow extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Шапка формы со снимком на фоне.
+///
+/// Тот же приём, что и в просмотре: фотография заливается ровным слоем цвета
+/// события, иначе белые буквы теряются на светлом небе. Градиентов в
+/// приложении нет.
+class _CoverCard extends ConsumerWidget {
+  const _CoverCard({required this.ink, required this.eventId, required this.child});
+
+  final EventInk ink;
+  final String? eventId;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cover = eventId == null ? null : ref.watch(coverProvider(eventId!));
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(30),
+      child: Stack(
+        children: [
+          if (cover != null)
+            Positioned.fill(child: Image(image: cover, fit: BoxFit.cover)),
+          Container(
+            padding: const EdgeInsets.fromLTRB(18, 16, 18, 18),
+            color: cover == null
+                ? ink.background
+                : ink.background.withValues(alpha: coverScrim),
+            child: child,
+          ),
+        ],
       ),
     );
   }

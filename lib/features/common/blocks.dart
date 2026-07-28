@@ -330,6 +330,8 @@ class VHero extends StatelessWidget {
     required this.background,
     required this.foreground,
     this.progress,
+    this.image,
+    this.action,
   });
 
   final String icon;
@@ -341,28 +343,53 @@ class VHero extends StatelessWidget {
   /// Доля пройденного для многодневных событий.
   final double? progress;
 
+  /// Снимок фоном. Поверх ложится ровная заливка цветом события — без неё
+  /// белые буквы теряются на светлом небе.
+  final ImageProvider? image;
+
+  /// Кнопка в верхнем углу карточки.
+  final Widget? action;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
-      decoration: ShapeDecoration(
-        color: background,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(30)),
-        ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(30),
+      child: Stack(
+        children: [
+          if (image != null)
+            Positioned.fill(child: Image(image: image!, fit: BoxFit.cover)),
+          Container(
+            padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
+            color: image == null
+                ? background
+                : background.withValues(alpha: 0.72),
+            child: _content(context),
+          ),
+        ],
       ),
-      child: Column(
+    );
+  }
+
+  Widget _content(BuildContext context) {
+    return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 52,
-            height: 52,
-            alignment: Alignment.center,
-            decoration: ShapeDecoration(
-              color: foreground.withValues(alpha: 0.14),
-              shape: const CircleBorder(),
-            ),
-            child: Icon(VehaIcons.byName(icon), size: 26, color: foreground),
+          Row(
+            children: [
+              Container(
+                width: 52,
+                height: 52,
+                alignment: Alignment.center,
+                decoration: ShapeDecoration(
+                  color: foreground.withValues(alpha: 0.14),
+                  shape: const CircleBorder(),
+                ),
+                child:
+                    Icon(VehaIcons.byName(icon), size: 26, color: foreground),
+              ),
+              const Spacer(),
+              if (action != null) action!,
+            ],
           ),
           const SizedBox(height: 12),
           Text(
@@ -405,7 +432,6 @@ class VHero extends StatelessWidget {
             ),
           ],
         ],
-      ),
     );
   }
 }
