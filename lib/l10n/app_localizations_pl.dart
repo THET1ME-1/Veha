@@ -908,4 +908,17 @@ class LPl extends L {
 
   @override
   String get settingsStartView => 'Widok na starcie';
+
+  @override
+  String get placeHere => 'Jestem tutaj';
+
+  @override
+  String get placeSearchHint => 'Ulica, lokal, miasto';
+
+  @override
+  String get placeSearching => 'Szukam…';
+
+  @override
+  String get placeNoFix =>
+      'Nie udało się ustalić miejsca: brak zgody lub sygnału.';
 }

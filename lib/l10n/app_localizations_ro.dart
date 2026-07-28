@@ -899,4 +899,17 @@ class LRo extends L {
 
   @override
   String get settingsStartView => 'Vizualizarea la pornire';
+
+  @override
+  String get placeHere => 'Sunt aici';
+
+  @override
+  String get placeSearchHint => 'Stradă, local, oraș';
+
+  @override
+  String get placeSearching => 'Caut…';
+
+  @override
+  String get placeNoFix =>
+      'Nu am putut afla locul: fără permisiune sau semnal.';
 }

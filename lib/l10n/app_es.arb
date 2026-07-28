@@ -1100,5 +1100,21 @@
   "settingsStartView": "Vista al inicio",
   "@settingsStartView": {
     "description": "settingsStartView"
+  },
+  "placeHere": "Estoy aquí",
+  "@placeHere": {
+    "description": "placeHere"
+  },
+  "placeSearchHint": "Calle, local, ciudad",
+  "@placeSearchHint": {
+    "description": "placeSearchHint"
+  },
+  "placeSearching": "Buscando…",
+  "@placeSearching": {
+    "description": "placeSearching"
+  },
+  "placeNoFix": "No se pudo obtener el lugar: sin permiso o sin señal.",
+  "@placeNoFix": {
+    "description": "placeNoFix"
   }
 }

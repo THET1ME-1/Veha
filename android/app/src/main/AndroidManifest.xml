@@ -9,6 +9,11 @@
     <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <!-- Место события ставится по координатам. Точное разрешение спрашиваем
+         вместе с приблизительным: улица нужна точнее, чем район, но отказ от
+         точного не должен ломать функцию целиком. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <application
         android:label="Veha"
         android:name="${applicationName}"

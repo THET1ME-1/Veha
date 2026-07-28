@@ -900,4 +900,17 @@ class LDe extends L {
 
   @override
   String get settingsStartView => 'Ansicht beim Start';
+
+  @override
+  String get placeHere => 'Ich bin hier';
+
+  @override
+  String get placeSearchHint => 'Straße, Ort, Stadt';
+
+  @override
+  String get placeSearching => 'Suche…';
+
+  @override
+  String get placeNoFix =>
+      'Ort nicht ermittelbar: keine Berechtigung oder kein Signal.';
 }

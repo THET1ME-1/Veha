@@ -896,4 +896,17 @@ class LEn extends L {
 
   @override
   String get settingsStartView => 'View on start';
+
+  @override
+  String get placeHere => 'I am here';
+
+  @override
+  String get placeSearchHint => 'Street, place, city';
+
+  @override
+  String get placeSearching => 'Searching…';
+
+  @override
+  String get placeNoFix =>
+      'Could not get the location: no permission or no signal.';
 }

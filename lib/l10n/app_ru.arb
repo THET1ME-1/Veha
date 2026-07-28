@@ -1188,5 +1188,21 @@
   "settingsStartView": "Вид на старте",
   "@settingsStartView": {
     "description": "settingsStartView"
+  },
+  "placeHere": "Я здесь",
+  "@placeHere": {
+    "description": "placeHere"
+  },
+  "placeSearchHint": "Улица, заведение, город",
+  "@placeSearchHint": {
+    "description": "placeSearchHint"
+  },
+  "placeSearching": "Ищу…",
+  "@placeSearching": {
+    "description": "placeSearching"
+  },
+  "placeNoFix": "Не вышло определить место: нет разрешения или сигнала.",
+  "@placeNoFix": {
+    "description": "placeNoFix"
   }
 }

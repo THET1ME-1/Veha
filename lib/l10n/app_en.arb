@@ -1100,5 +1100,21 @@
   "settingsStartView": "View on start",
   "@settingsStartView": {
     "description": "settingsStartView"
+  },
+  "placeHere": "I am here",
+  "@placeHere": {
+    "description": "placeHere"
+  },
+  "placeSearchHint": "Street, place, city",
+  "@placeSearchHint": {
+    "description": "placeSearchHint"
+  },
+  "placeSearching": "Searching…",
+  "@placeSearching": {
+    "description": "placeSearching"
+  },
+  "placeNoFix": "Could not get the location: no permission or no signal.",
+  "@placeNoFix": {
+    "description": "placeNoFix"
   }
 }

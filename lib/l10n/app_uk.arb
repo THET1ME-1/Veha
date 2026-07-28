@@ -1100,5 +1100,21 @@
   "settingsStartView": "Вигляд на старті",
   "@settingsStartView": {
     "description": "settingsStartView"
+  },
+  "placeHere": "Я тут",
+  "@placeHere": {
+    "description": "placeHere"
+  },
+  "placeSearchHint": "Вулиця, заклад, місто",
+  "@placeSearchHint": {
+    "description": "placeSearchHint"
+  },
+  "placeSearching": "Шукаю…",
+  "@placeSearching": {
+    "description": "placeSearching"
+  },
+  "placeNoFix": "Не вдалося визначити місце: немає дозволу або сигналу.",
+  "@placeNoFix": {
+    "description": "placeNoFix"
   }
 }

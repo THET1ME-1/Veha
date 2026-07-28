@@ -1100,5 +1100,21 @@
   "settingsStartView": "Ansicht beim Start",
   "@settingsStartView": {
     "description": "settingsStartView"
+  },
+  "placeHere": "Ich bin hier",
+  "@placeHere": {
+    "description": "placeHere"
+  },
+  "placeSearchHint": "Straße, Ort, Stadt",
+  "@placeSearchHint": {
+    "description": "placeSearchHint"
+  },
+  "placeSearching": "Suche…",
+  "@placeSearching": {
+    "description": "placeSearching"
+  },
+  "placeNoFix": "Ort nicht ermittelbar: keine Berechtigung oder kein Signal.",
+  "@placeNoFix": {
+    "description": "placeNoFix"
   }
 }

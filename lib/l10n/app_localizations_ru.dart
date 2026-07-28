@@ -907,4 +907,17 @@ class LRu extends L {
 
   @override
   String get settingsStartView => 'Вид на старте';
+
+  @override
+  String get placeHere => 'Я здесь';
+
+  @override
+  String get placeSearchHint => 'Улица, заведение, город';
+
+  @override
+  String get placeSearching => 'Ищу…';
+
+  @override
+  String get placeNoFix =>
+      'Не вышло определить место: нет разрешения или сигнала.';
 }

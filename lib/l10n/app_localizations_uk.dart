@@ -907,4 +907,17 @@ class LUk extends L {
 
   @override
   String get settingsStartView => 'Вигляд на старті';
+
+  @override
+  String get placeHere => 'Я тут';
+
+  @override
+  String get placeSearchHint => 'Вулиця, заклад, місто';
+
+  @override
+  String get placeSearching => 'Шукаю…';
+
+  @override
+  String get placeNoFix =>
+      'Не вдалося визначити місце: немає дозволу або сигналу.';
 }

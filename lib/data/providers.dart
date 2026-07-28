@@ -3,6 +3,7 @@ import 'dart:ui' show PlatformDispatcher;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../domain/reminder_plan.dart';
+import '../services/place_service.dart';
 import '../services/reminder_service.dart';
 import 'db/connection.dart';
 import 'db/database.dart';
@@ -137,6 +138,11 @@ final reminderPlanProvider = Provider<List<PlannedReminder>>((ref) {
   // запуске приложения и в снимках экрана.
   return planReminders(events, now: DateTime.now());
 });
+
+/// Источник места: координаты и названия. Подменяется в тестах — плагинов
+/// геолокации в `flutter test` нет.
+final placeSourceProvider =
+    Provider<PlaceSource>((ref) => const DevicePlaceSource());
 
 final reminderServiceProvider =
     Provider<ReminderService>((ref) => ReminderService());

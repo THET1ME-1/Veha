@@ -1100,5 +1100,21 @@
   "settingsStartView": "Widok na starcie",
   "@settingsStartView": {
     "description": "settingsStartView"
+  },
+  "placeHere": "Jestem tutaj",
+  "@placeHere": {
+    "description": "placeHere"
+  },
+  "placeSearchHint": "Ulica, lokal, miasto",
+  "@placeSearchHint": {
+    "description": "placeSearchHint"
+  },
+  "placeSearching": "Szukam…",
+  "@placeSearching": {
+    "description": "placeSearching"
+  },
+  "placeNoFix": "Nie udało się ustalić miejsca: brak zgody lub sygnału.",
+  "@placeNoFix": {
+    "description": "placeNoFix"
   }
 }

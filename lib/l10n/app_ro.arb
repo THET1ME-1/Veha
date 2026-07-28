@@ -1100,5 +1100,21 @@
   "settingsStartView": "Vizualizarea la pornire",
   "@settingsStartView": {
     "description": "settingsStartView"
+  },
+  "placeHere": "Sunt aici",
+  "@placeHere": {
+    "description": "placeHere"
+  },
+  "placeSearchHint": "Stradă, local, oraș",
+  "@placeSearchHint": {
+    "description": "placeSearchHint"
+  },
+  "placeSearching": "Caut…",
+  "@placeSearching": {
+    "description": "placeSearching"
+  },
+  "placeNoFix": "Nu am putut afla locul: fără permisiune sau semnal.",
+  "@placeNoFix": {
+    "description": "placeNoFix"
   }
 }

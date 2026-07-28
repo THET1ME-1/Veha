@@ -1618,6 +1618,30 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'Вид на старте'**
   String get settingsStartView;
+
+  /// placeHere
+  ///
+  /// In ru, this message translates to:
+  /// **'Я здесь'**
+  String get placeHere;
+
+  /// placeSearchHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Улица, заведение, город'**
+  String get placeSearchHint;
+
+  /// placeSearching
+  ///
+  /// In ru, this message translates to:
+  /// **'Ищу…'**
+  String get placeSearching;
+
+  /// placeNoFix
+  ///
+  /// In ru, this message translates to:
+  /// **'Не вышло определить место: нет разрешения или сигнала.'**
+  String get placeNoFix;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

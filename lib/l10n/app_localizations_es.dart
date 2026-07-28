@@ -896,4 +896,17 @@ class LEs extends L {
 
   @override
   String get settingsStartView => 'Vista al inicio';
+
+  @override
+  String get placeHere => 'Estoy aquí';
+
+  @override
+  String get placeSearchHint => 'Calle, local, ciudad';
+
+  @override
+  String get placeSearching => 'Buscando…';
+
+  @override
+  String get placeNoFix =>
+      'No se pudo obtener el lugar: sin permiso o sin señal.';
 }

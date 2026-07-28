@@ -14,6 +14,7 @@ import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
 import 'field_value_sheet.dart';
 import 'note_sheet.dart';
+import 'place_sheet.dart';
 import 'look_sheet.dart';
 import 'reminders_sheet.dart';
 import '../calendar/widgets/month_header.dart' show AppFonts;
@@ -249,35 +250,11 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
   }
 
   Future<void> _pickLocation() async {
-    final controller = TextEditingController(text: _draft.location ?? '');
-    final value = await showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(L.of(context).eventPlace),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          decoration: InputDecoration(hintText: L.of(context).eventPlaceHint),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(L.of(context).actionCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, controller.text),
-            child: Text(L.of(context).actionDone),
-          ),
-        ],
-      ),
-    );
-    controller.dispose();
+    final value = await askPlace(context, current: _draft.location);
     if (value == null) return;
-    setState(
-      () => _draft = _draft.withLocation(
-        value.trim().isEmpty ? null : value.trim(),
-      ),
-    );
+    setState(() => _draft = _draft.withLocation(
+          value.trim().isEmpty ? null : value.trim(),
+        ));
   }
 
   @override
