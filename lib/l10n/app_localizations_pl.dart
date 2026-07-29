@@ -1398,4 +1398,30 @@ class LPl extends L {
 
   @override
   String get noteMarkupHint => '„- ” to punkt listy, „[ ] ” to pole wyboru';
+
+  @override
+  String get dayReviewTitle => 'Podsumowanie dnia';
+
+  @override
+  String get dayReviewBusy => 'Zajęte';
+
+  @override
+  String get dayReviewFree => 'Wolne';
+
+  @override
+  String get dayReviewLongest => 'Najdłuższe';
+
+  @override
+  String dayReviewClashes(int count) {
+    return 'Nakładek: $count';
+  }
+
+  @override
+  String get dayReviewGaps => 'Gdzie się zmieści';
+
+  @override
+  String get dayReviewNoBreaks => 'Dzień bez jednej przerwy';
+
+  @override
+  String get dayReviewEmpty => 'Nic nie zaplanowano tego dnia';
 }

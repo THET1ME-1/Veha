@@ -1892,5 +1892,42 @@
   "noteMarkupHint": "«- » — пункт списка, «[ ] » — галочка",
   "@noteMarkupHint": {
     "description": "noteMarkupHint"
+  },
+  "dayReviewTitle": "Разбор дня",
+  "@dayReviewTitle": {
+    "description": "dayReviewTitle"
+  },
+  "dayReviewBusy": "Занято",
+  "@dayReviewBusy": {
+    "description": "dayReviewBusy"
+  },
+  "dayReviewFree": "Свободно",
+  "@dayReviewFree": {
+    "description": "dayReviewFree"
+  },
+  "dayReviewLongest": "Самое долгое",
+  "@dayReviewLongest": {
+    "description": "dayReviewLongest"
+  },
+  "dayReviewClashes": "Накладок: {count}",
+  "@dayReviewClashes": {
+    "description": "dayReviewClashes",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dayReviewGaps": "Куда можно двигать",
+  "@dayReviewGaps": {
+    "description": "dayReviewGaps"
+  },
+  "dayReviewNoBreaks": "День без единого перерыва",
+  "@dayReviewNoBreaks": {
+    "description": "dayReviewNoBreaks"
+  },
+  "dayReviewEmpty": "В этот день ничего не назначено",
+  "@dayReviewEmpty": {
+    "description": "dayReviewEmpty"
   }
 }

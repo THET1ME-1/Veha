@@ -1398,4 +1398,30 @@ class LUk extends L {
 
   @override
   String get noteMarkupHint => '«- » — пункт списку, «[ ] » — галочка';
+
+  @override
+  String get dayReviewTitle => 'Розбір дня';
+
+  @override
+  String get dayReviewBusy => 'Зайнято';
+
+  @override
+  String get dayReviewFree => 'Вільно';
+
+  @override
+  String get dayReviewLongest => 'Найдовше';
+
+  @override
+  String dayReviewClashes(int count) {
+    return 'Накладок: $count';
+  }
+
+  @override
+  String get dayReviewGaps => 'Куди можна пересунути';
+
+  @override
+  String get dayReviewNoBreaks => 'День без жодної перерви';
+
+  @override
+  String get dayReviewEmpty => 'На цей день нічого не призначено';
 }

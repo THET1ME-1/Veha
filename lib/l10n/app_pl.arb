@@ -1804,5 +1804,42 @@
   "noteMarkupHint": "„- ” to punkt listy, „[ ] ” to pole wyboru",
   "@noteMarkupHint": {
     "description": "noteMarkupHint"
+  },
+  "dayReviewTitle": "Podsumowanie dnia",
+  "@dayReviewTitle": {
+    "description": "dayReviewTitle"
+  },
+  "dayReviewBusy": "Zajęte",
+  "@dayReviewBusy": {
+    "description": "dayReviewBusy"
+  },
+  "dayReviewFree": "Wolne",
+  "@dayReviewFree": {
+    "description": "dayReviewFree"
+  },
+  "dayReviewLongest": "Najdłuższe",
+  "@dayReviewLongest": {
+    "description": "dayReviewLongest"
+  },
+  "dayReviewClashes": "Nakładek: {count}",
+  "@dayReviewClashes": {
+    "description": "dayReviewClashes",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dayReviewGaps": "Gdzie się zmieści",
+  "@dayReviewGaps": {
+    "description": "dayReviewGaps"
+  },
+  "dayReviewNoBreaks": "Dzień bez jednej przerwy",
+  "@dayReviewNoBreaks": {
+    "description": "dayReviewNoBreaks"
+  },
+  "dayReviewEmpty": "Nic nie zaplanowano tego dnia",
+  "@dayReviewEmpty": {
+    "description": "dayReviewEmpty"
   }
 }

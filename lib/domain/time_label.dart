@@ -15,3 +15,12 @@ String hhmm(DateTime d) =>
 String eventTimeLabel(BuildContext context, VEvent event) => event.isOpenEnded
     ? L.of(context).timeFrom(hhmm(event.start))
     : '${hhmm(event.start)} – ${hhmm(event.end)}';
+
+/// Длительность по-человечески: «1 ч 30 мин», «45 мин», «2 ч».
+String humanDuration(L l, Duration d) {
+  final hours = d.inHours;
+  final minutes = d.inMinutes % 60;
+  if (hours == 0) return l.durationMinutes(minutes);
+  if (minutes == 0) return l.durationHours(hours);
+  return l.durationHoursMinutes(hours, minutes);
+}

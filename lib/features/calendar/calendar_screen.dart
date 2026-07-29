@@ -19,6 +19,8 @@ import 'views/chain_view.dart';
 import 'views/clock_view.dart';
 import 'views/month_view.dart';
 import 'views/week_view.dart';
+import '../../domain/day_review.dart';
+import 'widgets/day_review_sheet.dart';
 import 'widgets/month_header.dart';
 import 'widgets/span_bar.dart';
 import 'widgets/view_switcher.dart';
@@ -119,6 +121,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           onSearch: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const SearchScreen()),
           ),
+          // Разбор есть там, где есть день: месяц целиком разбирать нечего.
+          onReview: view == CalendarView.month
+              ? null
+              : () => _reviewDay(range, inheritance, now),
         ),
         if (view == CalendarView.day)
           WeekStrip(
@@ -175,6 +181,28 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         ),
       ],
     );
+  }
+
+  /// Разбор дня: сколько занято, где окна, что наехало друг на друга.
+  /// Выбранное окно тут же заводит событие — иначе разбор остался бы
+  /// справкой, из которой всё равно идти в другое место.
+  Future<void> _reviewDay(
+    RangeData range,
+    Inheritance inheritance,
+    DateTime now,
+  ) async {
+    final day = _selected!;
+    final slot = await showDayReview(
+      context,
+      review: reviewDay(
+        range.eventsOn(day),
+        day,
+        now: _isToday(DateTime(now.year, now.month, now.day)) ? now : null,
+      ),
+      inheritance: inheritance,
+    );
+    if (slot == null || !mounted) return;
+    await EventFlow(context, ref).create(at: slot.start);
   }
 
   /// Куда переносим пачку. Те же три ответа, что и у одного события:

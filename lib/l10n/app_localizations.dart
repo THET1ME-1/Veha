@@ -2470,6 +2470,54 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'«- » — пункт списка, «[ ] » — галочка'**
   String get noteMarkupHint;
+
+  /// dayReviewTitle
+  ///
+  /// In ru, this message translates to:
+  /// **'Разбор дня'**
+  String get dayReviewTitle;
+
+  /// dayReviewBusy
+  ///
+  /// In ru, this message translates to:
+  /// **'Занято'**
+  String get dayReviewBusy;
+
+  /// dayReviewFree
+  ///
+  /// In ru, this message translates to:
+  /// **'Свободно'**
+  String get dayReviewFree;
+
+  /// dayReviewLongest
+  ///
+  /// In ru, this message translates to:
+  /// **'Самое долгое'**
+  String get dayReviewLongest;
+
+  /// dayReviewClashes
+  ///
+  /// In ru, this message translates to:
+  /// **'Накладок: {count}'**
+  String dayReviewClashes(int count);
+
+  /// dayReviewGaps
+  ///
+  /// In ru, this message translates to:
+  /// **'Куда можно двигать'**
+  String get dayReviewGaps;
+
+  /// dayReviewNoBreaks
+  ///
+  /// In ru, this message translates to:
+  /// **'День без единого перерыва'**
+  String get dayReviewNoBreaks;
+
+  /// dayReviewEmpty
+  ///
+  /// In ru, this message translates to:
+  /// **'В этот день ничего не назначено'**
+  String get dayReviewEmpty;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

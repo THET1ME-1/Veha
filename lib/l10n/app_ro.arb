@@ -1804,5 +1804,42 @@
   "noteMarkupHint": "„- ” face un punct, „[ ] ” o bifă",
   "@noteMarkupHint": {
     "description": "noteMarkupHint"
+  },
+  "dayReviewTitle": "Ziua pe scurt",
+  "@dayReviewTitle": {
+    "description": "dayReviewTitle"
+  },
+  "dayReviewBusy": "Ocupat",
+  "@dayReviewBusy": {
+    "description": "dayReviewBusy"
+  },
+  "dayReviewFree": "Liber",
+  "@dayReviewFree": {
+    "description": "dayReviewFree"
+  },
+  "dayReviewLongest": "Cel mai lung",
+  "@dayReviewLongest": {
+    "description": "dayReviewLongest"
+  },
+  "dayReviewClashes": "Suprapuneri: {count}",
+  "@dayReviewClashes": {
+    "description": "dayReviewClashes",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dayReviewGaps": "Unde încape",
+  "@dayReviewGaps": {
+    "description": "dayReviewGaps"
+  },
+  "dayReviewNoBreaks": "O zi fără nicio pauză",
+  "@dayReviewNoBreaks": {
+    "description": "dayReviewNoBreaks"
+  },
+  "dayReviewEmpty": "Nimic programat în această zi",
+  "@dayReviewEmpty": {
+    "description": "dayReviewEmpty"
   }
 }

@@ -1386,4 +1386,30 @@ class LEn extends L {
 
   @override
   String get noteMarkupHint => '“- ” makes a bullet, “[ ] ” a checkbox';
+
+  @override
+  String get dayReviewTitle => 'Day at a glance';
+
+  @override
+  String get dayReviewBusy => 'Busy';
+
+  @override
+  String get dayReviewFree => 'Free';
+
+  @override
+  String get dayReviewLongest => 'Longest';
+
+  @override
+  String dayReviewClashes(int count) {
+    return 'Overlaps: $count';
+  }
+
+  @override
+  String get dayReviewGaps => 'Where things fit';
+
+  @override
+  String get dayReviewNoBreaks => 'Not a single break today';
+
+  @override
+  String get dayReviewEmpty => 'Nothing scheduled this day';
 }

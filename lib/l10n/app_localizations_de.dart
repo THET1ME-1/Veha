@@ -1391,4 +1391,30 @@ class LDe extends L {
 
   @override
   String get noteMarkupHint => '„- “ ergibt einen Punkt, „[ ] “ ein Kästchen';
+
+  @override
+  String get dayReviewTitle => 'Der Tag im Überblick';
+
+  @override
+  String get dayReviewBusy => 'Belegt';
+
+  @override
+  String get dayReviewFree => 'Frei';
+
+  @override
+  String get dayReviewLongest => 'Am längsten';
+
+  @override
+  String dayReviewClashes(int count) {
+    return 'Überschneidungen: $count';
+  }
+
+  @override
+  String get dayReviewGaps => 'Wohin es passt';
+
+  @override
+  String get dayReviewNoBreaks => 'Ein Tag ohne jede Pause';
+
+  @override
+  String get dayReviewEmpty => 'Für diesen Tag ist nichts geplant';
 }

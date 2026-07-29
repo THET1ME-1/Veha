@@ -1387,4 +1387,30 @@ class LRo extends L {
 
   @override
   String get noteMarkupHint => '„- ” face un punct, „[ ] ” o bifă';
+
+  @override
+  String get dayReviewTitle => 'Ziua pe scurt';
+
+  @override
+  String get dayReviewBusy => 'Ocupat';
+
+  @override
+  String get dayReviewFree => 'Liber';
+
+  @override
+  String get dayReviewLongest => 'Cel mai lung';
+
+  @override
+  String dayReviewClashes(int count) {
+    return 'Suprapuneri: $count';
+  }
+
+  @override
+  String get dayReviewGaps => 'Unde încape';
+
+  @override
+  String get dayReviewNoBreaks => 'O zi fără nicio pauză';
+
+  @override
+  String get dayReviewEmpty => 'Nimic programat în această zi';
 }

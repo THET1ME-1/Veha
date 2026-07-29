@@ -14,6 +14,7 @@ class MonthHeader extends StatelessWidget {
     this.dayReading,
     this.onReadingChanged,
     this.onSearch,
+    this.onReview,
   });
 
   final DateTime date;
@@ -26,6 +27,10 @@ class MonthHeader extends StatelessWidget {
   /// Поиск по всему календарю. Живёт в шапке, а не в нижней панели: искать
   /// хотят из любого вида, а разделов внизу и так четыре.
   final VoidCallback? onSearch;
+
+  /// Разбор дня. Кнопка есть только там, где есть день: в месяце разбирать
+  /// нечего — тридцать дней разом ни о чём не скажут.
+  final VoidCallback? onReview;
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +69,14 @@ class MonthHeader extends StatelessWidget {
               ),
             ),
           ),
+          if (onReview != null) ...[
+            VRoundButton(
+              key: const ValueKey('day-review'),
+              icon: 'insights',
+              onTap: onReview!,
+            ),
+            const SizedBox(width: 8),
+          ],
           if (onSearch != null) ...[
             VRoundButton(icon: 'search', onTap: onSearch!),
             const SizedBox(width: 8),

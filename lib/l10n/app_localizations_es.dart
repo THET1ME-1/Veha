@@ -1386,4 +1386,30 @@ class LEs extends L {
 
   @override
   String get noteMarkupHint => '«- » crea un punto, «[ ] » una casilla';
+
+  @override
+  String get dayReviewTitle => 'Resumen del día';
+
+  @override
+  String get dayReviewBusy => 'Ocupado';
+
+  @override
+  String get dayReviewFree => 'Libre';
+
+  @override
+  String get dayReviewLongest => 'Lo más largo';
+
+  @override
+  String dayReviewClashes(int count) {
+    return 'Solapamientos: $count';
+  }
+
+  @override
+  String get dayReviewGaps => 'Dónde cabe';
+
+  @override
+  String get dayReviewNoBreaks => 'Un día sin una sola pausa';
+
+  @override
+  String get dayReviewEmpty => 'No hay nada previsto este día';
 }

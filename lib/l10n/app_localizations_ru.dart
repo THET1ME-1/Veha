@@ -1396,4 +1396,30 @@ class LRu extends L {
 
   @override
   String get noteMarkupHint => '«- » — пункт списка, «[ ] » — галочка';
+
+  @override
+  String get dayReviewTitle => 'Разбор дня';
+
+  @override
+  String get dayReviewBusy => 'Занято';
+
+  @override
+  String get dayReviewFree => 'Свободно';
+
+  @override
+  String get dayReviewLongest => 'Самое долгое';
+
+  @override
+  String dayReviewClashes(int count) {
+    return 'Накладок: $count';
+  }
+
+  @override
+  String get dayReviewGaps => 'Куда можно двигать';
+
+  @override
+  String get dayReviewNoBreaks => 'День без единого перерыва';
+
+  @override
+  String get dayReviewEmpty => 'В этот день ничего не назначено';
 }
