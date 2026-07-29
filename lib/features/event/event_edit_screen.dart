@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -7,12 +8,14 @@ import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
 import '../../data/models.dart';
 import '../../domain/draft.dart';
+import '../../domain/note_markup.dart';
 import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
 import '../repeat/repeat_screen.dart' show askRepeatRule;
 import 'calendar_picker_sheet.dart';
 import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
 import 'field_value_sheet.dart';
+import 'note_body.dart';
 import 'note_sheet.dart';
 import 'event_cover.dart';
 import 'place_sheet.dart';
@@ -176,6 +179,8 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
               note: notes[i],
               eventColor: eventColor,
               onTap: () => _editNote(notes[i], eventColor),
+              onToggle: (line) => _toggleNoteLine(notes[i], line),
+              onLink: _openLink,
             ),
           ],
           if (notes.isNotEmpty) const VSep(),
@@ -201,6 +206,28 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
       color: draft.color,
       sortOrder: count,
     ));
+  }
+
+  /// Пункт отмечен сделанным. Пишется сразу в базу: заметка живёт своей
+  /// жизнью и «Сохранить» у формы её не ждёт.
+  Future<void> _toggleNoteLine(VNote note, int line) async {
+    final next = toggleNoteCheck(note.text, line);
+    if (next == note.text) return;
+    await ref.read(repositoryProvider).upsertNote(
+          VNote(
+            id: note.id,
+            eventId: note.eventId,
+            text: next,
+            color: note.color,
+            sortOrder: note.sortOrder,
+          ),
+        );
+  }
+
+  Future<void> _openLink(String url) async {
+    final uri = Uri.tryParse(url);
+    if (uri == null) return;
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 
   Future<void> _editNote(VNote note, Color eventColor) async {
@@ -749,11 +776,18 @@ class _NoteRow extends StatelessWidget {
     required this.note,
     required this.eventColor,
     required this.onTap,
+    required this.onToggle,
+    required this.onLink,
   });
 
   final VNote note;
   final Color eventColor;
   final VoidCallback onTap;
+
+  /// Галочку отмечают прямо в карточке: открывать правку ради вычеркнутого
+  /// пункта значит превращать список покупок в анкету.
+  final ValueChanged<int> onToggle;
+  final ValueChanged<String> onLink;
 
   @override
   Widget build(BuildContext context) {
@@ -775,15 +809,11 @@ class _NoteRow extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
-                child: Text(
-                  note.text,
-                  style: TextStyle(
-                    fontFamily: AppFonts.body,
-                    fontSize: 13.5,
-                    height: 1.35,
-                    fontWeight: FontWeight.w500,
-                    color: ink.foreground,
-                  ),
+                child: NoteBody(
+                  text: note.text,
+                  ink: note.color ?? eventColor,
+                  onToggle: onToggle,
+                  onLink: onLink,
                 ),
               ),
             ],

@@ -1395,4 +1395,7 @@ class LPl extends L {
   String timeFrom(String time) {
     return 'od $time';
   }
+
+  @override
+  String get noteMarkupHint => '„- ” to punkt listy, „[ ] ” to pole wyboru';
 }

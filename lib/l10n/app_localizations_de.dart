@@ -1388,4 +1388,7 @@ class LDe extends L {
   String timeFrom(String time) {
     return 'ab $time';
   }
+
+  @override
+  String get noteMarkupHint => '„- “ ergibt einen Punkt, „[ ] “ ein Kästchen';
 }

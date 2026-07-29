@@ -1393,4 +1393,7 @@ class LRu extends L {
   String timeFrom(String time) {
     return 'с $time';
   }
+
+  @override
+  String get noteMarkupHint => '«- » — пункт списка, «[ ] » — галочка';
 }

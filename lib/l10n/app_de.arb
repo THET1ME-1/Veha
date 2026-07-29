@@ -1800,5 +1800,9 @@
         "type": "String"
       }
     }
+  },
+  "noteMarkupHint": "„- “ ergibt einen Punkt, „[ ] “ ein Kästchen",
+  "@noteMarkupHint": {
+    "description": "noteMarkupHint"
   }
 }

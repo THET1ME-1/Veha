@@ -156,6 +156,21 @@ class _NoteSheetState extends State<_NoteSheet> {
               ),
             ),
           ),
+          // Разметка простая, но незаметная: без строчки-подсказки о списках
+          // и галочках человек про них не узнает.
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+                VehaInsets.screen + 4, 7, VehaInsets.screen, 0),
+            child: Text(
+              l.noteMarkupHint,
+              style: TextStyle(
+                fontFamily: AppFonts.body,
+                fontSize: 11.5,
+                fontWeight: FontWeight.w500,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
           const SizedBox(height: 14),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: VehaInsets.screen),

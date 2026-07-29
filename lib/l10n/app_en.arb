@@ -1800,5 +1800,9 @@
         "type": "String"
       }
     }
+  },
+  "noteMarkupHint": "“- ” makes a bullet, “[ ] ” a checkbox",
+  "@noteMarkupHint": {
+    "description": "noteMarkupHint"
   }
 }

@@ -1383,4 +1383,7 @@ class LEn extends L {
   String timeFrom(String time) {
     return 'from $time';
   }
+
+  @override
+  String get noteMarkupHint => '“- ” makes a bullet, “[ ] ” a checkbox';
 }

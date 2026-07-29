@@ -1800,5 +1800,9 @@
         "type": "String"
       }
     }
+  },
+  "noteMarkupHint": "„- ” to punkt listy, „[ ] ” to pole wyboru",
+  "@noteMarkupHint": {
+    "description": "noteMarkupHint"
   }
 }

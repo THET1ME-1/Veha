@@ -1395,4 +1395,7 @@ class LUk extends L {
   String timeFrom(String time) {
     return 'з $time';
   }
+
+  @override
+  String get noteMarkupHint => '«- » — пункт списку, «[ ] » — галочка';
 }

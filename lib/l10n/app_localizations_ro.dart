@@ -1384,4 +1384,7 @@ class LRo extends L {
   String timeFrom(String time) {
     return 'de la $time';
   }
+
+  @override
+  String get noteMarkupHint => '„- ” face un punct, „[ ] ” o bifă';
 }

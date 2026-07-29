@@ -1383,4 +1383,7 @@ class LEs extends L {
   String timeFrom(String time) {
     return 'desde $time';
   }
+
+  @override
+  String get noteMarkupHint => '«- » crea un punto, «[ ] » una casilla';
 }

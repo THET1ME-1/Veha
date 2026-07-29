@@ -8,6 +8,7 @@ import '../../core/icon_registry.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
+import 'note_body.dart';
 import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
 import '../calendar/widgets/month_header.dart';
 import 'event_cover.dart';
@@ -175,18 +176,7 @@ class _Note extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Expanded(
-            child: Text(
-              note.text,
-              style: TextStyle(
-                fontFamily: AppFonts.body,
-                fontSize: 13.5,
-                height: 1.4,
-                fontWeight: FontWeight.w500,
-                color: ink.foreground,
-              ),
-            ),
-          ),
+          Expanded(child: NoteBody(text: note.text, ink: color)),
           if (hasOwnColor) ...[
             const SizedBox(width: 10),
             Container(

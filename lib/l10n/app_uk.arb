@@ -1800,5 +1800,9 @@
         "type": "String"
       }
     }
+  },
+  "noteMarkupHint": "«- » — пункт списку, «[ ] » — галочка",
+  "@noteMarkupHint": {
+    "description": "noteMarkupHint"
   }
 }

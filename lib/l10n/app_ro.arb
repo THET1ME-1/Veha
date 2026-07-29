@@ -1800,5 +1800,9 @@
         "type": "String"
       }
     }
+  },
+  "noteMarkupHint": "„- ” face un punct, „[ ] ” o bifă",
+  "@noteMarkupHint": {
+    "description": "noteMarkupHint"
   }
 }

@@ -2464,6 +2464,12 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'с {time}'**
   String timeFrom(String time);
+
+  /// noteMarkupHint
+  ///
+  /// In ru, this message translates to:
+  /// **'«- » — пункт списка, «[ ] » — галочка'**
+  String get noteMarkupHint;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

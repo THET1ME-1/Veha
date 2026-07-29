@@ -1800,5 +1800,9 @@
         "type": "String"
       }
     }
+  },
+  "noteMarkupHint": "«- » crea un punto, «[ ] » una casilla",
+  "@noteMarkupHint": {
+    "description": "noteMarkupHint"
   }
 }
