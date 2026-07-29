@@ -1385,4 +1385,12 @@ class LRu extends L {
   String msgBulkCalendar(int count) {
     return 'Событий в другом календаре: $count';
   }
+
+  @override
+  String get eventOpenEnd => 'Без окончания';
+
+  @override
+  String timeFrom(String time) {
+    return 'с $time';
+  }
 }

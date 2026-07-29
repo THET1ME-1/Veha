@@ -121,9 +121,13 @@ class GridDrag {
 
   /// Метит ли блок в чужое время. Своё событие не считается: оно и есть
   /// то, что тащат.
+  /// Событие без окончания времени не занимает — ни то, что тащат, ни то,
+  /// во что метят: «накладка» с ним была бы выдумкой.
   bool clashesWith(VEventSpan other) =>
       other.id != eventId &&
       !other.isMultiDay &&
+      end.isAfter(start) &&
+      other.end.isAfter(other.start) &&
       intervalsOverlap(start, end, other.start, other.end);
 
   // Равенство нужно уведомлению: без него каждый кадр автоскролла

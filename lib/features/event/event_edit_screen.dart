@@ -101,6 +101,10 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
     );
   }
 
+  /// Снять окончание и вернуть его обратно.
+  void _toggleOpenEnd() =>
+      setState(() => _draft = _draft.withOpenEnd(!_draft.isOpenEnded));
+
   Future<void> _pickRepeat() async {
     final rrule = await askRepeatRule(
       context,
@@ -428,7 +432,7 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
               const SizedBox(height: 7),
               Text(
                 '${DateFormat('EEE d MMMM', locale).format(_draft.start)} · '
-                '${_hhmm(_draft.start)} – ${_hhmm(_draft.end)}',
+                '${_draft.isOpenEnded ? l.timeFrom(_hhmm(_draft.start)) : '${_hhmm(_draft.start)} – ${_hhmm(_draft.end)}'}',
                 style: TextStyle(
                   fontFamily: AppFonts.body,
                   fontSize: 12.5,
@@ -457,8 +461,23 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
             _TimeRow(
               start: _hhmm(_draft.start),
               end: _hhmm(_draft.end),
+              openEnded: _draft.isOpenEnded,
               onStart: () => _pickTime(isStart: true),
               onEnd: () => _pickTime(isStart: false),
+            ),
+            const VSep(),
+            // «Зашёл в мастерскую», «сел писать»: начало известно, конец нет.
+            // Час по умолчанию врал бы о занятости вечера.
+            VRow(
+              // Не часы: строкой выше уже двое часов подряд, и третьи
+              // сливаются с ними в одну кашу.
+              icon: 'hourglass_disabled',
+              value: l.eventOpenEnd,
+              onTap: _toggleOpenEnd,
+              trailing: VSwitch(
+                value: _draft.isOpenEnded,
+                onChanged: (_) => _toggleOpenEnd(),
+              ),
             ),
             const VSep(),
             VRow(
@@ -627,12 +646,17 @@ class _TimeRow extends StatelessWidget {
     required this.end,
     required this.onStart,
     required this.onEnd,
+    this.openEnded = false,
   });
 
   final String start;
   final String end;
   final VoidCallback onStart;
   final VoidCallback onEnd;
+
+  /// Событие без окончания: второй чип и тире между ними убираются —
+  /// показывать там нечего.
+  final bool openEnded;
 
   @override
   Widget build(BuildContext context) {
@@ -667,18 +691,20 @@ class _TimeRow extends StatelessWidget {
           ),
           const Spacer(),
           _Stamp(text: start, onTap: onStart),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 7),
-            child: Text(
-              '–',
-              style: TextStyle(
-                fontFamily: AppFonts.body,
-                fontWeight: FontWeight.w700,
-                color: scheme.onSurfaceVariant,
+          if (!openEnded) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 7),
+              child: Text(
+                '–',
+                style: TextStyle(
+                  fontFamily: AppFonts.body,
+                  fontWeight: FontWeight.w700,
+                  color: scheme.onSurfaceVariant,
+                ),
               ),
             ),
-          ),
-          _Stamp(text: end, onTap: onEnd),
+            _Stamp(text: end, onTap: onEnd),
+          ],
         ],
       ),
     );

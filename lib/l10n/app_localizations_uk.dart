@@ -1387,4 +1387,12 @@ class LUk extends L {
   String msgBulkCalendar(int count) {
     return 'Подій в іншому календарі: $count';
   }
+
+  @override
+  String get eventOpenEnd => 'Без завершення';
+
+  @override
+  String timeFrom(String time) {
+    return 'з $time';
+  }
 }

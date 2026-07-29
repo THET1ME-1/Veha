@@ -118,6 +118,15 @@ class EventDraft {
   bool get isReady => title.trim().isNotEmpty;
   Duration get duration => end.difference(start);
 
+  /// Событие без времени окончания: конец совпал с началом.
+  bool get isOpenEnded => !end.isAfter(start);
+
+  /// Снять и вернуть окончание. Прежняя длительность не запоминается: час —
+  /// то, с чем событие и заводилось, а точное время человек поставит сам.
+  EventDraft withOpenEnd(bool value) => _copy(
+        end: value ? start : start.add(const Duration(hours: 1)),
+      );
+
   /// Правка ряда: у экземпляра спрашиваем, что менять, у разового события —
   /// нет, спрашивать не о чем.
   bool get needsScopeQuestion => source?.isOccurrence ?? false;

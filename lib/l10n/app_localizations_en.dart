@@ -1375,4 +1375,12 @@ class LEn extends L {
   String msgBulkCalendar(int count) {
     return 'Events moved to calendar: $count';
   }
+
+  @override
+  String get eventOpenEnd => 'No end time';
+
+  @override
+  String timeFrom(String time) {
+    return 'from $time';
+  }
 }

@@ -120,10 +120,18 @@ bool intervalsOverlap(
     aStart.isBefore(bEnd) && aEnd.isAfter(bStart);
 
 /// С чем событие пересекается. Пустой список — свободно.
-List<VEvent> conflictsOf(VEvent event, List<VEvent> others) => [
-      for (final other in others)
-        if (other.id != event.id &&
-            !other.isMultiDay &&
-            intervalsOverlap(event.start, event.end, other.start, other.end))
-          other,
-    ];
+///
+/// Событие без окончания не считается ни с той, ни с другой стороны: за ним
+/// не числится времени, и «накладка» с ним была бы выдумкой.
+List<VEvent> conflictsOf(VEvent event, List<VEvent> others) =>
+    event.isOpenEnded
+        ? const []
+        : [
+            for (final other in others)
+              if (other.id != event.id &&
+                  !other.isMultiDay &&
+                  !other.isOpenEnded &&
+                  intervalsOverlap(
+                      event.start, event.end, other.start, other.end))
+                other,
+          ];

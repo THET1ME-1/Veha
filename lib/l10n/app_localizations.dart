@@ -2452,6 +2452,18 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'Событий в другом календаре: {count}'**
   String msgBulkCalendar(int count);
+
+  /// eventOpenEnd
+  ///
+  /// In ru, this message translates to:
+  /// **'Без окончания'**
+  String get eventOpenEnd;
+
+  /// timeFrom
+  ///
+  /// In ru, this message translates to:
+  /// **'с {time}'**
+  String timeFrom(String time);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

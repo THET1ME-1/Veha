@@ -1375,4 +1375,12 @@ class LEs extends L {
   String msgBulkCalendar(int count) {
     return 'Eventos en otro calendario: $count';
   }
+
+  @override
+  String get eventOpenEnd => 'Sin hora de fin';
+
+  @override
+  String timeFrom(String time) {
+    return 'desde $time';
+  }
 }

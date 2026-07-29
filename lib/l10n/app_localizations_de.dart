@@ -1380,4 +1380,12 @@ class LDe extends L {
   String msgBulkCalendar(int count) {
     return 'Termine im anderen Kalender: $count';
   }
+
+  @override
+  String get eventOpenEnd => 'Ohne Ende';
+
+  @override
+  String timeFrom(String time) {
+    return 'ab $time';
+  }
 }

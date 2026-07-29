@@ -1787,5 +1787,18 @@
         "type": "int"
       }
     }
+  },
+  "eventOpenEnd": "Без завершення",
+  "@eventOpenEnd": {
+    "description": "eventOpenEnd"
+  },
+  "timeFrom": "з {time}",
+  "@timeFrom": {
+    "description": "timeFrom",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -1875,5 +1875,18 @@
         "type": "int"
       }
     }
+  },
+  "eventOpenEnd": "Без окончания",
+  "@eventOpenEnd": {
+    "description": "eventOpenEnd"
+  },
+  "timeFrom": "с {time}",
+  "@timeFrom": {
+    "description": "timeFrom",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   }
 }

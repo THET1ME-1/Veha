@@ -1787,5 +1787,18 @@
         "type": "int"
       }
     }
+  },
+  "eventOpenEnd": "Fără oră de final",
+  "@eventOpenEnd": {
+    "description": "eventOpenEnd"
+  },
+  "timeFrom": "de la {time}",
+  "@timeFrom": {
+    "description": "timeFrom",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   }
 }

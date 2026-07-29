@@ -9,6 +9,7 @@ import '../../../core/icon_registry.dart';
 import '../../../data/models.dart';
 import '../../../data/providers.dart';
 import '../../../domain/recurrence.dart';
+import '../../../domain/time_label.dart';
 import '../../../l10n/app_localizations.dart';
 import '../widgets/month_header.dart';
 
@@ -237,11 +238,11 @@ class _When extends StatelessWidget {
     final l = L.of(context);
     final locale = Localizations.localeOf(context).toLanguageTag();
     final parts = <String>[];
-    final start = _hhmm(event.start);
-    if (event.duration.inMinutes <= 15) {
-      parts.add(start);
+    // У события без окончания длительности нет и подписывать её нечем.
+    if (event.isOpenEnded || event.duration.inMinutes <= 15) {
+      parts.add(eventTimeLabel(context, event));
     } else {
-      parts.add('$start – ${_hhmm(event.end)}');
+      parts.add(eventTimeLabel(context, event));
       parts.add(_human(l, event.duration));
     }
     final repeat = recurrenceLabelOf(l, event, locale: locale);
@@ -252,16 +253,14 @@ class _When extends StatelessWidget {
         Flexible(
           child: Text(parts.join(' · '), style: style, overflow: TextOverflow.ellipsis),
         ),
-        if (repeat != null && event.duration.inMinutes <= 15) ...[
+        if (repeat != null &&
+            (event.isOpenEnded || event.duration.inMinutes <= 15)) ...[
           const SizedBox(width: 5),
           Icon(VehaIcons.byName('repeat'), size: 13, color: scheme.onSurfaceVariant),
         ],
       ],
     );
   }
-
-  static String _hhmm(DateTime d) =>
-      '${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
 
   static String _human(L l, Duration d) {
     final h = d.inHours;

@@ -55,9 +55,12 @@ String toIcs(
         ..write(_line('DTSTART;VALUE=DATE:${_date(e.start)}'))
         ..write(_line('DTEND;VALUE=DATE:${_date(e.end)}'));
     } else {
-      out
-        ..write(_line('DTSTART;TZID=${e.timezone}:${_dateTime(e.start)}'))
-        ..write(_line('DTEND;TZID=${e.timezone}:${_dateTime(e.end)}'));
+      out.write(_line('DTSTART;TZID=${e.timezone}:${_dateTime(e.start)}'));
+      // У события без окончания DTEND не пишется вовсе — так это и
+      // задумано в RFC 5545: одно начало и никакой длительности.
+      if (!e.isOpenEnded) {
+        out.write(_line('DTEND;TZID=${e.timezone}:${_dateTime(e.end)}'));
+      }
     }
 
     if (e.rrule != null) out.write(_line('RRULE:${e.rrule}'));
@@ -170,10 +173,10 @@ VEvent? _toEvent(
     calendarId: '',
     title: _unescape(props['SUMMARY']?.value ?? untitled),
     start: startAt,
-    // Час по умолчанию — соглашение самого RFC для событий без конца.
-    end: endAt ?? startAt.add(allDay
-        ? const Duration(days: 1)
-        : const Duration(hours: 1)),
+    // Файл без DTEND по RFC 5545 означает событие без длительности —
+    // у нас это и есть «без окончания». Сутки прибавляются только событию
+    // на весь день: там отсутствие конца значит один день.
+    end: endAt ?? (allDay ? startAt.add(const Duration(days: 1)) : startAt),
     isAllDay: allDay,
     rrule: props['RRULE']?.value,
     location: props['LOCATION'] == null

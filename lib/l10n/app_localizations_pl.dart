@@ -1387,4 +1387,12 @@ class LPl extends L {
   String msgBulkCalendar(int count) {
     return 'Wydarzeń w innym kalendarzu: $count';
   }
+
+  @override
+  String get eventOpenEnd => 'Bez zakończenia';
+
+  @override
+  String timeFrom(String time) {
+    return 'od $time';
+  }
 }

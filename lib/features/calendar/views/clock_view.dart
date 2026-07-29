@@ -7,6 +7,7 @@ import '../../../core/event_colors.dart';
 import '../../../core/icon_registry.dart';
 import '../../../data/models.dart';
 import '../../../data/providers.dart';
+import '../../../domain/time_label.dart';
 import '../widgets/auto_scroll_grid.dart';
 import '../widgets/month_header.dart';
 
@@ -346,10 +347,14 @@ class _EventBlockState extends ConsumerState<_EventBlock> {
         e.start.minute / 60 * ClockView.hourHeight;
     // Нижняя граница — не «покрасивее», а чтобы название события помещалось
     // целиком: в 26 логических пикселей строка 14-го кегля уже не влезает.
-    final height = (e.duration.inMinutes / 60 * ClockView.hourHeight).clamp(
-      32.0,
-      1000.0,
-    );
+    // Событие без окончания — исключение: оно полоска в четверть шага сетки,
+    // иначе минимальная высота съедала бы полчаса чужого времени.
+    final height = e.isOpenEnded
+        ? 26.0
+        : (e.duration.inMinutes / 60 * ClockView.hourHeight).clamp(
+            32.0,
+            1000.0,
+          );
 
     // Короткое событие сжимается до полоски: две строки требуют 50 пикселей
     // вместе с отступами, поэтому ниже 54 остаётся только название.
@@ -364,7 +369,9 @@ class _EventBlockState extends ConsumerState<_EventBlock> {
       // Пока блок под пальцем, он живёт своим смещением: правка в базу на
       // каждый кадр означала бы сотню записей за один жест.
       top: top + _drag,
-      height: (height + _stretch).clamp(32.0, 2000.0),
+      // Нижняя граница — сама высота блока: у события без окончания она
+      // меньше обычного минимума, и общий пол её бы съел.
+      height: (height + _stretch).clamp(height, 2000.0),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
@@ -529,7 +536,7 @@ class _EventBlockState extends ConsumerState<_EventBlock> {
                       Padding(
                         padding: const EdgeInsets.only(top: 2),
                         child: Text(
-                          _subtitle(e, defs),
+                          _subtitle(context, e, defs),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -557,17 +564,18 @@ class _EventBlockState extends ConsumerState<_EventBlock> {
 
   /// В блок помещается одна строка: либо время, либо поле, отмеченное
   /// «в карточке». Поле полезнее — время видно по положению на шкале.
-  static String _subtitle(VEvent e, Map<String, VFieldDef> defs) {
+  static String _subtitle(
+    BuildContext context,
+    VEvent e,
+    Map<String, VFieldDef> defs,
+  ) {
     final field = e.fields.firstOrNull;
     if (field != null) {
       final def = defs[field.fieldId];
       if (def != null && def.showInCard) return field.value;
     }
-    return '${_hhmm(e.start)} – ${_hhmm(e.end)}';
+    return eventTimeLabel(context, e);
   }
-
-  static String _hhmm(DateTime d) =>
-      '${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
 }
 
 class _NowMark extends StatelessWidget {

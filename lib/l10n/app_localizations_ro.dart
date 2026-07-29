@@ -1376,4 +1376,12 @@ class LRo extends L {
   String msgBulkCalendar(int count) {
     return 'Evenimente în alt calendar: $count';
   }
+
+  @override
+  String get eventOpenEnd => 'Fără oră de final';
+
+  @override
+  String timeFrom(String time) {
+    return 'de la $time';
+  }
 }

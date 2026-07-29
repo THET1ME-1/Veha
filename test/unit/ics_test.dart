@@ -143,7 +143,9 @@ void main() {
       expect(back.start.toUtc(), DateTime.utc(2026, 7, 27, 13));
     });
 
-    test('Событие без конца получает час', () {
+    test('Событие без конца читается открытым', () {
+      // По RFC 5545 отсутствие DTEND у события со временем означает нулевую
+      // длительность, а не час: в приложении это «без окончания».
       const ics = 'BEGIN:VCALENDAR\r\n'
           'BEGIN:VEVENT\r\n'
           'SUMMARY:Без конца\r\n'
@@ -152,7 +154,7 @@ void main() {
           'END:VCALENDAR\r\n';
 
       final back = parseIcs(ics).events.single;
-      expect(back.end.difference(back.start), const Duration(hours: 1));
+      expect(back.isOpenEnded, isTrue);
     });
 
     test('Определение своего поля восстанавливается из файла', () {

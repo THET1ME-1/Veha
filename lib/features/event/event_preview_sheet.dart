@@ -5,6 +5,7 @@ import '../../core/brand.dart';
 import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
 import '../../data/models.dart';
+import '../../domain/time_label.dart';
 import '../../l10n/app_localizations.dart';
 import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
 import '../calendar/widgets/month_header.dart' show AppFonts;
@@ -167,7 +168,7 @@ class _PreviewSheet extends StatelessWidget {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    _when(l, locale),
+                    _when(context, locale),
                     style: TextStyle(
                       fontFamily: AppFonts.body,
                       fontSize: 12.5,
@@ -329,17 +330,15 @@ class _PreviewSheet extends StatelessWidget {
     );
   }
 
-  String _when(L l, String locale) {
+  String _when(BuildContext context, String locale) {
     if (event.isMultiDay) {
       return '${DateFormat.MMMd(locale).format(event.start)} – '
           '${DateFormat.MMMd(locale).format(event.end)}';
     }
     final day = DateFormat('EEEE, d MMMM', locale).format(event.start);
-    return '$day · ${_hhmm(event.start)} – ${_hhmm(event.end)}';
+    return '$day · ${eventTimeLabel(context, event)}';
   }
 
-  static String _hhmm(DateTime d) =>
-      '${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
 }
 
 /// Кнопка-пилюля действия. Заливка, а не обводка: обводок в приложении нет.
