@@ -1412,4 +1412,46 @@ class LEn extends L {
 
   @override
   String get dayReviewEmpty => 'Nothing scheduled this day';
+
+  @override
+  String get filesTitle => 'Attachments';
+
+  @override
+  String get fileAttach => 'Attach a file';
+
+  @override
+  String get fileRemove => 'Remove attachment';
+
+  @override
+  String get fileMissing => 'That file is gone from this device';
+
+  @override
+  String get historyTitle => 'Change history';
+
+  @override
+  String get historyCreated => 'Event created';
+
+  @override
+  String get historyName => 'Title';
+
+  @override
+  String get historyTime => 'Time';
+
+  @override
+  String get historyEmpty => 'Nothing has been changed yet';
+
+  @override
+  String sizeBytes(String value) {
+    return '$value B';
+  }
+
+  @override
+  String sizeKb(String value) {
+    return '$value KB';
+  }
+
+  @override
+  String sizeMb(String value) {
+    return '$value MB';
+  }
 }

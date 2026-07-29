@@ -1413,4 +1413,46 @@ class LRo extends L {
 
   @override
   String get dayReviewEmpty => 'Nimic programat în această zi';
+
+  @override
+  String get filesTitle => 'Atașamente';
+
+  @override
+  String get fileAttach => 'Atașează un fișier';
+
+  @override
+  String get fileRemove => 'Elimină atașamentul';
+
+  @override
+  String get fileMissing => 'Fișierul nu mai este pe dispozitiv';
+
+  @override
+  String get historyTitle => 'Istoricul modificărilor';
+
+  @override
+  String get historyCreated => 'Eveniment creat';
+
+  @override
+  String get historyName => 'Titlu';
+
+  @override
+  String get historyTime => 'Ora';
+
+  @override
+  String get historyEmpty => 'Nimic nu a fost modificat încă';
+
+  @override
+  String sizeBytes(String value) {
+    return '$value B';
+  }
+
+  @override
+  String sizeKb(String value) {
+    return '$value KB';
+  }
+
+  @override
+  String sizeMb(String value) {
+    return '$value MB';
+  }
 }

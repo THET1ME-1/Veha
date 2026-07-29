@@ -1412,4 +1412,46 @@ class LEs extends L {
 
   @override
   String get dayReviewEmpty => 'No hay nada previsto este día';
+
+  @override
+  String get filesTitle => 'Adjuntos';
+
+  @override
+  String get fileAttach => 'Adjuntar archivo';
+
+  @override
+  String get fileRemove => 'Quitar el adjunto';
+
+  @override
+  String get fileMissing => 'El archivo ya no está en el dispositivo';
+
+  @override
+  String get historyTitle => 'Historial de cambios';
+
+  @override
+  String get historyCreated => 'Evento creado';
+
+  @override
+  String get historyName => 'Título';
+
+  @override
+  String get historyTime => 'Hora';
+
+  @override
+  String get historyEmpty => 'Todavía no se ha cambiado nada';
+
+  @override
+  String sizeBytes(String value) {
+    return '$value B';
+  }
+
+  @override
+  String sizeKb(String value) {
+    return '$value KB';
+  }
+
+  @override
+  String sizeMb(String value) {
+    return '$value MB';
+  }
 }

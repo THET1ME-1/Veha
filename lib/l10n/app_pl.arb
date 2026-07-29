@@ -1841,5 +1841,68 @@
   "dayReviewEmpty": "Nic nie zaplanowano tego dnia",
   "@dayReviewEmpty": {
     "description": "dayReviewEmpty"
+  },
+  "filesTitle": "Załączniki",
+  "@filesTitle": {
+    "description": "filesTitle"
+  },
+  "fileAttach": "Załącz plik",
+  "@fileAttach": {
+    "description": "fileAttach"
+  },
+  "fileRemove": "Usuń załącznik",
+  "@fileRemove": {
+    "description": "fileRemove"
+  },
+  "fileMissing": "Pliku już nie ma na urządzeniu",
+  "@fileMissing": {
+    "description": "fileMissing"
+  },
+  "historyTitle": "Historia zmian",
+  "@historyTitle": {
+    "description": "historyTitle"
+  },
+  "historyCreated": "Wydarzenie utworzone",
+  "@historyCreated": {
+    "description": "historyCreated"
+  },
+  "historyName": "Nazwa",
+  "@historyName": {
+    "description": "historyName"
+  },
+  "historyTime": "Czas",
+  "@historyTime": {
+    "description": "historyTime"
+  },
+  "historyEmpty": "Nic jeszcze nie zmieniano",
+  "@historyEmpty": {
+    "description": "historyEmpty"
+  },
+  "sizeBytes": "{value} B",
+  "@sizeBytes": {
+    "description": "sizeBytes",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sizeKb": "{value} KB",
+  "@sizeKb": {
+    "description": "sizeKb",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sizeMb": "{value} MB",
+  "@sizeMb": {
+    "description": "sizeMb",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   }
 }

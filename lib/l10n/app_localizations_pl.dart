@@ -1424,4 +1424,46 @@ class LPl extends L {
 
   @override
   String get dayReviewEmpty => 'Nic nie zaplanowano tego dnia';
+
+  @override
+  String get filesTitle => 'Załączniki';
+
+  @override
+  String get fileAttach => 'Załącz plik';
+
+  @override
+  String get fileRemove => 'Usuń załącznik';
+
+  @override
+  String get fileMissing => 'Pliku już nie ma na urządzeniu';
+
+  @override
+  String get historyTitle => 'Historia zmian';
+
+  @override
+  String get historyCreated => 'Wydarzenie utworzone';
+
+  @override
+  String get historyName => 'Nazwa';
+
+  @override
+  String get historyTime => 'Czas';
+
+  @override
+  String get historyEmpty => 'Nic jeszcze nie zmieniano';
+
+  @override
+  String sizeBytes(String value) {
+    return '$value B';
+  }
+
+  @override
+  String sizeKb(String value) {
+    return '$value KB';
+  }
+
+  @override
+  String sizeMb(String value) {
+    return '$value MB';
+  }
 }

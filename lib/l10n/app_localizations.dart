@@ -2518,6 +2518,78 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'В этот день ничего не назначено'**
   String get dayReviewEmpty;
+
+  /// filesTitle
+  ///
+  /// In ru, this message translates to:
+  /// **'Вложения'**
+  String get filesTitle;
+
+  /// fileAttach
+  ///
+  /// In ru, this message translates to:
+  /// **'Приложить файл'**
+  String get fileAttach;
+
+  /// fileRemove
+  ///
+  /// In ru, this message translates to:
+  /// **'Убрать вложение'**
+  String get fileRemove;
+
+  /// fileMissing
+  ///
+  /// In ru, this message translates to:
+  /// **'Файла больше нет на устройстве'**
+  String get fileMissing;
+
+  /// historyTitle
+  ///
+  /// In ru, this message translates to:
+  /// **'История изменений'**
+  String get historyTitle;
+
+  /// historyCreated
+  ///
+  /// In ru, this message translates to:
+  /// **'Событие заведено'**
+  String get historyCreated;
+
+  /// historyName
+  ///
+  /// In ru, this message translates to:
+  /// **'Название'**
+  String get historyName;
+
+  /// historyTime
+  ///
+  /// In ru, this message translates to:
+  /// **'Время'**
+  String get historyTime;
+
+  /// historyEmpty
+  ///
+  /// In ru, this message translates to:
+  /// **'Событие ещё не правили'**
+  String get historyEmpty;
+
+  /// sizeBytes
+  ///
+  /// In ru, this message translates to:
+  /// **'{value} Б'**
+  String sizeBytes(String value);
+
+  /// sizeKb
+  ///
+  /// In ru, this message translates to:
+  /// **'{value} КБ'**
+  String sizeKb(String value);
+
+  /// sizeMb
+  ///
+  /// In ru, this message translates to:
+  /// **'{value} МБ'**
+  String sizeMb(String value);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

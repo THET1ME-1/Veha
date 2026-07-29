@@ -3928,6 +3928,808 @@ class EventPhotosCompanion extends UpdateCompanion<EventPhoto> {
   }
 }
 
+class $EventRevisionsTable extends EventRevisions
+    with TableInfo<$EventRevisionsTable, EventRevision> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EventRevisionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _eventIdMeta = const VerificationMeta(
+    'eventId',
+  );
+  @override
+  late final GeneratedColumn<String> eventId = GeneratedColumn<String>(
+    'event_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _atMeta = const VerificationMeta('at');
+  @override
+  late final GeneratedColumn<int> at = GeneratedColumn<int>(
+    'at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _beforeMeta = const VerificationMeta('before');
+  @override
+  late final GeneratedColumn<String> before = GeneratedColumn<String>(
+    'before',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _afterMeta = const VerificationMeta('after');
+  @override
+  late final GeneratedColumn<String> after = GeneratedColumn<String>(
+    'after',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, eventId, at, kind, before, after];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'event_revisions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EventRevision> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('event_id')) {
+      context.handle(
+        _eventIdMeta,
+        eventId.isAcceptableOrUnknown(data['event_id']!, _eventIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_eventIdMeta);
+    }
+    if (data.containsKey('at')) {
+      context.handle(_atMeta, at.isAcceptableOrUnknown(data['at']!, _atMeta));
+    } else if (isInserting) {
+      context.missing(_atMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('before')) {
+      context.handle(
+        _beforeMeta,
+        before.isAcceptableOrUnknown(data['before']!, _beforeMeta),
+      );
+    }
+    if (data.containsKey('after')) {
+      context.handle(
+        _afterMeta,
+        after.isAcceptableOrUnknown(data['after']!, _afterMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  EventRevision map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EventRevision(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      eventId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}event_id'],
+      )!,
+      at: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}at'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      before: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}before'],
+      ),
+      after: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}after'],
+      ),
+    );
+  }
+
+  @override
+  $EventRevisionsTable createAlias(String alias) {
+    return $EventRevisionsTable(attachedDatabase, alias);
+  }
+}
+
+class EventRevision extends DataClass implements Insertable<EventRevision> {
+  final String id;
+  final String eventId;
+  final int at;
+
+  /// Что именно поменялось: название, время, календарь, место, внешность,
+  /// повтор, напоминания — или событие только что завели.
+  final String kind;
+  final String? before;
+  final String? after;
+  const EventRevision({
+    required this.id,
+    required this.eventId,
+    required this.at,
+    required this.kind,
+    this.before,
+    this.after,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['event_id'] = Variable<String>(eventId);
+    map['at'] = Variable<int>(at);
+    map['kind'] = Variable<String>(kind);
+    if (!nullToAbsent || before != null) {
+      map['before'] = Variable<String>(before);
+    }
+    if (!nullToAbsent || after != null) {
+      map['after'] = Variable<String>(after);
+    }
+    return map;
+  }
+
+  EventRevisionsCompanion toCompanion(bool nullToAbsent) {
+    return EventRevisionsCompanion(
+      id: Value(id),
+      eventId: Value(eventId),
+      at: Value(at),
+      kind: Value(kind),
+      before: before == null && nullToAbsent
+          ? const Value.absent()
+          : Value(before),
+      after: after == null && nullToAbsent
+          ? const Value.absent()
+          : Value(after),
+    );
+  }
+
+  factory EventRevision.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EventRevision(
+      id: serializer.fromJson<String>(json['id']),
+      eventId: serializer.fromJson<String>(json['eventId']),
+      at: serializer.fromJson<int>(json['at']),
+      kind: serializer.fromJson<String>(json['kind']),
+      before: serializer.fromJson<String?>(json['before']),
+      after: serializer.fromJson<String?>(json['after']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'eventId': serializer.toJson<String>(eventId),
+      'at': serializer.toJson<int>(at),
+      'kind': serializer.toJson<String>(kind),
+      'before': serializer.toJson<String?>(before),
+      'after': serializer.toJson<String?>(after),
+    };
+  }
+
+  EventRevision copyWith({
+    String? id,
+    String? eventId,
+    int? at,
+    String? kind,
+    Value<String?> before = const Value.absent(),
+    Value<String?> after = const Value.absent(),
+  }) => EventRevision(
+    id: id ?? this.id,
+    eventId: eventId ?? this.eventId,
+    at: at ?? this.at,
+    kind: kind ?? this.kind,
+    before: before.present ? before.value : this.before,
+    after: after.present ? after.value : this.after,
+  );
+  EventRevision copyWithCompanion(EventRevisionsCompanion data) {
+    return EventRevision(
+      id: data.id.present ? data.id.value : this.id,
+      eventId: data.eventId.present ? data.eventId.value : this.eventId,
+      at: data.at.present ? data.at.value : this.at,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      before: data.before.present ? data.before.value : this.before,
+      after: data.after.present ? data.after.value : this.after,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EventRevision(')
+          ..write('id: $id, ')
+          ..write('eventId: $eventId, ')
+          ..write('at: $at, ')
+          ..write('kind: $kind, ')
+          ..write('before: $before, ')
+          ..write('after: $after')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, eventId, at, kind, before, after);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EventRevision &&
+          other.id == this.id &&
+          other.eventId == this.eventId &&
+          other.at == this.at &&
+          other.kind == this.kind &&
+          other.before == this.before &&
+          other.after == this.after);
+}
+
+class EventRevisionsCompanion extends UpdateCompanion<EventRevision> {
+  final Value<String> id;
+  final Value<String> eventId;
+  final Value<int> at;
+  final Value<String> kind;
+  final Value<String?> before;
+  final Value<String?> after;
+  final Value<int> rowid;
+  const EventRevisionsCompanion({
+    this.id = const Value.absent(),
+    this.eventId = const Value.absent(),
+    this.at = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.before = const Value.absent(),
+    this.after = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EventRevisionsCompanion.insert({
+    required String id,
+    required String eventId,
+    required int at,
+    required String kind,
+    this.before = const Value.absent(),
+    this.after = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       eventId = Value(eventId),
+       at = Value(at),
+       kind = Value(kind);
+  static Insertable<EventRevision> custom({
+    Expression<String>? id,
+    Expression<String>? eventId,
+    Expression<int>? at,
+    Expression<String>? kind,
+    Expression<String>? before,
+    Expression<String>? after,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (eventId != null) 'event_id': eventId,
+      if (at != null) 'at': at,
+      if (kind != null) 'kind': kind,
+      if (before != null) 'before': before,
+      if (after != null) 'after': after,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EventRevisionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? eventId,
+    Value<int>? at,
+    Value<String>? kind,
+    Value<String?>? before,
+    Value<String?>? after,
+    Value<int>? rowid,
+  }) {
+    return EventRevisionsCompanion(
+      id: id ?? this.id,
+      eventId: eventId ?? this.eventId,
+      at: at ?? this.at,
+      kind: kind ?? this.kind,
+      before: before ?? this.before,
+      after: after ?? this.after,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (eventId.present) {
+      map['event_id'] = Variable<String>(eventId.value);
+    }
+    if (at.present) {
+      map['at'] = Variable<int>(at.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (before.present) {
+      map['before'] = Variable<String>(before.value);
+    }
+    if (after.present) {
+      map['after'] = Variable<String>(after.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EventRevisionsCompanion(')
+          ..write('id: $id, ')
+          ..write('eventId: $eventId, ')
+          ..write('at: $at, ')
+          ..write('kind: $kind, ')
+          ..write('before: $before, ')
+          ..write('after: $after, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $EventFilesTable extends EventFiles
+    with TableInfo<$EventFilesTable, EventFile> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EventFilesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _eventIdMeta = const VerificationMeta(
+    'eventId',
+  );
+  @override
+  late final GeneratedColumn<String> eventId = GeneratedColumn<String>(
+    'event_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES events (id)',
+    ),
+  );
+  static const VerificationMeta _pathMeta = const VerificationMeta('path');
+  @override
+  late final GeneratedColumn<String> path = GeneratedColumn<String>(
+    'path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sizeMeta = const VerificationMeta('size');
+  @override
+  late final GeneratedColumn<int> size = GeneratedColumn<int>(
+    'size',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    eventId,
+    path,
+    name,
+    size,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'event_files';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EventFile> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('event_id')) {
+      context.handle(
+        _eventIdMeta,
+        eventId.isAcceptableOrUnknown(data['event_id']!, _eventIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_eventIdMeta);
+    }
+    if (data.containsKey('path')) {
+      context.handle(
+        _pathMeta,
+        path.isAcceptableOrUnknown(data['path']!, _pathMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pathMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('size')) {
+      context.handle(
+        _sizeMeta,
+        size.isAcceptableOrUnknown(data['size']!, _sizeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sizeMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  EventFile map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EventFile(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      eventId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}event_id'],
+      )!,
+      path: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}path'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      size: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}size'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $EventFilesTable createAlias(String alias) {
+    return $EventFilesTable(attachedDatabase, alias);
+  }
+}
+
+class EventFile extends DataClass implements Insertable<EventFile> {
+  final String id;
+  final String eventId;
+  final String path;
+  final String name;
+  final int size;
+  final int createdAt;
+  const EventFile({
+    required this.id,
+    required this.eventId,
+    required this.path,
+    required this.name,
+    required this.size,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['event_id'] = Variable<String>(eventId);
+    map['path'] = Variable<String>(path);
+    map['name'] = Variable<String>(name);
+    map['size'] = Variable<int>(size);
+    map['created_at'] = Variable<int>(createdAt);
+    return map;
+  }
+
+  EventFilesCompanion toCompanion(bool nullToAbsent) {
+    return EventFilesCompanion(
+      id: Value(id),
+      eventId: Value(eventId),
+      path: Value(path),
+      name: Value(name),
+      size: Value(size),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory EventFile.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EventFile(
+      id: serializer.fromJson<String>(json['id']),
+      eventId: serializer.fromJson<String>(json['eventId']),
+      path: serializer.fromJson<String>(json['path']),
+      name: serializer.fromJson<String>(json['name']),
+      size: serializer.fromJson<int>(json['size']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'eventId': serializer.toJson<String>(eventId),
+      'path': serializer.toJson<String>(path),
+      'name': serializer.toJson<String>(name),
+      'size': serializer.toJson<int>(size),
+      'createdAt': serializer.toJson<int>(createdAt),
+    };
+  }
+
+  EventFile copyWith({
+    String? id,
+    String? eventId,
+    String? path,
+    String? name,
+    int? size,
+    int? createdAt,
+  }) => EventFile(
+    id: id ?? this.id,
+    eventId: eventId ?? this.eventId,
+    path: path ?? this.path,
+    name: name ?? this.name,
+    size: size ?? this.size,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  EventFile copyWithCompanion(EventFilesCompanion data) {
+    return EventFile(
+      id: data.id.present ? data.id.value : this.id,
+      eventId: data.eventId.present ? data.eventId.value : this.eventId,
+      path: data.path.present ? data.path.value : this.path,
+      name: data.name.present ? data.name.value : this.name,
+      size: data.size.present ? data.size.value : this.size,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EventFile(')
+          ..write('id: $id, ')
+          ..write('eventId: $eventId, ')
+          ..write('path: $path, ')
+          ..write('name: $name, ')
+          ..write('size: $size, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, eventId, path, name, size, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EventFile &&
+          other.id == this.id &&
+          other.eventId == this.eventId &&
+          other.path == this.path &&
+          other.name == this.name &&
+          other.size == this.size &&
+          other.createdAt == this.createdAt);
+}
+
+class EventFilesCompanion extends UpdateCompanion<EventFile> {
+  final Value<String> id;
+  final Value<String> eventId;
+  final Value<String> path;
+  final Value<String> name;
+  final Value<int> size;
+  final Value<int> createdAt;
+  final Value<int> rowid;
+  const EventFilesCompanion({
+    this.id = const Value.absent(),
+    this.eventId = const Value.absent(),
+    this.path = const Value.absent(),
+    this.name = const Value.absent(),
+    this.size = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EventFilesCompanion.insert({
+    required String id,
+    required String eventId,
+    required String path,
+    required String name,
+    required int size,
+    required int createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       eventId = Value(eventId),
+       path = Value(path),
+       name = Value(name),
+       size = Value(size),
+       createdAt = Value(createdAt);
+  static Insertable<EventFile> custom({
+    Expression<String>? id,
+    Expression<String>? eventId,
+    Expression<String>? path,
+    Expression<String>? name,
+    Expression<int>? size,
+    Expression<int>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (eventId != null) 'event_id': eventId,
+      if (path != null) 'path': path,
+      if (name != null) 'name': name,
+      if (size != null) 'size': size,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EventFilesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? eventId,
+    Value<String>? path,
+    Value<String>? name,
+    Value<int>? size,
+    Value<int>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return EventFilesCompanion(
+      id: id ?? this.id,
+      eventId: eventId ?? this.eventId,
+      path: path ?? this.path,
+      name: name ?? this.name,
+      size: size ?? this.size,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (eventId.present) {
+      map['event_id'] = Variable<String>(eventId.value);
+    }
+    if (path.present) {
+      map['path'] = Variable<String>(path.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (size.present) {
+      map['size'] = Variable<int>(size.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EventFilesCompanion(')
+          ..write('id: $id, ')
+          ..write('eventId: $eventId, ')
+          ..write('path: $path, ')
+          ..write('name: $name, ')
+          ..write('size: $size, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -6951,6 +7753,8 @@ abstract class _$VehaDatabase extends GeneratedDatabase {
   late final $RemindersTable reminders = $RemindersTable(this);
   late final $EventNotesTable eventNotes = $EventNotesTable(this);
   late final $EventPhotosTable eventPhotos = $EventPhotosTable(this);
+  late final $EventRevisionsTable eventRevisions = $EventRevisionsTable(this);
+  late final $EventFilesTable eventFiles = $EventFilesTable(this);
   late final $TasksTable tasks = $TasksTable(this);
   late final $FieldDefsTable fieldDefs = $FieldDefsTable(this);
   late final $FieldValuesTable fieldValues = $FieldValuesTable(this);
@@ -6969,6 +7773,8 @@ abstract class _$VehaDatabase extends GeneratedDatabase {
     reminders,
     eventNotes,
     eventPhotos,
+    eventRevisions,
+    eventFiles,
     tasks,
     fieldDefs,
     fieldValues,
@@ -8190,6 +8996,24 @@ final class $$EventsTableReferences
     );
   }
 
+  static MultiTypedResultKey<$EventFilesTable, List<EventFile>>
+  _eventFilesRefsTable(_$VehaDatabase db) => MultiTypedResultKey.fromTable(
+    db.eventFiles,
+    aliasName: $_aliasNameGenerator(db.events.id, db.eventFiles.eventId),
+  );
+
+  $$EventFilesTableProcessedTableManager get eventFilesRefs {
+    final manager = $$EventFilesTableTableManager(
+      $_db,
+      $_db.eventFiles,
+    ).filter((f) => f.eventId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_eventFilesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
   static MultiTypedResultKey<$FieldValuesTable, List<FieldValue>>
   _fieldValuesRefsTable(_$VehaDatabase db) => MultiTypedResultKey.fromTable(
     db.fieldValues,
@@ -8432,6 +9256,31 @@ class $$EventsTableFilterComposer
           }) => $$EventPhotosTableFilterComposer(
             $db: $db,
             $table: $db.eventPhotos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> eventFilesRefs(
+    Expression<bool> Function($$EventFilesTableFilterComposer f) f,
+  ) {
+    final $$EventFilesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.eventFiles,
+      getReferencedColumn: (t) => t.eventId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$EventFilesTableFilterComposer(
+            $db: $db,
+            $table: $db.eventFiles,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -8805,6 +9654,31 @@ class $$EventsTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> eventFilesRefs<T extends Object>(
+    Expression<T> Function($$EventFilesTableAnnotationComposer a) f,
+  ) {
+    final $$EventFilesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.eventFiles,
+      getReferencedColumn: (t) => t.eventId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$EventFilesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.eventFiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
   Expression<T> fieldValuesRefs<T extends Object>(
     Expression<T> Function($$FieldValuesTableAnnotationComposer a) f,
   ) {
@@ -8850,6 +9724,7 @@ class $$EventsTableTableManager
             bool remindersRefs,
             bool eventNotesRefs,
             bool eventPhotosRefs,
+            bool eventFilesRefs,
             bool fieldValuesRefs,
           })
         > {
@@ -8973,6 +9848,7 @@ class $$EventsTableTableManager
                 remindersRefs = false,
                 eventNotesRefs = false,
                 eventPhotosRefs = false,
+                eventFilesRefs = false,
                 fieldValuesRefs = false,
               }) {
                 return PrefetchHooks(
@@ -8982,6 +9858,7 @@ class $$EventsTableTableManager
                     if (remindersRefs) db.reminders,
                     if (eventNotesRefs) db.eventNotes,
                     if (eventPhotosRefs) db.eventPhotos,
+                    if (eventFilesRefs) db.eventFiles,
                     if (fieldValuesRefs) db.fieldValues,
                   ],
                   addJoins:
@@ -9102,6 +9979,27 @@ class $$EventsTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (eventFilesRefs)
+                        await $_getPrefetchedData<
+                          Event,
+                          $EventsTable,
+                          EventFile
+                        >(
+                          currentTable: table,
+                          referencedTable: $$EventsTableReferences
+                              ._eventFilesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$EventsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).eventFilesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.eventId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                       if (fieldValuesRefs)
                         await $_getPrefetchedData<
                           Event,
@@ -9149,6 +10047,7 @@ typedef $$EventsTableProcessedTableManager =
         bool remindersRefs,
         bool eventNotesRefs,
         bool eventPhotosRefs,
+        bool eventFilesRefs,
         bool fieldValuesRefs,
       })
     >;
@@ -10426,6 +11325,564 @@ typedef $$EventPhotosTableProcessedTableManager =
       $$EventPhotosTableUpdateCompanionBuilder,
       (EventPhoto, $$EventPhotosTableReferences),
       EventPhoto,
+      PrefetchHooks Function({bool eventId})
+    >;
+typedef $$EventRevisionsTableCreateCompanionBuilder =
+    EventRevisionsCompanion Function({
+      required String id,
+      required String eventId,
+      required int at,
+      required String kind,
+      Value<String?> before,
+      Value<String?> after,
+      Value<int> rowid,
+    });
+typedef $$EventRevisionsTableUpdateCompanionBuilder =
+    EventRevisionsCompanion Function({
+      Value<String> id,
+      Value<String> eventId,
+      Value<int> at,
+      Value<String> kind,
+      Value<String?> before,
+      Value<String?> after,
+      Value<int> rowid,
+    });
+
+class $$EventRevisionsTableFilterComposer
+    extends Composer<_$VehaDatabase, $EventRevisionsTable> {
+  $$EventRevisionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get eventId => $composableBuilder(
+    column: $table.eventId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get at => $composableBuilder(
+    column: $table.at,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get before => $composableBuilder(
+    column: $table.before,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get after => $composableBuilder(
+    column: $table.after,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$EventRevisionsTableOrderingComposer
+    extends Composer<_$VehaDatabase, $EventRevisionsTable> {
+  $$EventRevisionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get eventId => $composableBuilder(
+    column: $table.eventId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get at => $composableBuilder(
+    column: $table.at,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get before => $composableBuilder(
+    column: $table.before,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get after => $composableBuilder(
+    column: $table.after,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$EventRevisionsTableAnnotationComposer
+    extends Composer<_$VehaDatabase, $EventRevisionsTable> {
+  $$EventRevisionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get eventId =>
+      $composableBuilder(column: $table.eventId, builder: (column) => column);
+
+  GeneratedColumn<int> get at =>
+      $composableBuilder(column: $table.at, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get before =>
+      $composableBuilder(column: $table.before, builder: (column) => column);
+
+  GeneratedColumn<String> get after =>
+      $composableBuilder(column: $table.after, builder: (column) => column);
+}
+
+class $$EventRevisionsTableTableManager
+    extends
+        RootTableManager<
+          _$VehaDatabase,
+          $EventRevisionsTable,
+          EventRevision,
+          $$EventRevisionsTableFilterComposer,
+          $$EventRevisionsTableOrderingComposer,
+          $$EventRevisionsTableAnnotationComposer,
+          $$EventRevisionsTableCreateCompanionBuilder,
+          $$EventRevisionsTableUpdateCompanionBuilder,
+          (
+            EventRevision,
+            BaseReferences<_$VehaDatabase, $EventRevisionsTable, EventRevision>,
+          ),
+          EventRevision,
+          PrefetchHooks Function()
+        > {
+  $$EventRevisionsTableTableManager(
+    _$VehaDatabase db,
+    $EventRevisionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EventRevisionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$EventRevisionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$EventRevisionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> eventId = const Value.absent(),
+                Value<int> at = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<String?> before = const Value.absent(),
+                Value<String?> after = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EventRevisionsCompanion(
+                id: id,
+                eventId: eventId,
+                at: at,
+                kind: kind,
+                before: before,
+                after: after,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String eventId,
+                required int at,
+                required String kind,
+                Value<String?> before = const Value.absent(),
+                Value<String?> after = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EventRevisionsCompanion.insert(
+                id: id,
+                eventId: eventId,
+                at: at,
+                kind: kind,
+                before: before,
+                after: after,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$EventRevisionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$VehaDatabase,
+      $EventRevisionsTable,
+      EventRevision,
+      $$EventRevisionsTableFilterComposer,
+      $$EventRevisionsTableOrderingComposer,
+      $$EventRevisionsTableAnnotationComposer,
+      $$EventRevisionsTableCreateCompanionBuilder,
+      $$EventRevisionsTableUpdateCompanionBuilder,
+      (
+        EventRevision,
+        BaseReferences<_$VehaDatabase, $EventRevisionsTable, EventRevision>,
+      ),
+      EventRevision,
+      PrefetchHooks Function()
+    >;
+typedef $$EventFilesTableCreateCompanionBuilder =
+    EventFilesCompanion Function({
+      required String id,
+      required String eventId,
+      required String path,
+      required String name,
+      required int size,
+      required int createdAt,
+      Value<int> rowid,
+    });
+typedef $$EventFilesTableUpdateCompanionBuilder =
+    EventFilesCompanion Function({
+      Value<String> id,
+      Value<String> eventId,
+      Value<String> path,
+      Value<String> name,
+      Value<int> size,
+      Value<int> createdAt,
+      Value<int> rowid,
+    });
+
+final class $$EventFilesTableReferences
+    extends BaseReferences<_$VehaDatabase, $EventFilesTable, EventFile> {
+  $$EventFilesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $EventsTable _eventIdTable(_$VehaDatabase db) => db.events.createAlias(
+    $_aliasNameGenerator(db.eventFiles.eventId, db.events.id),
+  );
+
+  $$EventsTableProcessedTableManager get eventId {
+    final $_column = $_itemColumn<String>('event_id')!;
+
+    final manager = $$EventsTableTableManager(
+      $_db,
+      $_db.events,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_eventIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$EventFilesTableFilterComposer
+    extends Composer<_$VehaDatabase, $EventFilesTable> {
+  $$EventFilesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get path => $composableBuilder(
+    column: $table.path,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get size => $composableBuilder(
+    column: $table.size,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$EventsTableFilterComposer get eventId {
+    final $$EventsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.eventId,
+      referencedTable: $db.events,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$EventsTableFilterComposer(
+            $db: $db,
+            $table: $db.events,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$EventFilesTableOrderingComposer
+    extends Composer<_$VehaDatabase, $EventFilesTable> {
+  $$EventFilesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get path => $composableBuilder(
+    column: $table.path,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get size => $composableBuilder(
+    column: $table.size,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$EventsTableOrderingComposer get eventId {
+    final $$EventsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.eventId,
+      referencedTable: $db.events,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$EventsTableOrderingComposer(
+            $db: $db,
+            $table: $db.events,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$EventFilesTableAnnotationComposer
+    extends Composer<_$VehaDatabase, $EventFilesTable> {
+  $$EventFilesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get path =>
+      $composableBuilder(column: $table.path, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get size =>
+      $composableBuilder(column: $table.size, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$EventsTableAnnotationComposer get eventId {
+    final $$EventsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.eventId,
+      referencedTable: $db.events,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$EventsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.events,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$EventFilesTableTableManager
+    extends
+        RootTableManager<
+          _$VehaDatabase,
+          $EventFilesTable,
+          EventFile,
+          $$EventFilesTableFilterComposer,
+          $$EventFilesTableOrderingComposer,
+          $$EventFilesTableAnnotationComposer,
+          $$EventFilesTableCreateCompanionBuilder,
+          $$EventFilesTableUpdateCompanionBuilder,
+          (EventFile, $$EventFilesTableReferences),
+          EventFile,
+          PrefetchHooks Function({bool eventId})
+        > {
+  $$EventFilesTableTableManager(_$VehaDatabase db, $EventFilesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EventFilesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$EventFilesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$EventFilesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> eventId = const Value.absent(),
+                Value<String> path = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> size = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EventFilesCompanion(
+                id: id,
+                eventId: eventId,
+                path: path,
+                name: name,
+                size: size,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String eventId,
+                required String path,
+                required String name,
+                required int size,
+                required int createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => EventFilesCompanion.insert(
+                id: id,
+                eventId: eventId,
+                path: path,
+                name: name,
+                size: size,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$EventFilesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({eventId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (eventId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.eventId,
+                                referencedTable: $$EventFilesTableReferences
+                                    ._eventIdTable(db),
+                                referencedColumn: $$EventFilesTableReferences
+                                    ._eventIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$EventFilesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$VehaDatabase,
+      $EventFilesTable,
+      EventFile,
+      $$EventFilesTableFilterComposer,
+      $$EventFilesTableOrderingComposer,
+      $$EventFilesTableAnnotationComposer,
+      $$EventFilesTableCreateCompanionBuilder,
+      $$EventFilesTableUpdateCompanionBuilder,
+      (EventFile, $$EventFilesTableReferences),
+      EventFile,
       PrefetchHooks Function({bool eventId})
     >;
 typedef $$TasksTableCreateCompanionBuilder =
@@ -12395,6 +13852,10 @@ class $VehaDatabaseManager {
       $$EventNotesTableTableManager(_db, _db.eventNotes);
   $$EventPhotosTableTableManager get eventPhotos =>
       $$EventPhotosTableTableManager(_db, _db.eventPhotos);
+  $$EventRevisionsTableTableManager get eventRevisions =>
+      $$EventRevisionsTableTableManager(_db, _db.eventRevisions);
+  $$EventFilesTableTableManager get eventFiles =>
+      $$EventFilesTableTableManager(_db, _db.eventFiles);
   $$TasksTableTableManager get tasks =>
       $$TasksTableTableManager(_db, _db.tasks);
   $$FieldDefsTableTableManager get fieldDefs =>

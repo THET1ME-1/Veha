@@ -1929,5 +1929,68 @@
   "dayReviewEmpty": "В этот день ничего не назначено",
   "@dayReviewEmpty": {
     "description": "dayReviewEmpty"
+  },
+  "filesTitle": "Вложения",
+  "@filesTitle": {
+    "description": "filesTitle"
+  },
+  "fileAttach": "Приложить файл",
+  "@fileAttach": {
+    "description": "fileAttach"
+  },
+  "fileRemove": "Убрать вложение",
+  "@fileRemove": {
+    "description": "fileRemove"
+  },
+  "fileMissing": "Файла больше нет на устройстве",
+  "@fileMissing": {
+    "description": "fileMissing"
+  },
+  "historyTitle": "История изменений",
+  "@historyTitle": {
+    "description": "historyTitle"
+  },
+  "historyCreated": "Событие заведено",
+  "@historyCreated": {
+    "description": "historyCreated"
+  },
+  "historyName": "Название",
+  "@historyName": {
+    "description": "historyName"
+  },
+  "historyTime": "Время",
+  "@historyTime": {
+    "description": "historyTime"
+  },
+  "historyEmpty": "Событие ещё не правили",
+  "@historyEmpty": {
+    "description": "historyEmpty"
+  },
+  "sizeBytes": "{value} Б",
+  "@sizeBytes": {
+    "description": "sizeBytes",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sizeKb": "{value} КБ",
+  "@sizeKb": {
+    "description": "sizeKb",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sizeMb": "{value} МБ",
+  "@sizeMb": {
+    "description": "sizeMb",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   }
 }

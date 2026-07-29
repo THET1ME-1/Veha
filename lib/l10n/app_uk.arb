@@ -1841,5 +1841,68 @@
   "dayReviewEmpty": "На цей день нічого не призначено",
   "@dayReviewEmpty": {
     "description": "dayReviewEmpty"
+  },
+  "filesTitle": "Вкладення",
+  "@filesTitle": {
+    "description": "filesTitle"
+  },
+  "fileAttach": "Прикріпити файл",
+  "@fileAttach": {
+    "description": "fileAttach"
+  },
+  "fileRemove": "Прибрати вкладення",
+  "@fileRemove": {
+    "description": "fileRemove"
+  },
+  "fileMissing": "Файлу більше немає на пристрої",
+  "@fileMissing": {
+    "description": "fileMissing"
+  },
+  "historyTitle": "Історія змін",
+  "@historyTitle": {
+    "description": "historyTitle"
+  },
+  "historyCreated": "Подію створено",
+  "@historyCreated": {
+    "description": "historyCreated"
+  },
+  "historyName": "Назва",
+  "@historyName": {
+    "description": "historyName"
+  },
+  "historyTime": "Час",
+  "@historyTime": {
+    "description": "historyTime"
+  },
+  "historyEmpty": "Подію ще не редагували",
+  "@historyEmpty": {
+    "description": "historyEmpty"
+  },
+  "sizeBytes": "{value} Б",
+  "@sizeBytes": {
+    "description": "sizeBytes",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sizeKb": "{value} КБ",
+  "@sizeKb": {
+    "description": "sizeKb",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sizeMb": "{value} МБ",
+  "@sizeMb": {
+    "description": "sizeMb",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   }
 }

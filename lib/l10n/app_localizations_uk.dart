@@ -1424,4 +1424,46 @@ class LUk extends L {
 
   @override
   String get dayReviewEmpty => 'На цей день нічого не призначено';
+
+  @override
+  String get filesTitle => 'Вкладення';
+
+  @override
+  String get fileAttach => 'Прикріпити файл';
+
+  @override
+  String get fileRemove => 'Прибрати вкладення';
+
+  @override
+  String get fileMissing => 'Файлу більше немає на пристрої';
+
+  @override
+  String get historyTitle => 'Історія змін';
+
+  @override
+  String get historyCreated => 'Подію створено';
+
+  @override
+  String get historyName => 'Назва';
+
+  @override
+  String get historyTime => 'Час';
+
+  @override
+  String get historyEmpty => 'Подію ще не редагували';
+
+  @override
+  String sizeBytes(String value) {
+    return '$value Б';
+  }
+
+  @override
+  String sizeKb(String value) {
+    return '$value КБ';
+  }
+
+  @override
+  String sizeMb(String value) {
+    return '$value МБ';
+  }
 }

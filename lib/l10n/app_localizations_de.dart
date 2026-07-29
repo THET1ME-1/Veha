@@ -1417,4 +1417,46 @@ class LDe extends L {
 
   @override
   String get dayReviewEmpty => 'Für diesen Tag ist nichts geplant';
+
+  @override
+  String get filesTitle => 'Anhänge';
+
+  @override
+  String get fileAttach => 'Datei anhängen';
+
+  @override
+  String get fileRemove => 'Anhang entfernen';
+
+  @override
+  String get fileMissing => 'Die Datei ist nicht mehr auf dem Gerät';
+
+  @override
+  String get historyTitle => 'Änderungsverlauf';
+
+  @override
+  String get historyCreated => 'Termin angelegt';
+
+  @override
+  String get historyName => 'Titel';
+
+  @override
+  String get historyTime => 'Uhrzeit';
+
+  @override
+  String get historyEmpty => 'Noch nichts geändert';
+
+  @override
+  String sizeBytes(String value) {
+    return '$value B';
+  }
+
+  @override
+  String sizeKb(String value) {
+    return '$value KB';
+  }
+
+  @override
+  String sizeMb(String value) {
+    return '$value MB';
+  }
 }

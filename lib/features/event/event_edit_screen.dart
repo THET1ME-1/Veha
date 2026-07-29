@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,12 +11,14 @@ import '../../core/icon_registry.dart';
 import '../../data/models.dart';
 import '../../domain/draft.dart';
 import '../../domain/note_markup.dart';
+import '../../services/file_service.dart';
 import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
 import '../repeat/repeat_screen.dart' show askRepeatRule;
 import 'calendar_picker_sheet.dart';
 import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
 import 'field_value_sheet.dart';
+import 'history_sheet.dart';
 import 'note_body.dart';
 import 'note_sheet.dart';
 import 'event_cover.dart';
@@ -191,6 +195,111 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
           ),
         ]),
       ],
+    );
+  }
+
+  /// Вложения события. Живут только на устройстве: сервер хранит записи и
+  /// отдаёт дельты, файлового хранилища у него нет.
+  Widget _files() {
+    final l = L.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final eventId = _draft.source!.recurrenceId ?? _draft.source!.id;
+    final files =
+        ref.watch(filesProvider(eventId)).valueOrNull ?? const <VFile>[];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        VBlockCap(l.filesTitle),
+        VBlock(children: [
+          for (var i = 0; i < files.length; i++) ...[
+            if (i > 0) const VSep(),
+            VRow(
+              icon: fileIconOf(files[i].name),
+              label: fileSizeLabel(l, files[i].size),
+              value: files[i].name,
+              labelFirst: false,
+              onTap: () => _openFile(files[i]),
+              trailing: IconButton(
+                onPressed: () => _removeFile(files[i]),
+                icon: Icon(VehaIcons.byName('close'), size: 18),
+                tooltip: l.fileRemove,
+                color: scheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+          if (files.isNotEmpty) const VSep(),
+          VRow(
+            icon: 'attach_file',
+            value: l.fileAttach,
+            onTap: () => _attachFile(eventId),
+          ),
+        ]),
+      ],
+    );
+  }
+
+  Future<void> _attachFile(String eventId) async {
+    final repo = ref.read(repositoryProvider);
+    final id = repo.newId();
+    final picked = await FileService.pick(id: id);
+    if (picked == null) return;
+
+    await repo.addFile(VFile(
+      id: id,
+      eventId: eventId,
+      path: picked.path,
+      name: picked.name,
+      size: picked.size,
+      addedAt: DateTime.now(),
+    ));
+  }
+
+  Future<void> _openFile(VFile file) async {
+    final l = L.of(context);
+    final path = await attachmentPath(file.path);
+    if (!await File(path).exists()) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(content: Text(l.fileMissing)));
+      }
+      return;
+    }
+    await launchUrl(Uri.file(path), mode: LaunchMode.externalApplication);
+  }
+
+  Future<void> _removeFile(VFile file) async {
+    final path = await ref.read(repositoryProvider).deleteFile(file.id);
+    if (path != null) await FileService.erase(path);
+  }
+
+  /// История правок. Строка, а не блок: заходят сюда редко, а места она
+  /// заняла бы столько же, сколько заметки.
+  Widget _history() {
+    final l = L.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final eventId = _draft.source!.recurrenceId ?? _draft.source!.id;
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 14),
+      child: VBlock(children: [
+        VRow(
+          icon: 'history',
+          value: l.historyTitle,
+          onTap: () async {
+            final history =
+                await ref.read(historyProvider(eventId).future);
+            if (!mounted) return;
+            await showEventHistory(context, history: history);
+          },
+          trailing: Icon(
+            VehaIcons.byName('chevron'),
+            size: 17,
+            color: scheme.outline,
+          ),
+        ),
+      ]),
     );
   }
 
@@ -571,6 +680,8 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
         // ключа, к которому их привязать, и держать их в черновике значит
         // заводить вторую правду о том же.
         if (_draft.isEditing) _notes(color),
+        if (_draft.isEditing) _files(),
+        if (_draft.isEditing) _history(),
         if (widget.onDuplicate != null || widget.onDelete != null) ...[
           const SizedBox(height: 18),
           Row(

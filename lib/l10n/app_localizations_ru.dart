@@ -1422,4 +1422,46 @@ class LRu extends L {
 
   @override
   String get dayReviewEmpty => 'В этот день ничего не назначено';
+
+  @override
+  String get filesTitle => 'Вложения';
+
+  @override
+  String get fileAttach => 'Приложить файл';
+
+  @override
+  String get fileRemove => 'Убрать вложение';
+
+  @override
+  String get fileMissing => 'Файла больше нет на устройстве';
+
+  @override
+  String get historyTitle => 'История изменений';
+
+  @override
+  String get historyCreated => 'Событие заведено';
+
+  @override
+  String get historyName => 'Название';
+
+  @override
+  String get historyTime => 'Время';
+
+  @override
+  String get historyEmpty => 'Событие ещё не правили';
+
+  @override
+  String sizeBytes(String value) {
+    return '$value Б';
+  }
+
+  @override
+  String sizeKb(String value) {
+    return '$value КБ';
+  }
+
+  @override
+  String sizeMb(String value) {
+    return '$value МБ';
+  }
 }

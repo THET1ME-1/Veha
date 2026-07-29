@@ -1841,5 +1841,68 @@
   "dayReviewEmpty": "Für diesen Tag ist nichts geplant",
   "@dayReviewEmpty": {
     "description": "dayReviewEmpty"
+  },
+  "filesTitle": "Anhänge",
+  "@filesTitle": {
+    "description": "filesTitle"
+  },
+  "fileAttach": "Datei anhängen",
+  "@fileAttach": {
+    "description": "fileAttach"
+  },
+  "fileRemove": "Anhang entfernen",
+  "@fileRemove": {
+    "description": "fileRemove"
+  },
+  "fileMissing": "Die Datei ist nicht mehr auf dem Gerät",
+  "@fileMissing": {
+    "description": "fileMissing"
+  },
+  "historyTitle": "Änderungsverlauf",
+  "@historyTitle": {
+    "description": "historyTitle"
+  },
+  "historyCreated": "Termin angelegt",
+  "@historyCreated": {
+    "description": "historyCreated"
+  },
+  "historyName": "Titel",
+  "@historyName": {
+    "description": "historyName"
+  },
+  "historyTime": "Uhrzeit",
+  "@historyTime": {
+    "description": "historyTime"
+  },
+  "historyEmpty": "Noch nichts geändert",
+  "@historyEmpty": {
+    "description": "historyEmpty"
+  },
+  "sizeBytes": "{value} B",
+  "@sizeBytes": {
+    "description": "sizeBytes",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sizeKb": "{value} KB",
+  "@sizeKb": {
+    "description": "sizeKb",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sizeMb": "{value} MB",
+  "@sizeMb": {
+    "description": "sizeMb",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -201,6 +201,66 @@ class VEvent {
       a.year == b.year && a.month == b.month && a.day == b.day;
 }
 
+/// Что у события меняли.
+enum RevisionKind {
+  created,
+  title,
+  time,
+  calendar,
+  place,
+  look,
+  repeat,
+  reminders,
+}
+
+/// Одна правка события: что поменялось, когда и на что.
+///
+/// Журнал местный, на сервер не уезжает: там хранятся записи, а история
+/// правок — память устройства.
+@immutable
+class VRevision {
+  const VRevision({
+    required this.id,
+    required this.eventId,
+    required this.at,
+    required this.kind,
+    this.before,
+    this.after,
+  });
+
+  final String id;
+  final String eventId;
+  final DateTime at;
+  final RevisionKind kind;
+
+  /// Как было и как стало. У «событие завели» обе стороны пустые.
+  final String? before;
+  final String? after;
+}
+
+/// Файл, приложенный к событию.
+@immutable
+class VFile {
+  const VFile({
+    required this.id,
+    required this.eventId,
+    required this.path,
+    required this.name,
+    required this.size,
+    required this.addedAt,
+  });
+
+  final String id;
+  final String eventId;
+
+  /// Путь относительный от папки приложения: абсолютный протухает после
+  /// переустановки.
+  final String path;
+  final String name;
+  final int size;
+  final DateTime addedAt;
+}
+
 /// Заметка внутри события — четвёртый уровень цвета.
 @immutable
 class VNote {

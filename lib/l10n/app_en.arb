@@ -1841,5 +1841,68 @@
   "dayReviewEmpty": "Nothing scheduled this day",
   "@dayReviewEmpty": {
     "description": "dayReviewEmpty"
+  },
+  "filesTitle": "Attachments",
+  "@filesTitle": {
+    "description": "filesTitle"
+  },
+  "fileAttach": "Attach a file",
+  "@fileAttach": {
+    "description": "fileAttach"
+  },
+  "fileRemove": "Remove attachment",
+  "@fileRemove": {
+    "description": "fileRemove"
+  },
+  "fileMissing": "That file is gone from this device",
+  "@fileMissing": {
+    "description": "fileMissing"
+  },
+  "historyTitle": "Change history",
+  "@historyTitle": {
+    "description": "historyTitle"
+  },
+  "historyCreated": "Event created",
+  "@historyCreated": {
+    "description": "historyCreated"
+  },
+  "historyName": "Title",
+  "@historyName": {
+    "description": "historyName"
+  },
+  "historyTime": "Time",
+  "@historyTime": {
+    "description": "historyTime"
+  },
+  "historyEmpty": "Nothing has been changed yet",
+  "@historyEmpty": {
+    "description": "historyEmpty"
+  },
+  "sizeBytes": "{value} B",
+  "@sizeBytes": {
+    "description": "sizeBytes",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sizeKb": "{value} KB",
+  "@sizeKb": {
+    "description": "sizeKb",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sizeMb": "{value} MB",
+  "@sizeMb": {
+    "description": "sizeMb",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   }
 }

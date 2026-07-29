@@ -120,6 +120,21 @@ final photosProvider =
   yield* ref.watch(repositoryProvider).watchPhotos(eventId);
 });
 
+/// Вложения события — как заметки и снимки, семейством по ключу события.
+final filesProvider =
+    StreamProvider.family<List<VFile>, String>((ref, eventId) async* {
+  await ref.watch(bootstrapProvider.future);
+  yield* ref.watch(repositoryProvider).watchFiles(eventId);
+});
+
+/// История правок события. Не поток: журнал читают, когда открывают, а
+/// подписка на него держала бы запрос ради экрана, куда заходят раз в месяц.
+final historyProvider =
+    FutureProvider.family<List<VRevision>, String>((ref, eventId) async {
+  await ref.watch(bootstrapProvider.future);
+  return ref.watch(repositoryProvider).historyOf(eventId);
+});
+
 /// Частые события: подсказки быстрого листа. Считаются по истории, а не по
 /// заготовкам, которые надо заводить руками.
 final frequentEventsProvider =

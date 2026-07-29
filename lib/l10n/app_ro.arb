@@ -1841,5 +1841,68 @@
   "dayReviewEmpty": "Nimic programat în această zi",
   "@dayReviewEmpty": {
     "description": "dayReviewEmpty"
+  },
+  "filesTitle": "Atașamente",
+  "@filesTitle": {
+    "description": "filesTitle"
+  },
+  "fileAttach": "Atașează un fișier",
+  "@fileAttach": {
+    "description": "fileAttach"
+  },
+  "fileRemove": "Elimină atașamentul",
+  "@fileRemove": {
+    "description": "fileRemove"
+  },
+  "fileMissing": "Fișierul nu mai este pe dispozitiv",
+  "@fileMissing": {
+    "description": "fileMissing"
+  },
+  "historyTitle": "Istoricul modificărilor",
+  "@historyTitle": {
+    "description": "historyTitle"
+  },
+  "historyCreated": "Eveniment creat",
+  "@historyCreated": {
+    "description": "historyCreated"
+  },
+  "historyName": "Titlu",
+  "@historyName": {
+    "description": "historyName"
+  },
+  "historyTime": "Ora",
+  "@historyTime": {
+    "description": "historyTime"
+  },
+  "historyEmpty": "Nimic nu a fost modificat încă",
+  "@historyEmpty": {
+    "description": "historyEmpty"
+  },
+  "sizeBytes": "{value} B",
+  "@sizeBytes": {
+    "description": "sizeBytes",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sizeKb": "{value} KB",
+  "@sizeKb": {
+    "description": "sizeKb",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sizeMb": "{value} MB",
+  "@sizeMb": {
+    "description": "sizeMb",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   }
 }

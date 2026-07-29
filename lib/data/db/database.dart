@@ -138,6 +138,44 @@ class EventPhotos extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// Что у события меняли и когда.
+///
+/// Не уезжает на сервер, как и снимки: он хранит записи и отдаёт дельты, а
+/// журнал правок — местная память устройства. Ссылки на `Events` нет
+/// намеренно: экземпляр ряда попадает в историю до того, как выломается в
+/// свою строку, и внешний ключ отверг бы такую запись.
+class EventRevisions extends Table {
+  TextColumn get id => text()();
+  TextColumn get eventId => text()();
+  IntColumn get at => integer()();
+
+  /// Что именно поменялось: название, время, календарь, место, внешность,
+  /// повтор, напоминания — или событие только что завели.
+  TextColumn get kind => text()();
+  TextColumn get before => text().nullable()();
+  TextColumn get after => text().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// Файл, приложенный к событию.
+///
+/// На сервер не уезжает по той же причине, что и снимок: файлового хранилища
+/// у него нет. Путь относительный от папки приложения — абсолютный протухает
+/// после переустановки.
+class EventFiles extends Table {
+  TextColumn get id => text()();
+  TextColumn get eventId => text().references(Events, #id)();
+  TextColumn get path => text()();
+  TextColumn get name => text()();
+  IntColumn get size => integer()();
+  IntColumn get createdAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 /// Задача. Отличается от события отметкой выполнения и тем, что срок
 /// необязателен: «когда-нибудь купить лампу» живёт в списке без даты.
 class Tasks extends Table {
@@ -239,6 +277,8 @@ class SyncQueue extends Table {
     Reminders,
     EventNotes,
     EventPhotos,
+    EventRevisions,
+    EventFiles,
     Tasks,
     FieldDefs,
     FieldValues,
@@ -251,7 +291,7 @@ class VehaDatabase extends _$VehaDatabase {
   VehaDatabase(super.e);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -266,6 +306,8 @@ class VehaDatabase extends _$VehaDatabase {
               'CREATE INDEX idx_events_deleted ON events (deleted_at)');
           await customStatement(
               'CREATE INDEX idx_tasks_due ON tasks (due, completed_at)');
+          await customStatement(
+              'CREATE INDEX idx_revisions_event ON event_revisions (event_id, at)');
         },
         onUpgrade: (m, from, to) async {
           if (from < 2) {
@@ -277,6 +319,13 @@ class VehaDatabase extends _$VehaDatabase {
           if (from < 3) {
             await m.addColumn(calendars, calendars.defaultReminders);
             await m.addColumn(calendars, calendars.defaultDuration);
+          }
+          if (from < 4) {
+            // Обе таблицы местные: на сервер не уезжают, и миграции там нет.
+            await m.createTable(eventRevisions);
+            await m.createTable(eventFiles);
+            await customStatement(
+                'CREATE INDEX idx_revisions_event ON event_revisions (event_id, at)');
           }
         },
         beforeOpen: (details) async {

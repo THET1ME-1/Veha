@@ -1841,5 +1841,68 @@
   "dayReviewEmpty": "No hay nada previsto este día",
   "@dayReviewEmpty": {
     "description": "dayReviewEmpty"
+  },
+  "filesTitle": "Adjuntos",
+  "@filesTitle": {
+    "description": "filesTitle"
+  },
+  "fileAttach": "Adjuntar archivo",
+  "@fileAttach": {
+    "description": "fileAttach"
+  },
+  "fileRemove": "Quitar el adjunto",
+  "@fileRemove": {
+    "description": "fileRemove"
+  },
+  "fileMissing": "El archivo ya no está en el dispositivo",
+  "@fileMissing": {
+    "description": "fileMissing"
+  },
+  "historyTitle": "Historial de cambios",
+  "@historyTitle": {
+    "description": "historyTitle"
+  },
+  "historyCreated": "Evento creado",
+  "@historyCreated": {
+    "description": "historyCreated"
+  },
+  "historyName": "Título",
+  "@historyName": {
+    "description": "historyName"
+  },
+  "historyTime": "Hora",
+  "@historyTime": {
+    "description": "historyTime"
+  },
+  "historyEmpty": "Todavía no se ha cambiado nada",
+  "@historyEmpty": {
+    "description": "historyEmpty"
+  },
+  "sizeBytes": "{value} B",
+  "@sizeBytes": {
+    "description": "sizeBytes",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sizeKb": "{value} KB",
+  "@sizeKb": {
+    "description": "sizeKb",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sizeMb": "{value} MB",
+  "@sizeMb": {
+    "description": "sizeMb",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -316,6 +316,12 @@ class VehaRepository {
     final now = DateTime.now().millisecondsSinceEpoch;
     final id = e.isVirtual ? newId() : e.id;
 
+    // Прежнее состояние читаем до записи: журнал правок иначе не составить.
+    final previous = await (db.select(db.events)
+          ..where((t) => t.id.equals(id))
+          ..limit(1))
+        .getSingleOrNull();
+
     await db.transaction(() async {
       await db.into(db.events).insertOnConflictUpdate(EventsCompanion.insert(
             id: id,
@@ -340,8 +346,106 @@ class VehaRepository {
           ));
       await _writeReminders(id, e.reminders);
       await _writeFieldValues(id, e.fields);
+      await _writeRevisions(id, previous, e, at: now);
       await _enqueue('event', id, 'upsert');
     });
+  }
+
+  /// Журнал правок. Пишется здесь, а не в экранах: через `upsertEvent` идут и
+  /// форма, и перетаскивание в сетке, и массовый перенос — в одном месте
+  /// история полная, в трёх она разъедется на второй же неделе.
+  Future<void> _writeRevisions(
+    String id,
+    Event? before,
+    VEvent after, {
+    required int at,
+  }) async {
+    Future<void> put(RevisionKind kind, String? was, String? now) =>
+        db.into(db.eventRevisions).insert(EventRevisionsCompanion.insert(
+              id: newId(),
+              eventId: id,
+              at: at,
+              kind: kind.name,
+              before: Value(was),
+              after: Value(now),
+            ));
+
+    if (before == null) {
+      await put(RevisionKind.created, null, after.title);
+      return;
+    }
+
+    if (before.title != after.title) {
+      await put(RevisionKind.title, before.title, after.title);
+    }
+
+    // Перенос — одна запись, а не две: человек двигал событие целиком, и
+    // «начало» с «концом» по отдельности ему ничего не скажут.
+    final wasStart = DateTime.fromMillisecondsSinceEpoch(before.start);
+    final wasEnd = DateTime.fromMillisecondsSinceEpoch(before.end);
+    if (wasStart != after.start || wasEnd != after.end) {
+      await put(
+        RevisionKind.time,
+        _stamp(wasStart, wasEnd),
+        _stamp(after.start, after.end),
+      );
+    }
+
+    if (before.calendarId != after.calendarId ||
+        before.subcategoryId != after.subcategoryId) {
+      await put(RevisionKind.calendar, before.calendarId, after.calendarId);
+    }
+
+    if (before.location != after.location) {
+      await put(RevisionKind.place, before.location, after.location);
+    }
+
+    if (before.color != after.color?.toARGB32() ||
+        before.icon != after.iconName) {
+      await put(RevisionKind.look, before.icon, after.iconName);
+    }
+
+    final wasRule = before.rrule;
+    final nowRule = after.isVirtual ? null : after.rrule;
+    if (wasRule != nowRule) {
+      await put(RevisionKind.repeat, wasRule, nowRule);
+    }
+  }
+
+  /// Отметка времени для журнала: две ISO-даты через палку.
+  ///
+  /// Готовая подпись здесь была бы ошибкой: она зависит от языка и от
+  /// формата, который человек выберет завтра, — сохранённая строка пережила
+  /// бы и то и другое, начав врать. Показ форматирует сам.
+  static String _stamp(DateTime start, DateTime end) =>
+      '${start.toIso8601String()}|${end.toIso8601String()}';
+
+  /// История события, свежее сверху.
+  Future<List<VRevision>> historyOf(String eventId) async {
+    final rows = await (db.select(db.eventRevisions)
+          ..where((t) => t.eventId.equals(eventId))
+          ..orderBy([
+            (t) => OrderingTerm(expression: t.at, mode: OrderingMode.desc),
+            // Правки одной секунды разошлись бы случайным порядком: ключ
+            // добавляет им устойчивость.
+            (t) => OrderingTerm(expression: t.id, mode: OrderingMode.desc),
+          ]))
+        .get();
+
+    return [
+      for (final r in rows)
+        VRevision(
+          id: r.id,
+          eventId: r.eventId,
+          at: DateTime.fromMillisecondsSinceEpoch(r.at),
+          kind: RevisionKind.values.firstWhere(
+            (k) => k.name == r.kind,
+            orElse: () => RevisionKind.title,
+          ),
+          before: r.before,
+          after: r.after,
+        ),
+    ];
   }
 
   /// Значения своих полей переписываются целиком, как и напоминания: стёртое
@@ -503,6 +607,13 @@ class VehaRepository {
             .go();
         await (db.delete(db.recurrenceExceptions)
               ..where((t) => t.eventId.equals(e.id)))
+            .go();
+        // Журнал правок и вложения переживать событие не должны: они и
+        // существуют только ради него.
+        await (db.delete(db.eventRevisions)
+              ..where((t) => t.eventId.equals(e.id)))
+            .go();
+        await (db.delete(db.eventFiles)..where((t) => t.eventId.equals(e.id)))
             .go();
         await (db.delete(db.events)..where((t) => t.id.equals(e.id))).go();
       }
@@ -708,6 +819,61 @@ class VehaRepository {
         .getSingleOrNull();
     if (row == null) return null;
     await (db.delete(db.eventPhotos)..where((t) => t.id.equals(id))).go();
+    return row.path;
+  }
+
+  // ---------- вложения ----------
+
+  /// Файлы события потоком: их прикладывают на том же экране, где показывают.
+  Stream<List<VFile>> watchFiles(String eventId) => (db.select(db.eventFiles)
+        ..where((t) => t.eventId.equals(eventId))
+        ..orderBy([
+          (t) => OrderingTerm(expression: t.createdAt),
+          (t) => OrderingTerm(expression: t.id),
+        ]))
+      .watch()
+      .map(_toFiles);
+
+  Future<List<VFile>> filesOf(String eventId) async => _toFiles(
+        await (db.select(db.eventFiles)
+              ..where((t) => t.eventId.equals(eventId))
+              ..orderBy([
+                (t) => OrderingTerm(expression: t.createdAt),
+                (t) => OrderingTerm(expression: t.id),
+              ]))
+            .get(),
+      );
+
+  List<VFile> _toFiles(List<EventFile> rows) => [
+        for (final r in rows)
+          VFile(
+            id: r.id,
+            eventId: r.eventId,
+            path: r.path,
+            name: r.name,
+            size: r.size,
+            addedAt: DateTime.fromMillisecondsSinceEpoch(r.createdAt),
+          ),
+      ];
+
+  /// В очередь синхронизации не идёт: сервер хранит записи, а не файлы.
+  Future<void> addFile(VFile file) =>
+      db.into(db.eventFiles).insertOnConflictUpdate(EventFilesCompanion.insert(
+            id: file.id,
+            eventId: file.eventId,
+            path: file.path,
+            name: file.name,
+            size: file.size,
+            createdAt: file.addedAt.millisecondsSinceEpoch,
+          ));
+
+  /// Возвращает путь удалённой строки, чтобы вызывающий убрал файл с диска:
+  /// работа с диском репозиторию не принадлежит.
+  Future<String?> deleteFile(String id) async {
+    final row = await (db.select(db.eventFiles)..where((t) => t.id.equals(id)))
+        .getSingleOrNull();
+    if (row == null) return null;
+    await (db.delete(db.eventFiles)..where((t) => t.id.equals(id))).go();
     return row.path;
   }
 
