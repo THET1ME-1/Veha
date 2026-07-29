@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import '../../core/brand.dart';
 import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
+import '../../core/platform.dart';
 import '../../data/models.dart';
 import '../../domain/draft.dart';
 import '../../domain/note_markup.dart';
@@ -730,7 +731,9 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
         // ключа, к которому их привязать, и держать их в черновике значит
         // заводить вторую правду о том же.
         if (_draft.isEditing) _notes(color),
-        if (_draft.isEditing) _files(),
+        // Вложения — только там, где есть файловая система: в браузере
+        // приложенный документ некуда положить и нечем открыть.
+        if (_draft.isEditing && hasFiles) _files(),
         if (_draft.isEditing) _history(),
         if (widget.onDuplicate != null || widget.onDelete != null) ...[
           const SizedBox(height: 18),

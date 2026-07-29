@@ -1,4 +1,4 @@
-import 'dart:io';
+import '../core/platform.dart';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
@@ -47,7 +47,7 @@ class ReminderService {
   /// Разрешение спрашиваем при первой постановке, а не на старте: человек
   /// охотнее соглашается, когда уже понятно, о чём его предупредят.
   Future<bool> requestPermission() async {
-    if (!Platform.isAndroid) return false;
+    if (!isAndroid) return false;
     final android = _plugin.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
     if (android == null) return false;
@@ -65,7 +65,7 @@ class ReminderService {
   Future<void> _queue = Future.value();
 
   Future<void> apply(List<PlannedReminder> plan) {
-    if (!Platform.isAndroid) return Future.value();
+    if (!isAndroid) return Future.value();
     return _queue = _queue.then((_) => _apply(plan));
   }
 
@@ -115,7 +115,7 @@ class ReminderService {
   }
 
   Future<void> cancelAll() async {
-    if (!Platform.isAndroid) return;
+    if (!isAndroid) return;
     await init();
     await _plugin.cancelAll();
   }

@@ -1,3 +1,4 @@
+import '../../core/platform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,6 +26,10 @@ class _WidgetSyncState extends ConsumerState<WidgetSync> {
 
   @override
   Widget build(BuildContext context) {
+    // Виджеты рабочего стола есть только на Android: в браузере и на планшете
+    // без них считать день впустую незачем.
+    if (!hasAlarms) return widget.child;
+
     final now = ref.watch(nowProvider);
     final today = DateTime(now.year, now.month, now.day);
     final window = (from: today, to: today.add(const Duration(days: 1)));

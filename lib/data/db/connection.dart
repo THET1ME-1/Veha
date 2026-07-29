@@ -1,28 +1,7 @@
-import 'dart:io';
-
-import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
-import 'package:sqlite3/sqlite3.dart';
-import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
-
-/// Файл базы. Лежит в каталоге документов приложения — оттуда его забирает
-/// бэкап и туда же кладёт восстановление.
-QueryExecutor openConnection() {
-  return LazyDatabase(() async {
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dir.path, 'veha.sqlite'));
-
-    if (Platform.isAndroid) {
-      // На старых Android системная sqlite бывает без нужных расширений.
-      await applyWorkaroundToOpenSqlite3OnOldAndroidVersions();
-    }
-    sqlite3.tempDirectory = (await getTemporaryDirectory()).path;
-
-    return NativeDatabase.createInBackground(file);
-  });
-}
-
-/// База в памяти — для тестов и для сверки экранов без файловой системы.
-QueryExecutor openInMemory() => NativeDatabase.memory();
+/// Откуда брать базу: с диска устройства или из браузера.
+///
+/// Переключатель, а не реализация. `dart:ffi` и `dart:io` в вебе недоступны, а
+/// один прямой импорт нативного файла роняет всю сборку целиком: компилятор
+/// разбирает его до последней строки, даже если ни одна не выполнится.
+export 'connection_native.dart'
+    if (dart.library.js_interop) 'connection_web.dart';

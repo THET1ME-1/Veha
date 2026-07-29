@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/platform.dart';
 
 import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -661,7 +662,7 @@ class EventFlow {
     );
     if (!context.mounted || path == null) return;
 
-    if (!Platform.isAndroid) await File(path).writeAsBytes(bytes);
+    if (!isAndroid) await File(path).writeAsBytes(bytes);
     if (context.mounted) _say(l.icsExported(1));
   }
 

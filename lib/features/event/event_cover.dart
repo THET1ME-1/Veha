@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
+import '../../core/platform.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
@@ -21,7 +22,9 @@ import '../../services/photo_service.dart';
 /// Корень, от которого отсчитываются пути. Спрашивается один раз на всё
 /// приложение: системный вызов на каждую карточку — это мигающие заглушки.
 final photoRootProvider = FutureProvider<String>(
-  (ref) async => (await getApplicationDocumentsDirectory()).path,
+  // В браузере каталога документов нет вовсе, и спрашивать его нельзя:
+  // path_provider там бросает исключение вместо ответа.
+  (ref) async => hasFiles ? (await getApplicationDocumentsDirectory()).path : '',
 );
 
 /// Обложка события картинкой. `null` — обложки нет или файл пропал.
@@ -30,6 +33,7 @@ final photoRootProvider = FutureProvider<String>(
 /// снимки экранов подставляют сюда картинку из памяти — файловая загрузка в
 /// `flutter_test` не доходит до декодера.
 final coverProvider = Provider.family<ImageProvider?, String>((ref, eventId) {
+  if (!hasFiles) return null;
   final photos = ref.watch(photosProvider(eventId)).valueOrNull ?? const [];
   final root = ref.watch(photoRootProvider).valueOrNull;
   if (photos.isEmpty || root == null) return null;
@@ -53,6 +57,8 @@ class CoverButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Снимок живёт файлом рядом с базой: в браузере класть его некуда.
+    if (!hasFiles) return const SizedBox.shrink();
     final has = ref.watch(coverProvider(eventId)) != null;
 
     return InkWell(

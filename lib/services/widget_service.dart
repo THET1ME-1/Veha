@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/services.dart';
+import '../core/platform.dart';
 import 'package:intl/intl.dart';
 
 import '../data/models.dart';
@@ -21,7 +21,7 @@ class WidgetService {
 
   Future<void> push(WidgetSnapshot snapshot) async {
     // На чужих платформах канала нет, и разговаривать не с кем.
-    if (!Platform.isAndroid) return;
+    if (!isAndroid) return;
     try {
       await _channel.invokeMethod<void>('refresh', jsonEncode(snapshot.toJson()));
     } on MissingPluginException {

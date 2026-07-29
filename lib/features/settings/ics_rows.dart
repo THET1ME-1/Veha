@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import '../../core/platform.dart';
 
 import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -72,7 +73,7 @@ class IcsRows extends ConsumerWidget {
 
     // На Android байты пишет сам системный диалог, на десктопе возвращается
     // только путь — файл надо записать руками.
-    if (!Platform.isAndroid) {
+    if (!isAndroid) {
       await File(path).writeAsBytes(bytes);
       if (!context.mounted) return;
     }
