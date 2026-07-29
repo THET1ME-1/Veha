@@ -1739,5 +1739,53 @@
   "calendarDefaultDuration": "Długość nowych wydarzeń",
   "@calendarDefaultDuration": {
     "description": "calendarDefaultDuration"
+  },
+  "actionSelect": "Wybierz kilka",
+  "@actionSelect": {
+    "description": "actionSelect"
+  },
+  "selectedCount": "Wybrano: {count}",
+  "@selectedCount": {
+    "description": "selectedCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bulkMove": "Przenieś",
+  "@bulkMove": {
+    "description": "bulkMove"
+  },
+  "bulkCalendar": "Do kalendarza",
+  "@bulkCalendar": {
+    "description": "bulkCalendar"
+  },
+  "msgBulkMoved": "Przeniesiono wydarzeń: {count}",
+  "@msgBulkMoved": {
+    "description": "msgBulkMoved",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgBulkDeleted": "Usunięto wydarzeń: {count}",
+  "@msgBulkDeleted": {
+    "description": "msgBulkDeleted",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgBulkCalendar": "Wydarzeń w innym kalendarzu: {count}",
+  "@msgBulkCalendar": {
+    "description": "msgBulkCalendar",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

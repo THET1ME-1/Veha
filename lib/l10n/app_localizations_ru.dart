@@ -1356,4 +1356,33 @@ class LRu extends L {
 
   @override
   String get calendarDefaultDuration => 'Длительность у новых событий';
+
+  @override
+  String get actionSelect => 'Выбрать несколько';
+
+  @override
+  String selectedCount(int count) {
+    return 'Выбрано: $count';
+  }
+
+  @override
+  String get bulkMove => 'Перенести';
+
+  @override
+  String get bulkCalendar => 'В календарь';
+
+  @override
+  String msgBulkMoved(int count) {
+    return 'Перенесено событий: $count';
+  }
+
+  @override
+  String msgBulkDeleted(int count) {
+    return 'Удалено событий: $count';
+  }
+
+  @override
+  String msgBulkCalendar(int count) {
+    return 'Событий в другом календаре: $count';
+  }
 }

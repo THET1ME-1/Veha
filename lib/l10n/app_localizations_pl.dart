@@ -1358,4 +1358,33 @@ class LPl extends L {
 
   @override
   String get calendarDefaultDuration => 'Długość nowych wydarzeń';
+
+  @override
+  String get actionSelect => 'Wybierz kilka';
+
+  @override
+  String selectedCount(int count) {
+    return 'Wybrano: $count';
+  }
+
+  @override
+  String get bulkMove => 'Przenieś';
+
+  @override
+  String get bulkCalendar => 'Do kalendarza';
+
+  @override
+  String msgBulkMoved(int count) {
+    return 'Przeniesiono wydarzeń: $count';
+  }
+
+  @override
+  String msgBulkDeleted(int count) {
+    return 'Usunięto wydarzeń: $count';
+  }
+
+  @override
+  String msgBulkCalendar(int count) {
+    return 'Wydarzeń w innym kalendarzu: $count';
+  }
 }

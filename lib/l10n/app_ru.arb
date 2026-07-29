@@ -1827,5 +1827,53 @@
   "calendarDefaultDuration": "Длительность у новых событий",
   "@calendarDefaultDuration": {
     "description": "calendarDefaultDuration"
+  },
+  "actionSelect": "Выбрать несколько",
+  "@actionSelect": {
+    "description": "actionSelect"
+  },
+  "selectedCount": "Выбрано: {count}",
+  "@selectedCount": {
+    "description": "selectedCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bulkMove": "Перенести",
+  "@bulkMove": {
+    "description": "bulkMove"
+  },
+  "bulkCalendar": "В календарь",
+  "@bulkCalendar": {
+    "description": "bulkCalendar"
+  },
+  "msgBulkMoved": "Перенесено событий: {count}",
+  "@msgBulkMoved": {
+    "description": "msgBulkMoved",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgBulkDeleted": "Удалено событий: {count}",
+  "@msgBulkDeleted": {
+    "description": "msgBulkDeleted",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgBulkCalendar": "Событий в другом календаре: {count}",
+  "@msgBulkCalendar": {
+    "description": "msgBulkCalendar",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

@@ -1739,5 +1739,53 @@
   "calendarDefaultDuration": "Durata evenimentelor noi",
   "@calendarDefaultDuration": {
     "description": "calendarDefaultDuration"
+  },
+  "actionSelect": "Selectează mai multe",
+  "@actionSelect": {
+    "description": "actionSelect"
+  },
+  "selectedCount": "Selectate: {count}",
+  "@selectedCount": {
+    "description": "selectedCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bulkMove": "Mută",
+  "@bulkMove": {
+    "description": "bulkMove"
+  },
+  "bulkCalendar": "În calendar",
+  "@bulkCalendar": {
+    "description": "bulkCalendar"
+  },
+  "msgBulkMoved": "Evenimente mutate: {count}",
+  "@msgBulkMoved": {
+    "description": "msgBulkMoved",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgBulkDeleted": "Evenimente șterse: {count}",
+  "@msgBulkDeleted": {
+    "description": "msgBulkDeleted",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgBulkCalendar": "Evenimente în alt calendar: {count}",
+  "@msgBulkCalendar": {
+    "description": "msgBulkCalendar",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

@@ -1739,5 +1739,53 @@
   "calendarDefaultDuration": "Dauer neuer Termine",
   "@calendarDefaultDuration": {
     "description": "calendarDefaultDuration"
+  },
+  "actionSelect": "Mehrere auswählen",
+  "@actionSelect": {
+    "description": "actionSelect"
+  },
+  "selectedCount": "Ausgewählt: {count}",
+  "@selectedCount": {
+    "description": "selectedCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bulkMove": "Verschieben",
+  "@bulkMove": {
+    "description": "bulkMove"
+  },
+  "bulkCalendar": "In Kalender",
+  "@bulkCalendar": {
+    "description": "bulkCalendar"
+  },
+  "msgBulkMoved": "Verschobene Termine: {count}",
+  "@msgBulkMoved": {
+    "description": "msgBulkMoved",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgBulkDeleted": "Gelöschte Termine: {count}",
+  "@msgBulkDeleted": {
+    "description": "msgBulkDeleted",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgBulkCalendar": "Termine im anderen Kalender: {count}",
+  "@msgBulkCalendar": {
+    "description": "msgBulkCalendar",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

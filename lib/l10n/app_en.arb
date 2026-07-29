@@ -1739,5 +1739,53 @@
   "calendarDefaultDuration": "Length of new events",
   "@calendarDefaultDuration": {
     "description": "calendarDefaultDuration"
+  },
+  "actionSelect": "Select multiple",
+  "@actionSelect": {
+    "description": "actionSelect"
+  },
+  "selectedCount": "Selected: {count}",
+  "@selectedCount": {
+    "description": "selectedCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bulkMove": "Move",
+  "@bulkMove": {
+    "description": "bulkMove"
+  },
+  "bulkCalendar": "To calendar",
+  "@bulkCalendar": {
+    "description": "bulkCalendar"
+  },
+  "msgBulkMoved": "Events moved: {count}",
+  "@msgBulkMoved": {
+    "description": "msgBulkMoved",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgBulkDeleted": "Events deleted: {count}",
+  "@msgBulkDeleted": {
+    "description": "msgBulkDeleted",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msgBulkCalendar": "Events moved to calendar: {count}",
+  "@msgBulkCalendar": {
+    "description": "msgBulkCalendar",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

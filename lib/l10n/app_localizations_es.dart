@@ -1346,4 +1346,33 @@ class LEs extends L {
 
   @override
   String get calendarDefaultDuration => 'Duración de los eventos nuevos';
+
+  @override
+  String get actionSelect => 'Seleccionar varios';
+
+  @override
+  String selectedCount(int count) {
+    return 'Seleccionados: $count';
+  }
+
+  @override
+  String get bulkMove => 'Mover';
+
+  @override
+  String get bulkCalendar => 'Al calendario';
+
+  @override
+  String msgBulkMoved(int count) {
+    return 'Eventos movidos: $count';
+  }
+
+  @override
+  String msgBulkDeleted(int count) {
+    return 'Eventos eliminados: $count';
+  }
+
+  @override
+  String msgBulkCalendar(int count) {
+    return 'Eventos en otro calendario: $count';
+  }
 }

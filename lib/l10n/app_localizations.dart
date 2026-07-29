@@ -2410,6 +2410,48 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'Длительность у новых событий'**
   String get calendarDefaultDuration;
+
+  /// actionSelect
+  ///
+  /// In ru, this message translates to:
+  /// **'Выбрать несколько'**
+  String get actionSelect;
+
+  /// selectedCount
+  ///
+  /// In ru, this message translates to:
+  /// **'Выбрано: {count}'**
+  String selectedCount(int count);
+
+  /// bulkMove
+  ///
+  /// In ru, this message translates to:
+  /// **'Перенести'**
+  String get bulkMove;
+
+  /// bulkCalendar
+  ///
+  /// In ru, this message translates to:
+  /// **'В календарь'**
+  String get bulkCalendar;
+
+  /// msgBulkMoved
+  ///
+  /// In ru, this message translates to:
+  /// **'Перенесено событий: {count}'**
+  String msgBulkMoved(int count);
+
+  /// msgBulkDeleted
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалено событий: {count}'**
+  String msgBulkDeleted(int count);
+
+  /// msgBulkCalendar
+  ///
+  /// In ru, this message translates to:
+  /// **'Событий в другом календаре: {count}'**
+  String msgBulkCalendar(int count);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

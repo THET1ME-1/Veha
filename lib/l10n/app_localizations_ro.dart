@@ -1347,4 +1347,33 @@ class LRo extends L {
 
   @override
   String get calendarDefaultDuration => 'Durata evenimentelor noi';
+
+  @override
+  String get actionSelect => 'Selectează mai multe';
+
+  @override
+  String selectedCount(int count) {
+    return 'Selectate: $count';
+  }
+
+  @override
+  String get bulkMove => 'Mută';
+
+  @override
+  String get bulkCalendar => 'În calendar';
+
+  @override
+  String msgBulkMoved(int count) {
+    return 'Evenimente mutate: $count';
+  }
+
+  @override
+  String msgBulkDeleted(int count) {
+    return 'Evenimente șterse: $count';
+  }
+
+  @override
+  String msgBulkCalendar(int count) {
+    return 'Evenimente în alt calendar: $count';
+  }
 }

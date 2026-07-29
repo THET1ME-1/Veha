@@ -25,12 +25,16 @@ class ChainView extends StatelessWidget {
     this.now,
     this.onEventTap,
     this.onEventLongPress,
+    this.selected = const {},
   });
 
   final List<VEvent> events;
   final Inheritance inheritance;
   final ValueChanged<VEvent>? onEventTap;
   final ValueChanged<VEvent>? onEventLongPress;
+
+  /// Отмеченные события: пачку переносят и удаляют разом.
+  final Set<String> selected;
 
   /// Время линии «сейчас». `null` — линию не рисуем (день не сегодняшний).
   final DateTime? now;
@@ -60,6 +64,7 @@ class ChainView extends StatelessWidget {
           color: inheritance.colorOfEvent(e),
           icon: inheritance.iconOfEvent(e),
           isLast: isLast,
+          isSelected: selected.contains(e.id),
         ),
       ));
     }
@@ -78,12 +83,14 @@ class _ChainRow extends StatelessWidget {
     required this.color,
     required this.icon,
     required this.isLast,
+    this.isSelected = false,
   });
 
   final VEvent event;
   final Color color;
   final String icon;
   final bool isLast;
+  final bool isSelected;
 
   static const double _tail = 12;
 
@@ -142,7 +149,11 @@ class _ChainRow extends StatelessWidget {
                   child: Container(
                     width: VehaInsets.pill,
                     decoration: ShapeDecoration(
-                      color: ink.background,
+                      // Отмеченное в пачке красится заливкой выбора:
+                      // обводок в приложении нет.
+                      color: isSelected
+                          ? scheme.primaryContainer
+                          : ink.background,
                       shape: const StadiumBorder(),
                     ),
                     // Иконка вверху пилюли: пилюля теперь тянется на всю
@@ -152,8 +163,13 @@ class _ChainRow extends StatelessWidget {
                       alignment: Alignment.topCenter,
                       child: Padding(
                         padding: const EdgeInsets.only(top: 9),
-                        child: Icon(VehaIcons.byName(icon),
-                            size: 26, color: ink.foreground),
+                        child: Icon(
+                          VehaIcons.byName(isSelected ? 'check' : icon),
+                          size: 26,
+                          color: isSelected
+                              ? scheme.onPrimaryContainer
+                              : ink.foreground,
+                        ),
                       ),
                     ),
                   ),

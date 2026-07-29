@@ -1346,4 +1346,33 @@ class LEn extends L {
 
   @override
   String get calendarDefaultDuration => 'Length of new events';
+
+  @override
+  String get actionSelect => 'Select multiple';
+
+  @override
+  String selectedCount(int count) {
+    return 'Selected: $count';
+  }
+
+  @override
+  String get bulkMove => 'Move';
+
+  @override
+  String get bulkCalendar => 'To calendar';
+
+  @override
+  String msgBulkMoved(int count) {
+    return 'Events moved: $count';
+  }
+
+  @override
+  String msgBulkDeleted(int count) {
+    return 'Events deleted: $count';
+  }
+
+  @override
+  String msgBulkCalendar(int count) {
+    return 'Events moved to calendar: $count';
+  }
 }

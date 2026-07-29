@@ -25,6 +25,7 @@ class ClockView extends StatelessWidget {
     this.onHourTap,
     this.onEventMoved,
     this.onEventResized,
+    this.selected = const {},
   });
 
   final List<VEvent> events;
@@ -32,6 +33,10 @@ class ClockView extends StatelessWidget {
   final DateTime? now;
   final ValueChanged<VEvent>? onEventTap;
   final ValueChanged<VEvent>? onEventLongPress;
+
+  /// Отмеченные события. Непустой набор означает режим выбора: тап отмечает,
+  /// а не открывает превью.
+  final Set<String> selected;
 
   /// Блок перетащили: событие уехало на столько-то минут.
   final void Function(VEvent event, Duration shift)? onEventMoved;
@@ -105,6 +110,7 @@ class ClockView extends StatelessWidget {
                         : () => onEventLongPress!(placed.event),
                     onMoved: onEventMoved,
                     onResized: onEventResized,
+                    isSelected: selected.contains(placed.event.id),
                   ),
                 if (now != null &&
                     now!.hour >= firstHour &&
@@ -237,6 +243,7 @@ class _EventBlock extends ConsumerStatefulWidget {
     this.onLongPress,
     this.onMoved,
     this.onResized,
+    this.isSelected = false,
   });
 
   final _Placed placed;
@@ -249,6 +256,7 @@ class _EventBlock extends ConsumerStatefulWidget {
   final VoidCallback? onLongPress;
   final void Function(VEvent event, Duration shift)? onMoved;
   final void Function(VEvent event, Duration duration)? onResized;
+  final bool isSelected;
 
   @override
   ConsumerState<_EventBlock> createState() => _EventBlockState();
@@ -419,8 +427,19 @@ class _EventBlockState extends ConsumerState<_EventBlock> {
         final scheme = Theme.of(context).colorScheme;
         // Блок, в который метят, красится тоном ошибки целиком: обводки и
         // свечения в приложении нет, выделять нечем, кроме заливки.
-        final fill = clash ? scheme.errorContainer : ink.background;
-        final mark = clash ? scheme.onErrorContainer : ink.foreground;
+        // Отмеченный в пачке — заливкой выбора, и знак заменяется галочкой:
+        // цвет календаря в этот момент уже не главное.
+        final selected = widget.isSelected;
+        final fill = clash
+            ? scheme.errorContainer
+            : selected
+                ? scheme.primaryContainer
+                : ink.background;
+        final mark = clash
+            ? scheme.onErrorContainer
+            : selected
+                ? scheme.onPrimaryContainer
+                : ink.foreground;
         return Container(
           // В поделённой колонке горизонтальные отступы режем: иначе название
           // обрывается там, где оно ещё помещалось.
@@ -481,7 +500,11 @@ class _EventBlockState extends ConsumerState<_EventBlock> {
                 ? CrossAxisAlignment.center
                 : CrossAxisAlignment.start,
             children: [
-              Icon(VehaIcons.byName(icon), size: 19, color: mark),
+              Icon(
+                VehaIcons.byName(selected ? 'check' : icon),
+                size: 19,
+                color: mark,
+              ),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(

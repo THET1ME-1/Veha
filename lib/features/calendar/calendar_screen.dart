@@ -40,6 +40,29 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   CalendarView? _view;
   DateTime? _selected;
 
+  /// Отмеченные события. Пустая карта — обычный режим: тап открывает превью.
+  /// Держим целые события, а не одни id: пачку надо перенести и вернуть,
+  /// а вернуть по id уже нечего — записи в базе к тому времени другие.
+  final Map<String, VEvent> _picked = {};
+
+  bool get _picking => _picked.isNotEmpty;
+
+  /// Тап в режиме выбора отмечает и снимает отметку; последняя снятая
+  /// отметка закрывает режим — панель без выбранного бессмысленна.
+  void _toggle(VEvent event) => setState(() {
+        if (_picked.remove(event.id) == null) _picked[event.id] = event;
+      });
+
+  void _clearPicked() => setState(_picked.clear);
+
+  /// Действие над пачкой закрывает режим: полоска «Вернуть» уже показана,
+  /// а отметки на уехавших событиях висели бы поверх пустых мест.
+  Future<void> _bulk(Future<void> Function(List<VEvent>) action) async {
+    final events = _picked.values.toList();
+    _clearPicked();
+    await action(events);
+  }
+
   /// Полоска дней над видом «День» — всегда семь суток подряд.
   List<DateTime> get _strip {
     final day = _selected!;
@@ -143,8 +166,57 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             child: _body(range, inheritance, now, today, reading, monthMode),
           ),
         ),
+        if (_picking) _BulkBar(
+          count: _picked.length,
+          onMove: () => _askBulkMove(),
+          onCalendar: () => _bulk(EventFlow(context, ref).changeCalendarMany),
+          onDelete: () => _bulk(EventFlow(context, ref).deleteMany),
+          onClose: _clearPicked,
+        ),
       ],
     );
+  }
+
+  /// Куда переносим пачку. Те же три ответа, что и у одного события:
+  /// на завтра, через неделю, на выбранную дату.
+  Future<void> _askBulkMove() async {
+    final l = L.of(context);
+    final flow = EventFlow(context, ref);
+    final chosen = await showModalBottomSheet<Duration?>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: Icon(VehaIcons.byName('calendar_today')),
+              title: Text(l.moveTomorrow),
+              onTap: () =>
+                  Navigator.pop(sheetContext, const Duration(days: 1)),
+            ),
+            ListTile(
+              leading: Icon(VehaIcons.byName('calendar_view_week')),
+              title: Text(l.moveNextWeek),
+              onTap: () =>
+                  Navigator.pop(sheetContext, const Duration(days: 7)),
+            ),
+            ListTile(
+              leading: Icon(VehaIcons.byName('calendar_month')),
+              title: Text(l.movePickDate),
+              // Нулевой сдвиг — знак «спросить дату»: выбор даты живёт
+              // в потоке события, а не в этом листе.
+              onTap: () => Navigator.pop(sheetContext, Duration.zero),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (chosen == null) return;
+
+    await _bulk((events) => chosen == Duration.zero
+        ? flow.moveManyToPickedDate(events)
+        : flow.moveMany(events, chosen));
   }
 
   /// Шаг листания зависит от вида: день — сутки, лента — свою длину, неделя —
@@ -216,6 +288,17 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 flow.edit(event);
               },
             ),
+            // Вход в режим выбора: долгий жест в сетке уже занят
+            // перетаскиванием, а тап открывает превью — свободного жеста
+            // не осталось, зато меню под рукой.
+            ListTile(
+              leading: Icon(VehaIcons.byName('check')),
+              title: Text(L.of(context).actionSelect),
+              onTap: () {
+                Navigator.pop(sheetContext);
+                _toggle(event);
+              },
+            ),
             ListTile(
               leading: Icon(VehaIcons.byName('content_copy')),
               title: Text(L.of(context).eventDuplicate),
@@ -266,25 +349,36 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     DayReading reading,
     MonthMode monthMode,
   ) {
+    // В режиме выбора тап отмечает, а не открывает превью: подробности
+    // смотрят по одному событию, а пачку — набирают.
+    void onTap(VEvent e) =>
+        _picking ? _toggle(e) : EventFlow(context, ref).preview(e);
+
     return switch (_view ?? CalendarView.day) {
       CalendarView.day when reading == DayReading.chain => ChainView(
           events: range.eventsOn(_selected!),
           inheritance: inheritance,
           now: _isToday(today) ? now : null,
-          onEventTap: (e) => EventFlow(context, ref).preview(e),
+          onEventTap: onTap,
           onEventLongPress: _showEventMenu,
+          selected: _picked.keys.toSet(),
         ),
       CalendarView.day => ClockView(
           events: range.eventsOn(_selected!),
           inheritance: inheritance,
           now: _isToday(today) ? now : null,
-          onEventTap: (e) => EventFlow(context, ref).preview(e),
+          onEventTap: onTap,
           onEventLongPress: _showEventMenu,
+          selected: _picked.keys.toSet(),
           // Долгое нажатие отрывает блок и тащит его по сетке, нижний край
-          // тянет длительность. Шаг — пятнадцать минут.
-          onEventMoved: (e, shift) => EventFlow(context, ref).moveBy(e, shift),
-          onEventResized: (e, duration) =>
-              EventFlow(context, ref).resize(e, duration),
+          // тянет длительность. Шаг — пятнадцать минут. В режиме выбора
+          // перетаскивание молчит: пачку двигают панелью, а не пальцем.
+          onEventMoved: _picking
+              ? null
+              : (e, shift) => EventFlow(context, ref).moveBy(e, shift),
+          onEventResized: _picking
+              ? null
+              : (e, duration) => EventFlow(context, ref).resize(e, duration),
           onHourTap: (hour) => EventFlow(context, ref).create(
             at: DateTime(_selected!.year, _selected!.month, _selected!.day, hour),
           ),
@@ -310,11 +404,14 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           spans: range.spans,
           inheritance: inheritance,
           today: today,
-          onEventTap: (e) => EventFlow(context, ref).preview(e),
+          onEventTap: onTap,
           onEventLongPress: _showEventMenu,
+          selected: _picked.keys.toSet(),
           // В неделе перенос идёт наискосок: и на другой час, и на другой
           // день одним движением.
-          onEventMoved: (e, shift) => EventFlow(context, ref).moveBy(e, shift),
+          onEventMoved: _picking
+              ? null
+              : (e, shift) => EventFlow(context, ref).moveBy(e, shift),
         ),
       CalendarView.bands => BandsView(
           days: List.generate(
@@ -324,5 +421,82 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           today: today,
         ),
     };
+  }
+}
+
+/// Панель действий над пачкой: сколько отмечено и что с ними делать.
+///
+/// Живёт внизу экрана, над системными кнопками: до верхней шапки в этот
+/// момент не дотянуться — палец занят отметками.
+class _BulkBar extends StatelessWidget {
+  const _BulkBar({
+    required this.count,
+    required this.onMove,
+    required this.onCalendar,
+    required this.onDelete,
+    required this.onClose,
+  });
+
+  final int count;
+  final VoidCallback onMove;
+  final VoidCallback onCalendar;
+  final VoidCallback onDelete;
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final l = L.of(context);
+
+    return SafeArea(
+      top: false,
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(14, 0, 14, 10),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        decoration: ShapeDecoration(
+          color: scheme.surfaceContainerHigh,
+          shape: const StadiumBorder(),
+        ),
+        child: Row(
+          children: [
+            IconButton(
+              key: const ValueKey('bulk-close'),
+              onPressed: onClose,
+              icon: Icon(VehaIcons.byName('close')),
+              tooltip: l.actionCancel,
+            ),
+            Expanded(
+              child: Text(
+                l.selectedCount(count),
+                style: TextStyle(
+                  fontFamily: AppFonts.body,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: scheme.onSurface,
+                ),
+              ),
+            ),
+            IconButton(
+              key: const ValueKey('bulk-move'),
+              onPressed: onMove,
+              icon: Icon(VehaIcons.byName('calendar_clock')),
+              tooltip: l.bulkMove,
+            ),
+            IconButton(
+              key: const ValueKey('bulk-calendar'),
+              onPressed: onCalendar,
+              icon: Icon(VehaIcons.byName('calendar_month')),
+              tooltip: l.bulkCalendar,
+            ),
+            IconButton(
+              key: const ValueKey('bulk-delete'),
+              onPressed: onDelete,
+              icon: Icon(VehaIcons.byName('trash'), color: scheme.error),
+              tooltip: l.eventDelete,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

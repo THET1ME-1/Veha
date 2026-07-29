@@ -25,6 +25,7 @@ class WeekView extends StatelessWidget {
     this.onEventTap,
     this.onEventLongPress,
     this.onEventMoved,
+    this.selected = const {},
   });
 
   final List<DateTime> week;
@@ -34,6 +35,9 @@ class WeekView extends StatelessWidget {
   final DateTime today;
   final ValueChanged<VEvent>? onEventTap;
   final ValueChanged<VEvent>? onEventLongPress;
+
+  /// Отмеченные события: пачку переносят и удаляют разом.
+  final Set<String> selected;
 
   /// Блок перетащили: сдвиг по времени и по дням сразу. В неделе это одно
   /// движение — палец идёт наискосок, и требовать двух отдельных жестов
@@ -133,6 +137,7 @@ class WeekView extends StatelessWidget {
                       onEventTap: onEventTap,
                       onEventLongPress: onEventLongPress,
                       onEventMoved: onEventMoved,
+                      selected: selected,
                       // Ширина колонки нужна пилюле, чтобы перевести сдвиг
                       // пальца вбок в дни.
                       dayWidth: (constraints.maxWidth - _gutter -
@@ -230,6 +235,7 @@ class _DayColumn extends StatelessWidget {
     this.onEventLongPress,
     this.onEventMoved,
     this.dayWidth = 0,
+    this.selected = const {},
   });
 
   final List<VEvent> events;
@@ -241,6 +247,7 @@ class _DayColumn extends StatelessWidget {
   final ValueChanged<VEvent>? onEventTap;
   final ValueChanged<VEvent>? onEventLongPress;
   final void Function(VEvent event, Duration shift)? onEventMoved;
+  final Set<String> selected;
 
   /// Ширина колонки вместе с зазором: по ней сдвиг вбок переводится в дни.
   final double dayWidth;
@@ -281,6 +288,7 @@ class _DayColumn extends StatelessWidget {
                       : () => onEventLongPress!(p.event),
                   onMoved: onEventMoved,
                   dayWidth: dayWidth,
+                  isSelected: selected.contains(p.event.id),
                 ),
             ],
           ),
@@ -335,6 +343,7 @@ class _Pill extends StatefulWidget {
     this.onLongPress,
     this.onMoved,
     this.dayWidth = 0,
+    this.isSelected = false,
   });
 
   final PlacedEvent placed;
@@ -347,6 +356,7 @@ class _Pill extends StatefulWidget {
   final VoidCallback? onLongPress;
   final void Function(VEvent event, Duration shift)? onMoved;
   final double dayWidth;
+  final bool isSelected;
 
   @override
   State<_Pill> createState() => _PillState();
@@ -504,9 +514,19 @@ class _PillState extends State<_Pill> {
           builder: (clash) {
             final scheme = Theme.of(context).colorScheme;
             // Пилюля, в которую метят, красится тоном ошибки целиком:
-            // обводок и свечения в приложении нет.
-            final fill = clash ? scheme.errorContainer : ink.background;
-            final mark = clash ? scheme.onErrorContainer : ink.foreground;
+            // обводок и свечения в приложении нет. Отмеченная в пачке —
+            // заливкой выбора с галочкой вместо знака занятия.
+            final selected = widget.isSelected;
+            final fill = clash
+                ? scheme.errorContainer
+                : selected
+                    ? scheme.primaryContainer
+                    : ink.background;
+            final mark = clash
+                ? scheme.onErrorContainer
+                : selected
+                    ? scheme.onPrimaryContainer
+                    : ink.foreground;
             return Container(
               decoration: ShapeDecoration(
                 // Оторванная пилюля светлеет тоном: теней в приложении нет.
@@ -516,7 +536,11 @@ class _PillState extends State<_Pill> {
                 shape: const StadiumBorder(),
               ),
               alignment: Alignment.center,
-              child: Icon(VehaIcons.byName(icon), size: iconSize, color: mark),
+              child: Icon(
+                VehaIcons.byName(selected ? 'check' : icon),
+                size: iconSize,
+                color: mark,
+              ),
             );
           },
         ),

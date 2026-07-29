@@ -138,6 +138,129 @@ class EventFlow {
     );
   }
 
+  // ── Пачкой ─────────────────────────────────────────────────────────────
+
+  /// Перенос пачки: все выбранные едут на один и тот же срок вперёд.
+  ///
+  /// Область правки у ряда не спрашивается: человек отмечал конкретные
+  /// занятия в сетке, а не расписание целиком, — экземпляр выламывается
+  /// отдельной записью, как при перетаскивании.
+  Future<void> moveMany(List<VEvent> events, Duration shift) async {
+    if (events.isEmpty || shift.inMinutes == 0) return;
+    final repo = ref.read(repositoryProvider);
+    final l = L.of(context);
+
+    for (final event in events) {
+      await repo.upsertEvent(_shifted(event, shift));
+    }
+
+    if (!context.mounted) return;
+    _offerUndo(l.msgBulkMoved(events.length), () async {
+      for (final event in events) {
+        await repo.upsertEvent(event);
+      }
+    });
+  }
+
+  /// Перенос пачки на выбранную дату: сдвиг считается по первому событию,
+  /// чтобы порядок дней внутри пачки сохранился.
+  Future<void> moveManyToPickedDate(List<VEvent> events) async {
+    if (events.isEmpty) return;
+    final anchor = events.first.start;
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: anchor,
+      firstDate: DateTime(anchor.year - 2),
+      lastDate: DateTime(anchor.year + 5),
+    );
+    if (picked == null || !context.mounted) return;
+
+    final day = DateTime(picked.year, picked.month, picked.day);
+    final from = DateTime(anchor.year, anchor.month, anchor.day);
+    await moveMany(events, day.difference(from));
+  }
+
+  /// Пачка уезжает в другой календарь. Свой цвет и иконка события остаются:
+  /// наследуется только то, что не переопределяли руками.
+  Future<void> changeCalendarMany(List<VEvent> events) async {
+    if (events.isEmpty) return;
+    final inheritance = ref.read(inheritanceProvider).valueOrNull;
+    if (inheritance == null) return;
+
+    final first = events.first;
+    final chosen = await askCalendar(
+      context,
+      inheritance: inheritance,
+      calendarId: first.calendarId,
+      subcategoryId: first.subcategoryId,
+    );
+    if (chosen == null || !context.mounted) return;
+
+    final repo = ref.read(repositoryProvider);
+    final l = L.of(context);
+    for (final event in events) {
+      await repo.upsertEvent(
+        _inCalendar(event, chosen.calendarId, chosen.subcategoryId),
+      );
+    }
+
+    if (!context.mounted) return;
+    _offerUndo(l.msgBulkCalendar(events.length), () async {
+      for (final event in events) {
+        await repo.upsertEvent(event);
+      }
+    });
+  }
+
+  /// Удаление пачкой. У экземпляра ряда это отмена занятия, у разового
+  /// события — само событие; полоска «Вернуть» одна на всю пачку.
+  Future<void> deleteMany(List<VEvent> events) async {
+    if (events.isEmpty) return;
+    final repo = ref.read(repositoryProvider);
+    final l = L.of(context);
+    final undo = <Future<void> Function()>[];
+
+    for (final event in events) {
+      final series = event.recurrenceId;
+      if (event.isOccurrence && series != null) {
+        final moment = event.originalStart ?? event.start;
+        await repo.skipOccurrence(series, moment);
+        undo.add(() => repo.unskipOccurrence(series, moment));
+      } else {
+        await repo.deleteEvent(event.id);
+        undo.add(() => repo.restoreEvent(event.id));
+      }
+    }
+
+    if (!context.mounted) return;
+    _offerUndo(l.msgBulkDeleted(events.length), () async {
+      for (final step in undo) {
+        await step();
+      }
+    });
+  }
+
+  VEvent _inCalendar(VEvent event, String calendarId, String? subcategoryId) =>
+      VEvent(
+        id: event.id,
+        calendarId: calendarId,
+        subcategoryId: subcategoryId,
+        title: event.title,
+        start: event.start,
+        end: event.end,
+        color: event.color,
+        iconName: event.iconName,
+        isAllDay: event.isAllDay,
+        rrule: event.isOccurrence ? null : event.rrule,
+        recurrenceId: event.recurrenceId,
+        originalStart: event.originalStart,
+        isVirtual: event.isVirtual,
+        timezone: event.timezone,
+        location: event.location,
+        fields: event.fields,
+        reminders: event.reminders,
+      );
+
   /// Блок потянули за нижний край: другая длительность, то же начало.
   Future<void> resize(VEvent event, Duration duration) async {
     final repo = ref.read(repositoryProvider);

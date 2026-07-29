@@ -1351,4 +1351,33 @@ class LDe extends L {
 
   @override
   String get calendarDefaultDuration => 'Dauer neuer Termine';
+
+  @override
+  String get actionSelect => 'Mehrere auswählen';
+
+  @override
+  String selectedCount(int count) {
+    return 'Ausgewählt: $count';
+  }
+
+  @override
+  String get bulkMove => 'Verschieben';
+
+  @override
+  String get bulkCalendar => 'In Kalender';
+
+  @override
+  String msgBulkMoved(int count) {
+    return 'Verschobene Termine: $count';
+  }
+
+  @override
+  String msgBulkDeleted(int count) {
+    return 'Gelöschte Termine: $count';
+  }
+
+  @override
+  String msgBulkCalendar(int count) {
+    return 'Termine im anderen Kalender: $count';
+  }
 }

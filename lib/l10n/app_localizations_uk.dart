@@ -1358,4 +1358,33 @@ class LUk extends L {
 
   @override
   String get calendarDefaultDuration => 'Тривалість нових подій';
+
+  @override
+  String get actionSelect => 'Вибрати кілька';
+
+  @override
+  String selectedCount(int count) {
+    return 'Вибрано: $count';
+  }
+
+  @override
+  String get bulkMove => 'Перенести';
+
+  @override
+  String get bulkCalendar => 'У календар';
+
+  @override
+  String msgBulkMoved(int count) {
+    return 'Перенесено подій: $count';
+  }
+
+  @override
+  String msgBulkDeleted(int count) {
+    return 'Видалено подій: $count';
+  }
+
+  @override
+  String msgBulkCalendar(int count) {
+    return 'Подій в іншому календарі: $count';
+  }
 }
