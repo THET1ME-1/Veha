@@ -1466,4 +1466,15 @@ class LUk extends L {
   String sizeMb(String value) {
     return '$value МБ';
   }
+
+  @override
+  String get eventTravel => 'Час на дорогу';
+
+  @override
+  String get travelNone => 'Не рахувати';
+
+  @override
+  String travelLeaveAt(String time) {
+    return 'Виходити о $time';
+  }
 }

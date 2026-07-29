@@ -46,7 +46,10 @@ List<PlannedReminder> planReminders(
 
   for (final e in events) {
     for (final minutes in e.reminders) {
-      final moment = e.start.subtract(Duration(minutes: minutes));
+      // Отсчёт от выхода из дома, а не от начала встречи: «за полчаса» у
+      // события на другом конце города означает полчаса до выезда — иначе
+      // предупреждение приходит, когда ехать уже поздно.
+      final moment = e.busyFrom.subtract(Duration(minutes: minutes));
       if (!moment.isAfter(now)) continue;
       out.add(PlannedReminder(
         eventId: e.id,

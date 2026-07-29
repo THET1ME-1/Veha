@@ -69,7 +69,7 @@ DayReview reviewDay(
   final timed = [
     for (final e in events)
       if (!e.isMultiDay && !e.isOpenEnded) e,
-  ]..sort((a, b) => a.start.compareTo(b.start));
+  ]..sort((a, b) => a.busyFrom.compareTo(b.busyFrom));
 
   // Занятое считается объединением отрезков: две наехавшие встречи занимают
   // не два часа, а полтора — иначе загрузка дня переваливает за сотню
@@ -78,7 +78,8 @@ DayReview reviewDay(
   DateTime? runStart;
   DateTime? runEnd;
   for (final e in timed) {
-    final start = e.start.isBefore(from) ? from : e.start;
+    // Дорога — тоже занятое время: полчаса пути нельзя занять ничем другим.
+    final start = e.busyFrom.isBefore(from) ? from : e.busyFrom;
     final end = e.end.isAfter(to) ? to : e.end;
     if (!end.isAfter(start)) continue;
 

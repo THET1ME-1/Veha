@@ -1455,4 +1455,15 @@ class LRo extends L {
   String sizeMb(String value) {
     return '$value MB';
   }
+
+  @override
+  String get eventTravel => 'Timp de deplasare';
+
+  @override
+  String get travelNone => 'Nu socoti';
+
+  @override
+  String travelLeaveAt(String time) {
+    return 'Pleacă la $time';
+  }
 }

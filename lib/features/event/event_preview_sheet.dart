@@ -195,6 +195,17 @@ class _PreviewSheet extends StatelessWidget {
                 ),
                 const VSep(),
               ],
+              // Дорога здесь важнее самой длительности: до встречи надо
+              // выйти, и время выхода — то, ради чего превью открывают.
+              if (event.travelMinutes > 0) ...[
+                VRow(
+                  icon: 'directions_walk',
+                  label: l.eventTravel,
+                  value: '${humanDuration(l, Duration(minutes: event.travelMinutes))}'
+                      ' · ${l.travelLeaveAt(hhmm(event.busyFrom))}',
+                ),
+                const VSep(),
+              ],
               VRow(
                 icon: 'bell',
                 label: l.eventReminder,

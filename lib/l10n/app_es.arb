@@ -1904,5 +1904,22 @@
         "type": "String"
       }
     }
+  },
+  "eventTravel": "Tiempo de viaje",
+  "@eventTravel": {
+    "description": "eventTravel"
+  },
+  "travelNone": "No contarlo",
+  "@travelNone": {
+    "description": "travelNone"
+  },
+  "travelLeaveAt": "Salir a las {time}",
+  "@travelLeaveAt": {
+    "description": "travelLeaveAt",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   }
 }

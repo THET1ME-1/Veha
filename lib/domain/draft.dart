@@ -19,6 +19,7 @@ class EventDraft {
     this.iconName,
     this.rrule,
     this.location,
+    this.travelMinutes = 0,
     this.isAllDay = false,
     this.reminders = const [30],
     this.fields = const [],
@@ -68,6 +69,7 @@ class EventDraft {
         iconName: e.iconName,
         rrule: e.rrule,
         location: e.location,
+        travelMinutes: e.travelMinutes,
         isAllDay: e.isAllDay,
         reminders: e.reminders,
         fields: e.fields,
@@ -83,6 +85,10 @@ class EventDraft {
   final String? iconName;
   final String? rrule;
   final String? location;
+
+  /// Сколько добираться до места, в минутах. Ноль — дорога не в счёт.
+  final int travelMinutes;
+
   final bool isAllDay;
 
   /// За сколько минут предупредить. У нового события одно напоминание за
@@ -112,6 +118,7 @@ class EventDraft {
         isAllDay: isAllDay,
         rrule: null,
         location: location,
+        travelMinutes: travelMinutes,
         reminders: reminders,
         fields: fields,
       );
@@ -142,6 +149,9 @@ class EventDraft {
       _copy(start: value, end: value.add(duration));
 
   EventDraft withEnd(DateTime value) => _copy(end: value);
+
+  /// Сколько добираться до места, в минутах. Ноль — дорога не в счёт.
+  EventDraft withTravel(int minutes) => _copy(travelMinutes: minutes);
   EventDraft withCalendar(String id, {String? subcategoryId}) =>
       _copy(calendarId: id, subcategoryId: subcategoryId, dropSubcategory: true);
   EventDraft withSubcategory(String? id) =>
@@ -191,6 +201,7 @@ class EventDraft {
         isVirtual: source?.isVirtual ?? false,
         timezone: source?.timezone,
         location: location,
+        travelMinutes: travelMinutes,
         fields: fields,
         reminders: reminders,
       );
@@ -205,6 +216,7 @@ class EventDraft {
     String? iconName,
     String? rrule,
     String? location,
+    int? travelMinutes,
     bool? isAllDay,
     List<int>? reminders,
     List<VFieldValue>? fields,
@@ -225,6 +237,7 @@ class EventDraft {
         iconName: dropIcon ? iconName : iconName ?? this.iconName,
         rrule: dropRrule ? rrule : rrule ?? this.rrule,
         location: dropLocation ? location : location ?? this.location,
+        travelMinutes: travelMinutes ?? this.travelMinutes,
         isAllDay: isAllDay ?? this.isAllDay,
         reminders: reminders ?? this.reminders,
         fields: fields ?? this.fields,

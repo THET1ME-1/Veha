@@ -1511,6 +1511,18 @@ class $EventsTable extends Events with TableInfo<$EventsTable, Event> {
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _travelMinutesMeta = const VerificationMeta(
+    'travelMinutes',
+  );
+  @override
+  late final GeneratedColumn<int> travelMinutes = GeneratedColumn<int>(
+    'travel_minutes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
   late final GeneratedColumn<String> status = GeneratedColumn<String>(
@@ -1584,6 +1596,7 @@ class $EventsTable extends Events with TableInfo<$EventsTable, Event> {
     rrule,
     recurrenceId,
     originalStart,
+    travelMinutes,
     status,
     availability,
     createdAt,
@@ -1722,6 +1735,15 @@ class $EventsTable extends Events with TableInfo<$EventsTable, Event> {
         ),
       );
     }
+    if (data.containsKey('travel_minutes')) {
+      context.handle(
+        _travelMinutesMeta,
+        travelMinutes.isAcceptableOrUnknown(
+          data['travel_minutes']!,
+          _travelMinutesMeta,
+        ),
+      );
+    }
     if (data.containsKey('status')) {
       context.handle(
         _statusMeta,
@@ -1832,6 +1854,10 @@ class $EventsTable extends Events with TableInfo<$EventsTable, Event> {
         DriftSqlType.int,
         data['${effectivePrefix}original_start'],
       ),
+      travelMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}travel_minutes'],
+      )!,
       status: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}status'],
@@ -1884,6 +1910,9 @@ class Event extends DataClass implements Insertable<Event> {
   final String? rrule;
   final String? recurrenceId;
   final int? originalStart;
+
+  /// Сколько добираться до места, в минутах. Ноль — дорога не в счёт.
+  final int travelMinutes;
   final String status;
   final String availability;
   final int createdAt;
@@ -1906,6 +1935,7 @@ class Event extends DataClass implements Insertable<Event> {
     this.rrule,
     this.recurrenceId,
     this.originalStart,
+    required this.travelMinutes,
     required this.status,
     required this.availability,
     required this.createdAt,
@@ -1949,6 +1979,7 @@ class Event extends DataClass implements Insertable<Event> {
     if (!nullToAbsent || originalStart != null) {
       map['original_start'] = Variable<int>(originalStart);
     }
+    map['travel_minutes'] = Variable<int>(travelMinutes);
     map['status'] = Variable<String>(status);
     map['availability'] = Variable<String>(availability);
     map['created_at'] = Variable<int>(createdAt);
@@ -1993,6 +2024,7 @@ class Event extends DataClass implements Insertable<Event> {
       originalStart: originalStart == null && nullToAbsent
           ? const Value.absent()
           : Value(originalStart),
+      travelMinutes: Value(travelMinutes),
       status: Value(status),
       availability: Value(availability),
       createdAt: Value(createdAt),
@@ -2025,6 +2057,7 @@ class Event extends DataClass implements Insertable<Event> {
       rrule: serializer.fromJson<String?>(json['rrule']),
       recurrenceId: serializer.fromJson<String?>(json['recurrenceId']),
       originalStart: serializer.fromJson<int?>(json['originalStart']),
+      travelMinutes: serializer.fromJson<int>(json['travelMinutes']),
       status: serializer.fromJson<String>(json['status']),
       availability: serializer.fromJson<String>(json['availability']),
       createdAt: serializer.fromJson<int>(json['createdAt']),
@@ -2052,6 +2085,7 @@ class Event extends DataClass implements Insertable<Event> {
       'rrule': serializer.toJson<String?>(rrule),
       'recurrenceId': serializer.toJson<String?>(recurrenceId),
       'originalStart': serializer.toJson<int?>(originalStart),
+      'travelMinutes': serializer.toJson<int>(travelMinutes),
       'status': serializer.toJson<String>(status),
       'availability': serializer.toJson<String>(availability),
       'createdAt': serializer.toJson<int>(createdAt),
@@ -2077,6 +2111,7 @@ class Event extends DataClass implements Insertable<Event> {
     Value<String?> rrule = const Value.absent(),
     Value<String?> recurrenceId = const Value.absent(),
     Value<int?> originalStart = const Value.absent(),
+    int? travelMinutes,
     String? status,
     String? availability,
     int? createdAt,
@@ -2103,6 +2138,7 @@ class Event extends DataClass implements Insertable<Event> {
     originalStart: originalStart.present
         ? originalStart.value
         : this.originalStart,
+    travelMinutes: travelMinutes ?? this.travelMinutes,
     status: status ?? this.status,
     availability: availability ?? this.availability,
     createdAt: createdAt ?? this.createdAt,
@@ -2139,6 +2175,9 @@ class Event extends DataClass implements Insertable<Event> {
       originalStart: data.originalStart.present
           ? data.originalStart.value
           : this.originalStart,
+      travelMinutes: data.travelMinutes.present
+          ? data.travelMinutes.value
+          : this.travelMinutes,
       status: data.status.present ? data.status.value : this.status,
       availability: data.availability.present
           ? data.availability.value
@@ -2168,6 +2207,7 @@ class Event extends DataClass implements Insertable<Event> {
           ..write('rrule: $rrule, ')
           ..write('recurrenceId: $recurrenceId, ')
           ..write('originalStart: $originalStart, ')
+          ..write('travelMinutes: $travelMinutes, ')
           ..write('status: $status, ')
           ..write('availability: $availability, ')
           ..write('createdAt: $createdAt, ')
@@ -2195,6 +2235,7 @@ class Event extends DataClass implements Insertable<Event> {
     rrule,
     recurrenceId,
     originalStart,
+    travelMinutes,
     status,
     availability,
     createdAt,
@@ -2221,6 +2262,7 @@ class Event extends DataClass implements Insertable<Event> {
           other.rrule == this.rrule &&
           other.recurrenceId == this.recurrenceId &&
           other.originalStart == this.originalStart &&
+          other.travelMinutes == this.travelMinutes &&
           other.status == this.status &&
           other.availability == this.availability &&
           other.createdAt == this.createdAt &&
@@ -2245,6 +2287,7 @@ class EventsCompanion extends UpdateCompanion<Event> {
   final Value<String?> rrule;
   final Value<String?> recurrenceId;
   final Value<int?> originalStart;
+  final Value<int> travelMinutes;
   final Value<String> status;
   final Value<String> availability;
   final Value<int> createdAt;
@@ -2268,6 +2311,7 @@ class EventsCompanion extends UpdateCompanion<Event> {
     this.rrule = const Value.absent(),
     this.recurrenceId = const Value.absent(),
     this.originalStart = const Value.absent(),
+    this.travelMinutes = const Value.absent(),
     this.status = const Value.absent(),
     this.availability = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -2292,6 +2336,7 @@ class EventsCompanion extends UpdateCompanion<Event> {
     this.rrule = const Value.absent(),
     this.recurrenceId = const Value.absent(),
     this.originalStart = const Value.absent(),
+    this.travelMinutes = const Value.absent(),
     this.status = const Value.absent(),
     this.availability = const Value.absent(),
     required int createdAt,
@@ -2323,6 +2368,7 @@ class EventsCompanion extends UpdateCompanion<Event> {
     Expression<String>? rrule,
     Expression<String>? recurrenceId,
     Expression<int>? originalStart,
+    Expression<int>? travelMinutes,
     Expression<String>? status,
     Expression<String>? availability,
     Expression<int>? createdAt,
@@ -2347,6 +2393,7 @@ class EventsCompanion extends UpdateCompanion<Event> {
       if (rrule != null) 'rrule': rrule,
       if (recurrenceId != null) 'recurrence_id': recurrenceId,
       if (originalStart != null) 'original_start': originalStart,
+      if (travelMinutes != null) 'travel_minutes': travelMinutes,
       if (status != null) 'status': status,
       if (availability != null) 'availability': availability,
       if (createdAt != null) 'created_at': createdAt,
@@ -2373,6 +2420,7 @@ class EventsCompanion extends UpdateCompanion<Event> {
     Value<String?>? rrule,
     Value<String?>? recurrenceId,
     Value<int?>? originalStart,
+    Value<int>? travelMinutes,
     Value<String>? status,
     Value<String>? availability,
     Value<int>? createdAt,
@@ -2397,6 +2445,7 @@ class EventsCompanion extends UpdateCompanion<Event> {
       rrule: rrule ?? this.rrule,
       recurrenceId: recurrenceId ?? this.recurrenceId,
       originalStart: originalStart ?? this.originalStart,
+      travelMinutes: travelMinutes ?? this.travelMinutes,
       status: status ?? this.status,
       availability: availability ?? this.availability,
       createdAt: createdAt ?? this.createdAt,
@@ -2457,6 +2506,9 @@ class EventsCompanion extends UpdateCompanion<Event> {
     if (originalStart.present) {
       map['original_start'] = Variable<int>(originalStart.value);
     }
+    if (travelMinutes.present) {
+      map['travel_minutes'] = Variable<int>(travelMinutes.value);
+    }
     if (status.present) {
       map['status'] = Variable<String>(status.value);
     }
@@ -2497,6 +2549,7 @@ class EventsCompanion extends UpdateCompanion<Event> {
           ..write('rrule: $rrule, ')
           ..write('recurrenceId: $recurrenceId, ')
           ..write('originalStart: $originalStart, ')
+          ..write('travelMinutes: $travelMinutes, ')
           ..write('status: $status, ')
           ..write('availability: $availability, ')
           ..write('createdAt: $createdAt, ')
@@ -8860,6 +8913,7 @@ typedef $$EventsTableCreateCompanionBuilder =
       Value<String?> rrule,
       Value<String?> recurrenceId,
       Value<int?> originalStart,
+      Value<int> travelMinutes,
       Value<String> status,
       Value<String> availability,
       required int createdAt,
@@ -8885,6 +8939,7 @@ typedef $$EventsTableUpdateCompanionBuilder =
       Value<String?> rrule,
       Value<String?> recurrenceId,
       Value<int?> originalStart,
+      Value<int> travelMinutes,
       Value<String> status,
       Value<String> availability,
       Value<int> createdAt,
@@ -9114,6 +9169,11 @@ class $$EventsTableFilterComposer
 
   ColumnFilters<int> get originalStart => $composableBuilder(
     column: $table.originalStart,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get travelMinutes => $composableBuilder(
+    column: $table.travelMinutes,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -9400,6 +9460,11 @@ class $$EventsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get travelMinutes => $composableBuilder(
+    column: $table.travelMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get status => $composableBuilder(
     column: $table.status,
     builder: (column) => ColumnOrderings(column),
@@ -9510,6 +9575,11 @@ class $$EventsTableAnnotationComposer
 
   GeneratedColumn<int> get originalStart => $composableBuilder(
     column: $table.originalStart,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get travelMinutes => $composableBuilder(
+    column: $table.travelMinutes,
     builder: (column) => column,
   );
 
@@ -9757,6 +9827,7 @@ class $$EventsTableTableManager
                 Value<String?> rrule = const Value.absent(),
                 Value<String?> recurrenceId = const Value.absent(),
                 Value<int?> originalStart = const Value.absent(),
+                Value<int> travelMinutes = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<String> availability = const Value.absent(),
                 Value<int> createdAt = const Value.absent(),
@@ -9780,6 +9851,7 @@ class $$EventsTableTableManager
                 rrule: rrule,
                 recurrenceId: recurrenceId,
                 originalStart: originalStart,
+                travelMinutes: travelMinutes,
                 status: status,
                 availability: availability,
                 createdAt: createdAt,
@@ -9805,6 +9877,7 @@ class $$EventsTableTableManager
                 Value<String?> rrule = const Value.absent(),
                 Value<String?> recurrenceId = const Value.absent(),
                 Value<int?> originalStart = const Value.absent(),
+                Value<int> travelMinutes = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<String> availability = const Value.absent(),
                 required int createdAt,
@@ -9828,6 +9901,7 @@ class $$EventsTableTableManager
                 rrule: rrule,
                 recurrenceId: recurrenceId,
                 originalStart: originalStart,
+                travelMinutes: travelMinutes,
                 status: status,
                 availability: availability,
                 createdAt: createdAt,

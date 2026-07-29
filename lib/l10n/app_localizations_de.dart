@@ -1459,4 +1459,15 @@ class LDe extends L {
   String sizeMb(String value) {
     return '$value MB';
   }
+
+  @override
+  String get eventTravel => 'Wegzeit';
+
+  @override
+  String get travelNone => 'Nicht rechnen';
+
+  @override
+  String travelLeaveAt(String time) {
+    return 'Losgehen um $time';
+  }
 }

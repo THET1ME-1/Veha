@@ -2590,6 +2590,24 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'{value} МБ'**
   String sizeMb(String value);
+
+  /// eventTravel
+  ///
+  /// In ru, this message translates to:
+  /// **'Время на дорогу'**
+  String get eventTravel;
+
+  /// travelNone
+  ///
+  /// In ru, this message translates to:
+  /// **'Не считать'**
+  String get travelNone;
+
+  /// travelLeaveAt
+  ///
+  /// In ru, this message translates to:
+  /// **'Выходить в {time}'**
+  String travelLeaveAt(String time);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

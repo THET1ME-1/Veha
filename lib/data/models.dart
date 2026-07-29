@@ -98,6 +98,7 @@ class VEvent {
     this.isVirtual = false,
     String? timezone,
     this.location,
+    this.travelMinutes = 0,
     this.fields = const [],
     this.reminders = const [],
   }) : timezone = timezone ?? AppTimezone.current;
@@ -142,6 +143,18 @@ class VEvent {
   /// а не переписывает ряд целиком.
   final bool isVirtual;
 
+  /// Сколько добираться до места, в минутах. Ноль — дорога не в счёт.
+  ///
+  /// Полчаса пути — это занятые полчаса: календарь, который считает
+  /// свободным время прямо перед встречей на другом конце города, врёт.
+  /// Само событие при этом остаётся на своём часе — дорога не сдвигает его,
+  /// а только занимает время перед ним.
+  final int travelMinutes;
+
+  /// С какого момента человек занят: с выхода из дома, а не с начала встречи.
+  DateTime get busyFrom =>
+      travelMinutes <= 0 ? start : start.subtract(Duration(minutes: travelMinutes));
+
   VEvent copyWith({
     String? title,
     DateTime? start,
@@ -151,6 +164,7 @@ class VEvent {
     bool? isAllDay,
     Object? rrule = _keep,
     Object? location = _keep,
+    int? travelMinutes,
     List<VFieldValue>? fields,
     List<int>? reminders,
   }) =>
@@ -170,6 +184,7 @@ class VEvent {
         isVirtual: isVirtual,
         timezone: timezone,
         location: location == _keep ? this.location : location as String?,
+        travelMinutes: travelMinutes ?? this.travelMinutes,
         fields: fields ?? this.fields,
         reminders: reminders ?? this.reminders,
       );

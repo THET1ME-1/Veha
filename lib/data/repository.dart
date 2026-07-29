@@ -329,6 +329,7 @@ class VehaRepository {
             subcategoryId: Value(e.subcategoryId),
             title: e.title,
             location: Value(e.location),
+            travelMinutes: Value(e.travelMinutes),
             start: e.start.millisecondsSinceEpoch,
             end: e.end.millisecondsSinceEpoch,
             timezone: e.timezone,
@@ -1254,6 +1255,7 @@ class VehaRepository {
         title: Value(instance.title),
         subcategoryId: Value(instance.subcategoryId),
         location: Value(instance.location),
+        travelMinutes: Value(instance.travelMinutes),
         start: Value(start.millisecondsSinceEpoch),
         end: Value(start.add(instance.duration).millisecondsSinceEpoch),
         isAllDay: Value(instance.isAllDay),
@@ -1311,6 +1313,7 @@ class VehaRepository {
             subcategoryId: Value(instance.subcategoryId),
             title: instance.title,
             location: Value(instance.location),
+            travelMinutes: Value(instance.travelMinutes),
             start: instance.start.millisecondsSinceEpoch,
             end: instance.end.millisecondsSinceEpoch,
             timezone: instance.timezone,
@@ -1604,6 +1607,7 @@ class VehaRepository {
             : DateTime.fromMillisecondsSinceEpoch(e.originalStart!),
         timezone: e.timezone,
         location: e.location,
+        travelMinutes: e.travelMinutes,
       );
 
   /// Поля и напоминания приезжают отдельными строками присоединения, поэтому
@@ -1636,6 +1640,7 @@ class VehaRepository {
       originalStart: e.originalStart,
       timezone: e.timezone,
       location: e.location,
+      travelMinutes: e.travelMinutes,
       fields: fields ?? e.fields,
       reminders: sorted,
     );

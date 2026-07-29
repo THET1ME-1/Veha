@@ -11,6 +11,7 @@ void main() {
     required DateTime start,
     List<int> reminders = const [30],
     String title = 'Английский',
+    int travel = 0,
   }) =>
       VEvent(
         id: id,
@@ -19,6 +20,7 @@ void main() {
         start: start,
         end: start.add(const Duration(hours: 1)),
         reminders: reminders,
+        travelMinutes: travel,
       );
 
   final now = DateTime(2026, 7, 28, 9);
@@ -96,5 +98,22 @@ void main() {
     expect(first.map((r) => r.alarmId), second.map((r) => r.alarmId));
     expect(first[0].alarmId, isNot(first[1].alarmId));
     expect(first.every((r) => r.alarmId > 0), isTrue);
+  });
+
+  test('Дорога сдвигает напоминание к выходу, а не к началу', () {
+    // «За полчаса» у встречи на другом конце города означает полчаса до
+    // выхода: предупредить в момент, когда ехать уже поздно, — пустой звук.
+    final plan = planReminders(
+      [
+        event(
+          start: DateTime(2026, 7, 28, 16),
+          reminders: const [30],
+          travel: 45,
+        ),
+      ],
+      now: now,
+    );
+
+    expect(plan.single.moment, DateTime(2026, 7, 28, 14, 45));
   });
 }

@@ -1454,4 +1454,15 @@ class LEs extends L {
   String sizeMb(String value) {
     return '$value MB';
   }
+
+  @override
+  String get eventTravel => 'Tiempo de viaje';
+
+  @override
+  String get travelNone => 'No contarlo';
+
+  @override
+  String travelLeaveAt(String time) {
+    return 'Salir a las $time';
+  }
 }

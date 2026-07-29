@@ -1464,4 +1464,15 @@ class LRu extends L {
   String sizeMb(String value) {
     return '$value МБ';
   }
+
+  @override
+  String get eventTravel => 'Время на дорогу';
+
+  @override
+  String get travelNone => 'Не считать';
+
+  @override
+  String travelLeaveAt(String time) {
+    return 'Выходить в $time';
+  }
 }

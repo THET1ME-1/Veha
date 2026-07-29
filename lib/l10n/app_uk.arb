@@ -1904,5 +1904,22 @@
         "type": "String"
       }
     }
+  },
+  "eventTravel": "Час на дорогу",
+  "@eventTravel": {
+    "description": "eventTravel"
+  },
+  "travelNone": "Не рахувати",
+  "@travelNone": {
+    "description": "travelNone"
+  },
+  "travelLeaveAt": "Виходити о {time}",
+  "@travelLeaveAt": {
+    "description": "travelLeaveAt",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   }
 }

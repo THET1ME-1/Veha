@@ -11,6 +11,7 @@ import '../../core/icon_registry.dart';
 import '../../data/models.dart';
 import '../../domain/draft.dart';
 import '../../domain/note_markup.dart';
+import '../../domain/time_label.dart';
 import '../../services/file_service.dart';
 import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
 import '../repeat/repeat_screen.dart' show askRepeatRule;
@@ -106,6 +107,38 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
       () =>
           _draft = isStart ? _draft.withStart(moment) : _draft.withEnd(moment),
     );
+  }
+
+  /// Сколько добираться до места. Полчаса пути — это занятые полчаса, и
+  /// календарь обязан их видеть: иначе он предложит окно, из которого
+  /// невозможно успеть.
+  Future<void> _pickTravel() async {
+    final l = L.of(context);
+    final chosen = await showModalBottomSheet<int>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final minutes in const [0, 10, 15, 30, 45, 60, 90])
+              ListTile(
+                leading: Icon(VehaIcons.byName(
+                    minutes == 0 ? 'close' : 'directions_walk')),
+                title: Text(
+                  minutes == 0
+                      ? l.travelNone
+                      : humanDuration(l, Duration(minutes: minutes)),
+                ),
+                selected: minutes == _draft.travelMinutes,
+                onTap: () => Navigator.pop(sheetContext, minutes),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (chosen == null) return;
+    setState(() => _draft = _draft.withTravel(chosen));
   }
 
   /// Снять окончание и вернуть его обратно.
@@ -659,6 +692,23 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
               label: l.eventPlace,
               value: _draft.location ?? l.actionAdd,
               onTap: _pickLocation,
+              trailing: Icon(
+                VehaIcons.byName('chevron'),
+                size: 17,
+                color: scheme.outline,
+              ),
+            ),
+            // Дорога стоит под местом: без адреса она бессмысленна, а рядом
+            // с ним читается как продолжение той же мысли.
+            const VSep(),
+            VRow(
+              icon: 'directions_walk',
+              label: l.eventTravel,
+              value: _draft.travelMinutes <= 0
+                  ? l.travelNone
+                  : '${humanDuration(l, Duration(minutes: _draft.travelMinutes))} · '
+                      '${l.travelLeaveAt(_hhmm(_draft.start.subtract(Duration(minutes: _draft.travelMinutes))))}',
+              onTap: _pickTravel,
               trailing: Icon(
                 VehaIcons.byName('chevron'),
                 size: 17,

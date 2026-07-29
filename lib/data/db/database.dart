@@ -75,6 +75,9 @@ class Events extends Table {
   TextColumn get rrule => text().nullable()();
   TextColumn get recurrenceId => text().nullable()();
   IntColumn get originalStart => integer().nullable()();
+  /// Сколько добираться до места, в минутах. Ноль — дорога не в счёт.
+  IntColumn get travelMinutes => integer().withDefault(const Constant(0))();
+
   TextColumn get status => text().withDefault(const Constant('confirmed'))();
   TextColumn get availability => text().withDefault(const Constant('busy'))();
   IntColumn get createdAt => integer()();
@@ -291,7 +294,7 @@ class VehaDatabase extends _$VehaDatabase {
   VehaDatabase(super.e);
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -319,6 +322,9 @@ class VehaDatabase extends _$VehaDatabase {
           if (from < 3) {
             await m.addColumn(calendars, calendars.defaultReminders);
             await m.addColumn(calendars, calendars.defaultDuration);
+          }
+          if (from < 5) {
+            await m.addColumn(events, events.travelMinutes);
           }
           if (from < 4) {
             // Обе таблицы местные: на сервер не уезжают, и миграции там нет.

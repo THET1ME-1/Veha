@@ -49,13 +49,16 @@ List<TimeSlot> freeSlots(
 
   final busy = [
     for (final e in events)
-      if (!e.isMultiDay && e.end.isAfter(cursor) && e.start.isBefore(end)) e,
-  ]..sort((a, b) => a.start.compareTo(b.start));
+      if (!e.isMultiDay && e.end.isAfter(cursor) && e.busyFrom.isBefore(end)) e,
+  ]..sort((a, b) => a.busyFrom.compareTo(b.busyFrom));
 
   final slots = <TimeSlot>[];
   for (final e in busy) {
-    if (e.start.isAfter(cursor)) {
-      final gap = TimeSlot(cursor, e.start.isBefore(end) ? e.start : end);
+    // Занятость начинается с выхода из дома, а не с начала встречи: окно
+    // прямо перед поездкой на другой конец города свободным не считается.
+    final from = e.busyFrom;
+    if (from.isAfter(cursor)) {
+      final gap = TimeSlot(cursor, from.isBefore(end) ? from : end);
       if (gap.length >= atLeast) slots.add(gap);
     }
     if (e.end.isAfter(cursor)) cursor = e.end;

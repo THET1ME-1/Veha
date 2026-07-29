@@ -1466,4 +1466,15 @@ class LPl extends L {
   String sizeMb(String value) {
     return '$value MB';
   }
+
+  @override
+  String get eventTravel => 'Czas dojazdu';
+
+  @override
+  String get travelNone => 'Nie licz';
+
+  @override
+  String travelLeaveAt(String time) {
+    return 'Wyjść o $time';
+  }
 }
