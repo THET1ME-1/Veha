@@ -109,12 +109,21 @@ TimeSlot? firstFreeSlot({
   return null;
 }
 
+/// Накладываются ли два промежутка. Встык — не накладка: занятие, которое
+/// кончается ровно тогда, когда начинается следующее, никому не мешает.
+bool intervalsOverlap(
+  DateTime aStart,
+  DateTime aEnd,
+  DateTime bStart,
+  DateTime bEnd,
+) =>
+    aStart.isBefore(bEnd) && aEnd.isAfter(bStart);
+
 /// С чем событие пересекается. Пустой список — свободно.
 List<VEvent> conflictsOf(VEvent event, List<VEvent> others) => [
       for (final other in others)
         if (other.id != event.id &&
             !other.isMultiDay &&
-            other.start.isBefore(event.end) &&
-            other.end.isAfter(event.start))
+            intervalsOverlap(event.start, event.end, other.start, other.end))
           other,
     ];

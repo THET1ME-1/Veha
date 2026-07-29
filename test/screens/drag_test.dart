@@ -87,6 +87,161 @@ void main() {
     expect(shift, const Duration(minutes: 15));
   });
 
+  testWidgets('Блок у нижнего края крутит сетку сам', (tester) async {
+    // День от восьми утра до девяти вечера выше экрана: без автоскролла
+    // перенести утреннюю встречу на вечер нельзя вовсе — палец упирается
+    // в край, а сетка стоит.
+    final day = [
+      lunch(),
+      VEvent(
+        id: 'evening',
+        calendarId: 'home',
+        title: 'Вечерняя тренировка',
+        start: DateTime(2026, 7, 27, 20),
+        end: DateTime(2026, 7, 27, 21),
+      ),
+      VEvent(
+        id: 'morning',
+        calendarId: 'home',
+        title: 'Планёрка',
+        start: DateTime(2026, 7, 27, 8),
+        end: DateTime(2026, 7, 27, 9),
+      ),
+    ];
+
+    await pumpScreen(
+      tester,
+      Scaffold(
+        body: ClockView(
+          events: day,
+          inheritance: inheritance,
+          onEventMoved: (_, __) {},
+        ),
+      ),
+    );
+
+    final position =
+        tester.state<ScrollableState>(find.byType(Scrollable)).position;
+    expect(position.maxScrollExtent, greaterThan(0),
+        reason: 'день обязан не помещаться на экран, иначе тест бессмыслен');
+    final before = position.pixels;
+
+    final gesture =
+        await tester.startGesture(tester.getCenter(find.text('Обед с Ниной')));
+    await tester.pump(const Duration(milliseconds: 700));
+    // Палец у самого низа экрана: там и начинается разгон.
+    await gesture.moveTo(Offset(tester.view.physicalSize.width / 4, 838));
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.pump(const Duration(milliseconds: 200));
+
+    expect(position.pixels, greaterThan(before));
+
+    await gesture.up();
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('Отпущенный блок сетку не крутит', (tester) async {
+    final day = [
+      lunch(),
+      VEvent(
+        id: 'evening',
+        calendarId: 'home',
+        title: 'Вечерняя тренировка',
+        start: DateTime(2026, 7, 27, 20),
+        end: DateTime(2026, 7, 27, 21),
+      ),
+    ];
+
+    await pumpScreen(
+      tester,
+      Scaffold(
+        body: ClockView(
+          events: day,
+          inheritance: inheritance,
+          onEventMoved: (_, __) {},
+        ),
+      ),
+    );
+
+    final position =
+        tester.state<ScrollableState>(find.byType(Scrollable)).position;
+
+    final gesture =
+        await tester.startGesture(tester.getCenter(find.text('Обед с Ниной')));
+    await tester.pump(const Duration(milliseconds: 700));
+    await gesture.moveTo(const Offset(120, 838));
+    await tester.pump(const Duration(milliseconds: 100));
+    await gesture.up();
+    await tester.pumpAndSettle();
+
+    final settled = position.pixels;
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(position.pixels, settled);
+  });
+
+  testWidgets('Соседнее событие подсвечивается, пока блок метит в него',
+      (tester) async {
+    // Сообщение о накладке приходило после переноса — когда чинить поздно.
+    // Пока блок в воздухе, видно, во что он метит.
+    final day = [
+      lunch(),
+      VEvent(
+        id: 'call',
+        calendarId: 'home',
+        title: 'Созвон',
+        start: DateTime(2026, 7, 27, 15),
+        end: DateTime(2026, 7, 27, 16),
+      ),
+    ];
+
+    await pumpScreen(
+      tester,
+      Scaffold(
+        body: ClockView(
+          events: day,
+          inheritance: inheritance,
+          onEventMoved: (_, __) {},
+        ),
+      ),
+    );
+
+    final scheme =
+        Theme.of(tester.element(find.byType(ClockView))).colorScheme;
+
+    Color? tintOf(String id) {
+      final container = tester.widget<Container>(
+        find
+            .descendant(
+              of: find.byKey(ValueKey('block-$id')),
+              matching: find.byType(Container),
+            )
+            .first,
+      );
+      return (container.decoration as ShapeDecoration?)?.color;
+    }
+
+    expect(tintOf('call'), isNot(scheme.errorContainer));
+
+    final gesture =
+        await tester.startGesture(tester.getCenter(find.text('Обед с Ниной')));
+    await tester.pump(const Duration(milliseconds: 700));
+    // Два часа вниз — обед метит ровно в созвон.
+    await gesture.moveBy(const Offset(0, 120));
+    await tester.pump(const Duration(milliseconds: 40));
+
+    expect(tintOf('call'), scheme.errorContainer);
+
+    // Отвели назад — подсветка гаснет, накладки больше нет.
+    await gesture.moveBy(const Offset(0, -120));
+    await tester.pump(const Duration(milliseconds: 40));
+
+    expect(tintOf('call'), isNot(scheme.errorContainer));
+
+    await gesture.up();
+    await tester.pumpAndSettle();
+  });
+
   testWidgets('Короткий тап остаётся тапом', (tester) async {
     var moved = false;
     VEvent? tapped;

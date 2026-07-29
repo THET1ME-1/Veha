@@ -96,4 +96,15 @@ void main() {
     final clash = conflictsOf(event, [event, at(10, 30, id: 'other')]);
     expect(clash.single.id, 'other');
   });
+
+  test('Промежутки пересекаются по-настоящему, а не встык', () {
+    final morning = DateTime(2026, 7, 27, 10);
+    final noon = DateTime(2026, 7, 27, 12);
+    final later = DateTime(2026, 7, 27, 14);
+
+    expect(intervalsOverlap(morning, later, noon, later), isTrue);
+    // Встык — не накладка: одно кончается ровно там, где начинается другое.
+    expect(intervalsOverlap(morning, noon, noon, later), isFalse);
+    expect(intervalsOverlap(noon, later, morning, noon), isFalse);
+  });
 }

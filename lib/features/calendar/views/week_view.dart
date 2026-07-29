@@ -6,6 +6,7 @@ import '../../../core/event_colors.dart';
 import '../../../core/icon_registry.dart';
 import '../../../data/models.dart';
 import '../../../l10n/app_localizations.dart';
+import '../widgets/auto_scroll_grid.dart';
 import '../widgets/month_header.dart';
 
 /// Неделя колонками пилюль — самый узнаваемый вид.
@@ -54,7 +55,7 @@ class WeekView extends StatelessWidget {
     final dow = DateFormat.E(locale);
     final gridHeight = (_lastHour - _firstHour) * _hourHeight;
 
-    return LayoutBuilder(builder: (context, constraints) => SingleChildScrollView(
+    return LayoutBuilder(builder: (context, constraints) => AutoScrollGrid(
       padding: const EdgeInsets.fromLTRB(14, 6, 14, 120),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -352,13 +353,29 @@ class _Pill extends StatefulWidget {
 }
 
 class _PillState extends State<_Pill> {
-  Offset _drag = Offset.zero;
+  /// Смещение пальца от точки, с которой начали тащить.
+  Offset _pointer = Offset.zero;
+
+  /// Прокрутка сетки на момент последнего движения пальца: у края она едет
+  /// сама, и пилюля обязана ехать вместе с ней.
+  double _scrollMark = 0;
+  double _scrolled = 0;
+
   bool _dragging = false;
+  GridScroll? _grid;
 
   /// Шаг сетки: четверть часа по вертикали, целый день по горизонтали.
   static const int _stepMinutes = 15;
 
   double get _stepPixels => widget.hourHeight * _stepMinutes / 60;
+
+  /// Куда пилюля уехала с начала жеста: пальцем и вместе с сеткой.
+  Offset get _drag => Offset(
+        widget.dayWidth == 0
+            ? 0
+            : (_pointer.dx / widget.dayWidth).round() * widget.dayWidth,
+        ((_pointer.dy + _scrolled) / _stepPixels).round() * _stepPixels,
+      );
 
   /// Сдвиг пальца — в минуты и дни. Наискосок работает: в неделе перенос на
   /// другой день и другое время — одно движение.
@@ -369,6 +386,37 @@ class _PillState extends State<_Pill> {
         ? 0
         : (offset.dx / widget.dayWidth).round();
     return Duration(days: days, minutes: minutes);
+  }
+
+  void _onScroll() {
+    if (!mounted) return;
+    setState(() => _scrolled = (_grid?.offset ?? _scrollMark) - _scrollMark);
+    _publishDrag();
+  }
+
+  /// Куда пилюля метит прямо сейчас — по этому времени соседи и красятся.
+  void _publishDrag() {
+    final grid = _grid;
+    if (grid == null) return;
+    final e = widget.placed.event;
+    final shift = _shiftOf(_drag);
+    grid.drag.value = GridDrag(
+      eventId: e.id,
+      start: e.start.add(shift),
+      end: e.end.add(shift),
+    );
+  }
+
+  void _releaseGrid() {
+    _grid?.onPointer(null);
+    _grid?.drag.value = null;
+    _grid?.controller.removeListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _releaseGrid();
+    super.dispose();
   }
 
   @override
@@ -396,6 +444,7 @@ class _PillState extends State<_Pill> {
     final canDrag = widget.onMoved != null;
 
     return Positioned(
+      key: ValueKey('pill-${e.id}'),
       top: (top < 0 ? 0 : top) + _drag.dy,
       left: 3 + placed.lane * laneWidth + _drag.dx,
       width: laneWidth - (placed.lanes > 1 ? 2 : 0),
@@ -405,46 +454,71 @@ class _PillState extends State<_Pill> {
         onTap: onTap,
         onLongPress: onLongPress,
         onLongPressStart: canDrag
-            ? (_) {
+            ? (details) {
                 HapticFeedback.mediumImpact();
+                _grid = GridScroll.of(context);
+                _scrollMark = _grid?.offset ?? 0;
+                _scrolled = 0;
+                _pointer = Offset.zero;
+                _grid?.controller.addListener(_onScroll);
+                _grid?.onPointer(details.globalPosition.dy);
+                _publishDrag();
                 setState(() => _dragging = true);
               }
             : null,
         onLongPressMoveUpdate: canDrag
             ? (details) {
-                final raw = details.localOffsetFromOrigin;
-                final snapped = Offset(
-                  widget.dayWidth == 0
-                      ? 0
-                      : (raw.dx / widget.dayWidth).round() * widget.dayWidth,
-                  (raw.dy / _stepPixels).round() * _stepPixels,
-                );
-                if (snapped == _drag) return;
+                _grid?.onPointer(details.globalPosition.dy);
+                final previous = _drag;
+                // Локальное смещение уже включает уехавшую сетку: метку
+                // сбрасываем, иначе прокрутка засчитается дважды.
+                _pointer = details.localOffsetFromOrigin;
+                _scrollMark = _grid?.offset ?? _scrollMark;
+                _scrolled = 0;
+                if (_drag == previous) return;
                 HapticFeedback.selectionClick();
-                setState(() => _drag = snapped);
+                _publishDrag();
+                setState(() {});
               }
             : null,
         onLongPressEnd: canDrag
             ? (_) {
                 final shift = _shiftOf(_drag);
+                _releaseGrid();
+                _grid = null;
                 setState(() {
-                  _drag = Offset.zero;
+                  _pointer = Offset.zero;
+                  _scrolled = 0;
                   _dragging = false;
                 });
                 if (shift.inMinutes != 0) widget.onMoved!(e, shift);
               }
             : null,
-        child: Container(
-          decoration: ShapeDecoration(
-            // Оторванная пилюля светлеет тоном: теней в приложении нет.
-            color: _dragging
-                ? ink.foreground.withValues(alpha: 0.24)
-                : ink.background,
-            shape: const StadiumBorder(),
+        child: GridClashSkin(
+          span: VEventSpan(
+            id: e.id,
+            start: e.start,
+            end: e.end,
+            isMultiDay: e.isMultiDay,
           ),
-          alignment: Alignment.center,
-          child:
-              Icon(VehaIcons.byName(icon), size: iconSize, color: ink.foreground),
+          builder: (clash) {
+            final scheme = Theme.of(context).colorScheme;
+            // Пилюля, в которую метят, красится тоном ошибки целиком:
+            // обводок и свечения в приложении нет.
+            final fill = clash ? scheme.errorContainer : ink.background;
+            final mark = clash ? scheme.onErrorContainer : ink.foreground;
+            return Container(
+              decoration: ShapeDecoration(
+                // Оторванная пилюля светлеет тоном: теней в приложении нет.
+                color: _dragging
+                    ? ink.foreground.withValues(alpha: 0.24)
+                    : fill,
+                shape: const StadiumBorder(),
+              ),
+              alignment: Alignment.center,
+              child: Icon(VehaIcons.byName(icon), size: iconSize, color: mark),
+            );
+          },
         ),
       ),
     );

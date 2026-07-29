@@ -7,6 +7,7 @@ import '../../../core/event_colors.dart';
 import '../../../core/icon_registry.dart';
 import '../../../data/models.dart';
 import '../../../data/providers.dart';
+import '../widgets/auto_scroll_grid.dart';
 import '../widgets/month_header.dart';
 
 /// Часы: настоящая шкала времени.
@@ -67,7 +68,7 @@ class ClockView extends StatelessWidget {
       builder: (context, constraints) {
         final laneArea =
             constraints.maxWidth - VehaInsets.screen * 2 - _timeGutter - 10;
-        return SingleChildScrollView(
+        return AutoScrollGrid(
           padding: const EdgeInsets.fromLTRB(
             VehaInsets.screen,
             6,
@@ -254,14 +255,21 @@ class _EventBlock extends ConsumerStatefulWidget {
 }
 
 class _EventBlockState extends ConsumerState<_EventBlock> {
-  /// Смещение блока под пальцем. Пока тянут, событие в базе не трогаем:
-  /// правка на каждый кадр — это сотня записей за один жест.
-  double _drag = 0;
+  /// Смещение пальца от точки, с которой начали тащить. Пока тянут, событие
+  /// в базе не трогаем: правка на каждый кадр — это сотня записей за жест.
+  double _pointerDy = 0;
+
+  /// Прокрутка сетки на момент последнего движения пальца. Пока палец стоит
+  /// у края, сетка едет сама, и блок обязан ехать вместе с ней — иначе он
+  /// остаётся на месте, а время под ним меняется.
+  double _scrollMark = 0;
+  double _scrolled = 0;
 
   /// Прибавка к высоте, когда тянут за нижний край.
   double _stretch = 0;
 
   bool _dragging = false;
+  GridScroll? _grid;
 
   /// Шаг сетки. Пятнадцать минут — то, чем человек мыслит расписание;
   /// попытки ставить встречу на 10:07 обычно означают промах пальцем.
@@ -272,9 +280,43 @@ class _EventBlockState extends ConsumerState<_EventBlock> {
   double _snap(double value) =>
       (value / _stepPixels).round() * _stepPixels;
 
+  /// Куда блок уехал с начала жеста: пальцем и вместе с сеткой.
+  double get _drag => _snap(_pointerDy + _scrolled);
+
   Duration _minutesOf(double pixels) => Duration(
         minutes: (pixels / ClockView.hourHeight * 60).round(),
       );
+
+  void _onScroll() {
+    if (!mounted) return;
+    setState(() => _scrolled = (_grid?.offset ?? _scrollMark) - _scrollMark);
+    _publishDrag();
+  }
+
+  /// Куда блок метит прямо сейчас. Сосед под этим временем подсветится сам.
+  void _publishDrag() {
+    final grid = _grid;
+    if (grid == null) return;
+    final e = widget.placed.event;
+    final shift = _minutesOf(_drag);
+    grid.drag.value = GridDrag(
+      eventId: e.id,
+      start: e.start.add(shift),
+      end: e.end.add(shift),
+    );
+  }
+
+  void _releaseGrid() {
+    _grid?.onPointer(null);
+    _grid?.drag.value = null;
+    _grid?.controller.removeListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _releaseGrid();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -308,6 +350,7 @@ class _EventBlockState extends ConsumerState<_EventBlock> {
     final canDrag = widget.onMoved != null;
 
     return Positioned(
+      key: ValueKey('block-${e.id}'),
       left: gutter + 10 + placed.lane * laneWidth,
       width: laneWidth - (placed.lanes > 1 ? 6 : 0),
       // Пока блок под пальцем, он живёт своим смещением: правка в базу на
@@ -321,32 +364,64 @@ class _EventBlockState extends ConsumerState<_EventBlock> {
         // Перетаскивание начинается только после долгого нажатия: иначе
         // прокрутка дня превращалась бы в случайные переносы.
         onLongPressStart: canDrag
-            ? (_) {
+            ? (details) {
                 HapticFeedback.mediumImpact();
+                _grid = GridScroll.of(context);
+                _scrollMark = _grid?.offset ?? 0;
+                _scrolled = 0;
+                _pointerDy = 0;
+                _grid?.controller.addListener(_onScroll);
+                _grid?.onPointer(details.globalPosition.dy);
+                _publishDrag();
                 setState(() => _dragging = true);
               }
             : null,
         onLongPressMoveUpdate: canDrag
             ? (details) {
-                final next = _snap(details.localOffsetFromOrigin.dy);
-                if (next == _drag) return;
+                // Палец у края сетки разгоняет её саму.
+                _grid?.onPointer(details.globalPosition.dy);
+                final previous = _drag;
+                // Локальное смещение уже включает уехавшую сетку — блок
+                // двигался вместе с ней. Метку сбрасываем, иначе прокрутка
+                // засчитается дважды.
+                _pointerDy = details.localOffsetFromOrigin.dy;
+                _scrollMark = _grid?.offset ?? _scrollMark;
+                _scrolled = 0;
+                if (_drag == previous) return;
+                _publishDrag();
                 // Щелчок на каждом делении: палец чувствует сетку, даже
                 // когда смотрит не на неё.
                 HapticFeedback.selectionClick();
-                setState(() => _drag = next);
+                setState(() {});
               }
             : null,
         onLongPressEnd: canDrag
             ? (_) {
                 final shift = _minutesOf(_drag);
+                _releaseGrid();
+                _grid = null;
                 setState(() {
-                  _drag = 0;
+                  _pointerDy = 0;
+                  _scrolled = 0;
                   _dragging = false;
                 });
                 if (shift.inMinutes != 0) widget.onMoved!(e, shift);
               }
             : null,
-        child: Container(
+        child: GridClashSkin(
+          span: VEventSpan(
+            id: e.id,
+            start: e.start,
+            end: e.end,
+            isMultiDay: e.isMultiDay,
+          ),
+          builder: (clash) {
+        final scheme = Theme.of(context).colorScheme;
+        // Блок, в который метят, красится тоном ошибки целиком: обводки и
+        // свечения в приложении нет, выделять нечем, кроме заливки.
+        final fill = clash ? scheme.errorContainer : ink.background;
+        final mark = clash ? scheme.onErrorContainer : ink.foreground;
+        return Container(
           // В поделённой колонке горизонтальные отступы режем: иначе название
           // обрывается там, где оно ещё помещалось.
           padding: EdgeInsets.symmetric(
@@ -356,7 +431,7 @@ class _EventBlockState extends ConsumerState<_EventBlock> {
           decoration: ShapeDecoration(
             // Оторванный блок светлеет и приподнимается тоном: теней в
             // приложении нет, глубина строится заливкой.
-            color: _dragging ? ink.foreground.withValues(alpha: 0.22) : ink.background,
+            color: _dragging ? ink.foreground.withValues(alpha: 0.22) : fill,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(22)),
             ),
@@ -406,7 +481,7 @@ class _EventBlockState extends ConsumerState<_EventBlock> {
                 ? CrossAxisAlignment.center
                 : CrossAxisAlignment.start,
             children: [
-              Icon(VehaIcons.byName(icon), size: 19, color: ink.foreground),
+              Icon(VehaIcons.byName(icon), size: 19, color: mark),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
@@ -424,7 +499,7 @@ class _EventBlockState extends ConsumerState<_EventBlock> {
                         height: 1.2,
                         letterSpacing: -0.14,
                         fontWeight: FontWeight.w600,
-                        color: ink.foreground,
+                        color: mark,
                       ),
                     ),
                     if (!tight)
@@ -438,7 +513,7 @@ class _EventBlockState extends ConsumerState<_EventBlock> {
                             fontFamily: AppFonts.body,
                             fontSize: 11,
                             fontWeight: FontWeight.w500,
-                            color: ink.foreground.withValues(alpha: 0.85),
+                            color: mark.withValues(alpha: 0.85),
                             fontFeatures: const [FontFeature.tabularFigures()],
                           ),
                         ),
@@ -450,6 +525,8 @@ class _EventBlockState extends ConsumerState<_EventBlock> {
           ),
             ],
           ),
+        );
+          },
         ),
       ),
     );
