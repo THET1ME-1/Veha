@@ -18,6 +18,7 @@ class CalendarDraft {
     this.deleted = false,
     this.defaultReminders,
     this.defaultDuration,
+    this.shared = false,
   });
 
   const CalendarDraft.deleted()
@@ -26,10 +27,15 @@ class CalendarDraft {
         color = VehaBrand.seed,
         deleted = true,
         defaultReminders = null,
-        defaultDuration = null;
+        defaultDuration = null,
+        shared = false;
 
   final String name;
   final String iconName;
+
+  /// Уезжает ли календарь на сервер. Личные не покидают устройство — это
+  /// первый из необсуждаемых принципов, и решает его человек здесь.
+  final bool shared;
   final Color color;
   final bool deleted;
 
@@ -54,6 +60,8 @@ Future<CalendarDraft?> askCalendarDraft(
   List<int>? defaultReminders,
   Duration? defaultDuration,
   bool withDefaults = false,
+  bool shared = false,
+  bool canShare = false,
 }) {
   return showModalBottomSheet<CalendarDraft>(
     context: context,
@@ -72,6 +80,8 @@ Future<CalendarDraft?> askCalendarDraft(
         defaultReminders: defaultReminders,
         defaultDuration: defaultDuration,
         withDefaults: withDefaults,
+        shared: shared,
+        canShare: canShare,
       ),
     ),
   );
@@ -89,6 +99,8 @@ class _CalendarEditorSheet extends StatefulWidget {
     required this.defaultReminders,
     required this.defaultDuration,
     required this.withDefaults,
+    required this.shared,
+    required this.canShare,
   });
 
   final String title;
@@ -104,6 +116,13 @@ class _CalendarEditorSheet extends StatefulWidget {
   /// У ветки своих значений по умолчанию нет: они живут на календаре.
   final bool withDefaults;
 
+  /// Уезжает ли календарь на сервер сейчас.
+  final bool shared;
+
+  /// Есть ли куда уезжать. Без подключённого сервера переключатель обещал бы
+  /// то, чего нет, и только путал.
+  final bool canShare;
+
   @override
   State<_CalendarEditorSheet> createState() => _CalendarEditorSheetState();
 }
@@ -115,6 +134,7 @@ class _CalendarEditorSheetState extends State<_CalendarEditorSheet> {
   late Color? _color = widget.color;
   late List<int> _reminders = [...(widget.defaultReminders ?? const [30])];
   late Duration? _duration = widget.defaultDuration;
+  late bool _shared = widget.shared;
 
   @override
   void dispose() {
@@ -241,6 +261,33 @@ class _CalendarEditorSheetState extends State<_CalendarEditorSheet> {
                 ],
               ),
             ),
+          // Личные календари не покидают устройство: наверх уходит только
+          // помеченное здесь. Переключатель показывается лишь при
+          // подключённом сервере — иначе он обещает то, чего нет.
+          if (widget.canShare)
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: VehaInsets.screen, vertical: 4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  VBlockCap(l.calendarSharing),
+                  VBlock(children: [
+                    VRow(
+                      icon: 'cloud',
+                      label: l.calendarShared,
+                      value: _shared
+                          ? l.calendarSharedOn
+                          : l.calendarSharedOff,
+                      trailing: VSwitch(
+                        value: _shared,
+                        onChanged: (v) => setState(() => _shared = v),
+                      ),
+                    ),
+                  ]),
+                ],
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.fromLTRB(
                 VehaInsets.screen, 18, VehaInsets.screen, 14),
@@ -267,6 +314,7 @@ class _CalendarEditorSheetState extends State<_CalendarEditorSheet> {
                               color: _color ?? widget.inheritedColor,
                               defaultReminders: _reminders,
                               defaultDuration: _duration,
+                              shared: _shared,
                             ),
                           ),
                   icon: Icon(VehaIcons.byName('check'), size: 18),

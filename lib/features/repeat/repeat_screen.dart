@@ -27,13 +27,17 @@ class RepeatScreen extends StatefulWidget {
 class _RepeatScreenState extends State<RepeatScreen> {
   late RepeatRule _rule = RepeatRule.parse(widget.initial, widget.from);
 
-  /// Единицы шага повторения. Функция, а не константа: слова приходят из
-  /// словаря, а он знает язык только через контекст.
-  static Map<RepeatUnit, String> _units(L l) => {
-        RepeatUnit.day: l.unitDays,
-        RepeatUnit.week: l.unitWeeks,
-        RepeatUnit.month: l.unitMonths,
-        RepeatUnit.year: l.unitYears,
+  /// Частота одной фразой: «каждую неделю», «каждые 3 месяца».
+  ///
+  /// Собирать её из числа и слова нельзя: в русском три формы множественного
+  /// числа, и склейка выдавала «1 недели». Формы живут в словаре, по одной на
+  /// язык — там же, где о них знают.
+  static String _howOften(L l, RepeatUnit unit, int interval) => switch (unit) {
+        RepeatUnit.day => l.everyDays(interval),
+        RepeatUnit.week => l.everyWeeks(interval),
+        RepeatUnit.month => l.everyMonths(interval),
+        RepeatUnit.year => l.everyYears(interval),
+        RepeatUnit.none => '',
       };
 
   @override
@@ -121,7 +125,10 @@ class _RepeatScreenState extends State<RepeatScreen> {
               VBlock(children: [
                 _EveryRow(
                   value: _rule.interval,
-                  unit: _units(L.of(context))[_rule.unit] ?? '',
+                  // Готовая фраза вместо склейки «1» и «недели»: в русском
+                  // число меняет форму слова, и склейка давала «1 недели».
+                  text: _howOften(L.of(context), _rule.unit, _rule.interval),
+                  label: L.of(context).repeatHowOften,
                   onChanged: (v) =>
                       setState(() => _rule = _rule.copyWith(interval: v)),
                 ),
@@ -147,6 +154,18 @@ class _RepeatScreenState extends State<RepeatScreen> {
                     }),
                   ),
                 ],
+                // Месяц без этого выбора описывает только «27-го числа»:
+                // расписание занятий и последний рабочий день так не задать,
+                // а без них календарь не покрывает и половины реальных рядов.
+                if (_rule.unit == RepeatUnit.month) ...[
+                  const VSep(inset: 15),
+                  _MonthRules(
+                    from: widget.from,
+                    value: _rule.monthRule,
+                    onChanged: (v) =>
+                        setState(() => _rule = _rule.copyWith(monthRule: v)),
+                  ),
+                ],
               ]),
               VBlockCap(L.of(context).repeatEndsWhen),
               VBlock(children: [
@@ -159,7 +178,10 @@ class _RepeatScreenState extends State<RepeatScreen> {
                 const VSep(inset: 15),
                 VOption(
                   title: L.of(context).repeatAfterSome,
-                  subtitle: _rule.count == null ? null : '${_rule.count} ${L.of(context).repeatTimes}',
+                  // Число видно и до выбора: «после нескольких повторов» не
+                  // говорит, скольких именно, и человек жмёт наугад.
+                  subtitle:
+                      '${_rule.count ?? 10} ${L.of(context).repeatTimes}',
                   selected: _rule.count != null,
                   onTap: () => setState(() =>
                       _rule = _rule.copyWith(count: _rule.count ?? 10, until: null)),
@@ -168,7 +190,7 @@ class _RepeatScreenState extends State<RepeatScreen> {
                   const VSep(inset: 15),
                   _EveryRow(
                     value: _rule.count!,
-                    unit: L.of(context).repeatTimes,
+                    text: '${_rule.count} ${L.of(context).repeatTimes}',
                     label: L.of(context).repeatCountLabel,
                     onChanged: (v) =>
                         setState(() => _rule = _rule.copyWith(count: v)),
@@ -314,13 +336,15 @@ class _Preset extends StatelessWidget {
 class _EveryRow extends StatelessWidget {
   const _EveryRow({
     required this.value,
-    required this.unit,
+    required this.text,
     required this.onChanged,
     this.label,
   });
 
   final int value;
-  final String unit;
+
+  /// Готовая фраза: «каждые 2 недели», «10 раз».
+  final String text;
 
   /// Подпись строки. `null` — «Каждые» из словаря.
   final String? label;
@@ -348,7 +372,7 @@ class _EveryRow extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '$value $unit',
+                  text[0].toUpperCase() + text.substring(1),
                   style: TextStyle(
                     fontFamily: AppFonts.body,
                     fontSize: 14.5,
@@ -359,14 +383,17 @@ class _EveryRow extends StatelessWidget {
               ],
             ),
           ),
+          // Минус слева от плюса: пара шаговых кнопок читается как ось, и
+          // убывание слева — то, чего ждёт рука. Раньше на месте минуса стояла
+          // стрелка «отменить» — она обещала откат правки, а не шаг вниз.
           _Step(
-            icon: 'add',
-            onTap: value < 99 ? () => onChanged(value + 1) : null,
+            icon: 'remove',
+            onTap: value > 1 ? () => onChanged(value - 1) : null,
           ),
           const SizedBox(width: 8),
           _Step(
-            icon: 'undo',
-            onTap: value > 1 ? () => onChanged(value - 1) : null,
+            icon: 'add',
+            onTap: value < 99 ? () => onChanged(value + 1) : null,
           ),
         ],
       ),
@@ -431,6 +458,82 @@ class _UnitRow extends StatelessWidget {
               selected: value == entry.key,
               onTap: () => onChanged(entry.key),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Чем месяц отмеряет дату повтора.
+///
+/// Подписи конкретные, а не «По числу» и «По позиции»: человек выбирает не
+/// разновидность правила, а свой случай — «27-го числа» либо «второй вторник».
+/// Число и день недели берутся из самого события, поэтому читать нечего.
+class _MonthRules extends StatelessWidget {
+  const _MonthRules({
+    required this.from,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final DateTime from;
+  final MonthRule value;
+  final ValueChanged<MonthRule> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = L.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+
+    // Падеж порядкового зависит от рода дня недели: «второй вторник», но
+    // «вторая пятница». Списки уже собраны для подписи правила в карточке.
+    final ordinals = switch (RepeatRule.weekPosition(from)) {
+      -1 => l.ordinalLast,
+      1 => l.ordinal1,
+      2 => l.ordinal2,
+      3 => l.ordinal3,
+      _ => l.ordinal4,
+    }
+        .split(',');
+    final weekday = DateFormat.EEEE(locale).format(from).toLowerCase();
+    final position = '${ordinals[from.weekday - 1]} $weekday';
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15, 4, 15, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l.monthRuleTitle,
+            style: TextStyle(
+              fontFamily: AppFonts.body,
+              fontSize: 11.5,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 7),
+          Wrap(
+            spacing: 7,
+            runSpacing: 7,
+            children: [
+              _Preset(
+                label: l.monthOnDay(from.day),
+                selected: value == MonthRule.byDate,
+                onTap: () => onChanged(MonthRule.byDate),
+              ),
+              _Preset(
+                label: position[0].toUpperCase() + position.substring(1),
+                selected: value == MonthRule.byWeekday,
+                onTap: () => onChanged(MonthRule.byWeekday),
+              ),
+              _Preset(
+                label: l.monthLastWorkday,
+                selected: value == MonthRule.lastWorkday,
+                onTap: () => onChanged(MonthRule.lastWorkday),
+              ),
+            ],
+          ),
         ],
       ),
     );

@@ -49,7 +49,13 @@ List<TimeSlot> freeSlots(
 
   final busy = [
     for (final e in events)
-      if (!e.isMultiDay && e.end.isAfter(cursor) && e.busyFrom.isBefore(end)) e,
+      // Событие, помеченное «свободен», стоит в календаре отметкой и часов
+      // не держит: день рождения не мешает назначить встречу.
+      if (e.availability == Availability.busy &&
+          !e.isMultiDay &&
+          e.end.isAfter(cursor) &&
+          e.busyFrom.isBefore(end))
+        e,
   ]..sort((a, b) => a.busyFrom.compareTo(b.busyFrom));
 
   final slots = <TimeSlot>[];

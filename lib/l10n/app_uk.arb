@@ -1921,5 +1921,130 @@
         "type": "String"
       }
     }
+  },
+  "storageFailed": "Календар не відкрився. Перезапустіть застосунок",
+  "@storageFailed": {
+    "description": "storageFailed"
+  },
+  "storageRetry": "Повторити",
+  "@storageRetry": {
+    "description": "storageRetry"
+  },
+  "hiddenCalendarWarning": "Подія в прихованому календарі — у сітці її не видно",
+  "@hiddenCalendarWarning": {
+    "description": "hiddenCalendarWarning"
+  },
+  "hiddenCalendarShow": "Показати",
+  "@hiddenCalendarShow": {
+    "description": "hiddenCalendarShow"
+  },
+  "previewMore": "Ще",
+  "@previewMore": {
+    "description": "previewMore"
+  },
+  "monthOnDay": "{day}-го числа",
+  "@monthOnDay": {
+    "description": "monthOnDay",
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "monthLastWorkday": "Останній робочий день",
+  "@monthLastWorkday": {
+    "description": "monthLastWorkday"
+  },
+  "monthRuleTitle": "Чим міряємо місяць",
+  "@monthRuleTitle": {
+    "description": "monthRuleTitle"
+  },
+  "everyDays": "{count, plural, one{щодня} few{кожні {count} дні} many{кожні {count} днів} other{кожні {count} дня}}",
+  "@everyDays": {
+    "description": "everyDays",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "everyWeeks": "{count, plural, one{щотижня} few{кожні {count} тижні} many{кожні {count} тижнів} other{кожні {count} тижня}}",
+  "@everyWeeks": {
+    "description": "everyWeeks",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "everyMonths": "{count, plural, one{щомісяця} few{кожні {count} місяці} many{кожні {count} місяців} other{кожні {count} місяця}}",
+  "@everyMonths": {
+    "description": "everyMonths",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "everyYears": "{count, plural, one{щороку} few{кожні {count} роки} many{кожні {count} років} other{кожні {count} року}}",
+  "@everyYears": {
+    "description": "everyYears",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "repeatHowOften": "Як часто",
+  "@repeatHowOften": {
+    "description": "repeatHowOften"
+  },
+  "calendarSharing": "Що йде на сервер",
+  "@calendarSharing": {
+    "description": "calendarSharing"
+  },
+  "calendarShared": "Спільний календар",
+  "@calendarShared": {
+    "description": "calendarShared"
+  },
+  "calendarSharedOn": "Вирушає на сервер",
+  "@calendarSharedOn": {
+    "description": "calendarSharedOn"
+  },
+  "calendarSharedOff": "Залишається на пристрої",
+  "@calendarSharedOff": {
+    "description": "calendarSharedOff"
+  },
+  "syncSharedList": "Пішло на сервер",
+  "@syncSharedList": {
+    "description": "syncSharedList"
+  },
+  "syncSharedNone": "Нічого: усе лежить на пристрої",
+  "@syncSharedNone": {
+    "description": "syncSharedNone"
+  },
+  "eventDescription": "Опис",
+  "@eventDescription": {
+    "description": "eventDescription"
+  },
+  "eventDescriptionHint": "Що взяти, про що домовились",
+  "@eventDescriptionHint": {
+    "description": "eventDescriptionHint"
+  },
+  "eventHoldsTime": "Займає час",
+  "@eventHoldsTime": {
+    "description": "eventHoldsTime"
+  },
+  "dayOpenFull": "Відкрити день",
+  "@dayOpenFull": {
+    "description": "dayOpenFull"
+  },
+  "dayEmpty": "На цей день нічого не заплановано",
+  "@dayEmpty": {
+    "description": "dayEmpty"
+  },
+  "monthDensityText": "Тільки текст",
+  "@monthDensityText": {
+    "description": "monthDensityText"
   }
 }

@@ -1921,5 +1921,130 @@
         "type": "String"
       }
     }
+  },
+  "storageFailed": "El calendario no se abrió. Reinicie la aplicación",
+  "@storageFailed": {
+    "description": "storageFailed"
+  },
+  "storageRetry": "Reintentar",
+  "@storageRetry": {
+    "description": "storageRetry"
+  },
+  "hiddenCalendarWarning": "El evento está en un calendario oculto y no se ve en la cuadrícula",
+  "@hiddenCalendarWarning": {
+    "description": "hiddenCalendarWarning"
+  },
+  "hiddenCalendarShow": "Mostrar",
+  "@hiddenCalendarShow": {
+    "description": "hiddenCalendarShow"
+  },
+  "previewMore": "Más",
+  "@previewMore": {
+    "description": "previewMore"
+  },
+  "monthOnDay": "El día {day}",
+  "@monthOnDay": {
+    "description": "monthOnDay",
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "monthLastWorkday": "Último día laborable",
+  "@monthLastWorkday": {
+    "description": "monthLastWorkday"
+  },
+  "monthRuleTitle": "Cómo se mide el mes",
+  "@monthRuleTitle": {
+    "description": "monthRuleTitle"
+  },
+  "everyDays": "{count, plural, one{cada día} other{cada {count} días}}",
+  "@everyDays": {
+    "description": "everyDays",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "everyWeeks": "{count, plural, one{cada semana} other{cada {count} semanas}}",
+  "@everyWeeks": {
+    "description": "everyWeeks",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "everyMonths": "{count, plural, one{cada mes} other{cada {count} meses}}",
+  "@everyMonths": {
+    "description": "everyMonths",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "everyYears": "{count, plural, one{cada año} other{cada {count} años}}",
+  "@everyYears": {
+    "description": "everyYears",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "repeatHowOften": "Con qué frecuencia",
+  "@repeatHowOften": {
+    "description": "repeatHowOften"
+  },
+  "calendarSharing": "Qué va al servidor",
+  "@calendarSharing": {
+    "description": "calendarSharing"
+  },
+  "calendarShared": "Calendario compartido",
+  "@calendarShared": {
+    "description": "calendarShared"
+  },
+  "calendarSharedOn": "Se envía al servidor",
+  "@calendarSharedOn": {
+    "description": "calendarSharedOn"
+  },
+  "calendarSharedOff": "Permanece en el dispositivo",
+  "@calendarSharedOff": {
+    "description": "calendarSharedOff"
+  },
+  "syncSharedList": "Enviado al servidor",
+  "@syncSharedList": {
+    "description": "syncSharedList"
+  },
+  "syncSharedNone": "Nada: todo permanece en el dispositivo",
+  "@syncSharedNone": {
+    "description": "syncSharedNone"
+  },
+  "eventDescription": "Descripción",
+  "@eventDescription": {
+    "description": "eventDescription"
+  },
+  "eventDescriptionHint": "Qué llevar, qué se acordó",
+  "@eventDescriptionHint": {
+    "description": "eventDescriptionHint"
+  },
+  "eventHoldsTime": "Ocupa tiempo",
+  "@eventHoldsTime": {
+    "description": "eventHoldsTime"
+  },
+  "dayOpenFull": "Abrir el día",
+  "@dayOpenFull": {
+    "description": "dayOpenFull"
+  },
+  "dayEmpty": "No hay nada planeado para este día",
+  "@dayEmpty": {
+    "description": "dayEmpty"
+  },
+  "monthDensityText": "Solo texto",
+  "@monthDensityText": {
+    "description": "monthDensityText"
   }
 }

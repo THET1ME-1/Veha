@@ -7,6 +7,8 @@ import '../../../core/event_colors.dart';
 import '../../../core/icon_registry.dart';
 import '../../../data/models.dart';
 import '../../../data/providers.dart';
+import '../../../data/settings.dart';
+import '../../../domain/card_fields.dart';
 import '../../../domain/time_label.dart';
 import '../widgets/auto_scroll_grid.dart';
 import '../widgets/month_header.dart';
@@ -15,7 +17,7 @@ import '../widgets/month_header.dart';
 ///
 /// Отвечает на вопрос «когда я свободен»: пустые промежутки видны, высота
 /// блока пропорциональна длительности, пересекающиеся события делят ширину.
-class ClockView extends StatelessWidget {
+class ClockView extends ConsumerWidget {
   const ClockView({
     super.key,
     required this.events,
@@ -48,21 +50,38 @@ class ClockView extends StatelessWidget {
   /// Тап по свободному часу: сюда и заводят событие, не открывая формы.
   final ValueChanged<int>? onHourTap;
 
-  /// Высота часа. Меньше 60 — короткое событие превращается в полоску,
-  /// в которую не влезает даже название.
-  static const double hourHeight = 60;
+  /// Высота часа при обычном масштабе. Меньше 60 — короткое событие
+  /// превращается в полоску, в которую не влезает даже название.
+  ///
+  /// Щипок двумя пальцами растягивает её: у кого день расписан по четвертям,
+  /// тому нужен крупный шаг, а кому важна вся картина дня — мелкий.
+  static const double baseHourHeight = 60;
+
+  /// Высота часа при заданном масштабе.
+  static double hourHeightOf(double zoom) => baseHourHeight * zoom;
   static const double _timeGutter = 42;
 
-  @override
-  Widget build(BuildContext context) {
-    if (events.isEmpty) return const SizedBox.shrink();
+  /// Окно свободного дня — те же часы, что показывает неделя.
+  ///
+  /// Пустой день раньше не рисовал вообще ничего: шкала считалась от первого
+  /// события до последнего, а без событий сетка схлопывалась в ноль высотой.
+  /// Вместе с ней пропадал и свайп — уйдя в свободный день, вернуться было
+  /// нельзя, и завести первое занятие тапом по часу тоже.
+  static const int _emptyFirstHour = 7;
+  static const int _emptyLastHour = 21;
 
-    final firstHour = events
-        .map((e) => e.start.hour)
-        .reduce((a, b) => a < b ? a : b);
-    final lastHour = events
-        .map((e) => e.end.hour + (e.end.minute > 0 ? 1 : 0))
-        .reduce((a, b) => a > b ? a : b);
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hourHeight = hourHeightOf(ref.watch(gridZoomProvider));
+
+    final firstHour = events.isEmpty
+        ? _emptyFirstHour
+        : events.map((e) => e.start.hour).reduce((a, b) => a < b ? a : b);
+    final lastHour = events.isEmpty
+        ? _emptyLastHour
+        : events
+            .map((e) => e.end.hour + (e.end.minute > 0 ? 1 : 0))
+            .reduce((a, b) => a > b ? a : b);
 
     final hours = [for (var h = firstHour; h <= lastHour; h++) h];
     final height = hours.length * hourHeight;
@@ -91,6 +110,7 @@ class ClockView extends StatelessWidget {
                     top: i * hourHeight,
                     stripe: i.isEven,
                     gutter: _timeGutter,
+                    hourHeight: hourHeight,
                     onTap: onHourTap == null
                         ? null
                         : () => onHourTap!(hours[i]),
@@ -100,6 +120,7 @@ class ClockView extends StatelessWidget {
                     placed: placed,
                     firstHour: firstHour,
                     gutter: _timeGutter,
+                    hourHeight: hourHeight,
                     laneWidth: laneArea / placed.lanes,
                     color: inheritance.colorOfEvent(placed.event),
                     icon: inheritance.iconOfEvent(placed.event),
@@ -172,6 +193,7 @@ class _HourRow extends StatelessWidget {
     required this.top,
     required this.stripe,
     required this.gutter,
+    required this.hourHeight,
     this.onTap,
   });
 
@@ -179,6 +201,7 @@ class _HourRow extends StatelessWidget {
   final double top;
   final bool stripe;
   final double gutter;
+  final double hourHeight;
   final VoidCallback? onTap;
 
   @override
@@ -188,7 +211,7 @@ class _HourRow extends StatelessWidget {
       left: 0,
       right: 0,
       top: top,
-      height: ClockView.hourHeight,
+      height: hourHeight,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -237,6 +260,7 @@ class _EventBlock extends ConsumerStatefulWidget {
     required this.placed,
     required this.firstHour,
     required this.gutter,
+    required this.hourHeight,
     required this.laneWidth,
     required this.color,
     required this.icon,
@@ -250,6 +274,10 @@ class _EventBlock extends ConsumerStatefulWidget {
   final _Placed placed;
   final int firstHour;
   final double gutter;
+
+  /// Высота часа с учётом масштаба: щипок растягивает сетку, и блок обязан
+  /// растягиваться вместе с ней.
+  final double hourHeight;
   final double laneWidth;
   final Color color;
   final String icon;
@@ -283,8 +311,7 @@ class _EventBlockState extends ConsumerState<_EventBlock> {
   /// Шаг сетки. Пятнадцать минут — то, чем человек мыслит расписание;
   /// попытки ставить встречу на 10:07 обычно означают промах пальцем.
   static const int _stepMinutes = 15;
-  static double get _stepPixels =>
-      ClockView.hourHeight * _stepMinutes / 60;
+  double get _stepPixels => widget.hourHeight * _stepMinutes / 60;
 
   double _snap(double value) =>
       (value / _stepPixels).round() * _stepPixels;
@@ -293,7 +320,7 @@ class _EventBlockState extends ConsumerState<_EventBlock> {
   double get _drag => _snap(_pointerDy + _scrolled);
 
   Duration _minutesOf(double pixels) => Duration(
-        minutes: (pixels / ClockView.hourHeight * 60).round(),
+        minutes: (pixels / widget.hourHeight * 60).round(),
       );
 
   void _onScroll() {
@@ -343,15 +370,15 @@ class _EventBlockState extends ConsumerState<_EventBlock> {
     final ink = EventColors.of(color, Theme.of(context).brightness);
 
     final top =
-        (e.start.hour - firstHour) * ClockView.hourHeight +
-        e.start.minute / 60 * ClockView.hourHeight;
+        (e.start.hour - firstHour) * widget.hourHeight +
+        e.start.minute / 60 * widget.hourHeight;
     // Нижняя граница — не «покрасивее», а чтобы название события помещалось
     // целиком: в 26 логических пикселей строка 14-го кегля уже не влезает.
     // Событие без окончания — исключение: оно полоска в четверть шага сетки,
     // иначе минимальная высота съедала бы полчаса чужого времени.
     final height = e.isOpenEnded
         ? 26.0
-        : (e.duration.inMinutes / 60 * ClockView.hourHeight).clamp(
+        : (e.duration.inMinutes / 60 * widget.hourHeight).clamp(
             32.0,
             1000.0,
           );
@@ -375,7 +402,11 @@ class _EventBlockState extends ConsumerState<_EventBlock> {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
-        onLongPress: onLongPress,
+        // Долгое нажатие принадлежит перетаскиванию, когда блок можно тащить:
+        // меню, открытое тем же жестом, всплывало поверх и отбирало палец —
+        // сдвинуть событие становилось невозможно. Действия события никуда не
+        // делись, они в превью по тапу.
+        onLongPress: canDrag ? null : onLongPress,
         // Перетаскивание начинается только после долгого нажатия: иначе
         // прокрутка дня превращалась бы в случайные переносы.
         onLongPressStart: canDrag
@@ -569,11 +600,11 @@ class _EventBlockState extends ConsumerState<_EventBlock> {
     VEvent e,
     Map<String, VFieldDef> defs,
   ) {
-    final field = e.fields.firstOrNull;
-    if (field != null) {
-      final def = defs[field.fieldId];
-      if (def != null && def.showInCard) return field.value;
-    }
+    // В блок помещается одна строка, поэтому берётся первое из отмеченных, а
+    // не первое попавшееся: у события с заметкой для себя и кабинетом раньше
+    // показывалась заметка.
+    final shown = cardFields(e, defs, limit: 1);
+    if (shown.isNotEmpty) return shown.first.value;
     return eventTimeLabel(context, e);
   }
 }

@@ -8,6 +8,7 @@ import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
+import '../../data/settings.dart';
 import '../calendar/widgets/month_header.dart';
 import '../common/blocks.dart';
 import 'calendar_editor_sheet.dart';
@@ -128,6 +129,8 @@ class CalendarsScreen extends ConsumerWidget {
       withDefaults: true,
       defaultReminders: calendar.defaultReminders,
       defaultDuration: calendar.defaultDuration,
+      shared: calendar.isShared,
+      canShare: ref.read(syncSettingsProvider).connected,
     );
     if (draft == null) return;
 
@@ -141,10 +144,17 @@ class CalendarsScreen extends ConsumerWidget {
         iconName: draft.iconName,
         color: draft.color,
         isVisible: calendar.isVisible,
+        isShared: calendar.isShared,
         sortOrder: calendar.sortOrder,
         defaultReminders: draft.defaultReminders,
         defaultDuration: draft.defaultDuration,
       ));
+      // Пометка едет отдельным вызовом: включение уносит наверх и прошлое
+      // календаря, выключение вычищает очередь — это не поле формы, а
+      // действие.
+      if (draft.shared != calendar.isShared) {
+        await repo.setCalendarShared(calendar.id, draft.shared);
+      }
     }
   }
 

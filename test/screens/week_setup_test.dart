@@ -17,7 +17,7 @@ void main() {
   }
 
   int columnsOf(WidgetTester tester) =>
-      tester.widget<WeekView>(find.byType(WeekView)).week.length;
+      tester.widget<WeekView>(find.byType(WeekView)).columns;
 
   testWidgets('По умолчанию неделя из семи колонок', (tester) async {
     await openWeek(tester);

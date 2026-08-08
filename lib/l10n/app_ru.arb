@@ -2009,5 +2009,130 @@
         "type": "String"
       }
     }
+  },
+  "storageFailed": "Календарь не открылся. Перезапустите приложение",
+  "@storageFailed": {
+    "description": "storageFailed"
+  },
+  "storageRetry": "Повторить",
+  "@storageRetry": {
+    "description": "storageRetry"
+  },
+  "hiddenCalendarWarning": "Событие в скрытом календаре — в сетке его не видно",
+  "@hiddenCalendarWarning": {
+    "description": "hiddenCalendarWarning"
+  },
+  "hiddenCalendarShow": "Показать",
+  "@hiddenCalendarShow": {
+    "description": "hiddenCalendarShow"
+  },
+  "previewMore": "Ещё",
+  "@previewMore": {
+    "description": "previewMore"
+  },
+  "monthOnDay": "{day}-го числа",
+  "@monthOnDay": {
+    "description": "monthOnDay",
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "monthLastWorkday": "Последний рабочий день",
+  "@monthLastWorkday": {
+    "description": "monthLastWorkday"
+  },
+  "monthRuleTitle": "Чем меряем месяц",
+  "@monthRuleTitle": {
+    "description": "monthRuleTitle"
+  },
+  "everyDays": "{count, plural, one{каждый день} few{каждые {count} дня} many{каждые {count} дней} other{каждые {count} дня}}",
+  "@everyDays": {
+    "description": "everyDays",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "everyWeeks": "{count, plural, one{каждую неделю} few{каждые {count} недели} many{каждые {count} недель} other{каждые {count} недели}}",
+  "@everyWeeks": {
+    "description": "everyWeeks",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "everyMonths": "{count, plural, one{каждый месяц} few{каждые {count} месяца} many{каждые {count} месяцев} other{каждые {count} месяца}}",
+  "@everyMonths": {
+    "description": "everyMonths",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "everyYears": "{count, plural, one{каждый год} few{каждые {count} года} many{каждые {count} лет} other{каждые {count} года}}",
+  "@everyYears": {
+    "description": "everyYears",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "repeatHowOften": "Как часто",
+  "@repeatHowOften": {
+    "description": "repeatHowOften"
+  },
+  "calendarSharing": "Что уходит на сервер",
+  "@calendarSharing": {
+    "description": "calendarSharing"
+  },
+  "calendarShared": "Общий календарь",
+  "@calendarShared": {
+    "description": "calendarShared"
+  },
+  "calendarSharedOn": "Уезжает на сервер",
+  "@calendarSharedOn": {
+    "description": "calendarSharedOn"
+  },
+  "calendarSharedOff": "Остаётся на устройстве",
+  "@calendarSharedOff": {
+    "description": "calendarSharedOff"
+  },
+  "syncSharedList": "Ушло на сервер",
+  "@syncSharedList": {
+    "description": "syncSharedList"
+  },
+  "syncSharedNone": "Ничего: всё лежит на устройстве",
+  "@syncSharedNone": {
+    "description": "syncSharedNone"
+  },
+  "eventDescription": "Описание",
+  "@eventDescription": {
+    "description": "eventDescription"
+  },
+  "eventDescriptionHint": "Что взять, о чём договорились",
+  "@eventDescriptionHint": {
+    "description": "eventDescriptionHint"
+  },
+  "eventHoldsTime": "Занимает время",
+  "@eventHoldsTime": {
+    "description": "eventHoldsTime"
+  },
+  "dayOpenFull": "Открыть день",
+  "@dayOpenFull": {
+    "description": "dayOpenFull"
+  },
+  "dayEmpty": "В этот день ничего не запланировано",
+  "@dayEmpty": {
+    "description": "dayEmpty"
+  },
+  "monthDensityText": "Только текст",
+  "@monthDensityText": {
+    "description": "monthDensityText"
   }
 }

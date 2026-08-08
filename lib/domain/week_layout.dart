@@ -42,6 +42,29 @@ class WeekLayout {
     return days;
   }
 
+  /// Окно из подряд идущих дней, начиная с [from].
+  ///
+  /// Отличается от [daysOf] тем, что не привязано к календарной неделе:
+  /// человек, листающий на два дня назад, должен увидеть конец прошлой недели
+  /// рядом с началом этой, а не перескочить неделю целиком.
+  List<DateTime> window(DateTime from) {
+    final start = DateTime(from.year, from.month, from.day);
+    final out = <DateTime>[];
+    var cursor = start;
+    // Столько колонок, сколько дней человек оставил в раскладке: у сменного
+    // графика это три дня, у студента — пять.
+    var guard = 0;
+    while (out.length < weekdays.length && guard < 21) {
+      if (weekdays.contains(cursor.weekday)) out.add(cursor);
+      cursor = cursor.add(const Duration(days: 1));
+      guard++;
+    }
+    return out;
+  }
+
+  /// Начало календарной недели, в которую попадает [day].
+  DateTime weekStart(DateTime day) => _weekStart(day);
+
   DateTime _weekStart(DateTime day) {
     final date = DateTime(day.year, day.month, day.day);
     final shift = (date.weekday - firstDay + 7) % 7;

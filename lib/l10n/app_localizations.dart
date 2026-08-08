@@ -2608,6 +2608,156 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'Выходить в {time}'**
   String travelLeaveAt(String time);
+
+  /// storageFailed
+  ///
+  /// In ru, this message translates to:
+  /// **'Календарь не открылся. Перезапустите приложение'**
+  String get storageFailed;
+
+  /// storageRetry
+  ///
+  /// In ru, this message translates to:
+  /// **'Повторить'**
+  String get storageRetry;
+
+  /// hiddenCalendarWarning
+  ///
+  /// In ru, this message translates to:
+  /// **'Событие в скрытом календаре — в сетке его не видно'**
+  String get hiddenCalendarWarning;
+
+  /// hiddenCalendarShow
+  ///
+  /// In ru, this message translates to:
+  /// **'Показать'**
+  String get hiddenCalendarShow;
+
+  /// previewMore
+  ///
+  /// In ru, this message translates to:
+  /// **'Ещё'**
+  String get previewMore;
+
+  /// monthOnDay
+  ///
+  /// In ru, this message translates to:
+  /// **'{day}-го числа'**
+  String monthOnDay(int day);
+
+  /// monthLastWorkday
+  ///
+  /// In ru, this message translates to:
+  /// **'Последний рабочий день'**
+  String get monthLastWorkday;
+
+  /// monthRuleTitle
+  ///
+  /// In ru, this message translates to:
+  /// **'Чем меряем месяц'**
+  String get monthRuleTitle;
+
+  /// everyDays
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{каждый день} few{каждые {count} дня} many{каждые {count} дней} other{каждые {count} дня}}'**
+  String everyDays(int count);
+
+  /// everyWeeks
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{каждую неделю} few{каждые {count} недели} many{каждые {count} недель} other{каждые {count} недели}}'**
+  String everyWeeks(int count);
+
+  /// everyMonths
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{каждый месяц} few{каждые {count} месяца} many{каждые {count} месяцев} other{каждые {count} месяца}}'**
+  String everyMonths(int count);
+
+  /// everyYears
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{каждый год} few{каждые {count} года} many{каждые {count} лет} other{каждые {count} года}}'**
+  String everyYears(int count);
+
+  /// repeatHowOften
+  ///
+  /// In ru, this message translates to:
+  /// **'Как часто'**
+  String get repeatHowOften;
+
+  /// calendarSharing
+  ///
+  /// In ru, this message translates to:
+  /// **'Что уходит на сервер'**
+  String get calendarSharing;
+
+  /// calendarShared
+  ///
+  /// In ru, this message translates to:
+  /// **'Общий календарь'**
+  String get calendarShared;
+
+  /// calendarSharedOn
+  ///
+  /// In ru, this message translates to:
+  /// **'Уезжает на сервер'**
+  String get calendarSharedOn;
+
+  /// calendarSharedOff
+  ///
+  /// In ru, this message translates to:
+  /// **'Остаётся на устройстве'**
+  String get calendarSharedOff;
+
+  /// syncSharedList
+  ///
+  /// In ru, this message translates to:
+  /// **'Ушло на сервер'**
+  String get syncSharedList;
+
+  /// syncSharedNone
+  ///
+  /// In ru, this message translates to:
+  /// **'Ничего: всё лежит на устройстве'**
+  String get syncSharedNone;
+
+  /// eventDescription
+  ///
+  /// In ru, this message translates to:
+  /// **'Описание'**
+  String get eventDescription;
+
+  /// eventDescriptionHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Что взять, о чём договорились'**
+  String get eventDescriptionHint;
+
+  /// eventHoldsTime
+  ///
+  /// In ru, this message translates to:
+  /// **'Занимает время'**
+  String get eventHoldsTime;
+
+  /// dayOpenFull
+  ///
+  /// In ru, this message translates to:
+  /// **'Открыть день'**
+  String get dayOpenFull;
+
+  /// dayEmpty
+  ///
+  /// In ru, this message translates to:
+  /// **'В этот день ничего не запланировано'**
+  String get dayEmpty;
+
+  /// monthDensityText
+  ///
+  /// In ru, this message translates to:
+  /// **'Только текст'**
+  String get monthDensityText;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

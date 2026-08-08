@@ -1466,4 +1466,114 @@ class LRo extends L {
   String travelLeaveAt(String time) {
     return 'Pleacă la $time';
   }
+
+  @override
+  String get storageFailed => 'Calendarul nu s-a deschis. Reporniți aplicația';
+
+  @override
+  String get storageRetry => 'Reîncercați';
+
+  @override
+  String get hiddenCalendarWarning =>
+      'Evenimentul este într-un calendar ascuns și nu apare în grilă';
+
+  @override
+  String get hiddenCalendarShow => 'Afișați';
+
+  @override
+  String get previewMore => 'Mai multe';
+
+  @override
+  String monthOnDay(int day) {
+    return 'În ziua $day';
+  }
+
+  @override
+  String get monthLastWorkday => 'Ultima zi lucrătoare';
+
+  @override
+  String get monthRuleTitle => 'Cum se măsoară luna';
+
+  @override
+  String everyDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'la fiecare $count zile',
+      one: 'în fiecare zi',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String everyWeeks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'la fiecare $count săptămâni',
+      one: 'în fiecare săptămână',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String everyMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'la fiecare $count luni',
+      one: 'în fiecare lună',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String everyYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'la fiecare $count ani',
+      one: 'în fiecare an',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get repeatHowOften => 'Cât de des';
+
+  @override
+  String get calendarSharing => 'Ce ajunge pe server';
+
+  @override
+  String get calendarShared => 'Calendar partajat';
+
+  @override
+  String get calendarSharedOn => 'Pleacă pe server';
+
+  @override
+  String get calendarSharedOff => 'Rămâne pe dispozitiv';
+
+  @override
+  String get syncSharedList => 'Trimis pe server';
+
+  @override
+  String get syncSharedNone => 'Nimic: totul rămâne pe dispozitiv';
+
+  @override
+  String get eventDescription => 'Descriere';
+
+  @override
+  String get eventDescriptionHint => 'Ce să luați, ce s-a stabilit';
+
+  @override
+  String get eventHoldsTime => 'Ocupă timp';
+
+  @override
+  String get dayOpenFull => 'Deschideți ziua';
+
+  @override
+  String get dayEmpty => 'Nimic planificat pentru această zi';
+
+  @override
+  String get monthDensityText => 'Doar text';
 }

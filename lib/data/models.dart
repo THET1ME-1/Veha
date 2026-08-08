@@ -11,6 +11,7 @@ class VCalendar {
     required this.iconName,
     required this.color,
     this.isVisible = true,
+    this.isShared = false,
     this.sortOrder = 0,
     this.defaultReminders,
     this.defaultDuration,
@@ -21,6 +22,10 @@ class VCalendar {
   final String iconName;
   final Color color;
   final bool isVisible;
+
+  /// Уехал ли календарь на сервер. Личные не покидают устройство, и человек
+  /// должен видеть, какие именно ушли, — это первый из принципов ТЗ.
+  final bool isShared;
   final int sortOrder;
 
   /// Напоминания по умолчанию, минуты до начала.
@@ -74,6 +79,19 @@ class VFieldValue {
   int get hashCode => Object.hash(fieldId, value);
 }
 
+/// Держит ли событие время.
+///
+/// День рождения и напоминание о платеже стоят в календаре, но часов не
+/// занимают: свободные окна и разбор дня обязаны их пропускать, иначе у
+/// человека с такими записями день выглядит забитым.
+enum Availability {
+  /// Время занято: встреча, занятие, дорога.
+  busy,
+
+  /// Отметка в календаре, а не занятость.
+  free,
+}
+
 /// Метка «поле не передавали». Без неё `copyWith(color: null)` не отличить от
 /// «оставь как было», а стереть свой цвет события нужно уметь.
 const Object _keep = Object();
@@ -89,9 +107,11 @@ class VEvent {
     required this.start,
     required this.end,
     this.subcategoryId,
+    this.description,
     this.color,
     this.iconName,
     this.isAllDay = false,
+    this.availability = Availability.busy,
     this.rrule,
     this.recurrenceId,
     this.originalStart,
@@ -107,11 +127,20 @@ class VEvent {
   final String calendarId;
   final String? subcategoryId;
   final String title;
+
+  /// Свободный текст события: что взять с собой, о чём договорились, ссылка
+  /// на встречу. Заметки — это другое: у них свой цвет и свой список, а
+  /// описание одно и едет в `.ics` как `DESCRIPTION`.
+  final String? description;
   final DateTime start;
   final DateTime end;
   final Color? color;
   final String? iconName;
   final bool isAllDay;
+
+  /// Держит ли событие время. По умолчанию держит: так ведёт себя всё, что
+  /// человек заводит руками.
+  final Availability availability;
 
   /// Правило повторения по RFC 5545. Подпись для карточки строится из него
   /// на лету: хранить её отдельной строкой нельзя — правило поменяется,
@@ -157,11 +186,13 @@ class VEvent {
 
   VEvent copyWith({
     String? title,
+    Object? description = _keep,
     DateTime? start,
     DateTime? end,
     Object? color = _keep,
     Object? iconName = _keep,
     bool? isAllDay,
+    Availability? availability,
     Object? rrule = _keep,
     Object? location = _keep,
     int? travelMinutes,
@@ -173,11 +204,14 @@ class VEvent {
         calendarId: calendarId,
         subcategoryId: subcategoryId,
         title: title ?? this.title,
+        description:
+            description == _keep ? this.description : description as String?,
         start: start ?? this.start,
         end: end ?? this.end,
         color: color == _keep ? this.color : color as Color?,
         iconName: iconName == _keep ? this.iconName : iconName as String?,
         isAllDay: isAllDay ?? this.isAllDay,
+        availability: availability ?? this.availability,
         rrule: rrule == _keep ? this.rrule : rrule as String?,
         recurrenceId: recurrenceId,
         originalStart: originalStart,
@@ -426,6 +460,20 @@ class Inheritance {
 
   final Map<String, VCalendar> calendars;
   final Map<String, VSubcategory> subcategories;
+
+  /// Куда ложится событие, заведённое кнопкой.
+  ///
+  /// Первый видимый, а не просто первый: сетка показывает только видимые
+  /// календари, и событие, ушедшее в спрятанный, пропадает с глаз в тот же
+  /// миг, как сохранилось. Если спрятаны все, событие всё равно должно куда-то
+  /// лечь — тогда берём первый по порядку.
+  String? get defaultCalendarId {
+    if (calendars.isEmpty) return null;
+    for (final c in calendars.values) {
+      if (c.isVisible) return c.id;
+    }
+    return calendars.keys.first;
+  }
 
   Color colorOfEvent(VEvent e) {
     if (e.color != null) return e.color!;

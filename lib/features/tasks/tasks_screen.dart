@@ -7,6 +7,7 @@ import '../../core/icon_registry.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
+import '../common/morph_widgets.dart';
 import '../calendar/widgets/month_header.dart' show AppFonts;
 import '../common/blocks.dart';
 import 'task_sheet.dart';
@@ -74,21 +75,42 @@ class TasksScreen extends ConsumerWidget {
           const _Empty()
         else ...[
           if (open.isNotEmpty)
-            VBlock(children: [
-              for (var i = 0; i < open.length; i++) ...[
-                if (i > 0) const VSep(inset: 62),
-                _TaskRow(
-                  task: open[i],
-                  inheritance: inheritance,
-                  locale: locale,
-                  now: now,
-                  onToggle: () => ref
-                      .read(repositoryProvider)
-                      .setTaskDone(open[i].id, true),
-                  onTap: () => _edit(context, ref, open[i], inheritance),
-                ),
-              ],
-            ]),
+            // Список переставляется удержанием: у задач со сроком порядок
+            // задаёт срок, у бессрочных — человек, и это и есть список дел.
+            // Внутренний список не прокручивается сам — он живёт внутри общей
+            // прокрутки экрана.
+            ReorderableListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              buildDefaultDragHandles: true,
+              itemCount: open.length,
+              onReorder: (from, to) {
+                final ids = [for (final t in open) t.id];
+                final moved = ids.removeAt(from);
+                ids.insert(from < to ? to - 1 : to, moved);
+                ref.read(repositoryProvider).reorderTasks(ids);
+              },
+              proxyDecorator: (child, index, animation) => Material(
+                color: Colors.transparent,
+                child: child,
+              ),
+              itemBuilder: (context, i) => Padding(
+                key: ValueKey(open[i].id),
+                padding: const EdgeInsets.only(bottom: 4),
+                child: VBlock(children: [
+                  _TaskRow(
+                    task: open[i],
+                    inheritance: inheritance,
+                    locale: locale,
+                    now: now,
+                    onToggle: () => ref
+                        .read(repositoryProvider)
+                        .setTaskDone(open[i].id, true),
+                    onTap: () => _edit(context, ref, open[i], inheritance),
+                  ),
+                ]),
+              ),
+            ),
           if (done.isNotEmpty) ...[
             VBlockCap(l.tasksDoneSection),
             VBlock(children: [
@@ -208,14 +230,12 @@ class _TaskRow extends StatelessWidget {
             InkWell(
               onTap: onToggle,
               borderRadius: BorderRadius.circular(99),
-              child: Container(
-                width: 34,
-                height: 34,
-                alignment: Alignment.center,
-                decoration: ShapeDecoration(
-                  color: ink.background,
-                  shape: const CircleBorder(),
-                ),
+              // Морфинг фигуры при отметке — фирменная анимация, одно из трёх
+              // мест, где ей положено быть.
+              child: MorphMark(
+                done: task.isDone,
+                color: ink.background,
+                size: 34,
                 child: Icon(
                   VehaIcons.byName(
                       task.isDone ? 'check' : inheritance.iconOfTask(task)),

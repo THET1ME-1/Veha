@@ -19,7 +19,7 @@ void main() {
   setUp(() async {
     db = VehaDatabase(NativeDatabase.memory());
     repo = VehaRepository(db);
-    await repo.ensureFirstCalendar(words: SeedWords.of('ru'));
+    await repo.ensureFirstCalendar(words: SeedWords.of('ru'), id: 'default');
 
     await repo.upsertEvent(VEvent(
       id: 'series',
@@ -105,6 +105,94 @@ void main() {
         .watchRange(DateTime(2026, 7, 1), DateTime(2026, 8, 1))
         .first;
     expect(month.where((e) => e.recurrenceId == 'series'), isEmpty);
+  });
+
+  /// Выломанное занятие: человек передвинул один урок, и в базе появилась
+  /// отдельная запись с ключом ряда.
+  Future<void> breakOut(DateTime day, {required int hour}) async {
+    final instance = await occurrenceOn(day);
+    await repo.upsertEvent(VEvent(
+      id: 'moved-${day.day}',
+      calendarId: instance.calendarId,
+      title: instance.title,
+      start: DateTime(day.year, day.month, day.day, hour),
+      end: DateTime(day.year, day.month, day.day, hour + 1),
+      recurrenceId: 'series',
+      originalStart: instance.originalStart,
+    ));
+  }
+
+  test('Удаление всего ряда уносит и переставленные занятия', () async {
+    // Занятие 13 июля когда-то передвинули на вечер, 27 июля — тоже.
+    await breakOut(DateTime(2026, 7, 13), hour: 18);
+    await breakOut(DateTime(2026, 7, 27), hour: 19);
+
+    await repo.deleteSeries('series');
+
+    final month = await repo
+        .watchRange(DateTime(2026, 7, 1), DateTime(2026, 8, 1))
+        .first;
+    expect(month, isEmpty,
+        reason: '«Весь ряд» значит весь: и правило, и выломанные занятия');
+  });
+
+  test('«Вернуть» после удаления ряда поднимает и переставленные', () async {
+    await breakOut(DateTime(2026, 7, 13), hour: 18);
+
+    final removed = await repo.deleteSeries('series');
+    await repo.restoreEvents(removed);
+
+    final month = await repo
+        .watchRange(DateTime(2026, 7, 1), DateTime(2026, 8, 1))
+        .first;
+    expect(month.any((e) => e.start.day == 13 && e.start.hour == 18), isTrue,
+        reason: 'Переставленное занятие вернулось вместе с рядом');
+    expect(month.any((e) => e.recurrenceId == 'series'), isTrue,
+        reason: 'Сам ряд тоже на месте');
+  });
+
+  test('Занятие, оставшееся от удалённого ряда, всё равно удаляется', () async {
+    await breakOut(DateTime(2026, 7, 13), hour: 18);
+    // Ряд убит по-старому, одной строкой: так у людей и остались занятия,
+    // которые не брало ни одно из трёх «удалить».
+    await repo.deleteEvent('series');
+
+    await repo.deleteSeries('series');
+
+    final month = await repo
+        .watchRange(DateTime(2026, 7, 1), DateTime(2026, 8, 1))
+        .first;
+    expect(month, isEmpty, reason: 'Сирота ряда удаляется, а не живёт вечно');
+  });
+
+  test('Отмена занятия убирает и переставленную запись', () async {
+    await breakOut(DateTime(2026, 7, 13), hour: 18);
+    final instance = await occurrenceOn(DateTime(2026, 7, 13));
+
+    await repo.cancelOccurrence('series', instance.originalStart!);
+
+    final month = await repo
+        .watchRange(DateTime(2026, 7, 1), DateTime(2026, 8, 1))
+        .first;
+    expect(month.any((e) => e.start.day == 13), isFalse,
+        reason: 'Отменённое занятие не остаётся в виде переставленной записи');
+    expect(month.any((e) => e.start.day == 20), isTrue,
+        reason: 'Остальной ряд идёт дальше');
+  });
+
+  test('Обрыв ряда уносит переставленные занятия после разреза', () async {
+    await breakOut(DateTime(2026, 7, 13), hour: 18);
+    await breakOut(DateTime(2026, 7, 27), hour: 19);
+
+    await repo.trimSeriesAt('series', DateTime(2026, 7, 20, 16));
+
+    final month = await repo
+        .watchRange(DateTime(2026, 7, 1), DateTime(2026, 8, 1))
+        .first;
+    expect(month.any((e) => e.start.day == 13), isTrue,
+        reason: 'Прошедшее остаётся: человек его прожил');
+    expect(month.any((e) => e.start.day == 27), isFalse,
+        reason: 'После разреза не остаётся ни занятий, ни их переносов');
   });
 
   test('Отмена одного занятия ряд не трогает', () async {

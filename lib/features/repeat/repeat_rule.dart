@@ -3,6 +3,22 @@ import 'package:flutter/foundation.dart' show immutable;
 /// Единица повторения.
 enum RepeatUnit { none, day, week, month, year }
 
+/// Чем месяц отмеряет дату повтора.
+///
+/// Три ответа, а не один: «27-го» описывает оплату, «второй вторник» —
+/// расписание занятий, «последний рабочий» — отчёт. Календарь, умеющий одно
+/// только число, расписание не опишет.
+enum MonthRule {
+  /// По числу: 27-го каждого месяца.
+  byDate,
+
+  /// По позиции дня недели: второй вторник, последняя пятница.
+  byWeekday,
+
+  /// Последний рабочий день месяца.
+  lastWorkday,
+}
+
 /// Правило повторения в том виде, в каком его собирает человек.
 ///
 /// Экран правит этот объект, а RRULE строится из него одной функцией: правило
@@ -13,6 +29,7 @@ class RepeatRule {
     this.unit = RepeatUnit.week,
     this.interval = 1,
     this.weekdays = const {},
+    this.monthRule = MonthRule.byDate,
     this.count,
     this.until,
   });
@@ -25,6 +42,9 @@ class RepeatRule {
   /// Дни недели по ISO. Пустой набор — берётся день самого события.
   final Set<int> weekdays;
 
+  /// Чем месяц отмеряет дату. Работает только при [RepeatUnit.month].
+  final MonthRule monthRule;
+
   /// Окончание: после N повторов либо до даты. Оба сразу RFC 5545 запрещает.
   final int? count;
   final DateTime? until;
@@ -35,6 +55,7 @@ class RepeatRule {
     RepeatUnit? unit,
     int? interval,
     Set<int>? weekdays,
+    MonthRule? monthRule,
     Object? count = _keep,
     Object? until = _keep,
   }) =>
@@ -42,6 +63,7 @@ class RepeatRule {
         unit: unit ?? this.unit,
         interval: interval ?? this.interval,
         weekdays: weekdays ?? this.weekdays,
+        monthRule: monthRule ?? this.monthRule,
         count: count == _keep ? this.count : count as int?,
         until: until == _keep ? this.until : until as DateTime?,
       );
@@ -69,6 +91,22 @@ class RepeatRule {
       parts.add('BYDAY=${(days.toList()..sort()).map((d) => names[d - 1]).join(',')}');
     }
 
+    if (unit == RepeatUnit.month) {
+      switch (monthRule) {
+        case MonthRule.byDate:
+          parts.add('BYMONTHDAY=${start.day}');
+        case MonthRule.byWeekday:
+          // Позиция считается с конца, когда день последний такой в месяце:
+          // «пятая пятница» есть не в каждом месяце, и ряд бы их пропускал,
+          // а человек, выбравший последнюю пятницу июля, ждёт её и в августе.
+          parts.add('BYDAY=${weekPosition(start)}${names[start.weekday - 1]}');
+        case MonthRule.lastWorkday:
+          parts
+            ..add('BYDAY=MO,TU,WE,TH,FR')
+            ..add('BYSETPOS=-1');
+      }
+    }
+
     if (count != null) {
       parts.add('COUNT=$count');
     } else if (until != null) {
@@ -79,6 +117,15 @@ class RepeatRule {
     }
 
     return parts.join(';');
+  }
+
+  /// Какой по счёту этот день недели в своём месяце: 1–4, либо −1 для
+  /// последнего. Отрицательная позиция — не украшение: месяцы разной длины, и
+  /// пятого вторника в феврале не бывает.
+  static int weekPosition(DateTime day) {
+    final daysInMonth = DateTime(day.year, day.month + 1, 0).day;
+    if (day.day + 7 > daysInMonth) return -1;
+    return ((day.day - 1) ~/ 7) + 1;
   }
 
   /// Разбор сохранённого правила — чтобы форма открылась на том, что есть.
@@ -110,6 +157,18 @@ class RepeatRule {
                 if (names.contains(d.replaceAll(RegExp(r'[^A-Z]'), '')))
                   names.indexOf(d.replaceAll(RegExp(r'[^A-Z]'), '')) + 1,
             },
+      // Что именно отмеряет месяц, видно по набору полей: перечисленные будни
+      // с отбором последнего — рабочий день, одиночный день с позицией —
+      // «второй вторник», всё остальное — число.
+      monthRule: switch (parts) {
+        {'BYSETPOS': _, 'BYDAY': final days} when days.contains(',') =>
+          MonthRule.lastWorkday,
+        {'BYDAY': final days}
+            when parts['FREQ'] == 'MONTHLY' &&
+                RegExp(r'^-?\d').hasMatch(days) =>
+          MonthRule.byWeekday,
+        _ => MonthRule.byDate,
+      },
       count: int.tryParse(parts['COUNT'] ?? ''),
       until: _parseStamp(parts['UNTIL']),
     );

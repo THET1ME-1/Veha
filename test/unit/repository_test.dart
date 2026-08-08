@@ -21,6 +21,15 @@ void main() {
 
   tearDown(() => db.close());
 
+  /// Очередь на сервер наполняется только для общих календарей — проверкам
+  /// самой очереди нужен именно такой.
+  Future<void> shareAll() async {
+    final tree = await repo.loadInheritance();
+    for (final id in tree.calendars.keys) {
+      await repo.setCalendarShared(id, true);
+    }
+  }
+
   test('Первый запуск наполняет базу и повторный не дублирует', () async {
     await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
     final first = await db.select(db.events).get();
@@ -467,6 +476,7 @@ void main() {
 
   test('Удалённое поле уходит из группы, а правка ложится в очередь', () async {
     await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+    await shareAll();
     await repo.deleteFieldDef('f-room');
 
     final study = await repo.fieldsFor('c-study');
@@ -496,6 +506,7 @@ void main() {
 
   test('Удаление мягкое и попадает в очередь синхронизации', () async {
     await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+    await shareAll();
     await repo.deleteEvent('e-eng');
 
     final row = await (db.select(db.events)..where((t) => t.id.equals('e-eng')))
@@ -520,6 +531,7 @@ void main() {
 
   test('Повторные правки схлопываются в одну запись очереди', () async {
     await repo.seedIfEmpty(today: DateTime(2026, 7, 27));
+    await shareAll();
     final events = await repo
         .watchRange(DateTime(2026, 7, 27), DateTime(2026, 7, 28))
         .first;

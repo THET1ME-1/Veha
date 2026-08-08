@@ -40,10 +40,10 @@ class EventFlow {
   /// Быстрый лист. [at] — час, по которому ткнули; без него берётся ближайший
   /// круглый час впереди.
   Future<void> create({DateTime? at}) async {
-    final inheritance = ref.read(inheritanceProvider).valueOrNull;
-    if (inheritance == null || inheritance.calendars.isEmpty) return;
+    final inheritance = await _readyInheritance();
+    if (inheritance == null || !context.mounted) return;
 
-    final calendarId = inheritance.calendars.keys.first;
+    final calendarId = inheritance.defaultCalendarId!;
     final defaults = inheritance.calendars[calendarId];
     final draft = at == null
         ? EventDraft.blank(
@@ -59,9 +59,35 @@ class EventFlow {
   /// Правка существующего события — сразу полная форма: у него уже есть и
   /// повтор, и поля, и прятать их за «Подробнее» незачем.
   Future<void> edit(VEvent event) async {
-    final inheritance = ref.read(inheritanceProvider).valueOrNull;
-    if (inheritance == null) return;
+    final inheritance = await _readyInheritance();
+    if (inheritance == null || !context.mounted) return;
     await _openFullForm(EventDraft.of(event), inheritance);
+  }
+
+  /// Календари, готовые к работе.
+  ///
+  /// Кнопка «завести» нажимается и до того, как база отдала первую порцию — на
+  /// холодном старте это доли секунды, но нажатие в эти доли уходило в никуда:
+  /// лист не открывался, и человек оставался с мыслью «событие не создаётся».
+  /// Поэтому здесь ждут, а не выходят молча. База, которая не открылась вовсе,
+  /// говорит об этом вслух: молчащая кнопка неотличима от сломанного
+  /// приложения.
+  Future<Inheritance?> _readyInheritance() async {
+    final atHand = ref.read(inheritanceProvider).valueOrNull;
+    if (atHand != null && atHand.calendars.isNotEmpty) return atHand;
+
+    try {
+      final loaded = await ref.read(inheritanceProvider.future);
+      if (loaded.calendars.isNotEmpty) return loaded;
+      return null;
+    } on Object {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(L.of(context).storageFailed)),
+        );
+      }
+      return null;
+    }
   }
 
   /// Превью: подробности и действия. Тап по блоку открывает его, а не форму —
@@ -225,8 +251,11 @@ class EventFlow {
       final series = event.recurrenceId;
       if (event.isOccurrence && series != null) {
         final moment = event.originalStart ?? event.start;
-        await repo.skipOccurrence(series, moment);
-        undo.add(() => repo.unskipOccurrence(series, moment));
+        final removed = await repo.cancelOccurrence(series, moment);
+        undo.add(() async {
+          await repo.unskipOccurrence(series, moment);
+          await repo.restoreEvents(removed);
+        });
       } else {
         await repo.deleteEvent(event.id);
         undo.add(() => repo.restoreEvent(event.id));
@@ -366,7 +395,15 @@ class EventFlow {
       color: event.color,
       iconName: event.iconName,
     ));
-    await repo.deleteEvent(event.recurrenceId ?? event.id);
+    // У занятия ряда уходит весь ряд, вместе с выломанными из него
+    // занятиями: иначе на их месте остаются осколки, которые уже ничем не
+    // убрать.
+    final series = event.recurrenceId;
+    if (series != null) {
+      await repo.deleteSeries(series);
+    } else {
+      await repo.deleteEvent(event.id);
+    }
 
     if (!context.mounted) return;
     _offerUndo(l.msgBecameTask, () => repo.upsertEvent(event));
@@ -841,6 +878,20 @@ class EventFlow {
       final series = source.recurrenceId!;
       final moment = source.originalStart ?? source.start;
 
+      // Занятие, пережившее свой ряд. Такие остались у людей от прежнего
+      // удаления «весь ряд», которое убирало одно правило и не трогало
+      // выломанные занятия. Спрашивать тут не о чем: правила больше нет, а
+      // все три ответа били именно по нему — занятие не удалялось никак.
+      if (!await repo.seriesAlive(series)) {
+        final orphans = await repo.deleteSeries(series);
+        _offerUndo(
+          orphans.length > 1 ? l.msgSeriesDeleted : l.msgEventDeleted,
+          () => repo.restoreEvents(orphans),
+        );
+        return;
+      }
+
+      if (!context.mounted) return;
       // Раньше кнопка молча отменяла одно занятие, и удалить ряд из формы
       // было нельзя вовсе. Теперь спрашиваем — тем же листом, что и правка.
       final scope = await askEditScope(
@@ -853,21 +904,21 @@ class EventFlow {
 
       switch (scope) {
         case EditScope.single:
-          await repo.skipOccurrence(series, moment);
-          _offerUndo(
-            l.msgOccurrenceSkipped,
-            () => repo.unskipOccurrence(series, moment),
-          );
+          final removed = await repo.cancelOccurrence(series, moment);
+          _offerUndo(l.msgOccurrenceSkipped, () async {
+            await repo.unskipOccurrence(series, moment);
+            await repo.restoreEvents(removed);
+          });
         case EditScope.following:
           final before = await repo.eventById(series);
-          await repo.trimSeriesAt(series, moment);
-          _offerUndo(
-            l.msgSeriesTrimmed,
-            () async => before == null ? null : repo.upsertEvent(before),
-          );
+          final removed = await repo.trimSeriesAt(series, moment);
+          _offerUndo(l.msgSeriesTrimmed, () async {
+            if (before != null) await repo.upsertEvent(before);
+            await repo.restoreEvents(removed);
+          });
         case EditScope.series:
-          await repo.deleteSeries(series);
-          _offerUndo(l.msgSeriesDeleted, () => repo.restoreEvent(series));
+          final removed = await repo.deleteSeries(series);
+          _offerUndo(l.msgSeriesDeleted, () => repo.restoreEvents(removed));
       }
       return;
     }
@@ -884,23 +935,28 @@ class EventFlow {
     if (series == null) return;
 
     final moment = occurrence.originalStart ?? occurrence.start;
-    await repo.skipOccurrence(series, moment);
-    _offerUndo(
-      l.msgCancelledNamed(occurrence.title),
-      () => repo.unskipOccurrence(series, moment),
-    );
+    final removed = await repo.cancelOccurrence(series, moment);
+    _offerUndo(l.msgCancelledNamed(occurrence.title), () async {
+      await repo.unskipOccurrence(series, moment);
+      await repo.restoreEvents(removed);
+    });
   }
 
-  /// Удаление события целиком: у экземпляра ряда это удаление всего ряда.
+  /// Удаление события целиком: у экземпляра ряда это удаление всего ряда —
+  /// вместе с занятиями, которые из него когда-то выломали.
   Future<void> deleteWhole(VEvent event) async {
     final l = L.of(context);
     final repo = ref.read(repositoryProvider);
-    final id = event.recurrenceId ?? event.id;
-    await repo.deleteEvent(id);
-    _offerUndo(
-      event.isOccurrence ? l.msgSeriesDeleted : l.msgEventDeleted,
-      () => repo.restoreEvent(id),
-    );
+    final series = event.recurrenceId;
+
+    if (series != null) {
+      final removed = await repo.deleteSeries(series);
+      _offerUndo(l.msgSeriesDeleted, () => repo.restoreEvents(removed));
+      return;
+    }
+
+    await repo.deleteEvent(event.id);
+    _offerUndo(l.msgEventDeleted, () => repo.restoreEvent(event.id));
   }
 
   void _offerUndo(String message, Future<void> Function() undo) {

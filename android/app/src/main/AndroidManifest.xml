@@ -4,6 +4,11 @@
          прошивок его всё равно не дают — сервис тогда переходит на
          приблизительное. Перезагрузка стирает отложенные будильники, поэтому
          приёмник ставит их заново. -->
+    <!-- Синхронизация и ключи доступа ходят по сети. Разрешение живёт только
+         в отладочном манифесте, который Flutter добавляет сам, — из-за этого
+         в собранном приложении сеть была недоступна вовсе: сервер не
+         подключался, ключи не работали, а причина не показывалась нигде. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
@@ -14,7 +19,10 @@
          точного не должен ломать функцию целиком. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!-- Сервер ставят у себя: в домашней сети это обычный http, и запрет
+         открытого трафика делает самохостинг невозможным. -->
     <application
+        android:usesCleartextTraffic="true"
         android:label="Veha"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">

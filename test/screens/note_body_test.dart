@@ -92,6 +92,14 @@ void main() {
 
     await openEventEditor(tester, find.text('Обед с Ниной').first);
 
+    // Заметки лежат ниже описания и своих полей — до них надо доскроллить.
+    await tester.dragUntilVisible(
+      find.text('Купить торт'),
+      find.byType(ListView).first,
+      const Offset(0, -200),
+    );
+    await tester.pumpAndSettle();
+
     await tester.tap(find.text('Купить торт'));
     await tester.pumpAndSettle();
 

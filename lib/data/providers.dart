@@ -40,14 +40,34 @@ final seedLanguageProvider = Provider<String>(
 final nowProvider = Provider<DateTime>((ref) => DateTime.now());
 
 /// Первый запуск: наполняем пустую базу и только потом отдаём экраны.
+///
+/// Здесь ровно то, без чего экран не построить. Всё остальное — после первого
+/// кадра: календарь открывают на пять секунд по десять раз в день, и каждая
+/// лишняя транзакция до первой отрисовки видна человеку как задержка.
 final bootstrapProvider = FutureProvider<void>((ref) async {
   final repo = ref.watch(repositoryProvider);
   await repo.ensureFirstCalendar(
     words: SeedWords.of(ref.watch(seedLanguageProvider)),
   );
-  // Чистка давно удалённого — на запуске: отдельного расписания ради неё
-  // заводить не за что, а приложение открывают чаще, чем раз в 90 дней.
-  await repo.purgeDeleted();
+});
+
+/// Уборка: физическое удаление того, что пролежало в корзине 90 дней.
+///
+/// Раз в сутки и после первого кадра. Раньше она шла на каждом запуске и до
+/// показа экрана: транзакция с построчным обходом четырёх таблиц стояла ровно
+/// между запуском и первым кадром, а смысла чаще раза в сутки в ней нет —
+/// корзина живёт кварталами.
+final purgeProvider = FutureProvider<int>((ref) async {
+  final settings = await ref.watch(settingsProvider.future);
+
+  final now = DateTime.now().millisecondsSinceEpoch;
+  const day = Duration(days: 1);
+  if (now - settings.lastPurge < day.inMilliseconds) return 0;
+
+  await ref.watch(bootstrapProvider.future);
+  final removed = await ref.watch(repositoryProvider).purgeDeleted();
+  await settings.setLastPurge(now);
+  return removed;
 });
 
 /// Календари и ветки. Нужны на каждом экране, поэтому держатся отдельно от
@@ -74,8 +94,14 @@ final fieldDefsByIdProvider = Provider<Map<String, VFieldDef>>((ref) => {
 /// События целого диапазона, разложенные по дням: этим живут неделя, месяц и
 /// лента дней. Разложить один раз дешевле, чем на каждой ячейке фильтровать
 /// общий список заново.
+///
+/// `autoDispose` тут не оптимизация, а условие работоспособности. Ключ окна —
+/// пара дат, и без уборки каждый свайп оставлял бы за собой живую подписку на
+/// базу: после месяца листания правка одного события будила три десятка
+/// запросов разом, и приложение тем медленнее, чем дольше им пользуются.
+/// Сторож — `test/unit/range_cache_test.dart`.
 final rangeProvider =
-    StreamProvider.family<RangeData, ({DateTime from, DateTime to})>(
+    StreamProvider.autoDispose.family<RangeData, ({DateTime from, DateTime to})>(
   (ref, range) async* {
     await ref.watch(bootstrapProvider.future);
 
@@ -160,9 +186,10 @@ final tasksProvider = StreamProvider<List<VTask>>((ref) async* {
   yield* ref.watch(repositoryProvider).watchTasks();
 });
 
-/// Задачи со сроком внутри окна — для видов календаря.
+/// Задачи со сроком внутри окна — для видов календаря. Убирается за собой по
+/// той же причине, что и окно событий.
 final tasksInRangeProvider =
-    StreamProvider.family<List<VTask>, ({DateTime from, DateTime to})>(
+    StreamProvider.autoDispose.family<List<VTask>, ({DateTime from, DateTime to})>(
   (ref, range) async* {
     await ref.watch(bootstrapProvider.future);
     yield* ref.watch(repositoryProvider).watchTasksInRange(range.from, range.to);
@@ -174,7 +201,12 @@ final tasksInRangeProvider =
 final searchProvider =
     StreamProvider.family<List<VEvent>, String>((ref, query) async* {
   await ref.watch(bootstrapProvider.future);
-  yield* ref.watch(repositoryProvider).watchSearch(query);
+  // «Сейчас» берётся общее на приложение, а не своё у поиска: иначе выдача
+  // считается по часам машины, и снимок экрана расходится с макетом на
+  // следующий же день после съёмки.
+  yield* ref
+      .watch(repositoryProvider)
+      .watchSearch(query, now: ref.watch(nowProvider));
 });
 
 /// Будильники на ближайший месяц.

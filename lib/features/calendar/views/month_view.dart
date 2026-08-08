@@ -14,6 +14,10 @@ enum MonthMode {
   /// Только иконки: в ячейку влезает втрое больше, день читается по цвету.
   icons,
 
+  /// Только подписи: без значков строка длиннее, и название читается целиком
+  /// там, где иконка ничего не добавляет.
+  labels,
+
   /// Тонированная ячейка: видно, чем занят день, без чтения текста.
   tint,
 }
@@ -21,7 +25,11 @@ enum MonthMode {
 /// Месяц. Россыпь мелких кружков под числом отвергнута — по ней ничего
 /// не прочитать, поэтому режимов два с половиной и они переключаются
 /// в настройках вида.
-class MonthView extends StatelessWidget {
+///
+/// Сетка занимает всю высоту экрана и делит её между неделями поровну.
+/// Прокрутки здесь нет намеренно: месяц отвечает на вопрос «когда», а ответ,
+/// до которого надо доскроллить, на этот вопрос не отвечает.
+class MonthView extends StatefulWidget {
   const MonthView({
     super.key,
     required this.month,
@@ -32,6 +40,7 @@ class MonthView extends StatelessWidget {
     this.mode = MonthMode.chips,
     this.maxChips = 2,
     this.onDayTap,
+    this.onMonthChanged,
   });
 
   final DateTime month;
@@ -45,89 +54,238 @@ class MonthView extends StatelessWidget {
   /// Тап по дню: месяц отвечает «когда», день — «что именно».
   final ValueChanged<DateTime>? onDayTap;
 
+  /// Лента доехала до другого месяца — шапка должна назвать его.
+  final ValueChanged<DateTime>? onMonthChanged;
+
+  /// Начало отсчёта недель. Как и в неделе, счёт идёт в UTC: в местном
+  /// времени сутки перевода часов длятся 23 или 25 часов, и номер недели за
+  /// четверть века уезжает на единицу.
+  static final DateTime epoch = DateTime.utc(1999, 12, 27);
+
+  /// Номер недели в ленте.
+  static int weekIndexOf(DateTime day) {
+    final date = DateTime.utc(day.year, day.month, day.day);
+    return date.difference(epoch).inDays ~/ 7;
+  }
+
+  /// Понедельник недели по её номеру, уже в местном календаре.
+  static DateTime weekStartAt(int index) {
+    final utc = epoch.add(Duration(days: index * 7));
+    return DateTime(utc.year, utc.month, utc.day);
+  }
+
+  @override
+  State<MonthView> createState() => _MonthViewState();
+}
+
+class _MonthViewState extends State<MonthView> {
+  final ScrollController _controller = ScrollController();
+
+  /// Высота строки недели. Считается от высоты вида, чтобы месяц занимал
+  /// экран целиком, а не жался вверху.
+  double _rowHeight = 0;
+  bool _placed = false;
+
+  /// Месяц, который лента показывает сейчас.
+  late DateTime _visible = widget.month;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_onScroll);
+  }
+
+  @override
+  void didUpdateWidget(MonthView old) {
+    super.didUpdateWidget(old);
+    // Месяц сменили снаружи — лента едет туда же, если сама там ещё не стоит.
+    if ((widget.month.year != _visible.year ||
+            widget.month.month != _visible.month) &&
+        _controller.hasClients) {
+      _visible = widget.month;
+      _controller.jumpTo(
+          MonthView.weekIndexOf(DateTime(widget.month.year, widget.month.month, 1)) *
+              _rowHeight);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _place() {
+    if (!_controller.hasClients || _rowHeight <= 0) return;
+    _controller.jumpTo(
+        MonthView.weekIndexOf(DateTime(_visible.year, _visible.month, 1)) *
+            _rowHeight);
+    _placed = true;
+  }
+
+  void _onScroll() {
+    if (_rowHeight <= 0 || !_placed) return;
+    // Месяцем считается тот, которому принадлежит середина экрана: по верхней
+    // строке заголовок менялся бы на неделю раньше, чем месяц реально viden.
+    final middle =
+        ((_controller.offset + _controller.position.viewportDimension / 2) /
+                _rowHeight)
+            .floor();
+    final day = MonthView.weekStartAt(middle).add(const Duration(days: 3));
+    if (day.year == _visible.year && day.month == _visible.month) return;
+
+    _visible = DateTime(day.year, day.month, 1);
+    widget.onMonthChanged?.call(_visible);
+  }
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final weeks = _weeks(month);
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 120),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              for (var i = 0; i < 7; i++)
-                Expanded(
-                  child: Text(
-                    DateFormat.E(locale)
-                        .format(weeks.first[i])
-                        .toLowerCase(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: AppFonts.body,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: scheme.onSurfaceVariant,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          for (final week in weeks) ...[
+    return LayoutBuilder(builder: (context, box) {
+      // Шесть строк на экран: столько недель бывает в месяце, и на этой
+      // высоте ячейка ещё вмещает пару чипов.
+      final height = (box.maxHeight - 26) / 6;
+      if ((height - _rowHeight).abs() > 0.5 || !_placed) {
+        _rowHeight = height;
+        WidgetsBinding.instance.addPostFrameCallback((_) => _place());
+      }
+
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
+        child: Column(
+          children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                for (final day in week)
+                for (var i = 0; i < 7; i++)
                   Expanded(
-                    child: _Cell(
-                      day: day,
-                      events: day.month == month.month ? eventsOf(day) : const [],
-                      inheritance: inheritance,
-                      isToday: _sameDay(day, today),
-                      isOutside: day.month != month.month,
-                      mode: mode,
-                      maxChips: maxChips,
-                      onTap: onDayTap == null ? null : () => onDayTap!(day),
+                    child: Text(
+                      DateFormat.E(locale)
+                          .format(MonthView.weekStartAt(0).add(Duration(days: i)))
+                          .toLowerCase(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: AppFonts.body,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: scheme.onSurfaceVariant,
+                      ),
                     ),
                   ),
               ],
             ),
-            // Лента многодневного события идёт под неделей, которую оно
-            // захватывает: внутри ячеек ей места нет.
-            for (final s in spans)
-              _SpanRow(
-                event: s,
-                week: week,
-                inheritance: inheritance,
-                isFirstWeek: week == weeks.first,
+            const SizedBox(height: 6),
+            Expanded(
+              child: ListView.builder(
+                controller: _controller,
+                itemExtent: height,
+                // Недели идут подряд, а не месяцами: календарь листается
+                // вверх и вниз без границ, и конец месяца виден рядом с
+                // началом следующего.
+                itemBuilder: (context, i) {
+                  final week = [
+                    for (var d = 0; d < 7; d++)
+                      MonthView.weekStartAt(i).add(Duration(days: d)),
+                  ];
+                  return _Week(
+                    week: week,
+                    month: _visible,
+                    eventsOf: widget.eventsOf,
+                    spans: [
+                      for (final s in widget.spans)
+                        if (_touches(s, week)) s,
+                    ],
+                    inheritance: widget.inheritance,
+                    today: widget.today,
+                    mode: widget.mode,
+                    maxChips: widget.maxChips,
+                    onDayTap: widget.onDayTap,
+                  );
+                },
               ),
-            const SizedBox(height: 3),
+            ),
           ],
-        ],
-      ),
-    );
+        ),
+      );
+    });
   }
 
-  static bool _sameDay(DateTime a, DateTime b) =>
-      a.year == b.year && a.month == b.month && a.day == b.day;
+  /// Задевает ли лента хоть один день недели.
+  static bool _touches(VEvent event, List<DateTime> week) {
+    final from = DateTime(event.start.year, event.start.month, event.start.day);
+    final to = DateTime(event.end.year, event.end.month, event.end.day);
+    final first = week.first;
+    final last = DateTime(week.last.year, week.last.month, week.last.day);
+    return !from.isAfter(last) && !to.isBefore(first);
+  }
 
-  /// Недели месяца с хвостами соседних: сетка всегда полная, иначе она
-  /// прыгает по высоте от месяца к месяцу.
-  static List<List<DateTime>> _weeks(DateTime month) {
-    final first = DateTime(month.year, month.month, 1);
-    final start = first.subtract(Duration(days: first.weekday - 1));
-    final weeks = <List<DateTime>>[];
-    var cursor = start;
-    while (true) {
-      final week = List.generate(7, (i) => cursor.add(Duration(days: i)));
-      weeks.add(week);
-      cursor = cursor.add(const Duration(days: 7));
-      if (cursor.month != month.month && cursor.day > 7) break;
-      if (weeks.length >= 6) break;
-    }
-    return weeks;
+  static bool sameDay(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
+}
+
+/// Строка месяца: семь дней и ленты событий, которые их накрывают.
+class _Week extends StatelessWidget {
+  const _Week({
+    required this.week,
+    required this.month,
+    required this.eventsOf,
+    required this.spans,
+    required this.inheritance,
+    required this.today,
+    required this.mode,
+    required this.maxChips,
+    this.onDayTap,
+  });
+
+  final List<DateTime> week;
+  final DateTime month;
+  final List<VEvent> Function(DateTime) eventsOf;
+  final List<VEvent> spans;
+  final Inheritance inheritance;
+  final DateTime today;
+  final MonthMode mode;
+  final int maxChips;
+  final ValueChanged<DateTime>? onDayTap;
+
+  /// Больше двух лент подряд съедают строку целиком, и от недели остаются одни
+  /// полосы. Остальные видны в дне.
+  static const int _maxSpans = 2;
+
+  @override
+  Widget build(BuildContext context) {
+    final shown = spans.take(_maxSpans).toList();
+
+    return Column(
+      children: [
+        // Ленты идут над числами своей недели. Снизу они читались как шапка
+        // следующей строки: неделя, к которой относится «Летний курс», по
+        // виду была не та.
+        for (final s in shown)
+          _SpanRow(event: s, week: week, inheritance: inheritance),
+        Expanded(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (final day in week)
+                Expanded(
+                  child: _Cell(
+                    day: day,
+                    events: day.month == month.month ? eventsOf(day) : const [],
+                    inheritance: inheritance,
+                    isToday: _MonthViewState.sameDay(day, today),
+                    isOutside: day.month != month.month,
+                    mode: mode,
+                    maxChips: maxChips,
+                    onTap: onDayTap == null ? null : () => onDayTap!(day),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 6),
+      ],
+    );
   }
 }
 
@@ -155,6 +313,12 @@ class _Cell extends StatelessWidget {
   /// подробности живут в дне.
   final VoidCallback? onTap;
 
+  /// Высота строки чипа вместе с зазором.
+  static const double _chipStep = 15;
+
+  /// Место под числом: сама плашка числа плюс отступ.
+  static const double _numberRoom = 32;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -171,76 +335,99 @@ class _Cell extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Opacity(
-      opacity: isOutside ? 0.35 : 1,
-      child: Container(
-        margin: const EdgeInsets.all(1.5),
-        constraints: const BoxConstraints(minHeight: 52),
-        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 2),
-        decoration: ShapeDecoration(
-          color: tint ?? Colors.transparent,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(14)),
+        opacity: isOutside ? 0.35 : 1,
+        child: Container(
+          margin: const EdgeInsets.all(1.5),
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 2),
+          decoration: ShapeDecoration(
+            color: tint ?? Colors.transparent,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(14)),
+            ),
+          ),
+          child: LayoutBuilder(
+            builder: (context, box) => Column(
+              children: [
+                // Не круг фиксированной ширины: в 24 пикселя двузначное число
+                // Unbounded'ом не влезает и обрезается пополам.
+                Container(
+                  constraints:
+                      const BoxConstraints(minWidth: 24, minHeight: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  alignment: Alignment.center,
+                  decoration: ShapeDecoration(
+                    color: isToday ? scheme.primary : Colors.transparent,
+                    shape: const StadiumBorder(),
+                  ),
+                  child: Text(
+                    '${day.day}',
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontFamily: AppFonts.display,
+                      fontSize: 14.5,
+                      fontWeight: FontWeight.w600,
+                      color: isToday ? scheme.onPrimary : scheme.onSurface,
+                    ),
+                  ),
+                ),
+                if (events.isNotEmpty) _content(context, theme, box),
+              ],
+            ),
           ),
         ),
-        child: Column(
-          children: [
-            // Не круг фиксированной ширины: в 24 пикселя двузначное число
-            // Unbounded'ом не влезает и обрезается пополам.
-            Container(
-              constraints: const BoxConstraints(minWidth: 24, minHeight: 24),
-              padding: const EdgeInsets.symmetric(horizontal: 5),
-              alignment: Alignment.center,
-              decoration: ShapeDecoration(
-                color: isToday ? scheme.primary : Colors.transparent,
-                shape: const StadiumBorder(),
-              ),
-              child: Text(
-                '${day.day}',
-                maxLines: 1,
-                style: TextStyle(
-                  fontFamily: AppFonts.display,
-                  fontSize: 14.5,
-                  fontWeight: FontWeight.w600,
-                  color: isToday ? scheme.onPrimary : scheme.onSurface,
-                ),
-              ),
-            ),
-            if (events.isNotEmpty) _content(context, theme),
-          ],
-        ),
       ),
-    ),
     );
   }
 
-  Widget _content(BuildContext context, ThemeData theme) => switch (mode) {
-        MonthMode.chips => _Chips(
-            events: events,
-            inheritance: inheritance,
-            brightness: theme.brightness,
-            max: maxChips,
-            scheme: theme.colorScheme,
-          ),
-        MonthMode.icons => _Icons(
-            events: events,
-            inheritance: inheritance,
-            brightness: theme.brightness,
-            scheme: theme.colorScheme,
-          ),
-        MonthMode.tint => Padding(
-            padding: const EdgeInsets.only(top: 5),
-            child: Text(
-              '${events.length}',
-              style: TextStyle(
-                fontFamily: AppFonts.body,
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-                color: theme.colorScheme.onSurfaceVariant,
-                fontFeatures: const [FontFeature.tabularFigures()],
-              ),
+  Widget _content(BuildContext context, ThemeData theme, BoxConstraints box) {
+    // Подпись в ячейке уже ячейки самого узкого телефона не читается: от неё
+    // остаётся «Подъё». Там, где имя не влезает, день читается значком и
+    // цветом, а имена смотрят в дне.
+    final tooNarrow = box.maxWidth < 54;
+    final shown = switch (mode) {
+      MonthMode.chips when tooNarrow => MonthMode.icons,
+      final m => m,
+    };
+
+    return switch (shown) {
+      MonthMode.chips || MonthMode.labels => _Chips(
+          events: events,
+          inheritance: inheritance,
+          brightness: theme.brightness,
+          withIcon: shown == MonthMode.chips,
+          // Сколько строк влезло по высоте, столько и показываем: настройка
+          // задаёт потолок, а не обязанность вылезать за край ячейки.
+          max: _roomForChips(box.maxHeight).clamp(1, maxChips),
+          scheme: theme.colorScheme,
+        ),
+      MonthMode.icons => _Icons(
+          events: events,
+          inheritance: inheritance,
+          brightness: theme.brightness,
+          scheme: theme.colorScheme,
+        ),
+      MonthMode.tint => Padding(
+          padding: const EdgeInsets.only(top: 5),
+          child: Text(
+            '${events.length}',
+            style: TextStyle(
+              fontFamily: AppFonts.body,
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+              color: theme.colorScheme.onSurfaceVariant,
+              fontFeatures: const [FontFeature.tabularFigures()],
             ),
           ),
-      };
+        ),
+    };
+  }
+
+  static int _roomForChips(double height) {
+    if (!height.isFinite) return 2;
+    // Строка «+N» занимает место наравне с чипом, поэтому вычитается заранее.
+    final rows = ((height - _numberRoom) / _chipStep).floor() - 1;
+    return rows < 1 ? 1 : rows;
+  }
 }
 
 class _Chips extends StatelessWidget {
@@ -250,7 +437,11 @@ class _Chips extends StatelessWidget {
     required this.brightness,
     required this.scheme,
     required this.max,
+    this.withIcon = true,
   });
+
+  /// Показывать ли значок рядом с подписью.
+  final bool withIcon;
 
   final List<VEvent> events;
   final Inheritance inheritance;
@@ -279,7 +470,7 @@ class _Chips extends StatelessWidget {
                 '+$rest',
                 style: TextStyle(
                   fontFamily: AppFonts.body,
-                  fontSize: 8.5,
+                  fontSize: 9,
                   fontWeight: FontWeight.w700,
                   color: scheme.onSurfaceVariant,
                 ),
@@ -303,18 +494,22 @@ class _Chips extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(VehaIcons.byName(inheritance.iconOfEvent(e)),
-              size: 9, color: ink.foreground),
-          const SizedBox(width: 3),
+          if (withIcon) ...[
+            Icon(VehaIcons.byName(inheritance.iconOfEvent(e)),
+                size: 9, color: ink.foreground),
+            const SizedBox(width: 3),
+          ],
           Flexible(
             child: Text(
               e.title,
               maxLines: 1,
-              overflow: TextOverflow.clip,
+              // Обрыв многоточием, а не по живому: «Подъё» читается как
+              // ошибка вёрстки, «Подъ…» — как продолжение, которое есть в дне.
+              overflow: TextOverflow.ellipsis,
               softWrap: false,
               style: TextStyle(
                 fontFamily: AppFonts.body,
-                fontSize: 8,
+                fontSize: 8.5,
                 fontWeight: FontWeight.w700,
                 color: ink.foreground,
               ),
@@ -381,7 +576,8 @@ class _Icons extends StatelessWidget {
       width: 13,
       height: 13,
       alignment: Alignment.center,
-      decoration: ShapeDecoration(color: ink.background, shape: const CircleBorder()),
+      decoration:
+          ShapeDecoration(color: ink.background, shape: const CircleBorder()),
       child: Icon(VehaIcons.byName(inheritance.iconOfEvent(e)),
           size: 8.5, color: ink.foreground),
     );
@@ -394,16 +590,11 @@ class _SpanRow extends StatelessWidget {
     required this.event,
     required this.week,
     required this.inheritance,
-    required this.isFirstWeek,
   });
 
   final VEvent event;
   final List<DateTime> week;
   final Inheritance inheritance;
-
-  /// Событие, начавшееся до этого месяца, подписывается в первой видимой
-  /// неделе: безымянная полоса через весь месяц ничего не сообщает.
-  final bool isFirstWeek;
 
   @override
   Widget build(BuildContext context) {
@@ -449,19 +640,20 @@ class _SpanRow extends StatelessWidget {
                   ),
                 ),
               ),
-              child: startsHere || isFirstWeek
-                  ? Text(
-                      endsHere ? event.title : '${event.title} →',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontFamily: AppFonts.body,
-                        fontSize: 9,
-                        fontWeight: FontWeight.w700,
-                        color: ink.foreground,
-                      ),
-                    )
-                  : null,
+              // Подписана каждая неделя, а не только первая. Безымянная полоса
+              // через полмесяца — цветной мусор: человек видит, что что-то
+              // идёт, и не знает что.
+              child: Text(
+                endsHere ? event.title : '${event.title} →',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontFamily: AppFonts.body,
+                  fontSize: 9,
+                  fontWeight: FontWeight.w700,
+                  color: ink.foreground,
+                ),
+              ),
             ),
           ),
           if (endIdx < 6) Spacer(flex: 6 - endIdx),

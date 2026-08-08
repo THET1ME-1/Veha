@@ -34,14 +34,21 @@ void main() {
     expect(find.text('Сохранить'), findsOneWidget);
   });
 
-  testWidgets('Тап по дню в месяце уводит в этот день', (tester) async {
+  testWidgets('Тап по дню в месяце раскрывает лист, а не уводит из месяца',
+      (tester) async {
     await openView(tester, 'Месяц');
     expect(find.byType(MonthView), findsOneWidget);
 
     await tester.tap(find.text('30').first);
     await tester.pumpAndSettle();
 
-    expect(find.byType(MonthView), findsNothing, reason: 'Ушли из месяца');
+    // Месяц отвечает на «когда»: подробности показывает лист, а картина
+    // месяца остаётся под ним.
+    expect(find.byType(MonthView), findsOneWidget, reason: 'Месяц на месте');
+    expect(find.text('Открыть день'), findsOneWidget, reason: 'Лист открыт');
+
+    await tester.tap(find.text('Открыть день'));
+    await tester.pumpAndSettle();
     expect(find.byType(ChainView), findsOneWidget, reason: 'Открыт день');
   });
 }

@@ -40,7 +40,8 @@ void main() {
       tester,
       Scaffold(
         body: WeekView(
-          week: week,
+          anchor: week.first,
+          columns: week.length,
           eventsOf: (day) => day.day == 27 ? [meeting] : const [],
           spans: const [],
           inheritance: inheritance,
@@ -95,7 +96,8 @@ void main() {
       tester,
       Scaffold(
         body: WeekView(
-          week: week,
+          anchor: week.first,
+          columns: week.length,
           eventsOf: (day) => switch (day.day) {
             27 => [meeting],
             28 => [standup],

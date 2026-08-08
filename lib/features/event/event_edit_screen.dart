@@ -58,6 +58,8 @@ class EventEditScreen extends ConsumerStatefulWidget {
 
 class _EventEditScreenState extends ConsumerState<EventEditScreen> {
   late EventDraft _draft = widget.draft;
+  late final TextEditingController _description =
+      TextEditingController(text: widget.draft.description ?? '');
   late final TextEditingController _title = TextEditingController(
     text: _draft.title,
   );
@@ -65,6 +67,7 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
   @override
   void dispose() {
     _title.dispose();
+    _description.dispose();
     super.dispose();
   }
 
@@ -650,6 +653,24 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
               ),
             ),
             const VSep(),
+            // День рождения и напоминание о платеже стоят в календаре, но
+            // часов не держат: свободные окна обязаны их пропускать.
+            VRow(
+              icon: 'hourglass',
+              value: l.eventHoldsTime,
+              onTap: () => setState(() => _draft = _draft.withAvailability(
+                    _draft.availability == Availability.busy
+                        ? Availability.free
+                        : Availability.busy,
+                  )),
+              trailing: VSwitch(
+                value: _draft.availability == Availability.busy,
+                onChanged: (v) => setState(() => _draft = _draft.withAvailability(
+                      v ? Availability.busy : Availability.free,
+                    )),
+              ),
+            ),
+            const VSep(),
             VRow(
               icon: 'repeat',
               label: l.eventRepeat,
@@ -718,6 +739,46 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
             ),
           ],
         ),
+        // Описание — свободный текст события: что взять, о чём договорились,
+        // ссылка на встречу. В `.ics` уезжает как DESCRIPTION, поэтому чужой
+        // календарь его тоже покажет.
+        VBlockCap(l.eventDescription),
+        VBlock(children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
+            child: TextField(
+              controller: _description,
+              minLines: 2,
+              maxLines: 6,
+              keyboardType: TextInputType.multiline,
+              textCapitalization: TextCapitalization.sentences,
+              style: TextStyle(
+                fontFamily: AppFonts.body,
+                fontSize: 14.5,
+                height: 1.35,
+                fontWeight: FontWeight.w500,
+                color: scheme.onSurface,
+              ),
+              decoration: InputDecoration(
+                isDense: true,
+                filled: false,
+                contentPadding: EdgeInsets.zero,
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                hintText: l.eventDescriptionHint,
+                hintStyle: TextStyle(
+                  fontFamily: AppFonts.body,
+                  fontSize: 14.5,
+                  fontWeight: FontWeight.w500,
+                  color: scheme.onSurfaceVariant,
+                ),
+              ),
+              onChanged: (v) =>
+                  setState(() => _draft = _draft.withDescription(v)),
+            ),
+          ),
+        ]),
         if (_defs.isNotEmpty) ...[
           VBlockCap(L.of(context).fieldsTitle),
           VBlock(children: [

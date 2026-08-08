@@ -7,6 +7,7 @@ import '../../data/providers.dart';
 import '../../data/settings.dart';
 import '../../l10n/app_localizations.dart';
 import '../calendar/calendar_screen.dart';
+import '../common/morph_widgets.dart';
 import '../calendars/calendars_screen.dart';
 import '../event/event_flow.dart';
 import '../settings/settings_screen.dart';
@@ -137,8 +138,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
   /// календарей и настройках заводить нечего — там её нет.
   Widget? _fab(int tab) {
     if (tab > 1) return null;
-    return FloatingActionButton(
-      onPressed: () => tab == 0
+    // Кнопка морфится в четырёхлистник, раскрываясь в форму: второе из трёх
+    // мест фирменной анимации. Тень ей не нужна — глубину держит тональность.
+    return MorphFab(
+      tooltip: tab == 0 ? L.of(context).newEvent : L.of(context).taskNew,
+      onPressed: () async => tab == 0
           ? EventFlow(context, ref).create()
           : createTask(
               context,
@@ -146,11 +150,6 @@ class _HomeShellState extends ConsumerState<HomeShell> {
               ref.read(inheritanceProvider).valueOrNull ??
                   const Inheritance(calendars: {}, subcategories: {}),
             ),
-      tooltip: tab == 0 ? L.of(context).newEvent : L.of(context).taskNew,
-      elevation: 0,
-      focusElevation: 0,
-      hoverElevation: 0,
-      highlightElevation: 0,
       child: Icon(VehaIcons.byName('add'), size: 28),
     );
   }

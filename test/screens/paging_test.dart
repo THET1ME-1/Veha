@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:veha/features/calendar/widgets/week_strip.dart';
 import 'package:veha/features/shell/home_shell.dart';
 
 import 'golden_harness.dart';
@@ -26,13 +27,18 @@ void main() {
     expect(find.text('28'), findsWidgets);
   });
 
-  testWidgets('Кнопка в полоске дней уводит на неделю назад', (tester) async {
+  testWidgets('Полоса дней листается пальцем в обе стороны', (tester) async {
     await pumpScreen(tester, const HomeShell());
 
-    await tester.tap(find.byIcon(const IconData(0xe5cb, fontFamily: 'VehaSymbols')));
+    // Стрелок в полосе больше нет: она листается как мини-календарь.
+    final strip = find.byType(WeekStrip);
+    expect(strip, findsOneWidget);
+
+    final box = tester.getRect(strip);
+    await tester.dragFrom(box.center, Offset(box.width / 7 * 2 + 18, 0));
     await tester.pumpAndSettle();
 
-    // Шаг вида «День» — сутки: 27 июля становится 26-м.
-    expect(find.text('26'), findsWidgets);
+    // Ушли на два дня назад: суббота и воскресенье прошлой недели.
+    expect(find.text('25'), findsWidgets);
   });
 }

@@ -1470,4 +1470,115 @@ class LDe extends L {
   String travelLeaveAt(String time) {
     return 'Losgehen um $time';
   }
+
+  @override
+  String get storageFailed =>
+      'Der Kalender wurde nicht geöffnet. Starten Sie die App neu';
+
+  @override
+  String get storageRetry => 'Wiederholen';
+
+  @override
+  String get hiddenCalendarWarning =>
+      'Der Termin liegt in einem ausgeblendeten Kalender und bleibt unsichtbar';
+
+  @override
+  String get hiddenCalendarShow => 'Einblenden';
+
+  @override
+  String get previewMore => 'Mehr';
+
+  @override
+  String monthOnDay(int day) {
+    return 'Am $day.';
+  }
+
+  @override
+  String get monthLastWorkday => 'Letzter Werktag';
+
+  @override
+  String get monthRuleTitle => 'Womit der Monat gemessen wird';
+
+  @override
+  String everyDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'alle $count Tage',
+      one: 'täglich',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String everyWeeks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'alle $count Wochen',
+      one: 'wöchentlich',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String everyMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'alle $count Monate',
+      one: 'monatlich',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String everyYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'alle $count Jahre',
+      one: 'jährlich',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get repeatHowOften => 'Wie oft';
+
+  @override
+  String get calendarSharing => 'Was auf den Server geht';
+
+  @override
+  String get calendarShared => 'Geteilter Kalender';
+
+  @override
+  String get calendarSharedOn => 'Geht an den Server';
+
+  @override
+  String get calendarSharedOff => 'Bleibt auf dem Gerät';
+
+  @override
+  String get syncSharedList => 'An den Server gesendet';
+
+  @override
+  String get syncSharedNone => 'Nichts: alles bleibt auf dem Gerät';
+
+  @override
+  String get eventDescription => 'Beschreibung';
+
+  @override
+  String get eventDescriptionHint => 'Was mitnehmen, was vereinbart wurde';
+
+  @override
+  String get eventHoldsTime => 'Belegt Zeit';
+
+  @override
+  String get dayOpenFull => 'Tag öffnen';
+
+  @override
+  String get dayEmpty => 'Für diesen Tag ist nichts geplant';
+
+  @override
+  String get monthDensityText => 'Nur Text';
 }

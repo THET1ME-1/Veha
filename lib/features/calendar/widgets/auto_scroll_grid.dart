@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../data/settings.dart';
 import '../../../domain/edge_scroll.dart';
 import '../../../domain/free_time.dart';
 
@@ -8,7 +10,7 @@ import '../../../domain/free_time.dart';
 ///
 /// Общая обёртка для часов и недели: без неё утреннюю встречу нельзя было
 /// перенести на вечер — палец упирался в край экрана, а сетка стояла.
-class AutoScrollGrid extends StatefulWidget {
+class AutoScrollGrid extends ConsumerStatefulWidget {
   const AutoScrollGrid({
     super.key,
     required this.child,
@@ -19,11 +21,58 @@ class AutoScrollGrid extends StatefulWidget {
   final EdgeInsetsGeometry padding;
 
   @override
-  State<AutoScrollGrid> createState() => _AutoScrollGridState();
+  ConsumerState<AutoScrollGrid> createState() => _AutoScrollGridState();
 }
 
-class _AutoScrollGridState extends State<AutoScrollGrid>
+class _AutoScrollGridState extends ConsumerState<AutoScrollGrid>
     with SingleTickerProviderStateMixin {
+  /// Пальцы на сетке. Щипок считается по ним напрямую, а не жестом из арены:
+  /// распознаватель масштаба забирает и одиночное движение, и вертикальная
+  /// прокрутка сетки после этого перестаёт работать.
+  final Map<int, Offset> _fingers = {};
+
+  /// Вертикальный разброс пальцев и масштаб на начало щипка.
+  double? _spanAtStart;
+  double _zoomAtStart = 1;
+
+  void _onDown(PointerDownEvent e) {
+    _fingers[e.pointer] = e.position;
+    if (_fingers.length == 2) _startPinch();
+  }
+
+  void _onUp(int pointer) {
+    _fingers.remove(pointer);
+    if (_fingers.length < 2) _spanAtStart = null;
+  }
+
+  void _startPinch() {
+    final span = _verticalSpan();
+    // Пальцы, поставленные на одну высоту, дают нулевой разброс: делить на
+    // него нельзя, а щипок по горизонтали к сетке отношения не имеет.
+    if (span < 24) return;
+    _spanAtStart = span;
+    _zoomAtStart = ref.read(gridZoomProvider);
+  }
+
+  void _onMove(PointerMoveEvent e) {
+    if (!_fingers.containsKey(e.pointer)) return;
+    _fingers[e.pointer] = e.position;
+    if (_fingers.length < 2) return;
+    if (_spanAtStart == null) {
+      _startPinch();
+      return;
+    }
+
+    final span = _verticalSpan();
+    if (span < 8) return;
+    ref.read(gridZoomProvider.notifier).set(_zoomAtStart * span / _spanAtStart!);
+  }
+
+  double _verticalSpan() {
+    final ys = _fingers.values.map((o) => o.dy).toList()..sort();
+    return ys.last - ys.first;
+  }
+
   final ScrollController _controller = ScrollController();
 
   /// Куда метит блок, пока он в воздухе. Живёт здесь, а не в самом блоке:
@@ -96,10 +145,19 @@ class _AutoScrollGridState extends State<AutoScrollGrid>
         controller: _controller,
         onPointer: _pointer,
         drag: _drag,
-        child: SingleChildScrollView(
-          controller: _controller,
-          padding: widget.padding,
-          child: widget.child,
+        child: Listener(
+          // Слушаем указатели, а не заводим жест: `Listener` не участвует в
+          // разборе жестов, поэтому прокрутка и перетаскивание блока остаются
+          // при своём.
+          onPointerDown: _onDown,
+          onPointerMove: _onMove,
+          onPointerUp: (e) => _onUp(e.pointer),
+          onPointerCancel: (e) => _onUp(e.pointer),
+          child: SingleChildScrollView(
+            controller: _controller,
+            padding: widget.padding,
+            child: widget.child,
+          ),
         ),
       );
 }

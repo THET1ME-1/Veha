@@ -14,6 +14,7 @@ class EventDraft {
     required this.start,
     required this.end,
     this.title = '',
+    this.description,
     this.subcategoryId,
     this.color,
     this.iconName,
@@ -21,6 +22,7 @@ class EventDraft {
     this.location,
     this.travelMinutes = 0,
     this.isAllDay = false,
+    this.availability = Availability.busy,
     this.reminders = const [30],
     this.fields = const [],
     this.source,
@@ -64,6 +66,7 @@ class EventDraft {
         start: e.start,
         end: e.end,
         title: e.title,
+        description: e.description,
         subcategoryId: e.subcategoryId,
         color: e.color,
         iconName: e.iconName,
@@ -71,6 +74,7 @@ class EventDraft {
         location: e.location,
         travelMinutes: e.travelMinutes,
         isAllDay: e.isAllDay,
+        availability: e.availability,
         reminders: e.reminders,
         fields: e.fields,
         source: e,
@@ -80,6 +84,10 @@ class EventDraft {
   final DateTime start;
   final DateTime end;
   final String title;
+
+  /// Свободный текст события. Пусто и `null` для базы одно и то же — пустая
+  /// строка в поле означает, что описания нет.
+  final String? description;
   final String? subcategoryId;
   final Color? color;
   final String? iconName;
@@ -88,6 +96,9 @@ class EventDraft {
 
   /// Сколько добираться до места, в минутах. Ноль — дорога не в счёт.
   final int travelMinutes;
+
+  /// Держит ли событие время: встреча держит, день рождения нет.
+  final Availability availability;
 
   final bool isAllDay;
 
@@ -140,6 +151,11 @@ class EventDraft {
 
   EventDraft withTitle(String value) => _copy(title: value);
 
+  EventDraft withDescription(String value) => _copy(description: value);
+
+  EventDraft withAvailability(Availability value) =>
+      _copy(availability: value);
+
   /// Длительность тянет конец, начало стоит на месте.
   EventDraft withDuration(Duration value) => _copy(end: start.add(value));
 
@@ -190,11 +206,13 @@ class EventDraft {
         calendarId: calendarId,
         subcategoryId: subcategoryId,
         title: title.trim(),
+        description: (description?.trim().isEmpty ?? true) ? null : description!.trim(),
         start: start,
         end: end,
         color: color,
         iconName: iconName,
         isAllDay: isAllDay,
+        availability: availability,
         rrule: rrule,
         recurrenceId: source?.recurrenceId,
         originalStart: source?.originalStart,
@@ -211,6 +229,7 @@ class EventDraft {
     DateTime? start,
     DateTime? end,
     String? title,
+    String? description,
     String? subcategoryId,
     Color? color,
     String? iconName,
@@ -218,6 +237,7 @@ class EventDraft {
     String? location,
     int? travelMinutes,
     bool? isAllDay,
+    Availability? availability,
     List<int>? reminders,
     List<VFieldValue>? fields,
     bool dropSubcategory = false,
@@ -231,6 +251,7 @@ class EventDraft {
         start: start ?? this.start,
         end: end ?? this.end,
         title: title ?? this.title,
+        description: description ?? this.description,
         subcategoryId:
             dropSubcategory ? subcategoryId : subcategoryId ?? this.subcategoryId,
         color: dropColor ? color : color ?? this.color,
@@ -239,6 +260,7 @@ class EventDraft {
         location: dropLocation ? location : location ?? this.location,
         travelMinutes: travelMinutes ?? this.travelMinutes,
         isAllDay: isAllDay ?? this.isAllDay,
+        availability: availability ?? this.availability,
         reminders: reminders ?? this.reminders,
         fields: fields ?? this.fields,
         source: source,

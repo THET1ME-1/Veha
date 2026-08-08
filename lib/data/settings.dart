@@ -33,6 +33,46 @@ class VehaSettings {
   static const _locale = 'locale';
   static const _amoled = 'amoled';
   static const _dynamicColor = 'dynamic_color';
+  static const _lastPurge = 'last_purge';
+  static const _recentColors = 'recent_colors';
+  static const _gridZoom = 'grid_zoom';
+
+  /// Границы масштаба сетки часов. Ниже минимума пилюли слипаются, выше
+  /// максимума в экран не влезает и половина рабочего дня.
+  static const double minZoom = 0.6;
+  static const double maxZoom = 2.5;
+
+  /// Во сколько раз растянут час по вертикали.
+  double get gridZoom => (_prefs.getDouble(_gridZoom) ?? 1).clamp(minZoom, maxZoom);
+
+  Future<void> setGridZoom(double value) =>
+      _prefs.setDouble(_gridZoom, value.clamp(minZoom, maxZoom));
+
+  /// Последние использованные цвета, свежий первым.
+  ///
+  /// Кольцевой буфер в настройках, а не таблица в базе: это кеш поведения —
+  /// его не жалко потерять и незачем синхронизировать. «Мои цвета» живут
+  /// отдельно, они выбраны человеком осознанно.
+  List<int> get recentColors =>
+      (_prefs.getStringList(_recentColors) ?? const [])
+          .map(int.tryParse)
+          .whereType<int>()
+          .toList();
+
+  /// Кладёт цвет наверх списка. Повтор поднимается, а не дублируется.
+  Future<void> pushRecentColor(int argb) async {
+    final next = [argb, ...recentColors.where((c) => c != argb)].take(12);
+    await _prefs.setStringList(
+      _recentColors,
+      [for (final c in next) '$c'],
+    );
+  }
+
+  /// Когда в последний раз чистили корзину, в миллисекундах эпохи. Ноль —
+  /// не чистили ни разу.
+  int get lastPurge => _prefs.getInt(_lastPurge) ?? 0;
+
+  Future<void> setLastPurge(int value) => _prefs.setInt(_lastPurge, value);
 
   /// Индекс в `VehaThemeMode`. `null` — человек не выбирал; умолчание решает
   /// не хранилище.
@@ -117,6 +157,50 @@ class VehaSettings {
 final settingsProvider = FutureProvider<VehaSettings>((ref) async {
   final prefs = await SharedPreferences.getInstance();
   return VehaSettings(prefs);
+});
+
+/// Последние использованные цвета. Состояние, а не чтение из хранилища на
+/// каждый кадр: пикер обязан обновиться сразу после выбора.
+class RecentColorsNotifier extends StateNotifier<List<Color>> {
+  RecentColorsNotifier(this._settings, super.state);
+
+  final VehaSettings? _settings;
+
+  Future<void> push(Color color) async {
+    final argb = color.toARGB32();
+    state = [color, ...state.where((c) => c.toARGB32() != argb)].take(12).toList();
+    await _settings?.pushRecentColor(argb);
+  }
+}
+
+final recentColorsProvider =
+    StateNotifierProvider<RecentColorsNotifier, List<Color>>((ref) {
+  final settings = ref.watch(settingsProvider).valueOrNull;
+  return RecentColorsNotifier(
+    settings,
+    [for (final c in settings?.recentColors ?? const <int>[]) Color(c)],
+  );
+});
+
+/// Масштаб сетки часов отдельным состоянием: щипок должен отзываться сразу,
+/// а запись в хранилище идёт следом и пальцу не мешает.
+class GridZoomNotifier extends StateNotifier<double> {
+  GridZoomNotifier(this._settings, super.state);
+
+  final VehaSettings? _settings;
+
+  Future<void> set(double value) async {
+    final next = value.clamp(VehaSettings.minZoom, VehaSettings.maxZoom);
+    if (next == state) return;
+    state = next;
+    await _settings?.setGridZoom(next);
+  }
+}
+
+final gridZoomProvider =
+    StateNotifierProvider<GridZoomNotifier, double>((ref) {
+  final settings = ref.watch(settingsProvider).valueOrNull;
+  return GridZoomNotifier(settings, settings?.gridZoom ?? 1);
 });
 
 /// Раскладка недели отдельным состоянием: вид перерисовывается сразу, а запись

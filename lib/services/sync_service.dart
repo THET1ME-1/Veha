@@ -186,6 +186,12 @@ class SyncService {
         }
         if (row['id'] == null) continue;
 
+        // Конфликт разрешается по времени правки: побеждает более позднее.
+        // Без этой проверки версия, сделанная на сервере раньше, затирала
+        // свежую местную — человек правил событие без сети, а после синка
+        // видел чужой текст и не мог понять, куда делась его правка.
+        if (!await _isNewer(local, row)) continue;
+
         final names = row.keys.join(', ');
         final marks = List.filled(row.length, '?').join(', ');
         await db.customStatement(
@@ -196,6 +202,30 @@ class SyncService {
       }
     }
     return count;
+  }
+
+  /// Свежее ли приехавшее, чем то, что уже лежит в базе.
+  ///
+  /// Записи без времени правки (пропуски ряда, значения полей) сравнивать не
+  /// по чему — их применяем как есть: они принадлежат событию и приезжают
+  /// вместе с ним.
+  Future<bool> _isNewer(String table, Map<String, Object?> row) async {
+    final incoming = row['updated_at'];
+    if (incoming is! int) return true;
+
+    final columns = await _columnsOf(table);
+    if (!columns.contains('updated_at')) return true;
+
+    final found = await db.customSelect(
+      'SELECT updated_at FROM $table WHERE id = ?',
+      variables: [Variable<Object>(row['id']!)],
+    ).get();
+    if (found.isEmpty) return true;
+
+    final mine = found.first.read<int?>('updated_at') ?? 0;
+    // Равенство отдаём приезжему: одинаковое время означает одну и ту же
+    // правку, вернувшуюся кругом, и разницы нет.
+    return incoming >= mine;
   }
 
   final Map<String, Set<String>> _columnCache = {};

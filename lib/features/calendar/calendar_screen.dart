@@ -8,8 +8,8 @@ import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
 import '../../data/settings.dart';
-import '../../domain/week_layout.dart';
 import '../common/blocks.dart' show vBack;
+import '../common/period_pager.dart';
 import '../search/search_screen.dart';
 import '../tasks/day_tasks.dart';
 import '../settings/month_settings_screen.dart';
@@ -21,6 +21,7 @@ import 'views/month_view.dart';
 import 'views/week_view.dart';
 import '../../domain/day_review.dart';
 import 'widgets/day_review_sheet.dart';
+import 'widgets/day_sheet.dart';
 import 'widgets/month_header.dart';
 import 'widgets/span_bar.dart';
 import 'widgets/view_switcher.dart';
@@ -41,6 +42,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   /// `null` — экран только открыли: вид берётся из настроек.
   CalendarView? _view;
   DateTime? _selected;
+
+  /// Первая колонка вида «Неделя». Живёт отдельно от выбранного дня: неделя
+  /// листается посуточно и может начинаться с любого дня, а выбранный день
+  /// при этом остаётся тем, что человек выбрал.
+  DateTime? _weekAnchor;
 
   /// Отмеченные события. Пустая карта — обычный режим: тап открывает превью.
   /// Держим целые события, а не одни id: пачку надо перенести и вернуть,
@@ -65,37 +71,38 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     await action(events);
   }
 
-  /// Полоска дней над видом «День» — всегда семь суток подряд.
-  List<DateTime> get _strip {
-    final day = _selected!;
-    final monday = day.subtract(Duration(days: day.weekday - 1));
-    return List.generate(7, (i) => monday.add(Duration(days: i)));
-  }
-
-  /// Колонки вида «Неделя» — столько, сколько дней выбрал человек.
-  List<DateTime> _weekColumns(WeekLayout layout) => layout.daysOf(_selected!);
-
-  /// Видимое окно плюс запас: ряды разворачиваются на него, и при листании
-  /// соседний месяц уже посчитан.
+  /// Окно, на котором разворачиваются ряды: месяц выбранного дня с запасом в
+  /// неделю назад и две вперёд.
+  ///
+  /// Окно считается от месяца, а не от видимых суток, намеренно. Ключ окна —
+  /// пара дат, и окно «день ± неделя» давало бы новый ключ на каждый свайп:
+  /// новая подписка на базу, новый разворот рядов, и так на каждое движение
+  /// пальца. От месяца ключ меняется двенадцать раз в году, а листание дней и
+  /// недель внутри месяца обходится без единого запроса.
+  ///
+  /// Запас несимметричный: две недели вперёд закрывают ленту дней, которая с
+  /// конца месяца заглядывает в следующий.
   ({DateTime from, DateTime to}) get _window {
     final day = _selected!;
-    final (DateTime from, DateTime to) = switch (_view ?? CalendarView.day) {
-      CalendarView.day => (day, day.add(const Duration(days: 1))),
-      CalendarView.week => (_strip.first, _strip.last.add(const Duration(days: 1))),
-      CalendarView.bands => (day, day.add(const Duration(days: _bandsLength))),
-      CalendarView.month => (
-          DateTime(day.year, day.month, 1),
-          DateTime(day.year, day.month + 1, 1),
-        ),
-    };
     return (
-      from: from.subtract(const Duration(days: 7)),
-      to: to.add(const Duration(days: 7)),
+      from: DateTime(day.year, day.month, 1).subtract(const Duration(days: 7)),
+      to: DateTime(day.year, day.month + 1, 1).add(const Duration(days: 14)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    // Сутки сменились, пока приложение лежало в фоне. Человек, смотревший на
+    // «сегодня», должен увидеть новое сегодня, а не вчерашний день — но если
+    // он ушёл листать другую неделю, его выбор не трогаем.
+    ref.listen(nowProvider, (before, after) {
+      if (before == null) return;
+      final was = DateTime(before.year, before.month, before.day);
+      final become = DateTime(after.year, after.month, after.day);
+      if (was == become || _selected != was) return;
+      setState(() => _selected = become);
+    });
+
     final now = ref.watch(nowProvider);
     final today = DateTime(now.year, now.month, now.day);
     _selected ??= today;
@@ -128,13 +135,12 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         ),
         if (view == CalendarView.day)
           WeekStrip(
-            onPrevious: () => _shift(-1),
-            onNext: () => _shift(1),
-            week: _strip,
             selected: _selected!,
+            // Занятые дни считаем на месяц вокруг: лента листается свободно,
+            // и точки должны стоять там, куда человек ещё только доедет.
             busyDays: {
-              for (final d in _strip)
-                if (range.eventsOn(d).isNotEmpty) d.day,
+              for (final d in range.byDay.keys)
+                if (range.eventsOn(d).isNotEmpty) d,
             },
             onSelect: (d) => setState(() => _selected = d),
           ),
@@ -161,16 +167,19 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         // Свайп листает период. Без него календарь показывал только тот день,
         // на который его открыли: соседняя неделя была недостижима вовсе.
         Expanded(
-          child: GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onHorizontalDragEnd: (details) {
-              final v = details.primaryVelocity ?? 0;
-              // Порог отсекает случайный сдвиг пальца при прокрутке часов.
-              if (v.abs() < 220) return;
-              _shift(v < 0 ? 1 : -1);
-            },
-            child: _body(range, inheritance, now, today, reading, monthMode),
-          ),
+          // Неделя листается собственной лентой колонок — жест принадлежит ей.
+          // Остальные виды листает пейджер: сутки и месяц — единицы, которые
+          // меняются целиком.
+          child: view == CalendarView.week
+              ? _body(range, inheritance, now, today, reading, monthMode)
+              : LayoutBuilder(
+                  builder: (context, box) => VPeriodPager(
+                    step: box.maxWidth,
+                    onShift: _shift,
+                    child: _body(
+                        range, inheritance, now, today, reading, monthMode),
+                  ),
+                ),
         ),
         if (_picking) _BulkBar(
           count: _picked.length,
@@ -181,6 +190,32 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         ),
       ],
     );
+  }
+
+  /// День листом поверх месяца: события дня, а из него — либо событие, либо
+  /// сам день целиком.
+  Future<void> _openDaySheet(
+    DateTime day,
+    RangeData range,
+    Inheritance inheritance,
+  ) async {
+    final choice = await showDaySheet(
+      context,
+      day: day,
+      events: range.eventsOn(day),
+      spans: range.spansOn(day),
+      inheritance: inheritance,
+    );
+    if (choice == null || !mounted) return;
+
+    if (choice.event != null) {
+      await EventFlow(context, ref).preview(choice.event!);
+      return;
+    }
+    setState(() {
+      _selected = day;
+      _view = CalendarView.day;
+    });
   }
 
   /// Разбор дня: сколько занято, где окна, что наехало друг на друга.
@@ -248,7 +283,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   }
 
   /// Шаг листания зависит от вида: день — сутки, лента — свою длину, неделя —
-  /// семь дней, месяц — месяц.
+  /// сутки за колонку, месяц — месяц.
   void _shift(int direction) {
     setState(() {
       final view = _view ?? CalendarView.day;
@@ -262,9 +297,21 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         );
         return;
       }
+      if (view == CalendarView.week) {
+        // В неделе двигается окно, а не выбранный день: сдвиг на два дня
+        // показывает конец прошлой недели рядом с началом этой.
+        final layout = ref.read(weekLayoutProvider);
+        final anchor = _weekAnchor ?? layout.weekStart(_selected!);
+        _weekAnchor = anchor.add(Duration(days: direction));
+        // Выбранный день едет следом, иначе окно событий перестанет совпадать
+        // с тем, что видно на экране.
+        _selected = _weekAnchor!;
+        return;
+      }
+
       final step = switch (view) {
         CalendarView.day => 1,
-        CalendarView.week => 7,
+        CalendarView.week => 1,
         CalendarView.bands => _bandsLength,
         CalendarView.month => 0,
       };
@@ -421,13 +468,24 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           maxChips: ref.watch(monthChipsProvider),
           // Тап по дню уводит в день: месяц отвечает «когда», подробности
           // живут там.
-          onDayTap: (d) => setState(() {
-            _selected = d;
-            _view = CalendarView.day;
-          }),
+          // Лист поверх месяца, а не уход в другой вид: человек смотрит на
+          // месяц, чтобы выбрать день, и терять картину целиком после первого
+          // же тапа он не должен.
+          onDayTap: (d) => _openDaySheet(d, range, inheritance),
+          // Лента месяцев сама говорит, до какого долистали: по нему шапка
+          // называет месяц, а окно событий держит нужный кусок базы.
+          onMonthChanged: (month) => setState(() => _selected = month),
         ),
       CalendarView.week => WeekView(
-          week: _weekColumns(ref.watch(weekLayoutProvider)),
+          // Лента живёт своей прокруткой: экран отдаёт ей первый видимый день
+          // и получает обратно тот, до которого долистали.
+          anchor: _weekAnchor ??
+              ref.watch(weekLayoutProvider).weekStart(_selected!),
+          columns: ref.watch(weekLayoutProvider).weekdays.length,
+          onAnchorChanged: (day) => setState(() {
+            _weekAnchor = day;
+            _selected = day;
+          }),
           eventsOf: range.eventsOn,
           spans: range.spans,
           inheritance: inheritance,

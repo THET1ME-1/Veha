@@ -117,6 +117,7 @@ class _ReadingSwitch extends StatelessWidget {
         children: [
           for (final r in DayReading.values)
             GestureDetector(
+              key: ValueKey('reading-${r.name}'),
               onTap: () => onChanged(r),
               child: Container(
                 width: 36,

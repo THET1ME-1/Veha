@@ -11,6 +11,7 @@ import 'look_sheet.dart';
 import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
 import '../../data/models.dart';
+import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
 import '../calendar/widgets/month_header.dart' show AppFonts;
 import '../../domain/draft.dart';
 
@@ -75,6 +76,10 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
           .withTitle(phrase.title.isEmpty ? value : phrase.title)
           .withStart(phrase.start)
           .withEnd(phrase.start.add(phrase.duration));
+      // Правило из строки применяется вместе с датой: «английский каждый
+      // вторник» без этого заводил одно занятие, и человек узнавал об этом
+      // через неделю.
+      if (phrase.rrule != null) _draft = _draft.withRrule(phrase.rrule);
       _read = understood ? _readLabel(phrase) : null;
     });
   }
@@ -142,7 +147,12 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
   String _readLabel(Phrase phrase) {
     final locale = Localizations.localeOf(context).toLanguageTag();
     final when = DateFormat('EEE d MMMM, HH:mm', locale).format(phrase.start);
-    return '${L.of(context).quickPhraseRead}: $when';
+    // Разобранное правило показывается до применения: вслепую повтор не
+    // ставится, иначе человек получит не тот ряд и заметит через месяц.
+    final repeat = phrase.rrule == null
+        ? ''
+        : ' · ${recurrenceLabelOf(L.of(context), _draft.toEvent(newId: () => 'preview'), locale: locale) ?? ''}';
+    return '${L.of(context).quickPhraseRead}: $when$repeat';
   }
 
   static const _durations = <(String, Duration)>[

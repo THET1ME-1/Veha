@@ -76,11 +76,28 @@ Future<PreviewChoice?> showEventPreview(
   );
 }
 
-class _PreviewSheet extends StatelessWidget {
+/// Лист события.
+///
+/// Действий у события восемнадцать, и все восемнадцать разом превращают лист
+/// в пульт управления, где глазами приходится искать «Изменить». Открытыми
+/// остаются те, за которыми сюда приходят: правка, перенос, копия, удаление.
+/// Остальное живёт под «Ещё» — оно нужно раз в месяц и не должно каждый день
+/// занимать экран.
+class _PreviewSheet extends StatefulWidget {
   const _PreviewSheet({required this.event, required this.inheritance});
 
   final VEvent event;
   final Inheritance inheritance;
+
+  @override
+  State<_PreviewSheet> createState() => _PreviewSheetState();
+}
+
+class _PreviewSheetState extends State<_PreviewSheet> {
+  bool _more = false;
+
+  VEvent get event => widget.event;
+  Inheritance get inheritance => widget.inheritance;
 
   @override
   Widget build(BuildContext context) {
@@ -180,6 +197,27 @@ class _PreviewSheet extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
+            // Описание идёт первым: ради него карточку и открывают чаще, чем
+            // ради строки календаря.
+            if (event.description != null && event.description!.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: VBlock(children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
+                    child: Text(
+                      event.description!,
+                      style: TextStyle(
+                        fontFamily: AppFonts.body,
+                        fontSize: 14,
+                        height: 1.35,
+                        fontWeight: FontWeight.w500,
+                        color: scheme.onSurface,
+                      ),
+                    ),
+                  ),
+                ]),
+              ),
             VBlock(children: [
               if (repeat != null)
                 VRow(icon: 'repeat', label: l.eventRepeat, value: repeat),
@@ -252,26 +290,6 @@ class _PreviewSheet extends StatelessWidget {
                 ),
               ],
             ),
-            // Ряд паузится, а не удаляется: каникулы и отпуск — это отрезок
-            // без занятий, а не конец расписания.
-            if (event.isOccurrence) ...[
-              VBlockCap(l.seriesPause),
-              Wrap(
-                spacing: 7,
-                runSpacing: 7,
-                children: [
-                  for (final weeks in const [1, 2, 4])
-                    _Chip(
-                      icon: 'repeat',
-                      label: l.seriesPauseWeeks(weeks),
-                      onTap: () => Navigator.pop(
-                        context,
-                        PreviewChoice(PreviewAction.pauseSeries, weeks: weeks),
-                      ),
-                    ),
-                ],
-              ),
-            ],
             VBlockCap(l.previewActions),
             Wrap(
               spacing: 7,
@@ -280,66 +298,111 @@ class _PreviewSheet extends StatelessWidget {
                 _Chip(
                   icon: 'content_copy',
                   label: l.eventDuplicate,
-                  onTap: () => Navigator.pop(context, PreviewChoice(PreviewAction.duplicate)),
-                ),
-                // День — цепочка: занятие сдвинулось, за ним едет остаток.
-                _Chip(
-                  icon: 'viewDay',
-                  label: l.shiftRest,
-                  onTap: () => Navigator.pop(context, PreviewChoice(PreviewAction.shiftRest)),
-                ),
-                _Chip(
-                  icon: 'expand',
-                  label: l.stretchToNext,
                   onTap: () =>
-                      Navigator.pop(context, PreviewChoice(PreviewAction.stretchToNext)),
+                      Navigator.pop(context, PreviewChoice(PreviewAction.duplicate)),
                 ),
-                _Chip(
-                  icon: 'today',
-                  label: l.repeatDay,
-                  onTap: () => Navigator.pop(context, PreviewChoice(PreviewAction.repeatDay)),
-                ),
-                _Chip(
-                  icon: 'task_alt',
-                  label: l.toTask,
-                  onTap: () => Navigator.pop(context, PreviewChoice(PreviewAction.toTask)),
-                ),
-                _Chip(
-                  icon: 'palette',
-                  label: l.lookTitle,
-                  onTap: () => Navigator.pop(context, PreviewChoice(PreviewAction.changeLook)),
-                ),
-                // Сброс к ветке предлагается, только когда есть что сбрасывать.
-                if (event.color != null || event.iconName != null)
-                  _Chip(
-                    icon: 'wand',
-                    label: l.lookReset,
-                    onTap: () =>
-                        Navigator.pop(context, PreviewChoice(PreviewAction.resetLook)),
-                  ),
                 _Chip(
                   icon: 'share',
                   label: l.actionShare,
-                  onTap: () => Navigator.pop(context, PreviewChoice(PreviewAction.copyText)),
-                ),
-                _Chip(
-                  icon: 'download',
-                  label: l.icsExport,
-                  onTap: () => Navigator.pop(context, PreviewChoice(PreviewAction.exportIcs)),
+                  onTap: () =>
+                      Navigator.pop(context, PreviewChoice(PreviewAction.copyText)),
                 ),
                 _Chip(
                   icon: 'trash',
                   label: l.actionDelete,
                   danger: true,
-                  onTap: () => Navigator.pop(context, PreviewChoice(PreviewAction.delete)),
+                  onTap: () =>
+                      Navigator.pop(context, PreviewChoice(PreviewAction.delete)),
                 ),
+                if (!_more)
+                  _Chip(
+                    icon: 'chevron',
+                    label: l.previewMore,
+                    onTap: () => setState(() => _more = true),
+                  ),
               ],
             ),
+            if (_more) ..._rare(context, l),
           ],
         ),
       ),
     );
   }
+
+  /// Редкое: то, что делают раз в месяц. Пауза ряда живёт здесь же — она нужна
+  /// на каникулах, а не каждый день.
+  List<Widget> _rare(BuildContext context, L l) => [
+        if (event.isOccurrence) ...[
+          VBlockCap(l.seriesPause),
+          Wrap(
+            spacing: 7,
+            runSpacing: 7,
+            children: [
+              for (final weeks in const [1, 2, 4])
+                _Chip(
+                  icon: 'repeat',
+                  label: l.seriesPauseWeeks(weeks),
+                  onTap: () => Navigator.pop(
+                    context,
+                    PreviewChoice(PreviewAction.pauseSeries, weeks: weeks),
+                  ),
+                ),
+            ],
+          ),
+        ],
+        VBlockCap(l.previewMore),
+        Wrap(
+          spacing: 7,
+          runSpacing: 7,
+          children: [
+            // День — цепочка: занятие сдвинулось, за ним едет остаток.
+            _Chip(
+              icon: 'viewDay',
+              label: l.shiftRest,
+              onTap: () =>
+                  Navigator.pop(context, PreviewChoice(PreviewAction.shiftRest)),
+            ),
+            _Chip(
+              icon: 'expand',
+              label: l.stretchToNext,
+              onTap: () => Navigator.pop(
+                  context, PreviewChoice(PreviewAction.stretchToNext)),
+            ),
+            _Chip(
+              icon: 'today',
+              label: l.repeatDay,
+              onTap: () =>
+                  Navigator.pop(context, PreviewChoice(PreviewAction.repeatDay)),
+            ),
+            _Chip(
+              icon: 'task_alt',
+              label: l.toTask,
+              onTap: () =>
+                  Navigator.pop(context, PreviewChoice(PreviewAction.toTask)),
+            ),
+            _Chip(
+              icon: 'palette',
+              label: l.lookTitle,
+              onTap: () =>
+                  Navigator.pop(context, PreviewChoice(PreviewAction.changeLook)),
+            ),
+            // Сброс к ветке предлагается, только когда есть что сбрасывать.
+            if (event.color != null || event.iconName != null)
+              _Chip(
+                icon: 'wand',
+                label: l.lookReset,
+                onTap: () =>
+                    Navigator.pop(context, PreviewChoice(PreviewAction.resetLook)),
+              ),
+            _Chip(
+              icon: 'download',
+              label: l.icsExport,
+              onTap: () =>
+                  Navigator.pop(context, PreviewChoice(PreviewAction.exportIcs)),
+            ),
+          ],
+        ),
+      ];
 
   String _when(BuildContext context, String locale) {
     if (event.isMultiDay) {

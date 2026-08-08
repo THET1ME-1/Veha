@@ -99,10 +99,13 @@ class IcsRows extends ConsumerWidget {
 
     // Кодировку файла угадывать не будем: `.ics` по стандарту в UTF-8, а
     // битые байты не должны ронять приложение.
-    final data = parseIcs(
+    // Разбор уезжает в отдельный поток: файл на тысячи событий иначе
+    // замораживает экран на секунды.
+    final data = await parseIcsInBackground(
       utf8.decode(bytes, allowMalformed: true),
       untitled: L.of(context).untitled,
     );
+    if (!context.mounted) return;
     if (data.events.isEmpty) {
       _say(context, L.of(context).icsNoEvents);
       return;

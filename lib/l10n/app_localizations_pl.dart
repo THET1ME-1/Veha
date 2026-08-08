@@ -1477,4 +1477,123 @@ class LPl extends L {
   String travelLeaveAt(String time) {
     return 'Wyjść o $time';
   }
+
+  @override
+  String get storageFailed =>
+      'Kalendarz się nie otworzył. Uruchom aplikację ponownie';
+
+  @override
+  String get storageRetry => 'Ponów';
+
+  @override
+  String get hiddenCalendarWarning =>
+      'Wydarzenie jest w ukrytym kalendarzu i nie widać go w siatce';
+
+  @override
+  String get hiddenCalendarShow => 'Pokaż';
+
+  @override
+  String get previewMore => 'Więcej';
+
+  @override
+  String monthOnDay(int day) {
+    return '$day. dnia';
+  }
+
+  @override
+  String get monthLastWorkday => 'Ostatni dzień roboczy';
+
+  @override
+  String get monthRuleTitle => 'Czym mierzymy miesiąc';
+
+  @override
+  String everyDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'co $count dnia',
+      many: 'co $count dni',
+      few: 'co $count dni',
+      one: 'codziennie',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String everyWeeks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'co $count tygodnia',
+      many: 'co $count tygodni',
+      few: 'co $count tygodnie',
+      one: 'co tydzień',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String everyMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'co $count miesiąca',
+      many: 'co $count miesięcy',
+      few: 'co $count miesiące',
+      one: 'co miesiąc',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String everyYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'co $count roku',
+      many: 'co $count lat',
+      few: 'co $count lata',
+      one: 'co rok',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get repeatHowOften => 'Jak często';
+
+  @override
+  String get calendarSharing => 'Co trafia na serwer';
+
+  @override
+  String get calendarShared => 'Kalendarz wspólny';
+
+  @override
+  String get calendarSharedOn => 'Wysyłany na serwer';
+
+  @override
+  String get calendarSharedOff => 'Zostaje na urządzeniu';
+
+  @override
+  String get syncSharedList => 'Wysłano na serwer';
+
+  @override
+  String get syncSharedNone => 'Nic: wszystko zostaje na urządzeniu';
+
+  @override
+  String get eventDescription => 'Opis';
+
+  @override
+  String get eventDescriptionHint => 'Co zabrać, co ustalono';
+
+  @override
+  String get eventHoldsTime => 'Zajmuje czas';
+
+  @override
+  String get dayOpenFull => 'Otwórz dzień';
+
+  @override
+  String get dayEmpty => 'Na ten dzień nic nie zaplanowano';
+
+  @override
+  String get monthDensityText => 'Tylko tekst';
 }

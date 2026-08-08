@@ -328,12 +328,14 @@ class VehaRepository {
             calendarId: e.calendarId,
             subcategoryId: Value(e.subcategoryId),
             title: e.title,
+            description: Value(e.description),
             location: Value(e.location),
             travelMinutes: Value(e.travelMinutes),
             start: e.start.millisecondsSinceEpoch,
             end: e.end.millisecondsSinceEpoch,
             timezone: e.timezone,
             isAllDay: Value(e.isAllDay),
+            availability: Value(e.availability.name),
             color: Value(e.color?.toARGB32()),
             icon: Value(e.iconName),
             // Правило остаётся у ряда: выломанный экземпляр повторяется через
@@ -697,6 +699,7 @@ class VehaRepository {
         start: e.start,
         end: e.end,
         isAllDay: e.isAllDay,
+        availability: e.availability,
         rrule: e.rrule,
         timezone: e.timezone,
         location: e.location,
@@ -950,6 +953,25 @@ class VehaRepository {
     });
   }
 
+  /// Ручной порядок задач: список идёт в том виде, в каком его собрал человек.
+  ///
+  /// Номера раздаются подряд с нуля, а не сдвигаются относительно прежних:
+  /// после десятка перестановок дробные промежутки кончаются, и список
+  /// начинает тасоваться сам по себе.
+  Future<void> reorderTasks(List<String> idsInOrder) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await db.transaction(() async {
+      for (var i = 0; i < idsInOrder.length; i++) {
+        await (db.update(db.tasks)..where((t) => t.id.equals(idsInOrder[i])))
+            .write(TasksCompanion(
+          sortOrder: Value(i),
+          updatedAt: Value(now),
+        ));
+        await _enqueue('task', idsInOrder[i], 'upsert');
+      }
+    });
+  }
+
   Future<void> deleteTask(String id) async {
     final now = DateTime.now().millisecondsSinceEpoch;
     await db.transaction(() async {
@@ -1060,6 +1082,49 @@ class VehaRepository {
     });
   }
 
+  /// Отменяет занятие ряда целиком, каким бы оно ни было.
+  ///
+  /// [skipOccurrence] пишет пропуск для правила — но занятие, которое человек
+  /// когда-то передвинул, правилу не подчиняется: у него своя запись, и после
+  /// «отменить это занятие» оно продолжало висеть на своём месте. Здесь
+  /// убирается и то, и другое.
+  ///
+  /// Возвращает ключи убранных записей — для полоски «Вернуть».
+  Future<List<String>> cancelOccurrence(
+    String seriesId,
+    DateTime originalStart,
+  ) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final removed = <String>[];
+
+    await db.transaction(() async {
+      await db.into(db.recurrenceExceptions).insertOnConflictUpdate(
+            RecurrenceExceptionsCompanion.insert(
+              eventId: seriesId,
+              excludedDate: originalStart.millisecondsSinceEpoch,
+            ),
+          );
+
+      final broken = await (db.select(db.events)
+            ..where((t) =>
+                t.recurrenceId.equals(seriesId) &
+                t.originalStart.equals(originalStart.millisecondsSinceEpoch) &
+                t.deletedAt.isNull()))
+          .get();
+
+      for (final row in broken) {
+        await (db.update(db.events)..where((t) => t.id.equals(row.id))).write(
+            EventsCompanion(deletedAt: Value(now), updatedAt: Value(now)));
+        await _enqueue('event', row.id, 'delete');
+        removed.add(row.id);
+      }
+
+      await _enqueue('event', seriesId, 'upsert');
+    });
+
+    return removed;
+  }
+
   /// Удаление всегда мягкое.
   Future<void> deleteEvent(String id) async {
     final now = DateTime.now().millisecondsSinceEpoch;
@@ -1070,12 +1135,68 @@ class VehaRepository {
     });
   }
 
-  /// Удаление всего ряда: и записи, и всех его занятий разом.
+  /// Удаление всего ряда: и записи с правилом, и всех занятий, которые из неё
+  /// когда-то выломали.
   ///
   /// Отдельным методом от [deleteEvent] намеренно: у экземпляра ряда своего
   /// ключа нет, и «удалить» без уточнения означало бы «отменить одно
   /// занятие» — разные намерения, которые легко перепутать.
-  Future<void> deleteSeries(String seriesId) => deleteEvent(seriesId);
+  ///
+  /// Одной строкой ряд не удаляется. Занятие, которое человек когда-то
+  /// передвинул, лежит в базе отдельной записью с ключом ряда, и правило про
+  /// него ничего не знает: после «удалить весь ряд» такие занятия оставались
+  /// на экране, а взять их было уже нечем — все три «удалить» били по
+  /// правилу, а не по ним. Поэтому семья ряда убирается целиком.
+  ///
+  /// Возвращает ключи убранного: полоска «Вернуть» поднимает ровно их, а не
+  /// всё, что когда-либо удаляли из этого ряда.
+  Future<List<String>> deleteSeries(String seriesId) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final removed = <String>[];
+
+    await db.transaction(() async {
+      final family = await (db.select(db.events)
+            ..where((t) =>
+                (t.id.equals(seriesId) | t.recurrenceId.equals(seriesId)) &
+                t.deletedAt.isNull()))
+          .get();
+
+      for (final row in family) {
+        await (db.update(db.events)..where((t) => t.id.equals(row.id))).write(
+            EventsCompanion(deletedAt: Value(now), updatedAt: Value(now)));
+        await _enqueue('event', row.id, 'delete');
+        removed.add(row.id);
+      }
+    });
+
+    return removed;
+  }
+
+  /// Возвращает пачку удалённого разом — обратная сторона [deleteSeries].
+  Future<void> restoreEvents(List<String> ids) async {
+    if (ids.isEmpty) return;
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await db.transaction(() async {
+      for (final id in ids) {
+        await (db.update(db.events)..where((t) => t.id.equals(id))).write(
+            const EventsCompanion(deletedAt: Value(null))
+                .copyWith(updatedAt: Value(now)));
+        await _enqueue('event', id, 'upsert');
+      }
+    });
+  }
+
+  /// Жив ли ряд, к которому приписано занятие.
+  ///
+  /// У занятия, пережившего свой ряд, спрашивать «отменить одно или весь
+  /// ряд» бессмысленно: любой ответ уходит в никуда, и удалить такое занятие
+  /// становится невозможно. Экран сначала спрашивает об этом.
+  Future<bool> seriesAlive(String seriesId) async {
+    final row = await (db.select(db.events)
+          ..where((t) => t.id.equals(seriesId) & t.deletedAt.isNull()))
+        .getSingleOrNull();
+    return row != null;
+  }
 
   /// Возвращает удалённое событие: полоска «Вернуть» живёт несколько секунд,
   /// и всё это время строка лежит в базе с пометкой об удалении.
@@ -1175,22 +1296,44 @@ class VehaRepository {
   /// Обрывает ряд на дате занятия: «это и следующие удалить».
   ///
   /// Прошедшие занятия остаются — их человек прожил, и стирать их задним
-  /// числом нельзя. Правилу дописывается `UNTIL` на канун разреза.
-  Future<void> trimSeriesAt(String seriesId, DateTime cut) async {
+  /// числом нельзя. Правилу дописывается `UNTIL` на канун разреза, а занятия,
+  /// выломанные из ряда после этой даты, уходят вместе с ним: правило их не
+  /// держит, и после обрыва они оставались висеть поодиночке.
+  ///
+  /// Возвращает ключи убранных записей — для полоски «Вернуть».
+  Future<List<String>> trimSeriesAt(String seriesId, DateTime cut) async {
     final series = await (db.select(db.events)
           ..where((t) => t.id.equals(seriesId)))
         .getSingleOrNull();
-    if (series?.rrule == null) return;
+    if (series?.rrule == null) return const [];
 
     final now = DateTime.now().millisecondsSinceEpoch;
     final start = DateTime.fromMillisecondsSinceEpoch(series!.start);
     final head = Recurrence.endBefore(series.rrule!, cut, start: start);
+    final removed = <String>[];
 
     await db.transaction(() async {
       await (db.update(db.events)..where((t) => t.id.equals(seriesId)))
           .write(EventsCompanion(rrule: Value(head), updatedAt: Value(now)));
       await _enqueue('event', seriesId, 'upsert');
+
+      final tail = await (db.select(db.events)
+            ..where((t) =>
+                t.recurrenceId.equals(seriesId) &
+                t.originalStart
+                    .isBiggerOrEqualValue(cut.millisecondsSinceEpoch) &
+                t.deletedAt.isNull()))
+          .get();
+
+      for (final row in tail) {
+        await (db.update(db.events)..where((t) => t.id.equals(row.id))).write(
+            EventsCompanion(deletedAt: Value(now), updatedAt: Value(now)));
+        await _enqueue('event', row.id, 'delete');
+        removed.add(row.id);
+      }
     });
+
+    return removed;
   }
 
   /// Возвращает отменённое занятие в ряд.
@@ -1332,7 +1475,20 @@ class VehaRepository {
     });
   }
 
-  Future<void> _enqueue(String type, String id, String op) async {
+  /// Ставит запись в очередь на сервер — если её календарь общий.
+  ///
+  /// Очередь — единственная дверь наружу, поэтому проверка стоит здесь, а не
+  /// в местах вызова: забыть её в одном из полутора десятков мест значит
+  /// однажды отправить на сервер личный календарь. Наверх уходит только то,
+  /// что человек пометил общим, и это первый из необсуждаемых принципов.
+  Future<void> _enqueue(
+    String type,
+    String id,
+    String op, {
+    String? calendarId,
+  }) async {
+    if (!await _isShared(calendarId ?? await _ownerCalendar(type, id))) return;
+
     // Схлопывание очереди: незачем хранить пять правок одного события.
     await (db.delete(db.syncQueue)
           ..where((t) => t.entityType.equals(type) & t.entityId.equals(id)))
@@ -1343,6 +1499,118 @@ class VehaRepository {
           operation: op,
           createdAt: DateTime.now().millisecondsSinceEpoch,
         ));
+  }
+
+  /// Чей это календарь. Заметка принадлежит событию, а событие — календарю,
+  /// поэтому цепочка разматывается здесь, в одном месте: полтора десятка
+  /// вызовов очереди о принадлежности знать не обязаны.
+  Future<String?> _ownerCalendar(String type, String id) async {
+    switch (type) {
+      case 'calendar':
+        return id;
+      case 'event':
+        final row = await (db.select(db.events)..where((t) => t.id.equals(id)))
+            .getSingleOrNull();
+        return row?.calendarId;
+      case 'subcategory':
+        final row = await (db.select(db.subcategories)
+              ..where((t) => t.id.equals(id)))
+            .getSingleOrNull();
+        return row?.calendarId;
+      case 'task':
+        final row = await (db.select(db.tasks)..where((t) => t.id.equals(id)))
+            .getSingleOrNull();
+        return row?.calendarId;
+      case 'note':
+        final note = await (db.select(db.eventNotes)
+              ..where((t) => t.id.equals(id)))
+            .getSingleOrNull();
+        if (note == null) return null;
+        return _ownerCalendar('event', note.eventId);
+      case 'field':
+        final row = await (db.select(db.fieldDefs)..where((t) => t.id.equals(id)))
+            .getSingleOrNull();
+        // Поле привязано к календарю областью видимости. Общие определения
+        // календарю не принадлежат и наверх не идут: «наверх только явно
+        // расшаренное» относится и к ним.
+        return row?.scopeType == 'calendar' ? row?.scopeId : null;
+      default:
+        return null;
+    }
+  }
+
+  /// Помечен ли календарь общим. `null` — записи без календаря: их наверх не
+  /// отправляем, потому что решать по ним нечего.
+  Future<bool> _isShared(String? calendarId) async {
+    if (calendarId == null) return false;
+    final row = await (db.select(db.calendars)
+          ..where((t) => t.id.equals(calendarId)))
+        .getSingleOrNull();
+    return row?.isShared ?? false;
+  }
+
+  /// Календарь общий или личный.
+  ///
+  /// Включение уносит наверх и то, что заведено раньше: иначе на втором
+  /// устройстве появится половина календаря — только правки после
+  /// переключателя. Выключение вычищает его записи из очереди: человек,
+  /// передумавший делиться, ждёт, что не уедет ничего.
+  Future<void> setCalendarShared(String id, bool shared) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    await db.transaction(() async {
+      await (db.update(db.calendars)..where((t) => t.id.equals(id))).write(
+        CalendarsCompanion(isShared: Value(shared), updatedAt: Value(now)),
+      );
+
+      final events = await (db.select(db.events)
+            ..where((t) => t.calendarId.equals(id)))
+          .get();
+      final subs = await (db.select(db.subcategories)
+            ..where((t) => t.calendarId.equals(id)))
+          .get();
+      final tasks = await (db.select(db.tasks)
+            ..where((t) => t.calendarId.equals(id)))
+          .get();
+      final noteIds = <String>[];
+      for (final e in events) {
+        final notes = await (db.select(db.eventNotes)
+              ..where((t) => t.eventId.equals(e.id)))
+            .get();
+        noteIds.addAll(notes.map((n) => n.id));
+      }
+
+      if (!shared) {
+        Future<void> forget(String type, Iterable<String> ids) async {
+          if (ids.isEmpty) return;
+          await (db.delete(db.syncQueue)
+                ..where((t) =>
+                    t.entityType.equals(type) & t.entityId.isIn(ids.toList())))
+              .go();
+        }
+
+        await forget('calendar', [id]);
+        await forget('event', events.map((e) => e.id));
+        await forget('subcategory', subs.map((s) => s.id));
+        await forget('task', tasks.map((t) => t.id));
+        await forget('note', noteIds);
+        return;
+      }
+
+      await _enqueue('calendar', id, 'upsert', calendarId: id);
+      for (final s in subs) {
+        await _enqueue('subcategory', s.id, 'upsert', calendarId: id);
+      }
+      for (final e in events) {
+        await _enqueue('event', e.id, 'upsert', calendarId: id);
+      }
+      for (final t in tasks) {
+        await _enqueue('task', t.id, 'upsert', calendarId: id);
+      }
+      for (final n in noteIds) {
+        await _enqueue('note', n, 'upsert', calendarId: id);
+      }
+    });
   }
 
   // ---------- первый запуск ----------
@@ -1363,14 +1631,19 @@ class VehaRepository {
   /// календарь, чтобы вести свои дела, а не разбирать чужие. Календарь всё же
   /// нужен один — иначе новое событие некуда положить, и кнопка «Записать»
   /// молча не работает.
-  Future<void> ensureFirstCalendar({SeedWords? words}) async {
+  /// [id] задаётся, когда ключ уже известен: восстановление из копии и
+  /// проверки, которым нужен предсказуемый календарь. В остальных случаях
+  /// ключ свой, а не общее слово: одинаковый `default` у всех означал, что
+  /// два устройства нельзя свести на сервере и нельзя расшарить календарь
+  /// другому человеку — первичный ключ сталкивался.
+  Future<void> ensureFirstCalendar({SeedWords? words, String? id}) async {
     final existing = await db.select(db.calendars).get();
     if (existing.isNotEmpty) return;
 
     final w = words ?? SeedWords.of('ru');
     final now = DateTime.now().millisecondsSinceEpoch;
     await db.into(db.calendars).insert(CalendarsCompanion.insert(
-          id: 'default',
+          id: id ?? _uuid.v4(),
           name: w.t('Личное'),
           color: 0xFF41CCB5,
           icon: 'calendar',
@@ -1560,6 +1833,7 @@ class VehaRepository {
         iconName: c.icon,
         color: Color(c.color),
         isVisible: c.isVisible,
+        isShared: c.isShared,
         sortOrder: c.sortOrder,
         defaultReminders: _minutes(c.defaultReminders),
         defaultDuration: c.defaultDuration == null
@@ -1595,11 +1869,17 @@ class VehaRepository {
         calendarId: e.calendarId,
         subcategoryId: e.subcategoryId,
         title: e.title,
+        description: e.description,
         start: DateTime.fromMillisecondsSinceEpoch(e.start),
         end: DateTime.fromMillisecondsSinceEpoch(e.end),
         color: e.color == null ? null : Color(e.color!),
         iconName: e.icon,
         isAllDay: e.isAllDay,
+        // В колонке строка: 'free' у отметок вроде дня рождения, 'busy' у
+        // всего остального, включая записи, приехавшие без этого поля.
+        availability: e.availability == Availability.free.name
+            ? Availability.free
+            : Availability.busy,
         rrule: e.rrule,
         recurrenceId: e.recurrenceId,
         originalStart: e.originalStart == null

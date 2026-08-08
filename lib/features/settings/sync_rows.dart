@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/icon_registry.dart';
+import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../data/settings.dart';
 import '../../l10n/app_localizations.dart';
@@ -23,6 +24,17 @@ class SyncRows extends ConsumerStatefulWidget {
 
 class _SyncRowsState extends ConsumerState<SyncRows> {
   bool _busy = false;
+
+  /// Имена календарей, помеченных общими. Список, а не число: «два
+  /// календаря» не отвечает на вопрос, какие именно.
+  String _sharedNames(L l) {
+    final tree = ref.watch(inheritanceProvider).valueOrNull;
+    final shared = [
+      for (final c in tree?.calendars.values ?? const <VCalendar>[])
+        if (c.isShared) c.name,
+    ];
+    return shared.isEmpty ? l.syncSharedNone : shared.join(', ');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +70,15 @@ class _SyncRowsState extends ConsumerState<SyncRows> {
             ),
           ),
           onTap: _busy ? null : _syncNow,
+        ),
+        const VSep(),
+        // Что именно ушло наверх, видно здесь и всегда. Человек, отдавший
+        // календарь серверу, не должен выяснять это опытным путём — таково
+        // условие, на котором приложение вообще заводит синхронизацию.
+        VRow(
+          icon: 'cloud',
+          label: l.syncSharedList,
+          value: _sharedNames(l),
         ),
         const VSep(),
         VRow(

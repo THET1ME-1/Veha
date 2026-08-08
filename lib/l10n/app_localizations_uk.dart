@@ -1477,4 +1477,122 @@ class LUk extends L {
   String travelLeaveAt(String time) {
     return 'Виходити о $time';
   }
+
+  @override
+  String get storageFailed => 'Календар не відкрився. Перезапустіть застосунок';
+
+  @override
+  String get storageRetry => 'Повторити';
+
+  @override
+  String get hiddenCalendarWarning =>
+      'Подія в прихованому календарі — у сітці її не видно';
+
+  @override
+  String get hiddenCalendarShow => 'Показати';
+
+  @override
+  String get previewMore => 'Ще';
+
+  @override
+  String monthOnDay(int day) {
+    return '$day-го числа';
+  }
+
+  @override
+  String get monthLastWorkday => 'Останній робочий день';
+
+  @override
+  String get monthRuleTitle => 'Чим міряємо місяць';
+
+  @override
+  String everyDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'кожні $count дня',
+      many: 'кожні $count днів',
+      few: 'кожні $count дні',
+      one: 'щодня',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String everyWeeks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'кожні $count тижня',
+      many: 'кожні $count тижнів',
+      few: 'кожні $count тижні',
+      one: 'щотижня',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String everyMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'кожні $count місяця',
+      many: 'кожні $count місяців',
+      few: 'кожні $count місяці',
+      one: 'щомісяця',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String everyYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'кожні $count року',
+      many: 'кожні $count років',
+      few: 'кожні $count роки',
+      one: 'щороку',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get repeatHowOften => 'Як часто';
+
+  @override
+  String get calendarSharing => 'Що йде на сервер';
+
+  @override
+  String get calendarShared => 'Спільний календар';
+
+  @override
+  String get calendarSharedOn => 'Вирушає на сервер';
+
+  @override
+  String get calendarSharedOff => 'Залишається на пристрої';
+
+  @override
+  String get syncSharedList => 'Пішло на сервер';
+
+  @override
+  String get syncSharedNone => 'Нічого: усе лежить на пристрої';
+
+  @override
+  String get eventDescription => 'Опис';
+
+  @override
+  String get eventDescriptionHint => 'Що взяти, про що домовились';
+
+  @override
+  String get eventHoldsTime => 'Займає час';
+
+  @override
+  String get dayOpenFull => 'Відкрити день';
+
+  @override
+  String get dayEmpty => 'На цей день нічого не заплановано';
+
+  @override
+  String get monthDensityText => 'Тільки текст';
 }

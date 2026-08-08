@@ -19,10 +19,14 @@ import '../common/blocks.dart';
 class MonthSettingsScreen extends ConsumerWidget {
   const MonthSettingsScreen({super.key});
 
-  /// Плотность чипа — те же режимы, что и в самом виде. Третьего варианта
-  /// («только текст») в коде нет, и предлагать его значит врать.
-  static List<String> _densityLabels(L l) => [l.monthDensityBoth, l.monthDensityIcon];
-  static const _densityModes = [MonthMode.chips, MonthMode.icons];
+  /// Плотность чипа: значок с подписью, один значок, одна подпись.
+  static List<String> _densityLabels(L l) =>
+      [l.monthDensityBoth, l.monthDensityIcon, l.monthDensityText];
+  static const _densityModes = [
+    MonthMode.chips,
+    MonthMode.icons,
+    MonthMode.labels,
+  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

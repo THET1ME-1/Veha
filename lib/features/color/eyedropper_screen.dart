@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/brand.dart';
 import '../../l10n/app_localizations.dart';
+import '../common/morph_widgets.dart';
 import '../calendar/widgets/month_header.dart' show AppFonts;
 import '../common/blocks.dart' show vBack;
 
@@ -92,7 +93,7 @@ class _EyedropperScreenState extends State<EyedropperScreen> {
         children: [
           Expanded(
             child: _image == null
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(child: MorphLoader())
                 : LayoutBuilder(
                     builder: (context, constraints) => GestureDetector(
                       onTapDown: (details) {

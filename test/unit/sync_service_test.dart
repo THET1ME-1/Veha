@@ -73,7 +73,9 @@ void main() {
     repo = VehaRepository(db);
     api = _FakeApi();
     sync = SyncService(db: db, api: api);
-    await repo.ensureFirstCalendar(words: SeedWords.of('ru'));
+    await repo.ensureFirstCalendar(words: SeedWords.of('ru'), id: 'default');
+    // Очередь наполняется только для общих календарей.
+    await repo.setCalendarShared('default', true);
   });
 
   tearDown(() => db.close());
@@ -164,6 +166,10 @@ void main() {
       end: DateTime(2026, 8, 4, 11),
     ));
 
+    // Удаление на сервере случилось после того, как событие завели здесь:
+    // конфликт разрешается по времени правки, и версия из прошлого местную
+    // запись не тронет.
+    final removedAt = DateTime.now().millisecondsSinceEpoch + 60000;
     api.incoming = {
       'events': [
         {
@@ -174,8 +180,8 @@ void main() {
           'end': DateTime(2026, 8, 4, 11).millisecondsSinceEpoch,
           'timezone': 'UTC',
           'createdAt': 1,
-          'updatedAt': 99,
-          'deletedAt': 99,
+          'updatedAt': removedAt,
+          'deletedAt': removedAt,
         },
       ],
     };

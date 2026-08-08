@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:uuid/uuid.dart';
 
 part 'database.g.dart';
 
@@ -294,7 +295,7 @@ class VehaDatabase extends _$VehaDatabase {
   VehaDatabase(super.e);
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -333,6 +334,7 @@ class VehaDatabase extends _$VehaDatabase {
             await customStatement(
                 'CREATE INDEX idx_revisions_event ON event_revisions (event_id, at)');
           }
+          if (from < 6) await _renameDefaultCalendar();
         },
         beforeOpen: (details) async {
           // Внешние ключи в SQLite выключены по умолчанию, и мягкое удаление
@@ -340,4 +342,40 @@ class VehaDatabase extends _$VehaDatabase {
           await customStatement('PRAGMA foreign_keys = ON');
         },
       );
+
+  /// Первый календарь ранних версий назывался `default` у всех сразу.
+  ///
+  /// Пока календарь жил на устройстве, это не мешало. Стоит подключить сервер
+  /// или расшарить календарь другому человеку — и ключи сталкиваются: сервер
+  /// отвечает ошибкой, а синхронизация встаёт молча. Поэтому старому
+  /// календарю выдаётся собственный ключ, а ссылки на него переписываются.
+  ///
+  /// Внешние ключи здесь ещё выключены (`beforeOpen` не отработал), поэтому
+  /// родителя можно переименовать раньше детей.
+  Future<void> _renameDefaultCalendar() async {
+    final rows = await customSelect(
+      "SELECT id FROM calendars WHERE id = 'default'",
+    ).get();
+    if (rows.isEmpty) return;
+
+    final fresh = const Uuid().v4();
+    await customStatement(
+        'UPDATE calendars SET id = ? WHERE id = ?', [fresh, 'default']);
+    for (final table in const ['events', 'subcategories', 'tasks']) {
+      await customStatement(
+        'UPDATE $table SET calendar_id = ? WHERE calendar_id = ?',
+        [fresh, 'default'],
+      );
+    }
+    await customStatement(
+      "UPDATE field_defs SET scope_id = ? WHERE scope_id = ? AND scope_type = 'calendar'",
+      [fresh, 'default'],
+    );
+    // Очередь синхронизации ссылается на календарь по ключу — если правка
+    // ждала отправки, она должна уехать под новым именем.
+    await customStatement(
+      "UPDATE sync_queue SET entity_id = ? WHERE entity_id = ? AND entity_type = 'calendar'",
+      [fresh, 'default'],
+    );
+  }
 }

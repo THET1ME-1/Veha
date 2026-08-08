@@ -8,6 +8,7 @@ import 'l10n/app_localizations.dart';
 
 import 'data/providers.dart';
 import 'data/settings.dart';
+import 'features/shell/fresh_now.dart';
 import 'features/shell/home_shell.dart';
 import 'features/shell/widget_sync.dart';
 
@@ -49,7 +50,7 @@ class VehaApp extends ConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      home: const WidgetSync(child: HomeShell()),
+      home: const FreshNow(child: WidgetSync(child: HomeShell())),
         );
       },
     );

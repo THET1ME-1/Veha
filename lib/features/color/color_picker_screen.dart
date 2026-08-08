@@ -9,6 +9,7 @@ import '../../core/brand.dart';
 import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
 import '../../data/providers.dart';
+import '../../data/settings.dart';
 import '../../l10n/app_localizations.dart';
 import '../calendar/widgets/month_header.dart';
 import '../common/blocks.dart' show vBack;
@@ -124,6 +125,11 @@ class _ColorPickerScreenState extends ConsumerState<ColorPickerScreen> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final mine = ref.watch(savedColorsProvider).valueOrNull ?? widget.saved;
+    // Последние собираются сами: параметр остаётся для проверок, где
+    // хранилища нет.
+    final recent = widget.recent.isNotEmpty
+        ? widget.recent
+        : ref.watch(recentColorsProvider);
     final isSaved = mine.any((c) => c.toARGB32() == _color.toARGB32());
     final scales = PickerScales.forColor(_color);
     final hct = Hct.fromInt(_color.toARGB32());
@@ -156,7 +162,13 @@ class _ColorPickerScreenState extends ConsumerState<ColorPickerScreen> {
               // Экран открывают, чтобы выбрать цвет, — значит он обязан его
               // вернуть. Без этой кнопки пикер был витриной.
               FilledButton(
-                onPressed: () => Navigator.of(context).maybePop(_color),
+                onPressed: () {
+                  // Список последних пополняется на подтверждении, а не на
+                  // каждом касании плитки: иначе он забьётся оттенками,
+                  // мимо которых человек просто прошёл.
+                  ref.read(recentColorsProvider.notifier).push(_color);
+                  Navigator.of(context).maybePop(_color);
+                },
                 style: FilledButton.styleFrom(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 18, vertical: 11),
@@ -221,8 +233,8 @@ class _ColorPickerScreenState extends ConsumerState<ColorPickerScreen> {
         ),
         if (mine.isNotEmpty)
           _Swatches(L.of(context).colorMine, mine, onPick: _apply),
-        if (widget.recent.isNotEmpty)
-          _Swatches(L.of(context).colorRecent, widget.recent, onPick: _apply),
+        if (recent.isNotEmpty)
+          _Swatches(L.of(context).colorRecent, recent, onPick: _apply),
         Padding(
           padding: const EdgeInsets.only(top: 10),
           child: Text(

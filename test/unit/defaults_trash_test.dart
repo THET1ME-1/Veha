@@ -20,7 +20,7 @@ void main() {
   setUp(() async {
     db = VehaDatabase(NativeDatabase.memory());
     repo = VehaRepository(db);
-    await repo.ensureFirstCalendar(words: SeedWords.of('ru'));
+    await repo.ensureFirstCalendar(words: SeedWords.of('ru'), id: 'default');
   });
 
   tearDown(() => db.close());

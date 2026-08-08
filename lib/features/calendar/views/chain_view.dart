@@ -11,6 +11,8 @@ import '../../../data/providers.dart';
 import '../../../domain/recurrence.dart';
 import '../../../domain/time_label.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../domain/card_fields.dart';
+import '../../common/motion.dart';
 import '../widgets/month_header.dart';
 
 /// Цепочка дня: пилюли, соединённые нитью.
@@ -55,17 +57,21 @@ class ChainView extends StatelessWidget {
         rows.add(_NowLine(now: now!));
       }
 
-      rows.add(GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onEventTap == null ? null : () => onEventTap!(e),
-        onLongPress:
-            onEventLongPress == null ? null : () => onEventLongPress!(e),
-        child: _ChainRow(
-          event: e,
-          color: inheritance.colorOfEvent(e),
-          icon: inheritance.iconOfEvent(e),
-          isLast: isLast,
-          isSelected: selected.contains(e.id),
+      rows.add(VStagger(
+        // Каскад по 25 мс: день собирается на глазах, а не выпрыгивает целиком.
+        index: i,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onEventTap == null ? null : () => onEventTap!(e),
+          onLongPress:
+              onEventLongPress == null ? null : () => onEventLongPress!(e),
+          child: _ChainRow(
+            event: e,
+            color: inheritance.colorOfEvent(e),
+            icon: inheritance.iconOfEvent(e),
+            isLast: isLast,
+            isSelected: selected.contains(e.id),
+          ),
         ),
       ));
     }
@@ -73,7 +79,27 @@ class ChainView extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(
           VehaInsets.screen, 8, VehaInsets.screen, 120),
-      children: rows,
+      children: rows.isEmpty
+          ? [
+              // Свободный день говорит о себе сам. Пустой экран без единой
+              // строки человек читает как поломку, а не как свободный вторник.
+              Padding(
+                padding: const EdgeInsets.only(top: 80),
+                child: Center(
+                  child: Text(
+                    L.of(context).dayEmpty,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: AppFonts.body,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ),
+            ]
+          : rows,
     );
   }
 }
@@ -157,20 +183,17 @@ class _ChainRow extends StatelessWidget {
                           : ink.background,
                       shape: const StadiumBorder(),
                     ),
-                    // Иконка вверху пилюли: пилюля теперь тянется на всю
-                    // длительность, и по центру она уезжала бы от времени
-                    // начала, к которому и относится.
+                    // Иконка по центру пилюли. Прижатая к верху, она у долгих
+                    // занятий висела в углу цветного пятна и читалась как
+                    // недорисованная: время начала и без того стоит слева.
                     child: Align(
-                      alignment: Alignment.topCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 9),
-                        child: Icon(
-                          VehaIcons.byName(isSelected ? 'check' : icon),
-                          size: 26,
-                          color: isSelected
-                              ? scheme.onPrimaryContainer
-                              : ink.foreground,
-                        ),
+                      alignment: Alignment.center,
+                      child: Icon(
+                        VehaIcons.byName(isSelected ? 'check' : icon),
+                        size: 26,
+                        color: isSelected
+                            ? scheme.onPrimaryContainer
+                            : ink.foreground,
                       ),
                     ),
                   ),
@@ -284,7 +307,7 @@ class _Fields extends ConsumerWidget {
     final defs = ref.watch(fieldDefsByIdProvider);
     final chips = <Widget>[];
 
-    for (final v in event.fields) {
+    for (final v in cardFields(event, defs, limit: 2)) {
       final def = defs[v.fieldId];
       chips.add(_Chip(
         icon: def?.iconName ?? _fallbackIcon(v.fieldId),

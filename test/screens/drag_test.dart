@@ -264,4 +264,35 @@ void main() {
     expect(tapped?.id, 'lunch');
     expect(moved, isFalse);
   });
+
+  testWidgets('Меню долгого нажатия не отбирает жест у перетаскивания',
+      (tester) async {
+    Duration? shift;
+    var menuOpened = false;
+
+    await pumpScreen(
+      tester,
+      Scaffold(
+        body: ClockView(
+          events: [lunch()],
+          inheritance: inheritance,
+          // Ровно как в приложении: у блока есть и меню, и перетаскивание.
+          onEventLongPress: (_) => menuOpened = true,
+          onEventMoved: (_, value) => shift = value,
+        ),
+      ),
+    );
+
+    final gesture =
+        await tester.startGesture(tester.getCenter(find.text('Обед с Ниной')));
+    await tester.pump(const Duration(milliseconds: 700));
+    await gesture.moveBy(const Offset(0, 60));
+    await tester.pump(const Duration(milliseconds: 40));
+    await gesture.up();
+    await tester.pumpAndSettle();
+
+    expect(menuOpened, isFalse,
+        reason: 'меню открылось поверх блока, и тащить стало нечего');
+    expect(shift, const Duration(hours: 1));
+  });
 }

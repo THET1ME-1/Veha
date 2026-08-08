@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show compute;
+
 import '../data/models.dart';
 
 /// Обмен с чужими календарями по RFC 5545.
@@ -64,6 +66,16 @@ String toIcs(
     }
 
     if (e.rrule != null) out.write(_line('RRULE:${e.rrule}'));
+    // Занятость — стандартное свойство: чужой календарь тоже поймёт, что
+    // день рождения не держит время.
+    out.write(_line(
+      'TRANSP:${e.availability == Availability.free ? 'TRANSPARENT' : 'OPAQUE'}',
+    ));
+    // Описание — обычное свойство календарного формата, а не расширение:
+    // чужие календари прочитают его как своё.
+    if (e.description != null && e.description!.isNotEmpty) {
+      out.write(_line('DESCRIPTION:${_escape(e.description!)}'));
+    }
     if (e.location != null) {
       out.write(_line('LOCATION:${_escape(e.location!)}'));
     }
@@ -91,6 +103,20 @@ String toIcs(
 ///
 /// Битый файл даёт пустой список, а не исключение: человек выбрал не тот файл,
 /// и сообщать об этом надо интерфейсом, а не крэшем.
+/// Тот же разбор, но в отдельном потоке.
+///
+/// Годовой календарь из Google — это тысячи событий и мегабайты текста.
+/// Разбор такого файла в потоке интерфейса держит экран замороженным
+/// несколько секунд, и человек в это время думает, что приложение зависло.
+///
+/// `newId` сюда не передаётся намеренно: функция уезжает в другой поток, а
+/// замыкание туда не отправить. Ключи выдаёт разбор по умолчанию.
+Future<IcsData> parseIcsInBackground(String text, {String untitled = 'Untitled'}) =>
+    compute(_parseIcsTask, (text: text, untitled: untitled));
+
+IcsData _parseIcsTask(({String text, String untitled}) input) =>
+    parseIcs(input.text, untitled: input.untitled);
+
 IcsData parseIcs(String text, {String Function()? newId, String untitled = 'Untitled'}) {
   final lines = _unfold(text);
   final out = <VEvent>[];
@@ -172,12 +198,18 @@ VEvent? _toEvent(
     // Календарь назначает тот, кто импортирует: в чужом файле его нет.
     calendarId: '',
     title: _unescape(props['SUMMARY']?.value ?? untitled),
+    description: props['DESCRIPTION'] == null
+        ? null
+        : _unescape(props['DESCRIPTION']!.value),
     start: startAt,
     // Файл без DTEND по RFC 5545 означает событие без длительности —
     // у нас это и есть «без окончания». Сутки прибавляются только событию
     // на весь день: там отсутствие конца значит один день.
     end: endAt ?? (allDay ? startAt.add(const Duration(days: 1)) : startAt),
     isAllDay: allDay,
+    availability: props['TRANSP']?.value.toUpperCase() == 'TRANSPARENT'
+        ? Availability.free
+        : Availability.busy,
     rrule: props['RRULE']?.value,
     location: props['LOCATION'] == null
         ? null

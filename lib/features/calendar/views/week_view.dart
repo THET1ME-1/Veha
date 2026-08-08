@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/event_colors.dart';
 import '../../../core/icon_registry.dart';
 import '../../../data/models.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../data/settings.dart';
+import '../../common/snap_physics.dart';
 import '../widgets/auto_scroll_grid.dart';
 import '../widgets/month_header.dart';
 
@@ -14,10 +17,21 @@ import '../widgets/month_header.dart';
 /// Высота пилюли пропорциональна длительности, внутри только иконка по центру.
 /// Пересекающиеся события делят ширину колонки: место, которое ломается тише
 /// всего, поэтому раскладка вынесена в отдельную функцию с тестом.
-class WeekView extends StatelessWidget {
+/// Неделя колонками пилюль — самый узнаваемый вид.
+///
+/// Колонки живут в бесконечной горизонтальной ленте: календарь прокручивается
+/// пальцем, как список, с инерцией и на любое число дней. Пейджер, который
+/// требовал дотянуть жест до конца, а потом прыгал целым периодом, отсюда
+/// убран — «либо эта неделя, либо прошлая» и была главная жалоба на вид.
+///
+/// Высота пилюли пропорциональна длительности, внутри только иконка по центру.
+/// Пересекающиеся события делят ширину колонки: место, которое ломается тише
+/// всего, поэтому раскладка вынесена в отдельную функцию с тестом.
+class WeekView extends ConsumerStatefulWidget {
   const WeekView({
     super.key,
-    required this.week,
+    required this.anchor,
+    required this.columns,
     required this.eventsOf,
     required this.spans,
     required this.inheritance,
@@ -25,16 +39,26 @@ class WeekView extends StatelessWidget {
     this.onEventTap,
     this.onEventLongPress,
     this.onEventMoved,
+    this.onAnchorChanged,
     this.selected = const {},
   });
 
-  final List<DateTime> week;
+  /// Первая видимая колонка.
+  final DateTime anchor;
+
+  /// Сколько дней показывать разом.
+  final int columns;
+
   final List<VEvent> Function(DateTime) eventsOf;
   final List<VEvent> spans;
   final Inheritance inheritance;
   final DateTime today;
   final ValueChanged<VEvent>? onEventTap;
   final ValueChanged<VEvent>? onEventLongPress;
+
+  /// Лента уехала: первым видимым стал другой день. По нему экран решает,
+  /// какое окно событий держать загруженным.
+  final ValueChanged<DateTime>? onAnchorChanged;
 
   /// Отмеченные события: пачку переносят и удаляют разом.
   final Set<String> selected;
@@ -48,115 +72,286 @@ class WeekView extends StatelessWidget {
   // Границы кратны шагу подписей (два часа), иначе последняя подпись вылезает
   // за сетку и колонка часов переполняется.
   static const double _lastHour = 21;
+  /// Высота часа при обычном масштабе. Щипок двумя пальцами растягивает её —
+  /// как и в сетке дня.
   static const double _hourHeight = 34;
   static const double _gutter = 34;
   static const double _gap = 5;
+
+  /// Боковые отступы сетки. Учитываются при расчёте колонки: измерение идёт
+  /// снаружи прокрутки, а padding применяется внутри неё — без вычитания
+  /// седьмая колонка вылезала за край экрана.
+  static const double _side = 14;
+
+  /// Высота строки с названием дня над колонкой.
+  static const double _headerHeight = 22;
+
+  /// Начало отсчёта ленты. Индекс элемента — число суток от этой даты:
+  /// список не умеет отрицательных номеров, а календарь должен листаться и
+  /// назад.
+  ///
+  /// Отсчёт ведётся в UTC: в местном времени сутки перевода часов длятся 23
+  /// или 25 часов, и разница в днях за четверть века набегает на единицу —
+  /// лента вставала не на тот день.
+  static final DateTime epoch = DateTime.utc(2000);
+
+  /// Номер дня в ленте.
+  static int indexOf(DateTime day) =>
+      DateTime.utc(day.year, day.month, day.day).difference(epoch).inDays;
+
+  /// День по номеру — уже в местном календаре.
+  static DateTime dayAt(int index) {
+    final utc = epoch.add(Duration(days: index));
+    return DateTime(utc.year, utc.month, utc.day);
+  }
+
+  @override
+  ConsumerState<WeekView> createState() => _WeekViewState();
+}
+
+class _WeekViewState extends ConsumerState<WeekView> {
+  /// Контроллер живёт со времени создания вида, а не пересоздаётся в
+  /// построении: контроллер, заведённый прямо в `build`, встаёт не на тот
+  /// день — позиция прежнего списка успевает восстановиться поверх новой.
+  final ScrollController _controller = ScrollController();
+  double _columnWidth = 0;
+
+  /// Встали ли уже на нужный день. Первая установка возможна только когда
+  /// известна ширина колонки, то есть после первого измерения.
+  bool _placed = false;
+
+  /// Какой день лента показывает первым прямо сейчас.
+  late DateTime _visible = widget.anchor;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_onScroll);
+  }
+
+  @override
+  void didUpdateWidget(WeekView old) {
+    super.didUpdateWidget(old);
+    // Дату сменили снаружи — полосой дней или кнопкой «сегодня». Лента едет
+    // туда же, но только если она сама не стоит уже на этом дне: иначе
+    // прокрутка дёргалась бы под пальцем.
+    if (!_sameDay(widget.anchor, _visible) && _controller.hasClients) {
+      _visible = widget.anchor;
+      _controller.jumpTo(WeekView.indexOf(widget.anchor) * _columnWidth);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  /// Ставит ленту на нужный день, когда ширина колонки уже известна.
+  void _placeOnAnchor() {
+    if (!_controller.hasClients || _columnWidth <= 0) return;
+    _controller.jumpTo(WeekView.indexOf(_visible) * _columnWidth);
+    _placed = true;
+  }
+
+  void _onScroll() {
+    if (_columnWidth <= 0 || !_placed) return;
+    final first =
+        WeekView.dayAt((_controller.offset / _columnWidth).round());
+    if (_sameDay(first, _visible)) return;
+
+    _visible = first;
+    // Щелчок на каждом дне: палец считает дни, даже когда глаз смотрит на
+    // события, а не на подписи.
+    HapticFeedback.selectionClick();
+    // Наружу сообщаем сменившийся день, а не каждый пиксель: окно событий
+    // перечитывать на каждом кадре прокрутки незачем.
+    widget.onAnchorChanged?.call(first);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final hourHeight = WeekView._hourHeight * ref.watch(gridZoomProvider);
+    final gridHeight = (WeekView._lastHour - WeekView._firstHour) * hourHeight;
+
+    return LayoutBuilder(builder: (context, constraints) {
+      final width = (constraints.maxWidth -
+              WeekView._side * 2 -
+              WeekView._gutter) /
+          widget.columns;
+      if ((width - _columnWidth).abs() > 0.5 || !_placed) {
+        _columnWidth = width;
+        // После кадра: до построения списка у контроллера нет позиции, и
+        // прыгать некуда.
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => _placeOnAnchor());
+      }
+
+      return AutoScrollGrid(
+        padding: const EdgeInsets.fromLTRB(
+            WeekView._side, 6, WeekView._side, 120),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (final s in widget.spans)
+              _SpanStrip(
+                event: s,
+                inheritance: widget.inheritance,
+                today: widget.today,
+                onTap: widget.onEventTap == null
+                    ? null
+                    : () => widget.onEventTap!(s),
+                onLongPress: widget.onEventLongPress == null
+                    ? null
+                    : () => widget.onEventLongPress!(s),
+              ),
+            const SizedBox(height: 2),
+            SizedBox(
+              height: WeekView._headerHeight + gridHeight,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: WeekView._gutter,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Отступ под строку с датами: часы должны начинаться
+                        // там же, где верх колонок.
+                        const SizedBox(height: WeekView._headerHeight),
+                        for (var h = WeekView._firstHour;
+                            h < WeekView._lastHour;
+                            h += 2)
+                          SizedBox(
+                            height: hourHeight * 2,
+                            child: Text(
+                              h.toInt().toString().padLeft(2, '0'),
+                              style: TextStyle(
+                                fontFamily: AppFonts.body,
+                                fontSize: 10.5,
+                                fontWeight: FontWeight.w600,
+                                color: scheme.onSurfaceVariant,
+                                fontFeatures: const [
+                                  FontFeature.tabularFigures()
+                                ],
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      controller: _controller,
+                      scrollDirection: Axis.horizontal,
+                      itemExtent: width,
+                      // Лента встаёт на день: остановиться на половине
+                      // колонки нельзя, а каждый пройденный день отзывается
+                      // щелчком в пальце.
+                      physics: SnapToStep(step: width),
+                      itemBuilder: (context, i) {
+                        final day = WeekView.dayAt(i);
+                        return _Column(
+                          day: day,
+                          events: widget.eventsOf(day),
+                          inheritance: widget.inheritance,
+                          today: widget.today,
+                          gridHeight: gridHeight,
+                          hourHeight: hourHeight,
+                          dayWidth: width,
+                          onEventTap: widget.onEventTap,
+                          onEventLongPress: widget.onEventLongPress,
+                          onEventMoved: widget.onEventMoved,
+                          selected: widget.selected,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  static bool _sameDay(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
+}
+
+/// Колонка одного дня: подпись сверху, события под ней.
+class _Column extends StatelessWidget {
+  const _Column({
+    required this.day,
+    required this.events,
+    required this.inheritance,
+    required this.today,
+    required this.gridHeight,
+    required this.hourHeight,
+    required this.dayWidth,
+    required this.selected,
+    this.onEventTap,
+    this.onEventLongPress,
+    this.onEventMoved,
+  });
+
+  final DateTime day;
+  final List<VEvent> events;
+  final Inheritance inheritance;
+  final DateTime today;
+  final double gridHeight;
+  final double hourHeight;
+  final double dayWidth;
+  final Set<String> selected;
+  final ValueChanged<VEvent>? onEventTap;
+  final ValueChanged<VEvent>? onEventLongPress;
+  final void Function(VEvent event, Duration shift)? onEventMoved;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final dow = DateFormat.E(locale);
-    final gridHeight = (_lastHour - _firstHour) * _hourHeight;
+    final isToday = _WeekViewState._sameDay(day, today);
 
-    return LayoutBuilder(builder: (context, constraints) => AutoScrollGrid(
-      padding: const EdgeInsets.fromLTRB(14, 6, 14, 120),
+    return Padding(
+      padding: const EdgeInsets.only(left: WeekView._gap),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              const SizedBox(width: _gutter),
-              for (final d in week) ...[
-                const SizedBox(width: _gap),
-                Expanded(
-                  child: Text(
-                    '${dow.format(d).toLowerCase()} ${d.day}',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: AppFonts.body,
-                      fontSize: 11,
-                      fontWeight: _sameDay(d, today) ? FontWeight.w700 : FontWeight.w600,
-                      color: _sameDay(d, today)
-                          ? scheme.primary
-                          : scheme.onSurfaceVariant,
-                    ),
-                  ),
-                ),
-              ],
-            ],
-          ),
-          const SizedBox(height: 6),
-          for (final s in spans)
-            _SpanStrip(
-              event: s,
-              inheritance: inheritance,
-              today: today,
-              onTap: onEventTap == null ? null : () => onEventTap!(s),
-              onLongPress:
-                  onEventLongPress == null ? null : () => onEventLongPress!(s),
+          SizedBox(
+            height: WeekView._headerHeight,
+            child: Text(
+              '${DateFormat.E(locale).format(day).toLowerCase()} ${day.day}',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: AppFonts.body,
+                fontSize: 11,
+                fontWeight: isToday ? FontWeight.w700 : FontWeight.w600,
+                color: isToday ? scheme.primary : scheme.onSurfaceVariant,
+              ),
             ),
-          const SizedBox(height: 2),
+          ),
           SizedBox(
             height: gridHeight,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: _gutter,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (var h = _firstHour; h < _lastHour; h += 2)
-                        SizedBox(
-                          height: _hourHeight * 2,
-                          child: Text(
-                            h.toInt().toString().padLeft(2, '0'),
-                            style: TextStyle(
-                              fontFamily: AppFonts.body,
-                              fontSize: 10.5,
-                              fontWeight: FontWeight.w600,
-                              color: scheme.onSurfaceVariant,
-                              fontFeatures: const [FontFeature.tabularFigures()],
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                for (final d in week) ...[
-                  const SizedBox(width: _gap),
-                  Expanded(
-                    child: _DayColumn(
-                      events: eventsOf(d),
-                      inheritance: inheritance,
-                      isWeekend: d.weekday >= 6,
-                      isPast: d.isBefore(DateTime(today.year, today.month, today.day)),
-                      firstHour: _firstHour,
-                      hourHeight: _hourHeight,
-                      onEventTap: onEventTap,
-                      onEventLongPress: onEventLongPress,
-                      onEventMoved: onEventMoved,
-                      selected: selected,
-                      // Ширина колонки нужна пилюле, чтобы перевести сдвиг
-                      // пальца вбок в дни.
-                      dayWidth: (constraints.maxWidth - _gutter -
-                              _gap * week.length) /
-                          week.length +
-                          _gap,
-                    ),
-                  ),
-                ],
-              ],
+            child: _DayColumn(
+              events: events,
+              inheritance: inheritance,
+              isWeekend: day.weekday >= 6,
+              isPast: day.isBefore(DateTime(today.year, today.month, today.day)),
+              firstHour: WeekView._firstHour,
+              hourHeight: hourHeight,
+              onEventTap: onEventTap,
+              onEventLongPress: onEventLongPress,
+              onEventMoved: onEventMoved,
+              selected: selected,
+              dayWidth: dayWidth,
             ),
           ),
         ],
       ),
-    ));
+    );
   }
-
-  static bool _sameDay(DateTime a, DateTime b) =>
-      a.year == b.year && a.month == b.month && a.day == b.day;
 }
 
 /// Лента многодневного события над сеткой. Тянется через захваченные дни.
@@ -462,7 +657,9 @@ class _PillState extends State<_Pill> {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
-        onLongPress: onLongPress,
+        // Как и в сетке дня: жест принадлежит перетаскиванию, меню живёт
+        // в превью по тапу.
+        onLongPress: canDrag ? null : onLongPress,
         onLongPressStart: canDrag
             ? (details) {
                 HapticFeedback.mediumImpact();

@@ -81,11 +81,18 @@ void main() {
     );
   });
 
-  Future<(VehaDatabase, VehaRepository, SyncService)> device(String url) async {
+  /// Устройство с собственным календарём: ключ у каждого свой, как в жизни.
+  Future<(VehaDatabase, VehaRepository, SyncService, String)> device(
+      String url) async {
     final db = VehaDatabase(NativeDatabase.memory());
     final repo = VehaRepository(db);
     await repo.ensureFirstCalendar(words: SeedWords.of('ru'));
-    return (db, repo, SyncService(db: db, api: HttpSyncApi(baseUrl: url)));
+    final tree = await repo.loadInheritance();
+    final calendarId = tree.calendars.keys.single;
+    // Наверх уходит только общее: устройство, где календарь личный, ничего и
+    // не должно отправлять.
+    await repo.setCalendarShared(calendarId, true);
+    return (db, repo, SyncService(db: db, api: HttpSyncApi(baseUrl: url)), calendarId);
   }
 
   test('Событие с первого устройства доезжает до второго', () async {
@@ -97,12 +104,12 @@ void main() {
     final api = HttpSyncApi(baseUrl: baseUrl);
     final first = await api.register('Телефон');
 
-    final (dbA, repoA, syncA) = await device(baseUrl);
+    final (dbA, repoA, syncA, calA) = await device(baseUrl);
     addTearDown(dbA.close);
 
     await repoA.upsertEvent(VEvent(
       id: 'live-1',
-      calendarId: 'default',
+      calendarId: calA,
       title: 'Через сервер',
       start: DateTime(2026, 8, 10, 10),
       end: DateTime(2026, 8, 10, 11),
@@ -116,7 +123,7 @@ void main() {
     final code = await api.pairCode(first.token);
     final second = await api.claim(code, 'Планшет');
 
-    final (dbB, repoB, syncB) = await device(baseUrl);
+    final (dbB, repoB, syncB, _) = await device(baseUrl);
     addTearDown(dbB.close);
 
     final received = await syncB.run(token: second.token, since: 0);
@@ -139,11 +146,11 @@ void main() {
     final api = HttpSyncApi(baseUrl: baseUrl);
     final owner = await api.register('Телефон');
 
-    final (dbA, repoA, syncA) = await device(baseUrl);
+    final (dbA, repoA, syncA, calA) = await device(baseUrl);
     addTearDown(dbA.close);
     await repoA.upsertTask(VTask(
       id: 'live-task',
-      calendarId: 'default',
+      calendarId: calA,
       title: 'Продлить абонемент',
       due: DateTime(2026, 8, 12, 18),
       hasTime: true,
@@ -152,7 +159,7 @@ void main() {
 
     final code = await api.pairCode(owner.token);
     final second = await api.claim(code, 'Планшет');
-    final (dbB, repoB, syncB) = await device(baseUrl);
+    final (dbB, repoB, syncB, _) = await device(baseUrl);
     addTearDown(dbB.close);
     var cursorB = (await syncB.run(token: second.token, since: 0)).cursor;
 
@@ -180,11 +187,11 @@ void main() {
     final api = HttpSyncApi(baseUrl: baseUrl);
     final owner = await api.register('Телефон');
 
-    final (dbA, repoA, syncA) = await device(baseUrl);
+    final (dbA, repoA, syncA, calA) = await device(baseUrl);
     addTearDown(dbA.close);
     await repoA.upsertEvent(VEvent(
       id: 'live-2',
-      calendarId: 'default',
+      calendarId: calA,
       title: 'Уедет',
       start: DateTime(2026, 8, 11, 10),
       end: DateTime(2026, 8, 11, 11),
@@ -193,7 +200,7 @@ void main() {
 
     final code = await api.pairCode(owner.token);
     final second = await api.claim(code, 'Планшет');
-    final (dbB, repoB, syncB) = await device(baseUrl);
+    final (dbB, repoB, syncB, _) = await device(baseUrl);
     addTearDown(dbB.close);
     var cursorB = (await syncB.run(token: second.token, since: 0)).cursor;
 
