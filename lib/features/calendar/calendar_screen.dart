@@ -493,6 +493,15 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           onEventTap: onTap,
           onEventLongPress: _showEventMenu,
           selected: _picked.keys.toSet(),
+          // Тап мимо занятий уводит в этот день. В наборе пачки жест молчит:
+          // человек отмечает события, и уход с вида сбил бы отбор.
+          onDayTap: _picking
+              ? null
+              : (day) => setState(() {
+                    _selected = day;
+                    _weekAnchor = null;
+                    _view = CalendarView.day;
+                  }),
           // В неделе перенос идёт наискосок: и на другой час, и на другой
           // день одним движением.
           onEventMoved: _picking

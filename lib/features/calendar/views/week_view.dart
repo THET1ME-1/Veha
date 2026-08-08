@@ -14,11 +14,6 @@ import '../widgets/month_header.dart';
 
 /// Неделя колонками пилюль — самый узнаваемый вид.
 ///
-/// Высота пилюли пропорциональна длительности, внутри только иконка по центру.
-/// Пересекающиеся события делят ширину колонки: место, которое ломается тише
-/// всего, поэтому раскладка вынесена в отдельную функцию с тестом.
-/// Неделя колонками пилюль — самый узнаваемый вид.
-///
 /// Колонки живут в бесконечной горизонтальной ленте: календарь прокручивается
 /// пальцем, как список, с инерцией и на любое число дней. Пейджер, который
 /// требовал дотянуть жест до конца, а потом прыгал целым периодом, отсюда
@@ -40,6 +35,7 @@ class WeekView extends ConsumerStatefulWidget {
     this.onEventLongPress,
     this.onEventMoved,
     this.onAnchorChanged,
+    this.onDayTap,
     this.selected = const {},
   });
 
@@ -59,6 +55,10 @@ class WeekView extends ConsumerStatefulWidget {
   /// Лента уехала: первым видимым стал другой день. По нему экран решает,
   /// какое окно событий держать загруженным.
   final ValueChanged<DateTime>? onAnchorChanged;
+
+  /// Тап по колонке мимо занятий. Неделя отвечает на вопрос «когда», и
+  /// свободное место дня — самая короткая дорога к его подробностям.
+  final ValueChanged<DateTime>? onDayTap;
 
   /// Отмеченные события: пачку переносят и удаляют разом.
   final Set<String> selected;
@@ -263,6 +263,9 @@ class _WeekViewState extends ConsumerState<WeekView> {
                           onEventTap: widget.onEventTap,
                           onEventLongPress: widget.onEventLongPress,
                           onEventMoved: widget.onEventMoved,
+                          onEmptyTap: widget.onDayTap == null
+                              ? null
+                              : () => widget.onDayTap!(day),
                           selected: widget.selected,
                         );
                       },
@@ -295,6 +298,7 @@ class _Column extends StatelessWidget {
     this.onEventTap,
     this.onEventLongPress,
     this.onEventMoved,
+    this.onEmptyTap,
   });
 
   final DateTime day;
@@ -308,6 +312,7 @@ class _Column extends StatelessWidget {
   final ValueChanged<VEvent>? onEventTap;
   final ValueChanged<VEvent>? onEventLongPress;
   final void Function(VEvent event, Duration shift)? onEventMoved;
+  final VoidCallback? onEmptyTap;
 
   @override
   Widget build(BuildContext context) {
@@ -344,6 +349,7 @@ class _Column extends StatelessWidget {
               onEventTap: onEventTap,
               onEventLongPress: onEventLongPress,
               onEventMoved: onEventMoved,
+              onEmptyTap: onEmptyTap,
               selected: selected,
               dayWidth: dayWidth,
             ),
@@ -429,6 +435,7 @@ class _DayColumn extends StatelessWidget {
     this.onEventTap,
     this.onEventLongPress,
     this.onEventMoved,
+    this.onEmptyTap,
     this.dayWidth = 0,
     this.selected = const {},
   });
@@ -442,6 +449,9 @@ class _DayColumn extends StatelessWidget {
   final ValueChanged<VEvent>? onEventTap;
   final ValueChanged<VEvent>? onEventLongPress;
   final void Function(VEvent event, Duration shift)? onEventMoved;
+
+  /// Тап мимо занятий: неделя отвечает «когда», подробности живут в дне.
+  final VoidCallback? onEmptyTap;
   final Set<String> selected;
 
   /// Ширина колонки вместе с зазором: по ней сдвиг вбок переводится в дни.
@@ -469,6 +479,15 @@ class _DayColumn extends StatelessWidget {
           ),
           child: Stack(
             children: [
+              // Свободное место колонки уводит в день. Лежит под пилюлями:
+              // тап по занятию открывает занятие, мимо занятия — день.
+              if (onEmptyTap != null)
+                Positioned.fill(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: onEmptyTap,
+                  ),
+                ),
               for (final p in placed)
                 _Pill(
                   placed: p,
