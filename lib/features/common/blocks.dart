@@ -444,11 +444,16 @@ class VRoundButton extends StatelessWidget {
     required this.icon,
     required this.onTap,
     this.size = 44,
+    this.filled = false,
   });
 
   final String icon;
   final VoidCallback onTap;
   final double size;
+
+  /// Главное действие экрана: кружок красится чернилами, знак — бумагой.
+  /// Такой на экране один, иначе он перестаёт быть главным.
+  final bool filled;
 
   @override
   Widget build(BuildContext context) {
@@ -461,11 +466,14 @@ class VRoundButton extends StatelessWidget {
         height: size,
         alignment: Alignment.center,
         decoration: ShapeDecoration(
-          color: scheme.surfaceContainerHigh,
+          color: filled ? scheme.onSurface : scheme.surfaceContainerHigh,
           shape: const CircleBorder(),
         ),
-        child: Icon(VehaIcons.byName(icon), size: size * 0.48,
-            color: scheme.onSurface),
+        child: Icon(
+          VehaIcons.byName(icon),
+          size: size * 0.48,
+          color: filled ? scheme.surface : scheme.onSurface,
+        ),
       ),
     );
   }

@@ -20,6 +20,11 @@ enum MonthMode {
 
   /// Тонированная ячейка: видно, чем занят день, без чтения текста.
   tint,
+
+  /// Полоски по числу дел: цвет календаря и количество, без единой буквы.
+  /// Названия в ячейку шириной в сорок точек всё равно не влезают, а плотность
+  /// месяца читается с одного взгляда.
+  bars,
 }
 
 /// Месяц. Россыпь мелких кружков под числом отвергнута — по ней ничего
@@ -406,6 +411,11 @@ class _Cell extends StatelessWidget {
           brightness: theme.brightness,
           scheme: theme.colorScheme,
         ),
+      MonthMode.bars => _Bars(
+          events: events,
+          inheritance: inheritance,
+          brightness: theme.brightness,
+        ),
       MonthMode.tint => Padding(
           padding: const EdgeInsets.only(top: 5),
           child: Text(
@@ -427,6 +437,65 @@ class _Cell extends StatelessWidget {
     // Строка «+N» занимает место наравне с чипом, поэтому вычитается заранее.
     final rows = ((height - _numberRoom) / _chipStep).floor() - 1;
     return rows < 1 ? 1 : rows;
+  }
+}
+
+/// Полоски дня: одна на событие, цвет — цвет календаря.
+///
+/// Больше пяти не рисуем: дальше полоски сливаются в заливку и перестают
+/// считаться. Шестое и следующие уходят в общий счёт — день и так занят.
+class _Bars extends StatelessWidget {
+  const _Bars({
+    required this.events,
+    required this.inheritance,
+    required this.brightness,
+  });
+
+  final List<VEvent> events;
+  final Inheritance inheritance;
+  final Brightness brightness;
+
+  static const int _max = 4;
+  static const double _bar = 3;
+  static const double _gap = 2;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, box) {
+        // Сколько полосок влезло, столько и рисуем: ячейка в шесть недель
+        // ниже, чем в пять, и лишняя полоска вылезала за край.
+        final room = box.maxHeight.isFinite
+            ? ((box.maxHeight - 4) / (_bar + _gap)).floor()
+            : _max;
+        final shown = events.take(room.clamp(1, _max)).toList();
+        return Padding(
+      padding: const EdgeInsets.only(top: 4, left: 3, right: 3),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (final e in shown)
+            Padding(
+              padding: const EdgeInsets.only(bottom: _gap),
+              child: Container(
+                height: _bar,
+                width: double.infinity,
+                decoration: ShapeDecoration(
+                  color: EventColors.of(
+                    inheritance.colorOfEvent(e),
+                    brightness,
+                  ).chip,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(2)),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+        );
+      },
+    );
   }
 }
 

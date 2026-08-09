@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:veha/features/shell/home_shell.dart';
 
+import 'package:veha/features/calendar/views/tape_view.dart';
+
 import 'golden_harness.dart';
 
 /// Путь события целиком: кнопка → лист → база → карточка в дне.
@@ -14,7 +16,7 @@ void main() {
   testWidgets('Событие из быстрого листа появляется в дне', (tester) async {
     await pumpScreen(tester, const HomeShell());
 
-    await tester.tap(find.byType(FloatingActionButton));
+    await tester.tap(find.byKey(const ValueKey('add-event')));
     await tester.pumpAndSettle();
 
     // Подсказка показывает, что лист понимает фразу целиком.
@@ -34,7 +36,7 @@ void main() {
   testWidgets('Быстрый лист отдаёт черновик полной форме', (tester) async {
     await pumpScreen(tester, const HomeShell());
 
-    await tester.tap(find.byType(FloatingActionButton));
+    await tester.tap(find.byKey(const ValueKey('add-event')));
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextField), 'Экзамен');
@@ -51,7 +53,7 @@ void main() {
   testWidgets('Выбранное напоминание доезжает до карточки', (tester) async {
     await pumpScreen(tester, const HomeShell());
 
-    await tester.tap(find.byType(FloatingActionButton));
+    await tester.tap(find.byKey(const ValueKey('add-event')));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField), 'Приём у врача');
     await tester.pumpAndSettle();
@@ -74,7 +76,7 @@ void main() {
     await tester.tap(find.text('Сохранить'));
     await tester.pumpAndSettle();
 
-    await openEventEditor(tester, find.text('Приём у врача').first);
+    await openEventEditor(tester, find.text('Приём у врача'));
 
     expect(find.text('За день · за 30 минут'), findsOneWidget,
         reason: 'Напоминания дошли до базы и вернулись в карточку события');
@@ -83,7 +85,7 @@ void main() {
   testWidgets('Своё поле заполняется и доезжает до базы', (tester) async {
     await pumpScreen(tester, const HomeShell());
 
-    await tester.tap(find.byType(FloatingActionButton));
+    await tester.tap(find.byKey(const ValueKey('add-event')));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField), 'Пересдача');
     await tester.pumpAndSettle();
@@ -91,8 +93,12 @@ void main() {
     await tester.pumpAndSettle();
 
     // «Кабинет» — своё поле группы «Учёба», куда попадает новое событие.
-    await tester.scrollUntilVisible(find.text('Кабинет'), 200,
-        scrollable: find.byType(Scrollable).first);
+    // Крутим руками: `scrollUntilVisible` спотыкается о поля ввода, которые
+    // тоже прокручиваемы, и выбирает не ту ленту.
+    for (var i = 0; i < 12 && find.text('Кабинет').evaluate().isEmpty; i++) {
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, -220));
+      await tester.pumpAndSettle();
+    }
     await tester.tap(find.text('Кабинет'));
     await tester.pumpAndSettle();
 
@@ -106,11 +112,13 @@ void main() {
     await tester.tap(find.text('Сохранить'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Пересдача').first);
-    await tester.pumpAndSettle();
+    // Событие встало на 10:00 — открываем его форму и ищем значение поля.
+    await openEventEditor(tester, find.text('Пересдача'));
 
-    await tester.scrollUntilVisible(find.text('415'), 200,
-        scrollable: find.byType(Scrollable).first);
+    for (var i = 0; i < 12 && find.text('415').evaluate().isEmpty; i++) {
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, -220));
+      await tester.pumpAndSettle();
+    }
     expect(find.text('415'), findsOneWidget,
         reason: 'Значение дошло до базы и вернулось в форму');
   });
@@ -120,7 +128,7 @@ void main() {
 
     // Правка существующего события: у нового ключа ещё нет, и заметке не к
     // чему привязаться.
-    await openEventEditor(tester, find.text('Завтрак').first);
+    await openEventEditor(tester, find.text('Завтрак'));
 
     await tester.scrollUntilVisible(find.text('Добавить заметку'), 200,
         scrollable: find.byType(Scrollable).first);
@@ -139,7 +147,7 @@ void main() {
   testWidgets('Снимок быстрого листа', (tester) async {
     await pumpScreen(tester, const HomeShell());
 
-    await tester.tap(find.byType(FloatingActionButton));
+    await tester.tap(find.byKey(const ValueKey('add-event')));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField), 'Английский');
     await tester.pumpAndSettle();
@@ -150,7 +158,7 @@ void main() {
   testWidgets('Снимок полной формы', (tester) async {
     await pumpScreen(tester, const HomeShell());
 
-    await tester.tap(find.byType(FloatingActionButton));
+    await tester.tap(find.byKey(const ValueKey('add-event')));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField), 'Английский');
     await tester.pumpAndSettle();

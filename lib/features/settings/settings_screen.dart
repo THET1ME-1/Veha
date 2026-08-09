@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../calendars/calendars_screen.dart';
+import '../tasks/tasks_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -64,31 +66,49 @@ class SettingsScreen extends ConsumerWidget {
             },
           ),
           const VSep(),
+          // Раздел на старте выбирать больше нечего: приложение открывается
+          // календарём, остальное живёт строками отсюда.
           _ChoiceRow(
-            icon: 'today',
-            label: L.of(context).settingsStartScreen,
-            hint: L.of(context).settingsStartScreenHint,
+            icon: 'viewDay',
+            label: L.of(context).settingsStartView,
             options: {
-              0: L.of(context).navCalendar,
-              1: L.of(context).navTasks,
-              2: L.of(context).navList,
-              3: L.of(context).navSettings,
+              for (final v in CalendarView.values) v: v.label(L.of(context)),
             },
-            value: ref.watch(startTabProvider),
-            onChanged: (v) => ref.read(startTabProvider.notifier).set(v),
+            value: ref.watch(startViewProvider),
+            onChanged: (v) => ref.read(startViewProvider.notifier).set(v),
           ),
-          if (ref.watch(startTabProvider) == 0) ...[
-            const VSep(),
-            _ChoiceRow(
-              icon: 'viewDay',
-              label: L.of(context).settingsStartView,
-              options: {
-                for (final v in CalendarView.values) v: v.label(L.of(context)),
-              },
-              value: ref.watch(startViewProvider),
-              onChanged: (v) => ref.read(startViewProvider.notifier).set(v),
+          const VSep(),
+          VRow(
+            icon: 'list',
+            label: L.of(context).navList,
+            value: L.of(context).calendarsRowHint,
+            trailing: Icon(VehaIcons.byName('chevron'),
+                size: 17, color: scheme.outline),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => Scaffold(
+                  appBar: AppBar(toolbarHeight: 56, leading: vBack(context)),
+                  body: const SafeArea(top: false, child: CalendarsScreen()),
+                ),
+              ),
             ),
-          ],
+          ),
+          const VSep(),
+          VRow(
+            icon: 'task_alt',
+            label: L.of(context).navTasks,
+            value: L.of(context).tasksRowHint,
+            trailing: Icon(VehaIcons.byName('chevron'),
+                size: 17, color: scheme.outline),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => Scaffold(
+                  appBar: AppBar(toolbarHeight: 56, leading: vBack(context)),
+                  body: const SafeArea(top: false, child: TasksScreen()),
+                ),
+              ),
+            ),
+          ),
           const VSep(),
           VRow(
             icon: 'text',

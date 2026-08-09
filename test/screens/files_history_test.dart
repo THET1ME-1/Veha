@@ -27,7 +27,7 @@ void main() {
       },
     );
 
-    await openEventEditor(tester, find.text('Обед с Ниной').first);
+    await openEventEditor(tester, find.text('Обед с Ниной'));
     await tester.dragUntilVisible(
       find.text('Меню.pdf'),
       find.byType(ListView).first,
@@ -53,7 +53,7 @@ void main() {
       },
     );
 
-    await openEventEditor(tester, find.text('Обед с Ниной и Петей').first);
+    await openEventEditor(tester, find.text('Обед с Ниной и Петей'));
     await tester.dragUntilVisible(
       find.text('История изменений'),
       find.byType(ListView).first,

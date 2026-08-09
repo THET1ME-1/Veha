@@ -14,7 +14,7 @@ import '../../domain/draft.dart';
 import '../../domain/note_markup.dart';
 import '../../domain/time_label.dart';
 import '../../services/file_service.dart';
-import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
+import '../../domain/recurrence_label.dart';
 import '../repeat/repeat_screen.dart' show askRepeatRule;
 import 'calendar_picker_sheet.dart';
 import '../../data/providers.dart';
@@ -798,7 +798,13 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
         if (_draft.isEditing) _history(),
         if (widget.onDuplicate != null || widget.onDelete != null) ...[
           const SizedBox(height: 18),
-          Row(
+          // Кнопки переносятся на вторую строку, когда не влезают в одну:
+          // у немецкого «Duplizieren» и «Löschen» с новой гарнитурой ширины
+          // не хватало, и строка вылезала за экран на полтораста точек.
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            spacing: 8,
+            runSpacing: 4,
             children: [
               if (widget.onDuplicate != null)
                 TextButton.icon(
@@ -806,7 +812,6 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
                   icon: Icon(VehaIcons.byName('content_copy'), size: 18),
                   label: Text(l.eventDuplicate),
                 ),
-              const Spacer(),
               if (widget.onDelete != null)
                 TextButton.icon(
                   onPressed: widget.onDelete,

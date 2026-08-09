@@ -38,7 +38,7 @@ void main() {
       overrides: [placeSourceProvider.overrideWithValue(places)],
     );
 
-    await openEventEditor(tester, find.text('Завтрак').first);
+    await openEventEditor(tester, find.text('Завтрак'));
     await tester.scrollUntilVisible(find.text('Место'), 200,
         scrollable: find.byType(Scrollable).first);
     await tester.tap(find.text('Место'));

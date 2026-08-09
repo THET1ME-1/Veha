@@ -105,6 +105,12 @@ void main() {
       const Scaffold(body: SafeArea(child: CalendarScreen())),
     );
 
+    // Английский стоит вечером: лента ленивая, до него надо доскроллить.
+    for (var i = 0; i < 8 && find.text('Английский').evaluate().isEmpty; i++) {
+      await tester.drag(find.byType(Scrollable).last, const Offset(0, -180));
+      await tester.pumpAndSettle();
+    }
+
     // Вход в режим — из меню долгого нажатия: долгий жест в сетке уже занят
     // перетаскиванием, а тап открывает превью.
     await tester.longPress(find.text('Английский').first);
@@ -114,7 +120,12 @@ void main() {
 
     expect(find.text('Выбрано: 1'), findsOneWidget);
 
-    // Второе событие дня отмечается обычным тапом.
+    // Второе событие дня отмечается обычным тапом. Планёрка идёт утром,
+    // поэтому возвращаемся к началу ленты.
+    for (var i = 0; i < 8 && find.text('Планёрка').evaluate().isEmpty; i++) {
+      await tester.drag(find.byType(Scrollable).last, const Offset(0, 180));
+      await tester.pumpAndSettle();
+    }
     await tester.tap(find.text('Планёрка').first);
     await tester.pumpAndSettle();
 

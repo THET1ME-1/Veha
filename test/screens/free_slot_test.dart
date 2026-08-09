@@ -12,7 +12,7 @@ void main() {
   testWidgets('Кнопка ставит событие в свободное окно', (tester) async {
     await pumpScreen(tester, const HomeShell());
 
-    await tester.tap(find.byType(FloatingActionButton));
+    await tester.tap(find.byKey(const ValueKey('add-event')));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField), 'Стрижка');
     await tester.pumpAndSettle();

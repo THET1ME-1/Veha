@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:veha/features/calendars/calendars_screen.dart';
 import 'package:veha/features/shell/home_shell.dart';
 
 import 'golden_harness.dart';
@@ -10,8 +11,10 @@ void main() {
   setUpAll(loadAppFonts);
 
   Future<void> openList(WidgetTester tester) async {
-    await pumpScreen(tester, const HomeShell());
-    await tester.tap(find.text('Список'));
+    await pumpScreen(
+      tester,
+      const Scaffold(body: SafeArea(child: CalendarsScreen())),
+    );
     await tester.pumpAndSettle();
   }
 
@@ -44,6 +47,10 @@ void main() {
     // проверка по вечернему событию ломалась от любой правки высоты шапки.
     expect(find.text('Урок'), findsWidgets);
 
+    // Список календарей переехал в настройки: путь идёт через круглую кнопку
+    // в доке, а не через вкладку внизу.
+    await tester.tap(find.byTooltip('Настройки'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Список'));
     await tester.pumpAndSettle();
 
@@ -55,7 +62,12 @@ void main() {
     await tester.tap(find.descendant(of: study.first, matching: find.byType(GestureDetector)).last);
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Календарь'));
+    // Возврат в календарь: два экрана назад — список и настройки. Кнопка
+    // «назад» здесь своя, не стоковая, поэтому закрываем через навигатор.
+    final nav = tester.state<NavigatorState>(find.byType(Navigator).first);
+    nav.pop();
+    await tester.pumpAndSettle();
+    nav.pop();
     await tester.pumpAndSettle();
 
     expect(find.text('Урок'), findsNothing);

@@ -1596,4 +1596,57 @@ class LPl extends L {
 
   @override
   String get monthDensityText => 'Tylko tekst';
+
+  @override
+  String get labelsTitle => 'Podpis wydarzeń';
+
+  @override
+  String get labelsIcon => 'Ikony';
+
+  @override
+  String get labelsText => 'Tekst';
+
+  @override
+  String get labelsBoth => 'Ikony i tekst';
+
+  @override
+  String get cornerTitle => 'Zaokrąglenie rogów';
+
+  @override
+  String get cornerSquare => 'Proste';
+
+  @override
+  String get cornerRound => 'Kapsułka';
+
+  @override
+  String get cornerPreview => 'Tak wygląda wydarzenie';
+
+  @override
+  String get tasksRowHint => 'Zadania z terminem';
+
+  @override
+  String get calendarsRowHint => 'Gałęzie, kolory i widoczność';
+
+  @override
+  String tapeFree(String span) {
+    return '$span wolne';
+  }
+
+  @override
+  String get dayFreeTitle => 'Dzień jest wolny';
+
+  @override
+  String get dayFreeHint => 'Brak wydarzeń. Przycisk u góry tworzy pierwsze.';
+
+  @override
+  String eventsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count wydarzeń',
+      few: '$count wydarzenia',
+      one: '$count wydarzenie',
+    );
+    return '$_temp0';
+  }
 }

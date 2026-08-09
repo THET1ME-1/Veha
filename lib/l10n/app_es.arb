@@ -2046,5 +2046,19 @@
   "monthDensityText": "Solo texto",
   "@monthDensityText": {
     "description": "monthDensityText"
-  }
+  },
+  "labelsTitle": "Etiqueta de eventos",
+  "labelsIcon": "Iconos",
+  "labelsText": "Texto",
+  "labelsBoth": "Iconos y texto",
+  "cornerTitle": "Redondeo de esquinas",
+  "cornerSquare": "Rectas",
+  "cornerRound": "Cápsula",
+  "cornerPreview": "Así se ve un evento",
+  "tapeFree": "{span} libre",
+  "dayFreeTitle": "El día está libre",
+  "dayFreeHint": "Sin eventos. El botón de arriba crea el primero.",
+  "tasksRowHint": "Tareas con fecha límite",
+  "calendarsRowHint": "Ramas, colores y visibilidad",
+  "eventsCount": "{count, plural, one{{count} evento} other{{count} eventos}}"
 }

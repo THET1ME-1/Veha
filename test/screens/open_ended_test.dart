@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:veha/data/models.dart';
 import 'package:veha/features/calendar/calendar_screen.dart';
-import 'package:veha/features/calendar/views/chain_view.dart';
+import 'package:veha/features/calendar/views/tape_view.dart';
 import 'package:veha/features/calendar/views/clock_view.dart';
 
 import 'golden_harness.dart';
@@ -29,7 +29,8 @@ void main() {
     await pumpScreen(
       tester,
       Scaffold(
-        body: ChainView(
+        body: TapeView(
+          day: DateTime(2026, 7, 27),
           events: [
             VEvent(
               id: 'shop',
@@ -87,7 +88,7 @@ void main() {
       const Scaffold(body: SafeArea(child: CalendarScreen())),
     );
 
-    await openEventEditor(tester, find.text('Обед с Ниной').first);
+    await openEventEditor(tester, find.text('Обед с Ниной'));
 
     await tester.tap(find.text('Без окончания'));
     await tester.pumpAndSettle();

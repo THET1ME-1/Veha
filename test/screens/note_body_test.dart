@@ -90,7 +90,7 @@ void main() {
       },
     );
 
-    await openEventEditor(tester, find.text('Обед с Ниной').first);
+    await openEventEditor(tester, find.text('Обед с Ниной'));
 
     // Заметки лежат ниже описания и своих полей — до них надо доскроллить.
     await tester.dragUntilVisible(

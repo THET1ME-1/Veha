@@ -2758,6 +2758,90 @@ abstract class L {
   /// In ru, this message translates to:
   /// **'Только текст'**
   String get monthDensityText;
+
+  /// labelsTitle
+  ///
+  /// In ru, this message translates to:
+  /// **'Подпись событий'**
+  String get labelsTitle;
+
+  /// labelsIcon
+  ///
+  /// In ru, this message translates to:
+  /// **'Иконки'**
+  String get labelsIcon;
+
+  /// labelsText
+  ///
+  /// In ru, this message translates to:
+  /// **'Текст'**
+  String get labelsText;
+
+  /// labelsBoth
+  ///
+  /// In ru, this message translates to:
+  /// **'Иконки и текст'**
+  String get labelsBoth;
+
+  /// cornerTitle
+  ///
+  /// In ru, this message translates to:
+  /// **'Скругление углов'**
+  String get cornerTitle;
+
+  /// cornerSquare
+  ///
+  /// In ru, this message translates to:
+  /// **'Прямые'**
+  String get cornerSquare;
+
+  /// cornerRound
+  ///
+  /// In ru, this message translates to:
+  /// **'Капсула'**
+  String get cornerRound;
+
+  /// cornerPreview
+  ///
+  /// In ru, this message translates to:
+  /// **'Так выглядит событие'**
+  String get cornerPreview;
+
+  /// tasksRowHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Дела со сроком'**
+  String get tasksRowHint;
+
+  /// calendarsRowHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Ветки, цвета и видимость'**
+  String get calendarsRowHint;
+
+  /// tapeFree
+  ///
+  /// In ru, this message translates to:
+  /// **'{span} свободно'**
+  String tapeFree(String span);
+
+  /// dayFreeTitle
+  ///
+  /// In ru, this message translates to:
+  /// **'День свободен'**
+  String get dayFreeTitle;
+
+  /// dayFreeHint
+  ///
+  /// In ru, this message translates to:
+  /// **'Ни одного события. Кнопка сверху заводит первое.'**
+  String get dayFreeHint;
+
+  /// eventsCount
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{{count} событие} few{{count} события} other{{count} событий}}'**
+  String eventsCount(int count);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

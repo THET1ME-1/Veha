@@ -2046,5 +2046,19 @@
   "monthDensityText": "Nur Text",
   "@monthDensityText": {
     "description": "monthDensityText"
-  }
+  },
+  "labelsTitle": "Beschriftung der Termine",
+  "labelsIcon": "Symbole",
+  "labelsText": "Text",
+  "labelsBoth": "Symbole und Text",
+  "cornerTitle": "Eckenrundung",
+  "cornerSquare": "Eckig",
+  "cornerRound": "Kapsel",
+  "cornerPreview": "So sieht ein Termin aus",
+  "tapeFree": "{span} frei",
+  "dayFreeTitle": "Der Tag ist frei",
+  "dayFreeHint": "Noch keine Termine. Die Schaltfläche oben legt den ersten an.",
+  "tasksRowHint": "Aufgaben mit Frist",
+  "calendarsRowHint": "Zweige, Farben und Sichtbarkeit",
+  "eventsCount": "{count, plural, one{{count} Termin} other{{count} Termine}}"
 }

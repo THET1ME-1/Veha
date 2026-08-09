@@ -7,7 +7,7 @@ import '../../core/icon_registry.dart';
 import '../../data/models.dart';
 import '../../domain/time_label.dart';
 import '../../l10n/app_localizations.dart';
-import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
+import '../../domain/recurrence_label.dart';
 import '../calendar/widgets/month_header.dart' show AppFonts;
 import '../common/blocks.dart';
 import 'reminders_sheet.dart' show remindersLabel;

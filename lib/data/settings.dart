@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../core/brand.dart';
+import '../core/veha_theme.dart';
 import '../domain/week_layout.dart';
 import '../features/calendar/views/month_view.dart' show MonthMode;
 import '../features/calendar/widgets/month_header.dart' show DayReading;
@@ -28,11 +28,9 @@ class VehaSettings {
   static const _syncToken = 'sync_token';
   static const _syncCursor = 'sync_cursor';
   static const _themeMode = 'theme_mode';
-  static const _vibrant = 'vibrant';
-  static const _seed = 'seed';
   static const _locale = 'locale';
-  static const _amoled = 'amoled';
-  static const _dynamicColor = 'dynamic_color';
+  static const _labelMode = 'label_mode';
+  static const _corner = 'corner';
   static const _lastPurge = 'last_purge';
   static const _recentColors = 'recent_colors';
   static const _gridZoom = 'grid_zoom';
@@ -80,27 +78,20 @@ class VehaSettings {
 
   Future<void> setThemeMode(int value) => _prefs.setInt(_themeMode, value);
 
-  /// Режим генерации схемы. На фирменном оттенке 182° «Сочно» выкручивает
-  /// `primaryContainer` до кислотной мяты, поэтому по умолчанию «Точь-в-точь».
-  bool get vibrant => _prefs.getBool(_vibrant) ?? false;
+  /// Индекс в `LabelMode`: чем подписан блок события в сетке.
+  int get labelMode => _prefs.getInt(_labelMode) ?? LabelMode.both.index;
 
-  Future<void> setVibrant(bool value) => _prefs.setBool(_vibrant, value);
+  Future<void> setLabelMode(int value) => _prefs.setInt(_labelMode, value);
 
-  /// Цвет, из которого строится схема. Ноль — фирменная мята.
-  int get seed => _prefs.getInt(_seed) ?? 0;
+  /// Скругление углов блоков, точки.
+  double get corner =>
+      (_prefs.getDouble(_corner) ?? VehaTheme.defaultCorner)
+          .clamp(VehaTheme.minCorner, VehaTheme.maxCorner);
 
-  Future<void> setSeed(int value) => _prefs.setInt(_seed, value);
-
-  /// Чисто чёрный фон в тёмной теме: на OLED он не светится и не ест батарею.
-  bool get amoled => _prefs.getBool(_amoled) ?? false;
-
-  Future<void> setAmoled(bool value) => _prefs.setBool(_amoled, value);
-
-  /// Цвет из обоев системы (Android 12+).
-  bool get dynamicColor => _prefs.getBool(_dynamicColor) ?? false;
-
-  Future<void> setDynamicColor(bool value) =>
-      _prefs.setBool(_dynamicColor, value);
+  Future<void> setCorner(double value) => _prefs.setDouble(
+        _corner,
+        value.clamp(VehaTheme.minCorner, VehaTheme.maxCorner),
+      );
 
   /// Пустая строка — язык системы.
   String get locale => _prefs.getString(_locale) ?? '';
@@ -118,7 +109,9 @@ class VehaSettings {
 
   Future<void> setDayReading(int value) => _prefs.setInt(_dayReading, value);
 
-  int get monthMode => _prefs.getInt(_monthMode) ?? 0;
+  /// Умолчание — полоски: они читаются на любой ширине ячейки, а чипы с
+  /// названиями на телефоне всё равно вырождались в иконки.
+  int get monthMode => _prefs.getInt(_monthMode) ?? MonthMode.bars.index;
 
   Future<void> setMonthMode(int value) => _prefs.setInt(_monthMode, value);
 
@@ -372,10 +365,10 @@ final dayReadingProvider =
   final saved = settings?.dayReading;
   return DayReadingNotifier(
     settings,
-    // По умолчанию цепочка: она отвечает на вопрос «что у меня сегодня»,
+    // По умолчанию лента: она отвечает на вопрос «что у меня сегодня»,
     // с которым день открывают чаще, чем с «когда я свободен».
     saved == null
-        ? DayReading.chain
+        ? DayReading.tape
         : DayReading.values[saved.clamp(0, DayReading.values.length - 1)],
   );
 });
@@ -402,46 +395,38 @@ extension VehaThemeModeX on VehaThemeMode {
   }
 }
 
-/// Оформление: тема, режим схемы, фирменный цвет, язык.
+/// Оформление: тема, язык, подпись блоков и скругление.
 @immutable
 class Appearance {
   const Appearance({
     this.themeMode = VehaThemeMode.system,
-    this.vibrant = false,
-    this.seed = VehaBrand.seed,
-    this.amoled = false,
-    this.dynamicColor = false,
     this.locale,
+    this.labelMode = LabelMode.both,
+    this.corner = VehaTheme.defaultCorner,
   });
 
   final VehaThemeMode themeMode;
-  final bool vibrant;
-  final Color seed;
-
-  /// Чисто чёрный фон в тёмной теме.
-  final bool amoled;
-
-  /// Цвет из обоев системы вместо выбранного.
-  final bool dynamicColor;
 
   /// `null` — язык системы.
   final Locale? locale;
 
+  /// Чем подписан блок события в сетке: иконкой, текстом или обоими.
+  final LabelMode labelMode;
+
+  /// Скругление углов блоков.
+  final double corner;
+
   Appearance copyWith({
     VehaThemeMode? themeMode,
-    bool? vibrant,
-    Color? seed,
-    bool? amoled,
-    bool? dynamicColor,
     Object? locale = _keepLocale,
+    LabelMode? labelMode,
+    double? corner,
   }) =>
       Appearance(
         themeMode: themeMode ?? this.themeMode,
-        vibrant: vibrant ?? this.vibrant,
-        seed: seed ?? this.seed,
-        amoled: amoled ?? this.amoled,
-        dynamicColor: dynamicColor ?? this.dynamicColor,
         locale: locale == _keepLocale ? this.locale : locale as Locale?,
+        labelMode: labelMode ?? this.labelMode,
+        corner: corner ?? this.corner,
       );
 
   static const Object _keepLocale = Object();
@@ -457,24 +442,14 @@ class AppearanceNotifier extends StateNotifier<Appearance> {
     await _settings?.setThemeMode(mode.index);
   }
 
-  Future<void> setAmoled(bool value) async {
-    state = state.copyWith(amoled: value);
-    await _settings?.setAmoled(value);
+  Future<void> setLabelMode(LabelMode mode) async {
+    state = state.copyWith(labelMode: mode);
+    await _settings?.setLabelMode(mode.index);
   }
 
-  Future<void> setDynamicColor(bool value) async {
-    state = state.copyWith(dynamicColor: value);
-    await _settings?.setDynamicColor(value);
-  }
-
-  Future<void> setVibrant(bool value) async {
-    state = state.copyWith(vibrant: value);
-    await _settings?.setVibrant(value);
-  }
-
-  Future<void> setSeed(Color value) async {
-    state = state.copyWith(seed: value);
-    await _settings?.setSeed(value.toARGB32());
+  Future<void> setCorner(double value) async {
+    state = state.copyWith(corner: value);
+    await _settings?.setCorner(value);
   }
 
   Future<void> setLocale(Locale? value) async {
@@ -497,11 +472,10 @@ final appearanceProvider =
       themeMode: settings.themeMode == null
           ? VehaThemeMode.system
           : VehaThemeMode.values[settings.themeMode!.clamp(0, 3)],
-      vibrant: settings.vibrant,
-      seed: settings.seed == 0 ? VehaBrand.seed : Color(settings.seed),
-      amoled: settings.amoled,
-      dynamicColor: settings.dynamicColor,
       locale: language.isEmpty ? null : Locale(language),
+      labelMode:
+          LabelMode.values[settings.labelMode.clamp(0, LabelMode.values.length - 1)],
+      corner: settings.corner,
     ),
   );
 });

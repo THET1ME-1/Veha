@@ -7,9 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:m3_dna/theme/app_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:veha/core/brand.dart';
+import 'package:veha/core/veha_theme.dart';
 import 'package:drift/drift.dart' show DatabaseConnection;
 import 'package:drift/native.dart';
 import 'package:sqlite3/open.dart' as sqlite_open;
@@ -30,7 +29,7 @@ Future<void> loadAppFonts() async {
   _useSystemSqlite();
   // Иконки лежат в своём шрифте рядом с текстовыми: без него вместо каждой
   // иконки рисуется квадрат-заглушка, и сверять экран с макетом бессмысленно.
-  for (final family in const ['Unbounded', 'Onest', 'VehaSymbols']) {
+  for (final family in const ['Manrope', 'VehaSymbols']) {
     final loader = FontLoader(family)
       ..addFont(rootBundle.load('assets/fonts/$family.ttf'));
     await loader.load();
@@ -106,14 +105,8 @@ Future<void> pumpScreen(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: brightness == Brightness.light
-            ? AppTheme.light(
-                VehaBrand.seed,
-                vibrant: VehaBrand.vibrantByDefault,
-              )
-            : AppTheme.dark(
-                VehaBrand.seed,
-                vibrant: VehaBrand.vibrantByDefault,
-              ),
+            ? VehaTheme.light(VehaTheme.defaultCorner)
+            : VehaTheme.dark(VehaTheme.defaultCorner),
         locale: locale,
         supportedLocales: L.supportedLocales,
         localizationsDelegates: const [
@@ -162,7 +155,17 @@ Future<void> _warmImages(WidgetTester tester) async {
 /// Помощник нужен, чтобы этот порядок был записан в одном месте: иначе
 /// каждый тест правки повторяет его своими руками и разъезжается.
 Future<void> openEventEditor(WidgetTester tester, Finder target) async {
-  await tester.tap(target);
+  // Лента дня держит масштаб времени: вечернее занятие лежит ниже экрана и
+  // само в кадр не попадает. Крутим до него руками — `dragUntilVisible`
+  // спотыкается о финдер с `.first`, когда цель ещё не построена.
+  // Крутим именно ленту дня: первый Scrollable на экране — горизонтальная
+  // полоска дней недели, и тянуть её вверх бессмысленно.
+  for (var i = 0; i < 12 && target.evaluate().isEmpty; i++) {
+    await tester.drag(find.byType(Scrollable).last, const Offset(0, -180));
+    await tester.pumpAndSettle();
+  }
+
+  await tester.tap(target.first);
   await tester.pumpAndSettle();
 
   final edit = find.text('Изменить');

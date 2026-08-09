@@ -2046,5 +2046,19 @@
   "monthDensityText": "Text only",
   "@monthDensityText": {
     "description": "monthDensityText"
-  }
+  },
+  "labelsTitle": "Event labels",
+  "labelsIcon": "Icons",
+  "labelsText": "Text",
+  "labelsBoth": "Icons and text",
+  "cornerTitle": "Corner radius",
+  "cornerSquare": "Square",
+  "cornerRound": "Pill",
+  "cornerPreview": "This is how an event looks",
+  "tapeFree": "{span} free",
+  "dayFreeTitle": "The day is free",
+  "dayFreeHint": "No events yet. The button above creates the first one.",
+  "tasksRowHint": "Tasks with a due date",
+  "calendarsRowHint": "Branches, colours and visibility",
+  "eventsCount": "{count, plural, one{{count} event} other{{count} events}}"
 }

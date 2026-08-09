@@ -22,6 +22,12 @@ void main() {
   testWidgets('Календарь из базы · день', (tester) async {
     await openCalendar(tester);
 
+    // Лента ленивая: вечернее занятие строится, только когда до него
+    // доскроллили. Крутим до «Английского» — он и есть развёрнутый ряд.
+    for (var i = 0; i < 8 && find.text('Английский').evaluate().isEmpty; i++) {
+      await tester.drag(find.byType(Scrollable).last, const Offset(0, -180));
+      await tester.pumpAndSettle();
+    }
     expect(find.text('Английский'), findsWidgets,
         reason: 'Повторяющееся занятие развёрнуто на сегодняшний день');
     await shoot(tester, 'calendar_day_db');
@@ -45,12 +51,4 @@ void main() {
     await shoot(tester, 'calendar_week_db');
   });
 
-  testWidgets('Календарь из базы · дни лентами', (tester) async {
-    await openCalendar(tester);
-
-    await tester.tap(find.text('Дни'));
-    await tester.pumpAndSettle();
-
-    await shoot(tester, 'calendar_bands_db');
-  });
 }

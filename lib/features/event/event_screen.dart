@@ -9,7 +9,7 @@ import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../l10n/app_localizations.dart';
 import 'note_body.dart';
-import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
+import '../../domain/recurrence_label.dart';
 import '../calendar/widgets/month_header.dart';
 import 'event_cover.dart';
 import 'reminders_sheet.dart' show remindersLabel;

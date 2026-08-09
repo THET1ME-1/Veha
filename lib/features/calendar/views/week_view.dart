@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/event_colors.dart';
 import '../../../core/icon_registry.dart';
+import '../../../core/veha_theme.dart';
 import '../../../data/models.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../data/settings.dart';
@@ -19,7 +20,8 @@ import '../widgets/month_header.dart';
 /// требовал дотянуть жест до конца, а потом прыгал целым периодом, отсюда
 /// убран — «либо эта неделя, либо прошлая» и была главная жалоба на вид.
 ///
-/// Высота пилюли пропорциональна длительности, внутри только иконка по центру.
+/// Высота блока пропорциональна длительности, а чем он подписан — решает
+/// настройка: иконкой, названием или обоими сразу.
 /// Пересекающиеся события делят ширину колонки: место, которое ломается тише
 /// всего, поэтому раскладка вынесена в отдельную функцию с тестом.
 class WeekView extends ConsumerStatefulWidget {
@@ -545,7 +547,7 @@ List<PlacedEvent> layoutOverlaps(List<VEvent> events) {
   return result;
 }
 
-class _Pill extends StatefulWidget {
+class _Pill extends ConsumerStatefulWidget {
   const _Pill({
     required this.placed,
     required this.width,
@@ -573,10 +575,10 @@ class _Pill extends StatefulWidget {
   final bool isSelected;
 
   @override
-  State<_Pill> createState() => _PillState();
+  ConsumerState<_Pill> createState() => _PillState();
 }
 
-class _PillState extends State<_Pill> {
+class _PillState extends ConsumerState<_Pill> {
   /// Смещение пальца от точки, с которой начали тащить.
   Offset _pointer = Offset.zero;
 
@@ -643,6 +645,87 @@ class _PillState extends State<_Pill> {
     super.dispose();
   }
 
+  /// Чем подписан блок внутри колонки.
+  ///
+  /// Место здесь считанное: колонка недели — это сорок точек ширины. Поэтому
+  /// текст рисуется только когда блок выше 26 точек, а время — когда выше 42:
+  /// обрезанное пополам слово хуже честной иконки.
+  Widget _label({
+    required LabelMode mode,
+    required IconData icon,
+    required double iconSize,
+    required Color mark,
+    required String title,
+    required DateTime start,
+    required double height,
+    required double width,
+  }) {
+    final glyph = Icon(icon, size: iconSize, color: mark);
+    // Колонка недели на телефоне — сорок точек ширины. Ниже тридцати текста
+    // не остаётся вовсе: два наложенных события делят её пополам, и честнее
+    // показать знак, чем обрубок слова.
+    if (mode == LabelMode.icon || height < 20 || width < 30) return glyph;
+
+    // Три плотности: узкая колонка недели, широкая колонка планшета и
+    // промежуток между ними.
+    final micro = width < 62;
+    final tight = width < 88;
+    final pad = micro ? 3.0 : (tight ? 5.0 : 8.0);
+    final nameSize = micro ? 8.5 : (tight ? 10.0 : 11.5);
+
+    final name = Text(
+      title,
+      maxLines: height < 38 ? 1 : (micro ? 3 : 2),
+      overflow: TextOverflow.ellipsis,
+      style: TextStyle(
+        fontSize: nameSize,
+        height: 1.12,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -.1,
+        color: mark,
+      ),
+    );
+    final time = Text(
+      DateFormat.Hm().format(start),
+      maxLines: 1,
+      overflow: TextOverflow.clip,
+      style: TextStyle(
+        fontSize: micro ? 7.5 : 9,
+        fontWeight: FontWeight.w600,
+        color: mark.withValues(alpha: .78),
+      ),
+    );
+
+    // Иконка рядом с названием влезает только там, где после неё остаётся
+    // место под слово. В узкой колонке она уходит, название важнее.
+    final withIcon = mode == LabelMode.both && width >= 58;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: pad, vertical: 3),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (withIcon)
+            SizedBox(
+              width: double.infinity,
+              child: Row(
+                children: [
+                  Icon(icon, size: tight ? 11 : 13, color: mark),
+                  SizedBox(width: tight ? 3 : 5),
+                  Expanded(child: name),
+                ],
+              ),
+            )
+          else
+            SizedBox(width: double.infinity, child: name),
+          if (height >= 40) ...[const SizedBox(height: 2), time],
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final placed = widget.placed;
@@ -664,6 +747,7 @@ class _PillState extends State<_Pill> {
         (e.duration.inMinutes / 60 * hourHeight).clamp(24.0, 1000.0);
     final laneWidth = (width - 6) / placed.lanes;
     final iconSize = height < 30 ? 13.0 : 17.0;
+    final labelMode = ref.watch(appearanceProvider).labelMode;
 
     final canDrag = widget.onMoved != null;
 
@@ -749,13 +833,20 @@ class _PillState extends State<_Pill> {
                 color: _dragging
                     ? ink.foreground.withValues(alpha: 0.24)
                     : fill,
-                shape: const StadiumBorder(),
+                shape: RoundedRectangleBorder(
+                  borderRadius: VehaShape.of(context).forHeight(height),
+                ),
               ),
               alignment: Alignment.center,
-              child: Icon(
-                VehaIcons.byName(selected ? 'check' : icon),
-                size: iconSize,
-                color: mark,
+              child: _label(
+                mode: selected ? LabelMode.icon : labelMode,
+                icon: VehaIcons.byName(selected ? 'check' : icon),
+                iconSize: iconSize,
+                mark: mark,
+                title: e.title,
+                start: e.start,
+                height: height,
+                width: laneWidth,
               ),
             );
           },

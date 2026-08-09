@@ -2134,5 +2134,71 @@
   "monthDensityText": "Только текст",
   "@monthDensityText": {
     "description": "monthDensityText"
+  },
+  "labelsTitle": "Подпись событий",
+  "@labelsTitle": {
+    "description": "labelsTitle"
+  },
+  "labelsIcon": "Иконки",
+  "@labelsIcon": {
+    "description": "labelsIcon"
+  },
+  "labelsText": "Текст",
+  "@labelsText": {
+    "description": "labelsText"
+  },
+  "labelsBoth": "Иконки и текст",
+  "@labelsBoth": {
+    "description": "labelsBoth"
+  },
+  "cornerTitle": "Скругление углов",
+  "@cornerTitle": {
+    "description": "cornerTitle"
+  },
+  "cornerSquare": "Прямые",
+  "@cornerSquare": {
+    "description": "cornerSquare"
+  },
+  "cornerRound": "Капсула",
+  "@cornerRound": {
+    "description": "cornerRound"
+  },
+  "cornerPreview": "Так выглядит событие",
+  "@cornerPreview": {
+    "description": "cornerPreview"
+  },
+  "tasksRowHint": "Дела со сроком",
+  "@tasksRowHint": {
+    "description": "tasksRowHint"
+  },
+  "calendarsRowHint": "Ветки, цвета и видимость",
+  "@calendarsRowHint": {
+    "description": "calendarsRowHint"
+  },
+  "tapeFree": "{span} свободно",
+  "@tapeFree": {
+    "description": "tapeFree",
+    "placeholders": {
+      "span": {
+        "type": "String"
+      }
+    }
+  },
+  "dayFreeTitle": "День свободен",
+  "@dayFreeTitle": {
+    "description": "dayFreeTitle"
+  },
+  "dayFreeHint": "Ни одного события. Кнопка сверху заводит первое.",
+  "@dayFreeHint": {
+    "description": "dayFreeHint"
+  },
+  "eventsCount": "{count, plural, one{{count} событие} few{{count} события} other{{count} событий}}",
+  "@eventsCount": {
+    "description": "eventsCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

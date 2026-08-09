@@ -1593,4 +1593,57 @@ class LRu extends L {
 
   @override
   String get monthDensityText => 'Только текст';
+
+  @override
+  String get labelsTitle => 'Подпись событий';
+
+  @override
+  String get labelsIcon => 'Иконки';
+
+  @override
+  String get labelsText => 'Текст';
+
+  @override
+  String get labelsBoth => 'Иконки и текст';
+
+  @override
+  String get cornerTitle => 'Скругление углов';
+
+  @override
+  String get cornerSquare => 'Прямые';
+
+  @override
+  String get cornerRound => 'Капсула';
+
+  @override
+  String get cornerPreview => 'Так выглядит событие';
+
+  @override
+  String get tasksRowHint => 'Дела со сроком';
+
+  @override
+  String get calendarsRowHint => 'Ветки, цвета и видимость';
+
+  @override
+  String tapeFree(String span) {
+    return '$span свободно';
+  }
+
+  @override
+  String get dayFreeTitle => 'День свободен';
+
+  @override
+  String get dayFreeHint => 'Ни одного события. Кнопка сверху заводит первое.';
+
+  @override
+  String eventsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count событий',
+      few: '$count события',
+      one: '$count событие',
+    );
+    return '$_temp0';
+  }
 }

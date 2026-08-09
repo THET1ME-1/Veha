@@ -13,9 +13,9 @@ import '../common/period_pager.dart';
 import '../search/search_screen.dart';
 import '../tasks/day_tasks.dart';
 import '../settings/month_settings_screen.dart';
+import '../settings/settings_screen.dart';
 import '../event/event_flow.dart';
-import 'views/bands_view.dart';
-import 'views/chain_view.dart';
+import 'views/tape_view.dart';
 import 'views/clock_view.dart';
 import 'views/month_view.dart';
 import 'views/week_view.dart';
@@ -27,9 +27,6 @@ import 'widgets/span_bar.dart';
 import 'widgets/view_switcher.dart';
 import 'widgets/week_setup_sheet.dart';
 import 'widgets/week_strip.dart';
-
-/// Сколько дней показывает лента.
-const _bandsLength = 10;
 
 class CalendarScreen extends ConsumerStatefulWidget {
   const CalendarScreen({super.key});
@@ -132,6 +129,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           onReview: view == CalendarView.month
               ? null
               : () => _reviewDay(range, inheritance, now),
+          onAdd: () => EventFlow(context, ref).create(),
+          period: _periodLabel(view),
+          summary: _periodSummary(view, range),
+          onPrev: () => _shift(-1),
+          onNext: () => _shift(1),
         ),
         if (view == CalendarView.day)
           WeekStrip(
@@ -144,15 +146,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             },
             onSelect: (d) => setState(() => _selected = d),
           ),
-        ViewSwitcher(
-          value: view,
-          onChanged: (v) => setState(() => _view = v),
-          onSetup: switch (view) {
-            CalendarView.week => _setupWeek,
-            CalendarView.month => _setupMonth,
-            _ => null,
-          },
-        ),
         // Задачи со сроком на этот день — над видом, а не внутри сетки часов:
         // у задачи срок, а не длительность.
         if (view == CalendarView.day) DayTasks(day: _selected!),
@@ -188,8 +181,90 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           onDelete: () => _bulk(EventFlow(context, ref).deleteMany),
           onClose: _clearPicked,
         ),
+        // Переключатель видов внизу: до верха экрана большой палец не достаёт.
+        // В режиме выбора его нет — там свои действия над пачкой.
+        if (!_picking)
+          ViewDock(
+            value: view,
+            onChanged: (v) => setState(() => _view = v),
+            onSettings: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => Scaffold(
+                  appBar: AppBar(toolbarHeight: 56, leading: vBack(context)),
+                  body: const SafeArea(top: false, child: SettingsScreen()),
+                ),
+              ),
+            ),
+            onSetup: switch (view) {
+              CalendarView.week => _setupWeek,
+              CalendarView.month => _setupMonth,
+              _ => null,
+            },
+          ),
       ],
     );
+  }
+
+  /// Видимые колонки недели: раскладка решает, какие дни показывать.
+  List<DateTime> _weekDays() {
+    final layout = ref.read(weekLayoutProvider);
+    final anchor = _weekAnchor;
+    return anchor == null
+        ? layout.daysOf(_selected!)
+        : layout.window(anchor);
+  }
+
+  /// Подпись видимого отрезка. Месяц оставляем на откуп шапке: «Июль 2026»
+  /// с годом второй гарнитурой — фирменная деталь экрана.
+  String? _periodLabel(CalendarView view) {
+    final day = _selected!;
+    switch (view) {
+      case CalendarView.month:
+        return null;
+      case CalendarView.day:
+        // Короткий день недели: полное «Понедельник» обрезалось многоточием
+        // ещё до месяца.
+        final week = DateFormat.E('ru').format(day);
+        return '${week[0].toUpperCase()}${week.substring(1)}, '
+            '${DateFormat.MMMd('ru').format(day)}';
+      case CalendarView.week:
+        final days = _weekDays();
+        return '${DateFormat.d('ru').format(days.first)} — '
+            '${DateFormat.MMMd('ru').format(days.last)}';
+    }
+  }
+
+  /// Строка под подписью: сколько событий и сколько времени занято.
+  ///
+  /// Считается по тем же данным, что рисует вид: второй счётчик разошёлся бы
+  /// с картинкой на первом же скрытом календаре.
+  String? _periodSummary(CalendarView view, RangeData range) {
+    final l = L.of(context);
+    final day = _selected!;
+    final days = switch (view) {
+      CalendarView.day => [day],
+      CalendarView.week => _weekDays(),
+      CalendarView.month => const <DateTime>[],
+    };
+    if (days.isEmpty) return null;
+
+    var count = 0;
+    var minutes = 0;
+    for (final d in days) {
+      for (final e in range.eventsOn(d)) {
+        if (e.isMultiDay) continue;
+        count++;
+        minutes += e.duration.inMinutes;
+      }
+    }
+    if (count == 0) return l.dayReviewFree;
+
+    final busy = minutes >= 60
+        ? (minutes % 60 == 0
+            ? l.durationHours(minutes ~/ 60)
+            : l.durationHoursMinutes(minutes ~/ 60, minutes % 60))
+        : l.durationMinutes(minutes);
+    return '${l.eventsCount(count)} · $busy';
   }
 
   /// День листом поверх месяца: события дня, а из него — либо событие, либо
@@ -312,7 +387,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       final step = switch (view) {
         CalendarView.day => 1,
         CalendarView.week => 1,
-        CalendarView.bands => _bandsLength,
         CalendarView.month => 0,
       };
       _selected = _selected!.add(Duration(days: step * direction));
@@ -430,13 +504,19 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         _picking ? _toggle(e) : EventFlow(context, ref).preview(e);
 
     return switch (_view ?? CalendarView.day) {
-      CalendarView.day when reading == DayReading.chain => ChainView(
+      CalendarView.day when reading == DayReading.tape => TapeView(
+          day: _selected!,
           events: range.eventsOn(_selected!),
           inheritance: inheritance,
           now: _isToday(today) ? now : null,
           onEventTap: onTap,
           onEventLongPress: _showEventMenu,
           selected: _picked.keys.toSet(),
+          // Тап по свободному окну заводит событие с его началом: человек
+          // ткнул в пустоту, значит хочет занять именно её.
+          onFreeTap: _picking
+              ? null
+              : (slot) => EventFlow(context, ref).create(at: slot.start),
         ),
       CalendarView.day => ClockView(
           events: range.eventsOn(_selected!),
@@ -507,13 +587,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           onEventMoved: _picking
               ? null
               : (e, shift) => EventFlow(context, ref).moveBy(e, shift),
-        ),
-      CalendarView.bands => BandsView(
-          days: List.generate(
-              _bandsLength, (i) => _selected!.add(Duration(days: i))),
-          eventsOf: range.eventsOn,
-          inheritance: inheritance,
-          today: today,
         ),
     };
   }

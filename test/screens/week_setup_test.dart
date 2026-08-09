@@ -27,7 +27,8 @@ void main() {
   testWidgets('Будни оставляют пять колонок', (tester) async {
     await openWeek(tester);
 
-    await tester.tap(find.byIcon(VehaIcons.byName('tune')).first);
+    // Настройка вида открывается долгим нажатием на активную пилюлю дока.
+    await tester.longPress(find.text('Неделя'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Будни'));
     await tester.pumpAndSettle();
@@ -40,7 +41,8 @@ void main() {
   testWidgets('Снимок настройки недели', (tester) async {
     await openWeek(tester);
 
-    await tester.tap(find.byIcon(VehaIcons.byName('tune')).first);
+    // Настройка вида открывается долгим нажатием на активную пилюлю дока.
+    await tester.longPress(find.text('Неделя'));
     await tester.pumpAndSettle();
 
     await shoot(tester, 'week_setup');

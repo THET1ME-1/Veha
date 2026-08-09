@@ -1581,4 +1581,57 @@ class LDe extends L {
 
   @override
   String get monthDensityText => 'Nur Text';
+
+  @override
+  String get labelsTitle => 'Beschriftung der Termine';
+
+  @override
+  String get labelsIcon => 'Symbole';
+
+  @override
+  String get labelsText => 'Text';
+
+  @override
+  String get labelsBoth => 'Symbole und Text';
+
+  @override
+  String get cornerTitle => 'Eckenrundung';
+
+  @override
+  String get cornerSquare => 'Eckig';
+
+  @override
+  String get cornerRound => 'Kapsel';
+
+  @override
+  String get cornerPreview => 'So sieht ein Termin aus';
+
+  @override
+  String get tasksRowHint => 'Aufgaben mit Frist';
+
+  @override
+  String get calendarsRowHint => 'Zweige, Farben und Sichtbarkeit';
+
+  @override
+  String tapeFree(String span) {
+    return '$span frei';
+  }
+
+  @override
+  String get dayFreeTitle => 'Der Tag ist frei';
+
+  @override
+  String get dayFreeHint =>
+      'Noch keine Termine. Die Schaltfläche oben legt den ersten an.';
+
+  @override
+  String eventsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Termine',
+      one: '$count Termin',
+    );
+    return '$_temp0';
+  }
 }

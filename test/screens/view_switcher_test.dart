@@ -4,8 +4,8 @@ import 'package:veha/features/calendar/widgets/view_switcher.dart';
 
 import 'golden_harness.dart';
 
-/// Подписи переключателя обязаны стоять на одной сетке во всех положениях:
-/// иначе при смене вида все четыре слова дёргаются.
+/// Подписи дока обязаны стоять на одной сетке во всех положениях: иначе при
+/// смене вида все три слова дёргаются.
 void main() {
   setUpAll(loadAppFonts);
 
@@ -17,13 +17,17 @@ void main() {
       tester,
       Scaffold(
         body: Center(
-          child: ViewSwitcher(value: active, onChanged: (_) {}),
+          child: ViewDock(
+            value: active,
+            onChanged: _ignore,
+            onSettings: _nothing,
+          ),
         ),
       ),
     );
 
     return {
-      for (final label in const ['День', 'Дни', 'Неделя', 'Месяц'])
+      for (final label in const ['День', 'Неделя', 'Месяц'])
         label: tester.getCenter(find.text(label)).dx,
     };
   }
@@ -43,12 +47,16 @@ void main() {
       tester,
       Scaffold(
         body: Center(
-          child: ViewSwitcher(value: CalendarView.week, onChanged: (_) {}),
+          child: ViewDock(
+            value: CalendarView.week,
+            onChanged: _ignore,
+            onSettings: _nothing,
+          ),
         ),
       ),
     );
 
-    for (final label in const ['День', 'Дни', 'Неделя', 'Месяц']) {
+    for (final label in const ['День', 'Неделя', 'Месяц']) {
       final text = tester.widget<Text>(find.text(label));
       final painter = TextPainter(
         text: TextSpan(text: label, style: text.style),
@@ -57,13 +65,31 @@ void main() {
 
       // Обрезка съедает десятки пикселей, поэтому округления в пределах
       // пикселя допустимы.
-      expect(tester.getSize(find.text(label)).width,
-          closeTo(painter.width, 1.5),
+      expect(tester.getSize(find.text(label)).width, closeTo(painter.width, 1.5),
           reason: 'Подпись «$label» обрезана многоточием');
     }
   });
 
-  testWidgets('Снимок переключателя', (tester) async {
+  testWidgets('Кнопка настроек стоит рядом с переключателем', (tester) async {
+    var opened = false;
+    await pumpScreen(
+      tester,
+      Scaffold(
+        body: Center(
+          child: ViewDock(
+            value: CalendarView.day,
+            onChanged: _ignore,
+            onSettings: () => opened = true,
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byTooltip('Настройки'));
+    expect(opened, isTrue, reason: 'Круглая кнопка должна открывать настройки');
+  });
+
+  testWidgets('Снимок дока', (tester) async {
     await pumpScreen(
       tester,
       const Scaffold(
@@ -71,21 +97,33 @@ void main() {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ViewSwitcher(value: CalendarView.day, onChanged: _ignore),
+              ViewDock(
+                value: CalendarView.day,
+                onChanged: _ignore,
+                onSettings: _nothing,
+              ),
               SizedBox(height: 10),
-              ViewSwitcher(value: CalendarView.bands, onChanged: _ignore),
+              ViewDock(
+                value: CalendarView.week,
+                onChanged: _ignore,
+                onSettings: _nothing,
+              ),
               SizedBox(height: 10),
-              ViewSwitcher(value: CalendarView.week, onChanged: _ignore),
-              SizedBox(height: 10),
-              ViewSwitcher(value: CalendarView.month, onChanged: _ignore),
+              ViewDock(
+                value: CalendarView.month,
+                onChanged: _ignore,
+                onSettings: _nothing,
+              ),
             ],
           ),
         ),
       ),
     );
 
-    await shoot(tester, 'view_switcher');
+    await shoot(tester, 'view_dock');
   });
 }
 
 void _ignore(CalendarView _) {}
+
+void _nothing() {}

@@ -18,7 +18,8 @@ void main() {
 
   testWidgets('Настройки по-немецки', (tester) async {
     await pumpScreen(tester, const HomeShell(), locale: de);
-    await tester.tap(find.text('Einstellungen'));
+    // Настройки открывает круглая кнопка дока, подпись у неё — во всплывашке.
+    await tester.tap(find.byTooltip('Einstellungen'));
     await tester.pumpAndSettle();
     await shoot(tester, 'de_settings');
   });
@@ -26,7 +27,7 @@ void main() {
   testWidgets('Форма события по-немецки', (tester) async {
     await pumpScreen(tester, const HomeShell(), locale: de);
 
-    await tester.tap(find.byType(FloatingActionButton));
+    await tester.tap(find.byKey(const ValueKey('add-event')));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField), 'Zahnarzttermin');
     await tester.pumpAndSettle();
@@ -38,6 +39,8 @@ void main() {
 
   testWidgets('Календари по-немецки', (tester) async {
     await pumpScreen(tester, const HomeShell(), locale: de);
+    await tester.tap(find.byTooltip('Einstellungen'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Liste'));
     await tester.pumpAndSettle();
     await shoot(tester, 'de_calendars');

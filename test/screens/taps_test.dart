@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:veha/core/icon_registry.dart';
-import 'package:veha/features/calendar/views/chain_view.dart';
+import 'package:veha/features/calendar/views/tape_view.dart';
 import 'package:veha/features/calendar/views/month_view.dart';
 import 'package:veha/features/shell/home_shell.dart';
 
@@ -20,7 +20,7 @@ void main() {
     await openView(tester, 'Неделя');
 
     // Пилюли недели — одни иконки: у английского это шапочка.
-    await openEventEditor(tester, find.byIcon(VehaIcons.byName('school')).first);
+    await openEventEditor(tester, find.byIcon(VehaIcons.byName('school')));
 
     expect(find.text('Сохранить'), findsOneWidget,
         reason: 'Открылась форма события');
@@ -29,7 +29,7 @@ void main() {
   testWidgets('Полоса многодневного события открывается тапом', (tester) async {
     await pumpScreen(tester, const HomeShell());
 
-    await openEventEditor(tester, find.text('Абонемент в бассейн').first);
+    await openEventEditor(tester, find.text('Абонемент в бассейн'));
 
     expect(find.text('Сохранить'), findsOneWidget);
   });
@@ -49,6 +49,6 @@ void main() {
 
     await tester.tap(find.text('Открыть день'));
     await tester.pumpAndSettle();
-    expect(find.byType(ChainView), findsOneWidget, reason: 'Открыт день');
+    expect(find.byType(TapeView), findsOneWidget, reason: 'Открыт день');
   });
 }

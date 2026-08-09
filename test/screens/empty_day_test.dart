@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:veha/core/icon_registry.dart';
 import 'package:veha/data/db/database.dart';
 import 'package:veha/data/models.dart';
-import 'package:veha/features/calendar/views/chain_view.dart';
+import 'package:veha/features/calendar/views/tape_view.dart';
 import 'package:veha/features/calendar/widgets/week_strip.dart';
 import 'package:veha/features/shell/home_shell.dart';
 
@@ -70,7 +70,7 @@ void main() {
     await shoot(tester, 'day_clock_empty');
   });
 
-  testWidgets('Цепочка свободного дня говорит, что он свободен',
+  testWidgets('Лента свободного дня говорит, что он свободен',
       (tester) async {
     await pumpScreen(
       tester,
@@ -82,7 +82,7 @@ void main() {
       },
     );
 
-    expect(find.text('В этот день ничего не запланировано'), findsOneWidget);
+    expect(find.text('День свободен'), findsOneWidget);
 
     await swipeGrid(tester, -260);
     expect(selectedOf(tester).day, 28,
@@ -123,23 +123,26 @@ void main() {
         reason: 'Занятие ушло, а не осталось неудаляемым');
   });
 
-  testWidgets('Иконка занятия стоит по центру пилюли', (tester) async {
+  testWidgets('Иконка занятия стоит слева от названия', (tester) async {
     await pumpScreen(tester, const HomeShell());
 
-    // Урок идёт час: пилюля вытянута, и разница между верхом и серединой
-    // видна.
     final icon = find.descendant(
-      of: find.byType(ChainView),
+      of: find.byType(TapeView),
       matching: find.byIcon(VehaIcons.byName('school')),
     );
     expect(icon, findsWidgets);
 
-    final pill =
-        find.ancestor(of: icon.first, matching: find.byType(Container)).first;
+    // Лента подписывает блок строкой: знак, имя, время. Знак обязан стоять
+    // левее имени, иначе строка читается задом наперёд.
+    final title = find.descendant(
+      of: find.byType(TapeView),
+      matching: find.text('Урок'),
+    );
+    expect(title, findsWidgets);
     expect(
-      tester.getCenter(icon.first).dy,
-      moreOrLessEquals(tester.getCenter(pill).dy, epsilon: 1),
-      reason: 'Иконка по центру занятия, а не прижата к его началу',
+      tester.getCenter(icon.first).dx,
+      lessThan(tester.getCenter(title.first).dx),
+      reason: 'Знак занятия стоит перед названием',
     );
   });
 }

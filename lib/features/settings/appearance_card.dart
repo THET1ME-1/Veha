@@ -1,34 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:m3_dna/theme/app_theme.dart';
 
-import '../../core/brand.dart';
 import '../../core/icon_registry.dart';
+import '../../core/veha_theme.dart';
 import '../../data/settings.dart';
 import '../../l10n/app_localizations.dart';
-import '../calendar/widgets/month_header.dart' show AppFonts;
-import '../color/color_picker_screen.dart';
 
-/// Карточка «Оформление»: режим темы, чёрный фон, цвет из обоев, палитра
-/// акцентов и насыщенность схемы.
+/// Карточка «Оформление»: тема, подпись событий и скругление углов.
 ///
-/// Перенесена из Wickly. Четыре режима видны сразу, а кружок показывает не
-/// одну точку, а четыре тона будущей схемы — по нему видно, во что превратится
-/// тема, ещё до нажатия.
+/// Палитра акцентов, «сочность» схемы и цвет из обоев отсюда убраны вместе с
+/// Material: цвета приложения заданы руками и не выводятся из seed. Цвет
+/// события по-прежнему выбирает человек, но в самом событии, а не здесь.
 class AppearanceCard extends ConsumerWidget {
   const AppearanceCard({super.key});
-
-  /// Пресеты акцента. Первый — фирменная мята.
-  static const presets = [
-    VehaBrand.seed,
-    Color(0xFF3B7DD8),
-    Color(0xFF8E5CC4),
-    Color(0xFF4C9A5B),
-    Color(0xFFE0A93B),
-    Color(0xFFB4694A),
-    Color(0xFFC4485C),
-    Color(0xFF00838F),
-  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -40,8 +24,8 @@ class AppearanceCard extends ConsumerWidget {
     return Container(
       decoration: ShapeDecoration(
         color: scheme.surfaceContainerLow,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(26)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(VehaShape.of(context).corner + 8),
         ),
       ),
       padding: const EdgeInsets.all(16),
@@ -58,172 +42,151 @@ class AppearanceCard extends ConsumerWidget {
                   icon: Icon(VehaIcons.byName('light_mode')),
                 ),
                 ButtonSegment(
-                  value: VehaThemeMode.dark,
-                  icon: Icon(VehaIcons.byName('dark_mode')),
-                ),
-                ButtonSegment(
                   value: VehaThemeMode.system,
                   icon: Icon(VehaIcons.byName('brightness_auto')),
                 ),
                 ButtonSegment(
-                  value: VehaThemeMode.autoTime,
-                  icon: Icon(VehaIcons.byName('schedule')),
+                  value: VehaThemeMode.dark,
+                  icon: Icon(VehaIcons.byName('dark_mode')),
                 ),
               ],
               selected: {look.themeMode},
               onSelectionChanged: (s) => notifier.setThemeMode(s.first),
             ),
           ),
-          const SizedBox(height: 6),
-          Text(
-            switch (look.themeMode) {
-              VehaThemeMode.light => l.settingsLight,
-              VehaThemeMode.dark => l.settingsDark,
-              VehaThemeMode.system => l.settingsSystem,
-              VehaThemeMode.autoTime => l.settingsAutoTime,
-            },
-            style: TextStyle(
-              fontFamily: AppFonts.body,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: scheme.onSurfaceVariant,
-            ),
+          const SizedBox(height: 22),
+          _Title(l.labelsTitle),
+          const SizedBox(height: 10),
+          _LabelChoice(
+            value: look.labelMode,
+            onPick: notifier.setLabelMode,
           ),
-
-          // Чёрный фон имеет смысл только там, где фон вообще тёмный.
-          if (look.themeMode != VehaThemeMode.light)
-            _Toggle(
-              icon: 'contrast',
-              title: l.settingsAmoled,
-              subtitle: l.settingsAmoledHint,
-              value: look.amoled,
-              onChanged: notifier.setAmoled,
-            ),
-          _Toggle(
-            icon: 'wand',
-            title: l.settingsMaterialYou,
-            subtitle: l.settingsMaterialYouHint,
-            value: look.dynamicColor,
-            onChanged: notifier.setDynamicColor,
+          const SizedBox(height: 22),
+          _Title(l.cornerTitle),
+          const SizedBox(height: 10),
+          CornerPicker(
+            corner: look.corner,
+            labelMode: look.labelMode,
+            onChanged: notifier.setCorner,
           ),
-
-          // Палитру прячем при цвете из обоев: там акцент приходит из системы,
-          // и выбор рядом только сбивал бы с толку.
-          if (!look.dynamicColor) ...[
-            const SizedBox(height: 14),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: [
-                for (final c in presets)
-                  SeedSwatch(
-                    seed: c,
-                    vibrant: look.vibrant,
-                    selected: look.seed.toARGB32() == c.toARGB32(),
-                    onTap: () => notifier.setSeed(c),
-                  ),
-                _CustomColor(
-                  seed: look.seed,
-                  custom: !presets
-                      .any((c) => c.toARGB32() == look.seed.toARGB32()),
-                  onPicked: notifier.setSeed,
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              l.settingsChroma,
-              style: TextStyle(
-                fontFamily: AppFonts.body,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: scheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 8),
-            SizedBox(
-              width: double.infinity,
-              child: SegmentedButton<bool>(
-                showSelectedIcon: false,
-                segments: [
-                  ButtonSegment(
-                    value: true,
-                    icon: Icon(VehaIcons.byName('wand'), size: 18),
-                    label: Text(l.settingsVivid),
-                  ),
-                  ButtonSegment(
-                    value: false,
-                    icon: Icon(VehaIcons.byName('gps_fixed'), size: 18),
-                    label: Text(l.settingsExact),
-                  ),
-                ],
-                selected: {look.vibrant},
-                onSelectionChanged: (s) => notifier.setVibrant(s.first),
-              ),
-            ),
-          ],
         ],
       ),
     );
   }
 }
 
-/// Кружок-превью схемы: четыре тона будущей темы вместо одноцветной точки.
-///
-/// Морфа выбранной формы, как в Wickly, здесь нет намеренно: в Veha морфинг
-/// живёт ровно в трёх местах, и размазывать его по настройкам нельзя.
-class SeedSwatch extends StatelessWidget {
-  const SeedSwatch({
-    super.key,
-    required this.seed,
-    this.selected = false,
-    this.size = 44,
-    this.vibrant = false,
-    this.onTap,
-  });
+class _Title extends StatelessWidget {
+  const _Title(this.text);
 
-  final Color seed;
-  final bool selected;
-  final double size;
-  final bool vibrant;
-  final VoidCallback? onTap;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Text(
+        text,
+        style: Theme.of(context).textTheme.labelMedium,
+      );
+}
+
+/// Три способа подписать блок: иконка, текст, оба.
+///
+/// Выбор показан не списком, а тремя образцами: человек видит, во что
+/// превратится сетка, до того как закроет настройки.
+class _LabelChoice extends StatelessWidget {
+  const _LabelChoice({required this.value, required this.onPick});
+
+  final LabelMode value;
+  final ValueChanged<LabelMode> onPick;
 
   @override
   Widget build(BuildContext context) {
-    // Схема строится ровно так же, как её строит тема, включая насыщенность:
-    // кружок обязан показывать то, что получится, а не похожее.
-    final s = ColorScheme.fromSeed(
-      seedColor: seed,
-      brightness: Brightness.light,
-      dynamicSchemeVariant: AppTheme.variantFor(vibrant),
-    );
+    final l = L.of(context);
+    final names = {
+      LabelMode.icon: l.labelsIcon,
+      LabelMode.text: l.labelsText,
+      LabelMode.both: l.labelsBoth,
+    };
 
-    return GestureDetector(
-      onTap: onTap,
-      child: ClipOval(
-        child: SizedBox(
-          width: size,
-          height: size,
-          child: CustomPaint(
-            painter: _Quadrants([
-              s.primaryContainer,
-              s.primary,
-              s.tertiaryContainer,
-              s.tertiary,
-            ]),
-            child: selected
-                ? Center(
-                    child: Container(
-                      padding: const EdgeInsets.all(3),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.38),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(VehaIcons.byName('check'),
-                          color: Colors.white, size: size * 0.34),
+    return Row(
+      children: [
+        for (final mode in LabelMode.values) ...[
+          Expanded(
+            child: _LabelSample(
+              mode: mode,
+              name: names[mode]!,
+              selected: mode == value,
+              onTap: () => onPick(mode),
+            ),
+          ),
+          if (mode != LabelMode.values.last) const SizedBox(width: 8),
+        ],
+      ],
+    );
+  }
+}
+
+class _LabelSample extends StatelessWidget {
+  const _LabelSample({
+    required this.mode,
+    required this.name,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final LabelMode mode;
+  final String name;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final shape = VehaShape.of(context);
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    // Образец красится тем же способом, что и настоящее событие: заливка
+    // тоном 90, знак тоном 10.
+    final fill = dark ? const Color(0xFF3E4778) : const Color(0xFFC9CCE8);
+    final ink = dark ? const Color(0xFFD9DCF4) : const Color(0xFF232A5C);
+
+    return Semantics(
+      selected: selected,
+      button: true,
+      label: name,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(shape.corner),
+        child: Container(
+          padding: const EdgeInsets.all(9),
+          decoration: ShapeDecoration(
+            color: selected ? scheme.surfaceContainerHigh : Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(shape.corner),
+              side: BorderSide(
+                color: selected ? scheme.onSurface : scheme.outlineVariant,
+                width: selected ? 2 : 1,
+              ),
+            ),
+          ),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 44,
+                child: EventBlockSample(
+                  mode: mode,
+                  fill: fill,
+                  ink: ink,
+                  corner: shape.corner,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: selected ? scheme.onSurface : scheme.onSurfaceVariant,
                     ),
-                  )
-                : null,
+              ),
+            ],
           ),
         ),
       ),
@@ -231,127 +194,126 @@ class SeedSwatch extends StatelessWidget {
   }
 }
 
-class _Quadrants extends CustomPainter {
-  _Quadrants(this.colors);
-
-  final List<Color> colors;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final w = size.width;
-    final h = size.height;
-    final p = Paint()..style = PaintingStyle.fill;
-    for (var i = 0; i < 4; i++) {
-      p.color = colors[i];
-      canvas.drawRect(
-        Rect.fromLTWH(i.isEven ? 0 : w / 2, i < 2 ? 0 : h / 2, w / 2, h / 2),
-        p,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _Quadrants old) =>
-      !identical(old.colors, colors) &&
-      List.generate(4, (i) => old.colors[i] != colors[i]).any((x) => x);
-}
-
-/// Кружок «свой цвет». Пипетка красится выбранным цветом, когда он не из
-/// палитры, — иначе непонятно, откуда взялся текущий акцент.
-class _CustomColor extends StatelessWidget {
-  const _CustomColor({
-    required this.seed,
-    required this.custom,
-    required this.onPicked,
+/// Ползунок скругления с живым образцом события над ним.
+class CornerPicker extends StatelessWidget {
+  const CornerPicker({
+    super.key,
+    required this.corner,
+    required this.labelMode,
+    required this.onChanged,
   });
 
-  final Color seed;
-  final bool custom;
-  final ValueChanged<Color> onPicked;
+  final double corner;
+  final LabelMode labelMode;
+  final ValueChanged<double> onChanged;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return GestureDetector(
-      onTap: () async {
-        final picked = await Navigator.of(context).push<Color>(
-          MaterialPageRoute(builder: (_) => ColorPickerScreen(initial: seed)),
-        );
-        if (picked != null) onPicked(picked);
-      },
-      child: Container(
-        width: 44,
-        height: 44,
-        alignment: Alignment.center,
-        decoration: ShapeDecoration(
-          color: scheme.surfaceContainerHighest,
-          shape: const CircleBorder(),
+    final l = L.of(context);
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final fill = dark ? const Color(0xFF3F5A2E) : const Color(0xFFCBDCC6);
+    final ink = dark ? const Color(0xFFD8E8CF) : const Color(0xFF23401A);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: 56,
+          child: EventBlockSample(
+            mode: labelMode,
+            fill: fill,
+            ink: ink,
+            corner: corner,
+            title: l.cornerPreview,
+          ),
         ),
-        child: Icon(VehaIcons.byName('dropper'),
-            size: 20, color: custom ? seed : scheme.onSurfaceVariant),
-      ),
+        Slider(
+          value: corner,
+          min: VehaTheme.minCorner,
+          max: VehaTheme.maxCorner,
+          divisions: (VehaTheme.maxCorner - VehaTheme.minCorner) ~/ 2,
+          onChanged: onChanged,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(l.cornerSquare, style: Theme.of(context).textTheme.labelSmall),
+            Text(
+              '${corner.round()}',
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: scheme.onSurface,
+                  ),
+            ),
+            Text(l.cornerRound, style: Theme.of(context).textTheme.labelSmall),
+          ],
+        ),
+      ],
     );
   }
 }
 
-/// Компактная строка-тумблер внутри карточки.
-class _Toggle extends StatelessWidget {
-  const _Toggle({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.value,
-    required this.onChanged,
+/// Образец блока события: тот же вид, что в сетке недели.
+class EventBlockSample extends StatelessWidget {
+  const EventBlockSample({
+    super.key,
+    required this.mode,
+    required this.fill,
+    required this.ink,
+    required this.corner,
+    this.title,
   });
 
-  final String icon;
-  final String title;
-  final String subtitle;
-  final bool value;
-  final ValueChanged<bool> onChanged;
+  final LabelMode mode;
+  final Color fill;
+  final Color ink;
+  final double corner;
+  final String? title;
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return InkWell(
-      borderRadius: BorderRadius.circular(14),
-      onTap: () => onChanged(!value),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          children: [
-            Icon(VehaIcons.byName(icon), size: 20, color: scheme.onSurfaceVariant),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return LayoutBuilder(
+      builder: (context, box) {
+        final radius = corner.clamp(0.0, box.maxHeight / 2);
+        final icon = Icon(VehaIcons.byName('school'), size: 18, color: ink);
+        final name = Text(
+          title ?? L.of(context).viewDay,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(context)
+              .textTheme
+              .labelSmall
+              ?.copyWith(color: ink, fontWeight: FontWeight.w800),
+        );
+
+        return Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(
+            horizontal: mode == LabelMode.icon ? 0 : 9,
+            vertical: 6,
+          ),
+          decoration: ShapeDecoration(
+            color: fill,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(radius),
+            ),
+          ),
+          child: switch (mode) {
+            LabelMode.icon => Center(child: icon),
+            LabelMode.text => Align(
+                alignment: Alignment.centerLeft,
+                child: name,
+              ),
+            LabelMode.both => Row(
                 children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontFamily: AppFonts.body,
-                      fontSize: 14.5,
-                      fontWeight: FontWeight.w600,
-                      color: scheme.onSurface,
-                    ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontFamily: AppFonts.body,
-                      fontSize: 11.5,
-                      height: 1.3,
-                      fontWeight: FontWeight.w500,
-                      color: scheme.onSurfaceVariant,
-                    ),
-                  ),
+                  icon,
+                  const SizedBox(width: 6),
+                  Flexible(child: name),
                 ],
               ),
-            ),
-            Switch(value: value, onChanged: onChanged),
-          ],
-        ),
-      ),
+          },
+        );
+      },
     );
   }
 }

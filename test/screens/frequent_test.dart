@@ -12,7 +12,7 @@ void main() {
   testWidgets('Подсказка подставляет название и календарь', (tester) async {
     await pumpScreen(tester, const HomeShell());
 
-    await tester.tap(find.byType(FloatingActionButton));
+    await tester.tap(find.byKey(const ValueKey('add-event')));
     await tester.pumpAndSettle();
 
     // Пока название пустое, лист предлагает частое.

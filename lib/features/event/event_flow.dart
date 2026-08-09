@@ -8,7 +8,7 @@ import '../../core/icon_registry.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../domain/draft.dart';
-import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
+import '../../domain/recurrence_label.dart';
 import 'dart:convert';
 import 'dart:io';
 

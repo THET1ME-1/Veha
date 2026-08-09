@@ -12,7 +12,7 @@ void main() {
   testWidgets('Фраза раскладывается по чипам', (tester) async {
     await pumpScreen(tester, const HomeShell());
 
-    await tester.tap(find.byType(FloatingActionButton));
+    await tester.tap(find.byKey(const ValueKey('add-event')));
     await tester.pumpAndSettle();
 
     await tester.enterText(

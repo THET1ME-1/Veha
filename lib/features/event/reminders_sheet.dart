@@ -118,17 +118,31 @@ class _RemindersSheetState extends State<_RemindersSheet> {
                 VehaInsets.screen, 16, VehaInsets.screen, 14),
             child: Row(
               children: [
-                TextButton(
-                  onPressed: _chosen.isEmpty
-                      ? null
-                      : () => setState(_chosen.clear),
-                  child: Text(l.reminderNever),
+                // Обе подписи гибкие: у немецкого «Nie erinnern» и «Fertig»
+                // вместе шире строки, и лист вылезал за край экрана.
+                Flexible(
+                  child: TextButton(
+                    onPressed: _chosen.isEmpty
+                        ? null
+                        : () => setState(_chosen.clear),
+                    child: Text(
+                      l.reminderNever,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 ),
-                const Spacer(),
-                FilledButton.icon(
-                  onPressed: () => Navigator.pop(context, _chosen.toList()),
-                  icon: Icon(VehaIcons.byName('check'), size: 18),
-                  label: Text(l.actionDone),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: FilledButton.icon(
+                    onPressed: () => Navigator.pop(context, _chosen.toList()),
+                    icon: Icon(VehaIcons.byName('check'), size: 18),
+                    label: Text(
+                      l.actionDone,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 ),
               ],
             ),

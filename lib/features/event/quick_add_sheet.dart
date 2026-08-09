@@ -11,7 +11,7 @@ import 'look_sheet.dart';
 import '../../core/event_colors.dart';
 import '../../core/icon_registry.dart';
 import '../../data/models.dart';
-import '../calendar/views/chain_view.dart' show recurrenceLabelOf;
+import '../../domain/recurrence_label.dart';
 import '../calendar/widgets/month_header.dart' show AppFonts;
 import '../../domain/draft.dart';
 

@@ -1575,4 +1575,57 @@ class LEn extends L {
 
   @override
   String get monthDensityText => 'Text only';
+
+  @override
+  String get labelsTitle => 'Event labels';
+
+  @override
+  String get labelsIcon => 'Icons';
+
+  @override
+  String get labelsText => 'Text';
+
+  @override
+  String get labelsBoth => 'Icons and text';
+
+  @override
+  String get cornerTitle => 'Corner radius';
+
+  @override
+  String get cornerSquare => 'Square';
+
+  @override
+  String get cornerRound => 'Pill';
+
+  @override
+  String get cornerPreview => 'This is how an event looks';
+
+  @override
+  String get tasksRowHint => 'Tasks with a due date';
+
+  @override
+  String get calendarsRowHint => 'Branches, colours and visibility';
+
+  @override
+  String tapeFree(String span) {
+    return '$span free';
+  }
+
+  @override
+  String get dayFreeTitle => 'The day is free';
+
+  @override
+  String get dayFreeHint =>
+      'No events yet. The button above creates the first one.';
+
+  @override
+  String eventsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count events',
+      one: '$count event',
+    );
+    return '$_temp0';
+  }
 }

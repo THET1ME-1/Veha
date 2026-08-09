@@ -1576,4 +1576,56 @@ class LEs extends L {
 
   @override
   String get monthDensityText => 'Solo texto';
+
+  @override
+  String get labelsTitle => 'Etiqueta de eventos';
+
+  @override
+  String get labelsIcon => 'Iconos';
+
+  @override
+  String get labelsText => 'Texto';
+
+  @override
+  String get labelsBoth => 'Iconos y texto';
+
+  @override
+  String get cornerTitle => 'Redondeo de esquinas';
+
+  @override
+  String get cornerSquare => 'Rectas';
+
+  @override
+  String get cornerRound => 'Cápsula';
+
+  @override
+  String get cornerPreview => 'Así se ve un evento';
+
+  @override
+  String get tasksRowHint => 'Tareas con fecha límite';
+
+  @override
+  String get calendarsRowHint => 'Ramas, colores y visibilidad';
+
+  @override
+  String tapeFree(String span) {
+    return '$span libre';
+  }
+
+  @override
+  String get dayFreeTitle => 'El día está libre';
+
+  @override
+  String get dayFreeHint => 'Sin eventos. El botón de arriba crea el primero.';
+
+  @override
+  String eventsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count eventos',
+      one: '$count evento',
+    );
+    return '$_temp0';
+  }
 }

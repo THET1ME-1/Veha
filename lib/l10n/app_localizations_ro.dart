@@ -1576,4 +1576,57 @@ class LRo extends L {
 
   @override
   String get monthDensityText => 'Doar text';
+
+  @override
+  String get labelsTitle => 'Eticheta evenimentelor';
+
+  @override
+  String get labelsIcon => 'Pictograme';
+
+  @override
+  String get labelsText => 'Text';
+
+  @override
+  String get labelsBoth => 'Pictograme și text';
+
+  @override
+  String get cornerTitle => 'Rotunjirea colțurilor';
+
+  @override
+  String get cornerSquare => 'Drepte';
+
+  @override
+  String get cornerRound => 'Capsulă';
+
+  @override
+  String get cornerPreview => 'Așa arată un eveniment';
+
+  @override
+  String get tasksRowHint => 'Sarcini cu termen';
+
+  @override
+  String get calendarsRowHint => 'Ramuri, culori și vizibilitate';
+
+  @override
+  String tapeFree(String span) {
+    return '$span liber';
+  }
+
+  @override
+  String get dayFreeTitle => 'Ziua este liberă';
+
+  @override
+  String get dayFreeHint =>
+      'Niciun eveniment. Butonul de sus îl creează pe primul.';
+
+  @override
+  String eventsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count evenimente',
+      one: '$count eveniment',
+    );
+    return '$_temp0';
+  }
 }

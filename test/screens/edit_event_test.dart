@@ -12,7 +12,7 @@ void main() {
 
   Future<void> openEvent(WidgetTester tester, String title) async {
     await pumpScreen(tester, const HomeShell());
-    await openEventEditor(tester, find.text(title).first);
+    await openEventEditor(tester, find.text(title));
   }
 
   testWidgets('Новое название разового события сохраняется', (tester) async {
@@ -36,7 +36,7 @@ void main() {
     await tester.tap(find.text('Сохранить'));
     await tester.pumpAndSettle();
 
-    await openEventEditor(tester, find.text('Поздний завтрак').first);
+    await openEventEditor(tester, find.text('Поздний завтрак'));
 
     expect(find.text('Поздний завтрак'), findsWidgets,
         reason: 'Название приехало из базы, а не осталось на экране');
@@ -62,7 +62,9 @@ void main() {
     await tester.tap(find.text('Неделя'));
     await tester.pumpAndSettle();
 
-    await openEventEditor(tester, find.byIcon(VehaIcons.byName('coffee')).first);
+    // В узкой колонке недели знак уступает место названию, поэтому ищем
+    // блок по имени занятия.
+    await openEventEditor(tester, find.text('Завтрак'));
 
     await tester.enterText(find.byType(TextField).first, 'Кофе с Ниной');
     await tester.pumpAndSettle();
@@ -71,7 +73,7 @@ void main() {
 
     expect(find.text('Что изменить'), findsNothing,
         reason: 'Завтрак не повторяется, спрашивать нечего');
-    expect(find.byIcon(VehaIcons.byName('coffee')), findsWidgets);
+    expect(find.text('Кофе с Ниной'), findsWidgets);
   });
 
   testWidgets('Занятие ряда правится по выбранной области', (tester) async {

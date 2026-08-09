@@ -2046,5 +2046,19 @@
   "monthDensityText": "Тільки текст",
   "@monthDensityText": {
     "description": "monthDensityText"
-  }
+  },
+  "labelsTitle": "Підпис подій",
+  "labelsIcon": "Іконки",
+  "labelsText": "Текст",
+  "labelsBoth": "Іконки й текст",
+  "cornerTitle": "Заокруглення кутів",
+  "cornerSquare": "Прямі",
+  "cornerRound": "Капсула",
+  "cornerPreview": "Так виглядає подія",
+  "tapeFree": "{span} вільно",
+  "dayFreeTitle": "День вільний",
+  "dayFreeHint": "Жодної події. Кнопка вгорі заводить першу.",
+  "tasksRowHint": "Справи з терміном",
+  "calendarsRowHint": "Гілки, кольори та видимість",
+  "eventsCount": "{count, plural, one{{count} подія} few{{count} події} other{{count} подій}}"
 }

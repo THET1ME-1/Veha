@@ -1595,4 +1595,57 @@ class LUk extends L {
 
   @override
   String get monthDensityText => 'Тільки текст';
+
+  @override
+  String get labelsTitle => 'Підпис подій';
+
+  @override
+  String get labelsIcon => 'Іконки';
+
+  @override
+  String get labelsText => 'Текст';
+
+  @override
+  String get labelsBoth => 'Іконки й текст';
+
+  @override
+  String get cornerTitle => 'Заокруглення кутів';
+
+  @override
+  String get cornerSquare => 'Прямі';
+
+  @override
+  String get cornerRound => 'Капсула';
+
+  @override
+  String get cornerPreview => 'Так виглядає подія';
+
+  @override
+  String get tasksRowHint => 'Справи з терміном';
+
+  @override
+  String get calendarsRowHint => 'Гілки, кольори та видимість';
+
+  @override
+  String tapeFree(String span) {
+    return '$span вільно';
+  }
+
+  @override
+  String get dayFreeTitle => 'День вільний';
+
+  @override
+  String get dayFreeHint => 'Жодної події. Кнопка вгорі заводить першу.';
+
+  @override
+  String eventsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count подій',
+      few: '$count події',
+      one: '$count подія',
+    );
+    return '$_temp0';
+  }
 }

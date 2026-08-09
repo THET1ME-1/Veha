@@ -51,10 +51,9 @@ void main() {
       ),
     );
 
-    // Пилюля недели — это иконка календаря в капсуле, названия там нет.
-    final pill = tester.getCenter(
-      find.byIcon(VehaIcons.byName('groups')).first,
-    );
+    // Блок недели подписан названием: с новой темой в него влезает и знак,
+    // и слово, поэтому тянем за само название.
+    final pill = tester.getCenter(find.text('Планёрка'));
 
     final gesture = await tester.startGesture(pill);
     await tester.pump(const Duration(milliseconds: 700));

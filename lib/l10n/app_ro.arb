@@ -2046,5 +2046,19 @@
   "monthDensityText": "Doar text",
   "@monthDensityText": {
     "description": "monthDensityText"
-  }
+  },
+  "labelsTitle": "Eticheta evenimentelor",
+  "labelsIcon": "Pictograme",
+  "labelsText": "Text",
+  "labelsBoth": "Pictograme și text",
+  "cornerTitle": "Rotunjirea colțurilor",
+  "cornerSquare": "Drepte",
+  "cornerRound": "Capsulă",
+  "cornerPreview": "Așa arată un eveniment",
+  "tapeFree": "{span} liber",
+  "dayFreeTitle": "Ziua este liberă",
+  "dayFreeHint": "Niciun eveniment. Butonul de sus îl creează pe primul.",
+  "tasksRowHint": "Sarcini cu termen",
+  "calendarsRowHint": "Ramuri, culori și vizibilitate",
+  "eventsCount": "{count, plural, one{{count} eveniment} other{{count} evenimente}}"
 }
