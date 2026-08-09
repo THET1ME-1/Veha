@@ -33,6 +33,11 @@ class SyncService {
     for (final entry in tables.entries) entry.value: entry.key,
   };
 
+  /// Потолок страниц за один круг. Пятьсот строк на страницу — это полмиллиона
+  /// строк за заход: больше человеческого календаря на порядки, а зациклиться
+  /// на сломанном сервере круг не должен.
+  static const _maxPages = 1000;
+
   /// Сколько правок ждёт отправки. Этим живёт строка состояния в настройках:
   /// «не синхронизировано, 12 изменений ждут» честнее крутящегося кружка.
   Future<int> pendingCount() async {
@@ -98,11 +103,21 @@ class SyncService {
       );
     }
 
-    final pulled = await api.pull(token, since);
-    final applied = await _apply(pulled.changes);
+    // Дельта приходит страницами: сервер отдаёт не больше пятисот строк на
+    // таблицу. Импорт расписания — тысячи занятий, и один заход оставлял
+    // хвост за курсором навсегда. Крутим, пока курсор растёт; остановка по
+    // нему же страхует от вечного круга, если сервер перестанет двигаться.
+    var mark = since;
+    var applied = 0;
+    for (var page = 0; page < _maxPages; page++) {
+      final pulled = await api.pull(token, mark);
+      applied += await _apply(pulled.changes);
+      if (pulled.cursor <= mark) break;
+      mark = pulled.cursor;
+    }
 
     return SyncOutcome(
-      cursor: pulled.cursor,
+      cursor: mark,
       sent: changes.values.fold(0, (sum, rows) => sum + rows.length),
       received: applied,
       rejected: pushed.skipped,

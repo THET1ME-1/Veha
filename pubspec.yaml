@@ -1,7 +1,7 @@
 name: veha
-description: "Veha — local-first календарь для Android в стиле Material 3 Expressive."
+description: "Veha — local-first календарь для Android: тёплая бумага, пастельные события, свой облик без Material."
 publish_to: 'none'
-version: 0.6.3+13
+version: 0.7.1+15
 
 environment:
   sdk: ^3.11.5
@@ -11,12 +11,6 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-
-  # Дизайн-ДНК: тема, шрифты, базовые виджеты. Только git-зависимостью —
-  # копия разъезжается с остальными приложениями, это уже проходили.
-  m3_dna:
-    git:
-      url: https://github.com/THET1ME-1/m3-dna.git
 
   # Состояние
   flutter_riverpod: ^2.6.1
@@ -68,12 +62,11 @@ flutter:
   generate: true
 
   fonts:
-    - family: Unbounded
+    # Одна гарнитура на всё приложение. Unbounded с Onest ушли вместе с
+    # темой Material: они стоят в соседних проектах и примелькались.
+    - family: Manrope
       fonts:
-        - asset: assets/fonts/Unbounded.ttf
-    - family: Onest
-      fonts:
-        - asset: assets/fonts/Onest.ttf
+        - asset: assets/fonts/Manrope.ttf
     # Собственный набор иконок: 61 глиф, 13 КБ. Собирается скриптом
     # tool/build_icon_font.py, список — в lib/core/icon_registry.dart.
     - family: VehaSymbols

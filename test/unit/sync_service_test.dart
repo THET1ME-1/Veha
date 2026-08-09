@@ -17,6 +17,11 @@ class _FakeApi implements SyncApi {
   int cursor = 7;
   int skipped = 0;
 
+  /// Страницы дельты, если сервер отдаёт её не за один заход. Пусто — работает
+  /// обычная выдача из [incoming].
+  List<PullResult> pages = [];
+  final List<int> asked = [];
+
   @override
   Future<PushResult> push(
     String token,
@@ -27,8 +32,19 @@ class _FakeApi implements SyncApi {
   }
 
   @override
-  Future<PullResult> pull(String token, int since) async =>
-      PullResult(cursor: cursor, changes: incoming);
+  Future<PullResult> pull(String token, int since) async {
+    asked.add(since);
+    if (pages.isNotEmpty) {
+      return pages.firstWhere(
+        (page) => page.cursor > since,
+        orElse: () => PullResult(cursor: since, changes: const {}),
+      );
+    }
+    // Дельта берётся строго после курсора: догнавшее устройство получает
+    // пустой ответ, а не те же строки по второму разу.
+    if (since >= cursor) return PullResult(cursor: cursor, changes: const {});
+    return PullResult(cursor: cursor, changes: incoming);
+  }
 
   @override
   Future<DeviceCredentials> register(String deviceName) async =>
@@ -128,6 +144,46 @@ void main() {
         .watchRange(DateTime(2026, 8, 3), DateTime(2026, 8, 4))
         .first;
     expect(day.map((e) => e.title), contains('С другого устройства'));
+  });
+
+  test('Дельта в несколько страниц забирается целиком', () async {
+    // Сервер режет выдачу по 500 строк. Импорт расписания больше страницы, и
+    // один заход оставил бы хвост за курсором: он двигается вперёд, а
+    // непрочитанное после него уже не запросят.
+    Map<String, Object?> event(int i) => {
+          'id': 'remote-$i',
+          'userId': 'u',
+          'version': i,
+          'calendarId': 'default',
+          'title': 'Занятие $i',
+          'start': DateTime(2026, 8, 3, 9).millisecondsSinceEpoch,
+          'end': DateTime(2026, 8, 3, 10).millisecondsSinceEpoch,
+          'timezone': 'UTC',
+          'isAllDay': false,
+          'createdAt': 1,
+          'updatedAt': 2,
+          'deletedAt': null,
+        };
+
+    api.pages = [
+      PullResult(cursor: 3, changes: {
+        'events': [event(1), event(2), event(3)],
+      }),
+      PullResult(cursor: 5, changes: {
+        'events': [event(4), event(5)],
+      }),
+    ];
+
+    final outcome = await sync.run(token: 'dev_x', since: 0);
+
+    expect(outcome.received, 5);
+    expect(outcome.cursor, 5);
+    expect(api.asked, [0, 3, 5]);
+
+    final day = await repo
+        .watchRange(DateTime(2026, 8, 3), DateTime(2026, 8, 4))
+        .first;
+    expect(day, hasLength(5));
   });
 
   test('Чужие колонки не роняют применение', () async {
