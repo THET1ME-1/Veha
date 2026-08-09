@@ -15,10 +15,15 @@ class AutoScrollGrid extends ConsumerStatefulWidget {
     super.key,
     required this.child,
     this.padding = EdgeInsets.zero,
+    this.initialOffset = 0,
   });
 
   final Widget child;
   final EdgeInsetsGeometry padding;
+
+  /// Куда встать при первом появлении. Сетка рисует сутки целиком, а смотреть
+  /// их с полуночи незачем: день открывается на первом деле.
+  final double initialOffset;
 
   @override
   ConsumerState<AutoScrollGrid> createState() => _AutoScrollGridState();
@@ -73,7 +78,8 @@ class _AutoScrollGridState extends ConsumerState<AutoScrollGrid>
     return ys.last - ys.first;
   }
 
-  final ScrollController _controller = ScrollController();
+  late final ScrollController _controller =
+      ScrollController(initialScrollOffset: widget.initialOffset);
 
   /// Куда метит блок, пока он в воздухе. Живёт здесь, а не в самом блоке:
   /// подсветить накладку должен сосед, а он о чужом жесте иначе не узнает.

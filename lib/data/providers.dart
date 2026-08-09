@@ -287,9 +287,14 @@ class RangeData {
   List<VEvent> spansBetween(DateTime from, DateTime to) {
     final start = DateTime(from.year, from.month, from.day);
     final end = DateTime(to.year, to.month, to.day);
+    // Отбор идёт по занятым дням, а не по концу: у праздника конец равен
+    // началу, и проверка «конец позже начала окна» выкидывала его отовсюду —
+    // в календаре событие есть, а в листе дня «ничего не запланировано».
     return [
       for (final e in spans)
-        if (e.start.isBefore(end) && e.end.isAfter(start)) e,
+        if (DateTime(e.start.year, e.start.month, e.start.day).isBefore(end) &&
+            !e.lastDay.isBefore(start))
+          e,
     ];
   }
 

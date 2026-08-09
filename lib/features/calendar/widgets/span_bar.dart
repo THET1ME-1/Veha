@@ -5,6 +5,7 @@ import '../../../core/brand.dart';
 import '../../../core/event_colors.dart';
 import '../../../core/icon_registry.dart';
 import '../../../data/models.dart';
+import '../../../domain/span_progress.dart';
 import '../../../l10n/app_localizations.dart';
 import 'month_header.dart';
 
@@ -37,20 +38,18 @@ class SpanBar extends StatelessWidget {
     final ink = EventColors.of(color, Theme.of(context).brightness);
     // Обе границы входят в срок: с 16 июля по 14 августа — это 30 дней,
     // а не 29, как выйдет из голой разницы дат.
-    final total = event.lastDay.difference(event.start).inDays + 1;
-    // Счёт идёт от выбранного дня, а полоса может ещё не начаться или уже
-    // кончиться: разница дат тогда уходит в минус или за длину события, и над
-    // неделей висело «-34-й из 2». Держим номер внутри срока.
-    final passed = (today.difference(event.start).inDays + 1).clamp(1, total);
-    final progress = total <= 0 ? 0.0 : (passed / total).clamp(0.0, 1.0);
+    final p = spanProgress(event, today);
+    final progress = p.fraction;
 
-    // Всё, что длиннее месяца, считать «днём из N» бессмысленно — там важнее
-    // дата окончания.
+    // Однодневную полосу считать «первый из одного» незачем, а всё, что
+    // длиннее месяца, лучше подписать датой окончания.
     final l = L.of(context);
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final trailing = total <= 45
-        ? l.spanDayOf(passed, total)
-        : l.spanUntil(DateFormat.MMMd(locale).format(event.lastDay));
+    final trailing = p.counted
+        ? l.spanDayOf(p.passed, p.total)
+        : p.total > 1
+            ? l.spanUntil(DateFormat.MMMd(locale).format(event.lastDay))
+            : '';
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
@@ -91,8 +90,8 @@ class SpanBar extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  Text(
+                  if (trailing.isNotEmpty) const SizedBox(width: 8),
+                  if (trailing.isNotEmpty) Text(
                     trailing,
                     style: TextStyle(
                       fontFamily: AppFonts.body,

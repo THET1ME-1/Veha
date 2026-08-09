@@ -62,27 +62,29 @@ class ClockView extends ConsumerWidget {
   static double hourHeightOf(double zoom) => baseHourHeight * zoom;
   static const double _timeGutter = 42;
 
-  /// Окно свободного дня — те же часы, что показывает неделя.
+  /// Сутки целиком, от нуля до двадцати трёх.
   ///
-  /// Пустой день раньше не рисовал вообще ничего: шкала считалась от первого
-  /// события до последнего, а без событий сетка схлопывалась в ноль высотой.
-  /// Вместе с ней пропадал и свайп — уйдя в свободный день, вернуться было
-  /// нельзя, и завести первое занятие тапом по часу тоже.
+  /// Шкала считалась от первого события до последнего, и день начинался в семь
+  /// утра: ночную смену в сетку было не поставить, а тапом по часу не завести
+  /// ничего раньше первого дела. Теперь рисуются все сутки, а окно решает
+  /// прокрутка — она встаёт на первое событие дня.
+  static const int _firstHour = 0;
+  static const int _lastHour = 23;
+
+  /// Куда встать, когда в дне ничего нет: ниже этого часа смотреть незачем.
   static const int _emptyFirstHour = 7;
-  static const int _emptyLastHour = 21;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final hourHeight = hourHeightOf(ref.watch(gridZoomProvider));
 
-    final firstHour = events.isEmpty
+    const firstHour = _firstHour;
+    const lastHour = _lastHour;
+    // Прокрутка встаёт на первое дело дня, а в свободном — на утро: сутки
+    // целиком в экран не влезают, и открывать их с полуночи бессмысленно.
+    final opensAt = events.isEmpty
         ? _emptyFirstHour
         : events.map((e) => e.start.hour).reduce((a, b) => a < b ? a : b);
-    final lastHour = events.isEmpty
-        ? _emptyLastHour
-        : events
-            .map((e) => e.end.hour + (e.end.minute > 0 ? 1 : 0))
-            .reduce((a, b) => a > b ? a : b);
 
     final hours = [for (var h = firstHour; h <= lastHour; h++) h];
     final height = hours.length * hourHeight;
@@ -95,6 +97,7 @@ class ClockView extends ConsumerWidget {
         final laneArea =
             constraints.maxWidth - VehaInsets.screen * 2 - _timeGutter - 10;
         return AutoScrollGrid(
+          initialOffset: (opensAt - 1).clamp(0, 23) * hourHeight,
           padding: const EdgeInsets.fromLTRB(
             VehaInsets.screen,
             6,
