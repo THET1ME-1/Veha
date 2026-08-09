@@ -81,4 +81,24 @@ void main() {
     expect(event.originalStart, DateTime(2026, 7, 27, 16));
     expect(event.start, DateTime(2026, 7, 27, 18));
   });
+  group('Конец по времени суток', () {
+    EventDraft evening() => EventDraft.at(
+          DateTime(2026, 8, 9, 22),
+          calendarId: 'c1',
+        );
+
+    test('Время после начала остаётся в том же дне', () {
+      expect(evening().withEndAt(23, 30).end, DateTime(2026, 8, 9, 23, 30));
+    });
+
+    test('Время до начала уводит конец за полночь', () {
+      expect(evening().withEndAt(6, 0).end, DateTime(2026, 8, 10, 6));
+    });
+
+    test('Ровно начало означает событие без окончания', () {
+      final draft = evening().withEndAt(22, 0);
+      expect(draft.end, draft.start);
+    });
+  });
+
 }

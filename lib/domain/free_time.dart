@@ -33,6 +33,14 @@ List<TimeSlot> freeSlots(
   Duration atLeast = const Duration(minutes: 30),
   DayBounds bounds = const DayBounds(),
   DateTime? now,
+
+  /// Считать ли занятыми отметки — события с пометкой «свободен».
+  ///
+  /// Подсказке «когда я свободен» они не мешают: день рождения не занимает
+  /// вечер. А лента дня рисует их блоками, и окно, посчитанное мимо такого
+  /// блока, ложится прямо на него: между занятиями в четверть часа стояло
+  /// «2 ч 15 мин свободно», а риска «сейчас» рисовалась дважды.
+  bool marksOccupyTime = false,
 }) {
   final start = DateTime(day.year, day.month, day.day, bounds.from);
   final end = DateTime(day.year, day.month, day.day, bounds.to);
@@ -51,7 +59,7 @@ List<TimeSlot> freeSlots(
     for (final e in events)
       // Событие, помеченное «свободен», стоит в календаре отметкой и часов
       // не держит: день рождения не мешает назначить встречу.
-      if (e.availability == Availability.busy &&
+      if ((marksOccupyTime || e.availability == Availability.busy) &&
           !e.isSpan &&
           e.end.isAfter(cursor) &&
           e.busyFrom.isBefore(end))

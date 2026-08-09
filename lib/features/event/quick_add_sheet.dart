@@ -184,6 +184,19 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
         )));
   }
 
+  /// Конец события. Пилюля рядом с началом была подписью без обработчика:
+  /// конец приходил только из фразы («на час») или из длительности календаря,
+  /// и поправить его в быстром листе было нечем.
+  Future<void> _pickEnd() async {
+    _timeTouched = true;
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(_draft.end),
+    );
+    if (picked == null) return;
+    setState(() => _draft = _draft.withEndAt(picked.hour, picked.minute));
+  }
+
   Future<void> _pickDate() async {
     _timeTouched = true;
     final picked = await showDatePicker(
@@ -327,7 +340,7 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
                       fontWeight: FontWeight.w700,
                       color: scheme.onSurfaceVariant,
                     )),
-                _TimeChip(text: _hhmm(_draft.end)),
+                _TimeChip(text: _hhmm(_draft.end), onTap: _pickEnd),
                 // «Поставь, где влезет» — вопрос, на который календари обычно
                 // не отвечают, хотя спрашивают его чаще, чем «когда я занят».
                 if (widget.onFindSlot != null)

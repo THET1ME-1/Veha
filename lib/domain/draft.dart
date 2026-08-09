@@ -166,6 +166,15 @@ class EventDraft {
 
   EventDraft withEnd(DateTime value) => _copy(end: value);
 
+  /// Конец по времени суток. Раньше начала — значит, событие переходит через
+  /// полночь: смена с 22:00 кончается в 06:00 следующего дня, а не вчера.
+  /// Ровно в начало — событие без окончания, так это и задумано.
+  EventDraft withEndAt(int hour, int minute) {
+    var value = DateTime(start.year, start.month, start.day, hour, minute);
+    if (value.isBefore(start)) value = value.add(const Duration(days: 1));
+    return withEnd(value);
+  }
+
   /// Сколько добираться до места, в минутах. Ноль — дорога не в счёт.
   EventDraft withTravel(int minutes) => _copy(travelMinutes: minutes);
   EventDraft withCalendar(String id, {String? subcategoryId}) =>

@@ -199,10 +199,29 @@ class _WeekViewState extends ConsumerState<WeekView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (widget.spans.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(left: WeekView._gutter),
+                child: SizedBox(
+                  height: widget.spans.length *
+                      _WeekViewState.spanRowHeight,
+                  // Лента полос едет вместе с колонками: полоса — один
+                  // прямоугольник на все свои дни, а не кусок в каждом.
+                  child: ClipRect(
+                    child: AnimatedBuilder(
+                      animation: _controller,
+                      builder: (context, _) => Stack(
+                        children: [
+                          for (var i = 0; i < widget.spans.length; i++)
+                            _spanBand(widget.spans[i], i, width),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             SizedBox(
-              height: WeekView._headerHeight +
-                  widget.spans.length * _WeekViewState.spanRowHeight +
-                  gridHeight,
+              height: WeekView._headerHeight + gridHeight,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -211,12 +230,9 @@ class _WeekViewState extends ConsumerState<WeekView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Отступ под строку с датами и полосы: часы должны
-                        // начинаться там же, где верх колонок.
-                        SizedBox(
-                            height: WeekView._headerHeight +
-                                widget.spans.length *
-                                    _WeekViewState.spanRowHeight),
+                        // Отступ под строку с датами: часы должны начинаться
+                        // там же, где верх колонок.
+                        const SizedBox(height: WeekView._headerHeight),
                         for (var h = WeekView._firstHour;
                             h < WeekView._lastHour;
                             h += 2)
@@ -252,7 +268,6 @@ class _WeekViewState extends ConsumerState<WeekView> {
                         return _Column(
                           day: day,
                           events: widget.eventsOf(day),
-                          spans: widget.spans,
                           inheritance: widget.inheritance,
                           today: widget.today,
                           gridHeight: gridHeight,
@@ -278,6 +293,42 @@ class _WeekViewState extends ConsumerState<WeekView> {
     });
   }
 
+  /// Полоса на все свои дни одним прямоугольником.
+  ///
+  /// Разрезанная по колонкам, она читалась событием на каждый день по
+  /// отдельности; целая — сразу говорит, где начало и где конец. Едет вместе
+  /// с лентой колонок, лишнее срезает `ClipRect`: курс с июня уходит за оба
+  /// края экрана, и это правда о нём.
+  Widget _spanBand(VEvent event, int row, double width) {
+    final start = DateTime(event.start.year, event.start.month, event.start.day);
+    final first = WeekView.indexOf(start);
+    final last = WeekView.indexOf(event.lastDay);
+    final offset = _controller.hasClients ? _controller.offset : 0.0;
+
+    final left = first * width + WeekView._gap - offset;
+
+    return Positioned(
+      left: left,
+      top: row * _WeekViewState.spanRowHeight,
+      width: (last - first + 1) * width - WeekView._gap,
+      height: _WeekViewState.spanRowHeight - 3,
+      child: _SpanBand(
+        event: event,
+        inheritance: widget.inheritance,
+        // Начало полосы уехало за край экрана — подпись едет следом и
+        // пропадает. Держим её у видимого края: цветной прямоугольник без
+        // названия не говорит ничего.
+        inset: left < 0 ? -left : 0,
+        onTap: widget.onEventTap == null
+            ? null
+            : () => widget.onEventTap!(event),
+        onLongPress: widget.onEventLongPress == null
+            ? null
+            : () => widget.onEventLongPress!(event),
+      ),
+    );
+  }
+
   static bool _sameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
 }
@@ -287,7 +338,6 @@ class _Column extends StatelessWidget {
   const _Column({
     required this.day,
     required this.events,
-    required this.spans,
     required this.inheritance,
     required this.today,
     required this.gridHeight,
@@ -302,10 +352,6 @@ class _Column extends StatelessWidget {
 
   final DateTime day;
   final List<VEvent> events;
-
-  /// Полосы всего окна, а не только этого дня: строка полосы занята под неё в
-  /// каждой колонке, иначе соседние дни разъедутся по вертикали.
-  final List<VEvent> spans;
   final Inheritance inheritance;
   final DateTime today;
   final double gridHeight;
@@ -327,15 +373,6 @@ class _Column extends StatelessWidget {
       padding: const EdgeInsets.only(left: WeekView._gap),
       child: Column(
         children: [
-          for (final s in spans)
-            _SpanCell(
-              event: s,
-              day: day,
-              inheritance: inheritance,
-              onTap: onEventTap == null ? null : () => onEventTap!(s),
-              onLongPress:
-                  onEventLongPress == null ? null : () => onEventLongPress!(s),
-            ),
           SizedBox(
             height: WeekView._headerHeight,
             child: Text(
@@ -803,85 +840,58 @@ class _PillState extends ConsumerState<_Pill> {
   }
 }
 
-/// Кусок полосы в одной колонке.
-///
-/// Полоса раньше висела над всей неделей одной пилюлей: день рождения одного
-/// числа выглядел событием на пять дней. Теперь каждый день красит свой кусок,
-/// а строка под полосу занята во всех колонках — иначе соседние дни разъедутся
-/// по вертикали. Скруглены только края: середина стыкуется в сплошную ленту.
-class _SpanCell extends StatelessWidget {
-  const _SpanCell({
+/// Тело полосы: заливка, знак и название.
+class _SpanBand extends StatelessWidget {
+  const _SpanBand({
     required this.event,
-    required this.day,
     required this.inheritance,
+    this.inset = 0,
     this.onTap,
     this.onLongPress,
   });
 
   final VEvent event;
-  final DateTime day;
   final Inheritance inheritance;
+
+  /// Насколько начало полосы ушло за левый край.
+  final double inset;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
 
   @override
   Widget build(BuildContext context) {
-    final start = DateTime(event.start.year, event.start.month, event.start.day);
-    final here = DateTime(day.year, day.month, day.day);
-    if (here.isBefore(start) || here.isAfter(event.lastDay)) {
-      return const SizedBox(height: _WeekViewState.spanRowHeight);
-    }
-
     final ink = EventColors.of(
         inheritance.colorOfEvent(event), Theme.of(context).brightness);
-    final first = here == start;
-    final last = here == event.lastDay;
 
-    return SizedBox(
-      height: _WeekViewState.spanRowHeight,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 3),
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: onTap,
-          onLongPress: onLongPress,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            decoration: ShapeDecoration(
-              color: ink.background,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.horizontal(
-                  left: Radius.circular(first ? 999 : 0),
-                  right: Radius.circular(last ? 999 : 0),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      onLongPress: onLongPress,
+      child: Container(
+        padding: EdgeInsets.fromLTRB(7 + inset, 0, 7, 0),
+        decoration: ShapeDecoration(
+          color: ink.background,
+          shape: const StadiumBorder(),
+        ),
+        child: Row(
+          children: [
+            Icon(VehaIcons.byName(event.iconName),
+                size: 12, color: ink.foreground),
+            const SizedBox(width: 5),
+            Expanded(
+              child: Text(
+                event.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontFamily: AppFonts.body,
+                  fontSize: 10.5,
+                  fontWeight: FontWeight.w700,
+                  color: ink.foreground,
                 ),
               ),
             ),
-            // Название пишет только тот день, с которого полоса начинается:
-            // в колонке шириной в семьдесят точек оно всё равно обрезается до
-            // буквы, а повторённое семь раз читается мусором.
-            child: Row(
-              children: [
-                Icon(VehaIcons.byName(event.iconName),
-                    size: 12, color: ink.foreground),
-                if (first) ...[
-                  const SizedBox(width: 4),
-                  Expanded(
-                    child: Text(
-                      event.title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontFamily: AppFonts.body,
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w700,
-                        color: ink.foreground,
-                      ),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
+          ],
         ),
       ),
     );

@@ -91,6 +91,9 @@ class TapeView extends ConsumerWidget {
       day,
       atLeast: const Duration(minutes: 30),
       bounds: const DayBounds(from: 0, to: 24),
+      // Лента рисует блоком и то, что помечено «свободен»: окно, посчитанное
+      // мимо такого блока, наехало бы на него вместе с риской «сейчас».
+      marksOccupyTime: true,
     );
 
     final rows = <_Row>[
