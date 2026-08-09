@@ -134,6 +134,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           summary: _periodSummary(view, range),
           onPrev: () => _shift(-1),
           onNext: () => _shift(1),
+          onToday:
+              _isToday(today) ? null : () => setState(() => _selected = today),
         ),
         if (view == CalendarView.day)
           WeekStrip(

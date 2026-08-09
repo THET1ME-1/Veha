@@ -87,7 +87,7 @@ class TapeView extends StatelessWidget {
 
         final crossed = _crossedByNow(row);
 
-        return SizedBox(
+        final slab = SizedBox(
           height: height,
           child: row.event != null
               ? _EventSlab(
@@ -107,6 +107,28 @@ class TapeView extends StatelessWidget {
                   crossedByNow: crossed,
                   onTap: onFreeTap == null ? null : () => onFreeTap!(row.slot!),
                 ),
+        );
+
+        // Риска «сейчас» лежит на той строке, внутрь которой попал момент, и
+        // на своей доле её высоты: лента отвечает на вопрос «что идёт прямо
+        // сейчас», а без точки отсчёта день читается простым списком.
+        if (!crossed) return slab;
+        final share = row.end.difference(row.start).inMinutes == 0
+            ? 0.0
+            : now!.difference(row.start).inMinutes /
+                row.end.difference(row.start).inMinutes;
+
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            slab,
+            Positioned(
+              left: 0,
+              right: 0,
+              top: (height * share.clamp(0.0, 1.0)) - _NowLine.thickness / 2,
+              child: const _NowLine(key: Key('now-line')),
+            ),
+          ],
         );
       },
     );
@@ -391,6 +413,38 @@ class _Empty extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Риска «сейчас»: линия во всю ширину и точка на левом краю.
+///
+/// Цвет тот же, что у риски в сетке часов, — красный на обеих темах. Это
+/// единственное место в приложении, где линия разрешена: она сообщает время,
+/// а не разделяет содержимое.
+class _NowLine extends StatelessWidget {
+  const _NowLine({super.key});
+
+  static const double thickness = 2;
+  static const double _dot = 8;
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final color = dark ? VehaTheme.alarmDark : VehaTheme.alarm;
+
+    return SizedBox(
+      height: _dot,
+      child: Row(
+        children: [
+          Container(
+            width: _dot,
+            height: _dot,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          ),
+          Expanded(child: Container(height: thickness, color: color)),
+        ],
       ),
     );
   }

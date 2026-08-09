@@ -32,14 +32,25 @@ List<VEvent> expandOccurrences(
     // Окно отодвигается назад на длительность события: ночная смена с 23:00
     // до 01:00 принадлежит и следующему дню, а её экземпляр начинается
     // накануне.
-    final dates = Recurrence.expand(
-      rrule: e.rrule!,
-      start: e.start,
-      windowStart: from.subtract(e.duration),
-      windowEnd: to,
-      timezone: e.timezone,
-      excluded: excluded[e.id] ?? const {},
-    );
+    // Правило приходит из чужого календаря и может оказаться каким угодно.
+    // Одно такое роняло весь экран: исключение шло наверх, вид переставал
+    // пересчитываться, и любое действие выглядело как «нажал, ничего не
+    // случилось». Ряд, который не разобрался, показываем одним событием —
+    // так человек хотя бы видит, что оно есть, и может его открыть.
+    final List<DateTime> dates;
+    try {
+      dates = Recurrence.expand(
+        rrule: e.rrule!,
+        start: e.start,
+        windowStart: from.subtract(e.duration),
+        windowEnd: to,
+        timezone: e.timezone,
+        excluded: excluded[e.id] ?? const {},
+      );
+    } catch (_) {
+      if (e.end.isAfter(from) && e.start.isBefore(to)) out.add(e);
+      continue;
+    }
     for (final date in dates) {
       if (overrides.contains(_slot(e.id, date))) continue;
       final instance = _instanceAt(e, date);

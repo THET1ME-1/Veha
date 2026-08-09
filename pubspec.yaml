@@ -1,7 +1,7 @@
 name: veha
 description: "Veha — local-first календарь для Android: тёплая бумага, пастельные события, свой облик без Material."
 publish_to: 'none'
-version: 0.7.2+16
+version: 0.7.3+17
 
 environment:
   sdk: ^3.11.5

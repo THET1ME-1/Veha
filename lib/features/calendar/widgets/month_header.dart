@@ -20,6 +20,7 @@ class MonthHeader extends StatelessWidget {
     this.summary,
     this.onPrev,
     this.onNext,
+    this.onToday,
   });
 
   final DateTime date;
@@ -52,6 +53,10 @@ class MonthHeader extends StatelessWidget {
   /// тем, кому свайп неудобен.
   final VoidCallback? onPrev;
   final VoidCallback? onNext;
+
+  /// Возврат на сегодня. `null` — человек и так на сегодняшнем дне, и кнопке
+  /// нечего делать: она бы занимала место и ни на что не отвечала.
+  final VoidCallback? onToday;
 
   @override
   Widget build(BuildContext context) {
@@ -115,10 +120,31 @@ class MonthHeader extends StatelessWidget {
         children: [
           Row(
             children: [
-              if (onPrev != null) _Arrow(icon: 'back', onTap: onPrev!),
+              if (onPrev != null)
+                _Arrow(
+                  key: const ValueKey('prev-period'),
+                  icon: 'back',
+                  onTap: onPrev!,
+                ),
               Expanded(child: titleWidget),
               if (onNext != null) ...[
-                _Arrow(icon: 'chevron', onTap: onNext!),
+                _Arrow(
+                  key: const ValueKey('next-period'),
+                  icon: 'chevron',
+                  onTap: onNext!,
+                ),
+                const SizedBox(width: 6),
+              ],
+              // Кнопка возврата появляется, только когда человек ушёл с
+              // сегодняшнего дня: уехать свайпом на полгода вперёд — дело трёх
+              // движений, вернуться тем же способом — полгода движений.
+              if (onToday != null) ...[
+                VRoundButton(
+                  key: const ValueKey('go-today'),
+                  icon: 'calendar_today',
+                  onTap: onToday!,
+                  size: 38,
+                ),
                 const SizedBox(width: 6),
               ],
               if (onAdd != null)
@@ -164,7 +190,7 @@ class MonthHeader extends StatelessWidget {
 
 /// Стрелка листания: мелкий круг без заливки, чтобы не спорить с «плюсом».
 class _Arrow extends StatelessWidget {
-  const _Arrow({required this.icon, required this.onTap});
+  const _Arrow({super.key, required this.icon, required this.onTap});
 
   final String icon;
   final VoidCallback onTap;

@@ -28,6 +28,34 @@ void main() {
       ]);
     });
 
+    test('Чужое начало недели не роняет разворачивание', () {
+      // Календари Google и Apple пишут WKST любым днём, а библиотека умеет
+      // только понедельник и бросает исключение. Одно такое правило в
+      // расписании валило весь экран: развёртка падала, вид не пересчитывался,
+      // и удаление события выглядело как «нажал, а оно на месте».
+      final dates = Recurrence.expand(
+        rrule: 'FREQ=WEEKLY;WKST=TU;UNTIL=20260830T215959Z;BYDAY=MO',
+        start: DateTime(2026, 8, 3, 9),
+        windowStart: DateTime(2026, 8, 1),
+        windowEnd: DateTime(2026, 8, 31),
+        timezone: 'Europe/Chisinau',
+      );
+
+      expect(dates.map(d).toList(), ['3.8 09:00', '10.8 09:00', '17.8 09:00', '24.8 09:00']);
+    });
+
+    test('Ежегодное правило с чужим WKST разворачивается', () {
+      final dates = Recurrence.expand(
+        rrule: 'FREQ=YEARLY;WKST=SU',
+        start: DateTime(2024, 5, 9, 12),
+        windowStart: DateTime(2026, 1, 1),
+        windowEnd: DateTime(2026, 12, 31),
+        timezone: 'Europe/Chisinau',
+      );
+
+      expect(dates.map(d).toList(), ['9.5 12:00']);
+    });
+
     test('Последняя пятница месяца', () {
       final dates = Recurrence.expand(
         rrule: Recurrence.monthlyByPosition(weekday: 5, position: -1),

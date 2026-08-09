@@ -22,8 +22,9 @@ class Recurrence {
     String timezone = 'UTC',
     Set<DateTime> excluded = const {},
   }) {
+    final text = _sanitize(rrule);
     final rule = RecurrenceRule.fromString(
-      rrule.startsWith('RRULE:') ? rrule : 'RRULE:$rrule',
+      text.startsWith('RRULE:') ? text : 'RRULE:$text',
     );
 
     // Правило разворачивается в «настенном» времени, а не в абсолютном.
@@ -178,8 +179,9 @@ class Recurrence {
   /// Разобранное правило: частота, шаг и дни. Слова подбирает слой
   /// интерфейса — грамматика у каждого языка своя, и домену тут делать нечего.
   static RecurrenceShape shape(String rrule) {
+    final text = _sanitize(rrule);
     final rule = RecurrenceRule.fromString(
-      rrule.startsWith('RRULE:') ? rrule : 'RRULE:$rrule',
+      text.startsWith('RRULE:') ? text : 'RRULE:$text',
     );
     return RecurrenceShape(
       frequency: rule.frequency,
@@ -190,6 +192,34 @@ class Recurrence {
       monthWeekday:
           rule.byWeekDays.isEmpty ? null : rule.byWeekDays.first.day,
     );
+  }
+
+  /// Приведение чужого правила к тому, что разбирает библиотека.
+  ///
+  /// `WKST` кроме понедельника она не принимает вовсе — бросает исключение и
+  /// уносит с собой весь экран: развёртка падает, вид не пересчитывается, и
+  /// со стороны это выглядит как «удалил событие, а оно на месте». Google и
+  /// Apple же пишут `WKST` любым днём, и в выгруженном расписании такие
+  /// правила попадаются десятками.
+  ///
+  /// Начало недели меняет расчёт только у недельного правила с шагом больше
+  /// единицы: там оно решает, где проходит граница между «этой» неделей и
+  /// «следующей». Во всех остальных случаях его можно просто снять. У шага
+  /// больше единицы приходится выбирать между понедельником и падением, и
+  /// понедельник — ответ лучше.
+  static String _sanitize(String rrule) {
+    final parts = rrule
+        .replaceFirst(RegExp('^RRULE:', caseSensitive: false), '')
+        .split(';')
+        .where((p) => p.isNotEmpty)
+        .toList();
+
+    final kept = <String>[
+      for (final part in parts)
+        if (!part.toUpperCase().startsWith('WKST=')) part,
+    ];
+
+    return kept.join(';');
   }
 }
 
