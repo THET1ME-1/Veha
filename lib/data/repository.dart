@@ -690,10 +690,32 @@ class VehaRepository {
       ));
     }
 
+    // Событие узнаётся по названию, началу и правилу повтора: UID из файла мы
+    // не храним, а новый ключ на каждую загрузку означал бы удвоение
+    // календаря вторым заходом — и закрывал бы единственный путь починки,
+    // когда файл разобран старым кодом и лежит в базе с чужим концом.
+    // Совпало — файл переписывает событие целиком: он и есть источник правды,
+    // раз человек грузит его заново.
+    final seen = <String, String>{};
+    for (final row in await (db.select(db.events)
+          ..where((t) =>
+              t.calendarId.equals(calendarId) & t.deletedAt.isNull()))
+        .get()) {
+      seen.putIfAbsent(
+        _importKey(row.title, row.start, row.rrule),
+        () => row.id,
+      );
+    }
+
     var added = 0;
     for (final e in events) {
+      final key = _importKey(
+        e.title,
+        e.start.millisecondsSinceEpoch,
+        e.rrule,
+      );
       await upsertEvent(VEvent(
-        id: newId(),
+        id: seen[key] ?? newId(),
         calendarId: calendarId,
         title: e.title,
         start: e.start,
@@ -709,6 +731,9 @@ class VehaRepository {
     }
     return added;
   }
+
+  static String _importKey(String title, int startMs, String? rrule) =>
+      '$title $startMs ${rrule ?? ''}';
 
   // ---------- заметки ----------
 
