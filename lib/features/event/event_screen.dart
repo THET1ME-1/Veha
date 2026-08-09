@@ -97,7 +97,7 @@ class EventScreen extends ConsumerWidget {
 
     final progress = event.isSpan && today != null
         ? (today!.difference(event.start).inDays + 1) /
-            (event.end.difference(event.start).inDays + 1)
+            (event.lastDay.difference(event.start).inDays + 1)
         : null;
 
     return ListView(
@@ -134,11 +134,11 @@ class EventScreen extends ConsumerWidget {
 
   String _subtitle(String locale) {
     if (event.isSpan) {
-      final total = event.end.difference(event.start).inDays + 1;
+      final total = event.lastDay.difference(event.start).inDays + 1;
       final passed =
           today == null ? 0 : today!.difference(event.start).inDays + 1;
       final range =
-          '${DateFormat.MMMd(locale).format(event.start)} – ${DateFormat.MMMd(locale).format(event.end)}';
+          '${DateFormat.MMMd(locale).format(event.start)} – ${DateFormat.MMMd(locale).format(event.lastDay)}';
       return today == null ? range : '$range · $passed-й день из $total';
     }
     // yMMMMEEEEd тянет за собой «г.» — в шапке события это шум.

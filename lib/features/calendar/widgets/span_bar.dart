@@ -37,7 +37,7 @@ class SpanBar extends StatelessWidget {
     final ink = EventColors.of(color, Theme.of(context).brightness);
     // Обе границы входят в срок: с 16 июля по 14 августа — это 30 дней,
     // а не 29, как выйдет из голой разницы дат.
-    final total = event.end.difference(event.start).inDays + 1;
+    final total = event.lastDay.difference(event.start).inDays + 1;
     // Счёт идёт от выбранного дня, а полоса может ещё не начаться или уже
     // кончиться: разница дат тогда уходит в минус или за длину события, и над
     // неделей висело «-34-й из 2». Держим номер внутри срока.
@@ -50,7 +50,7 @@ class SpanBar extends StatelessWidget {
     final locale = Localizations.localeOf(context).toLanguageTag();
     final trailing = total <= 45
         ? l.spanDayOf(passed, total)
-        : l.spanUntil(DateFormat.MMMd(locale).format(event.end));
+        : l.spanUntil(DateFormat.MMMd(locale).format(event.lastDay));
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),

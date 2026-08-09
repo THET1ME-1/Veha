@@ -249,6 +249,21 @@ class VEvent {
   /// это только на ошибке разбора, ставившей конец на сутки дальше.
   bool get isSpan => isAllDay || duration.inHours >= 24;
 
+  /// Последний день, который событие занимает.
+  ///
+  /// Конец ровно в полночь принадлежит прошедшему дню: Google выгружает
+  /// суточное событие с полуночи 26-го до полуночи 27-го, и полоса, крашенная
+  /// по дате конца, захватывала 27-е, где событие не длится ни минуты.
+  DateTime get lastDay {
+    final day = DateTime(end.year, end.month, end.day);
+    // У события на весь день конец и так последний занятый день — вычитать
+    // там нечего, иначе курс «до четырнадцатого» кончится тринадцатого.
+    if (!isAllDay && end.isAfter(start) && end == day) {
+      return day.subtract(const Duration(days: 1));
+    }
+    return day;
+  }
+
   static bool _sameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
 }

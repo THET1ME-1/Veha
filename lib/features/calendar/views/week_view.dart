@@ -381,7 +381,7 @@ class _SpanStrip extends StatelessWidget {
   /// Полоса подписывается вместе со счётчиком: «идёт сейчас» без ответа
   /// «сколько осталось» бесполезно.
   String _label(BuildContext context) {
-    final total = event.end.difference(event.start).inDays + 1;
+    final total = event.lastDay.difference(event.start).inDays + 1;
     final passed = today.difference(event.start).inDays + 1;
     if (total > 45) return event.title;
     return '${event.title} · ${L.of(context).spanDayOf(passed, total)}';

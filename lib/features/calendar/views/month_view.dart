@@ -219,7 +219,7 @@ class _MonthViewState extends State<MonthView> {
   /// Задевает ли лента хоть один день недели.
   static bool _touches(VEvent event, List<DateTime> week) {
     final from = DateTime(event.start.year, event.start.month, event.start.day);
-    final to = DateTime(event.end.year, event.end.month, event.end.day);
+    final to = event.lastDay;
     final first = week.first;
     final last = DateTime(week.last.year, week.last.month, week.last.day);
     return !from.isAfter(last) && !to.isBefore(first);
@@ -668,7 +668,7 @@ class _SpanRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final from = event.start;
-    final to = event.end;
+    final to = event.lastDay;
 
     var startIdx = -1;
     var endIdx = -1;
