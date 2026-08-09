@@ -109,7 +109,8 @@ END:VCALENDAR
     expect(e.isAllDay, isTrue);
     expect(e.rrule, 'FREQ=YEARLY');
     expect(e.start.day, 1);
-    expect(e.end.day, 9);
+    // DTEND в формате исключающий: отпуск занимает по восьмое включительно.
+    expect(e.end.day, 8);
     expect(e.isMultiDay, isTrue);
   });
 

@@ -69,9 +69,12 @@ String toIcs(
       ..write(_line('SUMMARY:${_escape(e.title)}'));
 
     if (e.isAllDay) {
+      // Внутри приложения конец — последний день события, в формате он
+      // исключающий: занятый один день 13 августа уезжает как 13 → 14.
       out
         ..write(_line('DTSTART;VALUE=DATE:${_date(e.start)}'))
-        ..write(_line('DTEND;VALUE=DATE:${_date(e.end)}'));
+        ..write(_line(
+            'DTEND;VALUE=DATE:${_date(e.end.add(const Duration(days: 1)))}'));
     } else {
       out.write(_line('DTSTART;TZID=${e.timezone}:${_dateTime(e.start)}'));
       // У события без окончания DTEND не пишется вовсе — так это и
@@ -230,9 +233,14 @@ VEvent? _toEvent(
         : _unescape(props['DESCRIPTION']!.value),
     start: startAt,
     // Файл без DTEND по RFC 5545 означает событие без длительности —
-    // у нас это и есть «без окончания». Сутки прибавляются только событию
-    // на весь день: там отсутствие конца значит один день.
-    end: endAt ?? (allDay ? startAt.add(const Duration(days: 1)) : startAt),
+    // у нас это и есть «без окончания». У события на весь день конец в
+    // формате исключающий: 13 → 14 августа означает один занятый день, и
+    // без вычета праздник растягивался на две клетки календаря.
+    end: allDay
+        ? (endAt == null
+            ? startAt
+            : _atLeast(startAt, endAt.subtract(const Duration(days: 1))))
+        : (endAt ?? startAt),
     isAllDay: allDay,
     availability: props['TRANSP']?.value.toUpperCase() == 'TRANSPARENT'
         ? Availability.free
@@ -355,6 +363,11 @@ List<String> _unfold(String text) {
   }
   return out;
 }
+
+/// Конец не раньше начала: чужой файл может прислать DTEND тем же днём, что и
+/// DTSTART, и вычет суток увёл бы событие в прошлое.
+DateTime _atLeast(DateTime start, DateTime end) =>
+    end.isBefore(start) ? start : end;
 
 String _escape(String value) => value
     .replaceAll('\\', '\\\\')

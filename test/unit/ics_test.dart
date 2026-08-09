@@ -47,10 +47,12 @@ void main() {
     });
 
     test('Событие на весь день уходит датой без времени', () {
+      // Внутри приложения конец — последний день события, в формате он
+      // исключающий: занятый один день 27 июля уезжает как 27 → 28.
       final ics = toIcs([
         event(
           start: DateTime(2026, 7, 27),
-          end: DateTime(2026, 7, 28),
+          end: DateTime(2026, 7, 27),
           isAllDay: true,
         )
       ]);
@@ -143,14 +145,53 @@ void main() {
     test('Событие на весь день читается датой', () {
       final source = event(
         start: DateTime(2026, 7, 27),
-        end: DateTime(2026, 7, 28),
+        end: DateTime(2026, 7, 27),
         isAllDay: true,
       );
       final back = parseIcs(toIcs([source])).events.single;
 
       expect(back.isAllDay, isTrue);
       expect(back.start, DateTime(2026, 7, 27));
-      expect(back.end, DateTime(2026, 7, 28));
+      expect(back.end, DateTime(2026, 7, 27));
+    });
+
+    test('Чужой однодневный праздник занимает один день', () {
+      // Google и Apple пишут однодневный праздник как 13 → 14 августа:
+      // конец в формате исключающий. Читая его как есть, приложение рисовало
+      // полосу на две клетки — «День левши» висел и над 13-м, и над 14-м.
+      const source = 'BEGIN:VCALENDAR\r\n'
+          'VERSION:2.0\r\n'
+          'BEGIN:VEVENT\r\n'
+          'UID:holiday@google\r\n'
+          'SUMMARY:День левши\r\n'
+          'DTSTART;VALUE=DATE:20260813\r\n'
+          'DTEND;VALUE=DATE:20260814\r\n'
+          'END:VEVENT\r\n'
+          'END:VCALENDAR\r\n';
+
+      final back = parseIcs(source).events.single;
+
+      expect(back.isAllDay, isTrue);
+      expect(back.start, DateTime(2026, 8, 13));
+      expect(back.end, DateTime(2026, 8, 13));
+      expect(back.isMultiDay, isFalse);
+    });
+
+    test('Чужой многодневный отпуск теряет лишний день', () {
+      const source = 'BEGIN:VCALENDAR\r\n'
+          'VERSION:2.0\r\n'
+          'BEGIN:VEVENT\r\n'
+          'UID:trip@google\r\n'
+          'SUMMARY:Море\r\n'
+          'DTSTART;VALUE=DATE:20260801\r\n'
+          'DTEND;VALUE=DATE:20260810\r\n'
+          'END:VEVENT\r\n'
+          'END:VCALENDAR\r\n';
+
+      final back = parseIcs(source).events.single;
+
+      expect(back.start, DateTime(2026, 8, 1));
+      expect(back.end, DateTime(2026, 8, 9));
     });
 
     test('Чужой файл с временем в UTC читается', () {
