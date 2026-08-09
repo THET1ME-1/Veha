@@ -8,7 +8,9 @@ import '../../core/platform.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/brand.dart';
 import '../../core/icon_registry.dart';
+import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../domain/ics.dart';
 import '../common/blocks.dart';
@@ -114,21 +116,50 @@ class IcsRows extends ConsumerWidget {
     final inheritance = ref.read(inheritanceProvider).valueOrNull;
     if (inheritance == null || inheritance.calendars.isEmpty) return;
 
-    // Куда складывать, решает человек: чужой файл про календари ничего не
-    // знает, а угаданная стопка потом разгребается руками.
-    final target = await askCalendar(
-      context,
-      inheritance: inheritance,
-      calendarId: inheritance.calendars.keys.first,
-      subcategoryId: null,
-    );
-    if (!context.mounted || target == null) return;
+    final repo = ref.read(repositoryProvider);
+    final named = data.calendarName?.trim() ?? '';
+    String? calendarId;
 
-    final added = await ref.read(repositoryProvider).importEvents(
-          data.events,
-          calendarId: target.calendarId,
-          fields: data.fields,
-        );
+    if (named.isNotEmpty) {
+      // Файл сам говорит, чей он: подписанный календарь ищется по имени, а
+      // незнакомый заводится. Спрашивать про каждый файл значило двенадцать
+      // одинаковых ответов подряд при переносе расписания.
+      final lower = named.toLowerCase();
+      for (final calendar in inheritance.calendars.values) {
+        if (calendar.name.trim().toLowerCase() == lower) {
+          calendarId = calendar.id;
+          break;
+        }
+      }
+      if (calendarId == null) {
+        calendarId = repo.newId();
+        await repo.upsertCalendar(VCalendar(
+          id: calendarId,
+          name: named,
+          iconName: 'calendar',
+          color: VehaBrand.seed,
+          sortOrder: inheritance.calendars.length,
+        ));
+      }
+    } else {
+      // Файл без подписи о календарях ничего не знает, и угаданная стопка
+      // потом разгребается руками. Здесь решает человек.
+      if (!context.mounted) return;
+      final target = await askCalendar(
+        context,
+        inheritance: inheritance,
+        calendarId: inheritance.calendars.keys.first,
+        subcategoryId: null,
+      );
+      if (!context.mounted || target == null) return;
+      calendarId = target.calendarId;
+    }
+
+    final added = await repo.importEvents(
+      data.events,
+      calendarId: calendarId,
+      fields: data.fields,
+    );
     if (!context.mounted) return;
     _say(context, L.of(context).icsImported(added));
   }

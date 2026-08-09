@@ -17,9 +17,18 @@ const _productId = '-//THET1ME-1//Veha//RU';
 
 /// Разобранный файл: события и определения полей, которых им не хватает.
 class IcsData {
-  const IcsData({required this.events, required this.fields});
+  const IcsData({
+    required this.events,
+    required this.fields,
+    this.calendarName,
+  });
 
   final List<VEvent> events;
+
+  /// Как календарь подписан в файле (`X-WR-CALNAME`). Свойство нестандартное,
+  /// но его пишут все: Google, Proton, Thunderbird и наша же выгрузка. Оно
+  /// снимает вопрос «куда класть» с человека.
+  final String? calendarName;
 
   /// Определения своих полей, восстановленные из файла. Без них значение
   /// показать негде: строка «312» без подписи «Кабинет» ничего не значит.
@@ -36,12 +45,19 @@ String toIcs(
   List<VEvent> events, {
   DateTime? stamp,
   Map<String, VFieldDef> defs = const {},
+  String? calendarName,
 }) {
   final out = StringBuffer()
     ..write(_line('BEGIN:VCALENDAR'))
     ..write(_line('VERSION:2.0'))
     ..write(_line('PRODID:$_productId'))
     ..write(_line('CALSCALE:GREGORIAN'));
+
+  // Подпись календаря: на том конце её ждут и Google, и наш же разбор, иначе
+  // человека спрашивают, куда класть файл, который сам об этом говорит.
+  if (calendarName != null && calendarName.isNotEmpty) {
+    out.write(_line('X-WR-CALNAME:${_escape(calendarName)}'));
+  }
 
   final now = _utcStamp(stamp ?? DateTime.now().toUtc());
 
@@ -125,8 +141,15 @@ IcsData parseIcs(String text, {String Function()? newId, String untitled = 'Unti
   Map<String, _Prop>? current;
   var fields = <VFieldValue>[];
   var counter = 0;
+  String? calendarName;
 
   for (final line in lines) {
+    if (current == null && line.startsWith('X-WR-CALNAME')) {
+      final prop = _Prop.parse(line);
+      final value = _unescape(prop?.value ?? '').trim();
+      if (value.isNotEmpty) calendarName = value;
+      continue;
+    }
     if (line == 'BEGIN:VEVENT') {
       current = {};
       fields = [];
@@ -170,7 +193,11 @@ IcsData parseIcs(String text, {String Function()? newId, String untitled = 'Unti
     current[prop.name] = prop;
   }
 
-  return IcsData(events: out, fields: defs.values.toList());
+  return IcsData(
+    events: out,
+    fields: defs.values.toList(),
+    calendarName: calendarName,
+  );
 }
 
 /// Значение параметра в кавычках: запятая и точка с запятой там разделители,

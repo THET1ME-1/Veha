@@ -109,6 +109,32 @@ void main() {
       expect(back.fields.single.value, '312');
     });
 
+    test('Имя календаря из файла достаётся разбором', () {
+      // Файлы Google, Proton и наша же выгрузка подписывают календарь
+      // `X-WR-CALNAME`. Спрашивать человека, куда класть «Учёбу», когда это
+      // написано в первой строке файла, незачем.
+      const source = 'BEGIN:VCALENDAR\r\n'
+          'VERSION:2.0\r\n'
+          'X-WR-CALNAME:Учёба\r\n'
+          'BEGIN:VEVENT\r\n'
+          'UID:1@veha\r\n'
+          'SUMMARY:Линейка\r\n'
+          'DTSTART;TZID=Europe/Chisinau:20260901T083000\r\n'
+          'DTEND;TZID=Europe/Chisinau:20260901T120000\r\n'
+          'END:VEVENT\r\n'
+          'END:VCALENDAR\r\n';
+
+      final data = parseIcs(source);
+
+      expect(data.calendarName, 'Учёба');
+      expect(data.events.single.title, 'Линейка');
+    });
+
+    test('Файл без подписи календаря имени не выдумывает', () {
+      final data = parseIcs(toIcs([event()]));
+      expect(data.calendarName, isNull);
+    });
+
     test('Длинное название склеивается обратно', () {
       final source = event(title: 'я' * 200);
       expect(parseIcs(toIcs([source])).events.single.title, 'я' * 200);
