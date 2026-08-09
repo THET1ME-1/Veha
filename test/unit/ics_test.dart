@@ -174,7 +174,8 @@ void main() {
       expect(back.isAllDay, isTrue);
       expect(back.start, DateTime(2026, 8, 13));
       expect(back.end, DateTime(2026, 8, 13));
-      expect(back.isMultiDay, isFalse);
+      // Один день, но всё равно полоса: часа у праздника нет.
+      expect(back.isSpan, isTrue);
     });
 
     test('Чужой многодневный отпуск теряет лишний день', () {

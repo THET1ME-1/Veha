@@ -82,7 +82,7 @@ Stats computeStats({
     counted++;
     // Полосы длиной больше суток — это абонементы и отпуска: они помечают
     // дни, а не занимают часы.
-    if (e.isMultiDay) continue;
+    if (e.isSpan) continue;
 
     final span = end.difference(start);
     busy += span;

@@ -254,7 +254,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     var minutes = 0;
     for (final d in days) {
       for (final e in range.eventsOn(d)) {
-        if (e.isMultiDay) continue;
+        if (e.isSpan) continue;
         count++;
         minutes += e.duration.inMinutes;
       }

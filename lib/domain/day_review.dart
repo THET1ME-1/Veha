@@ -68,7 +68,7 @@ DayReview reviewDay(
 
   final timed = [
     for (final e in events)
-      if (!e.isMultiDay && !e.isOpenEnded) e,
+      if (!e.isSpan && !e.isOpenEnded) e,
   ]..sort((a, b) => a.busyFrom.compareTo(b.busyFrom));
 
   // Занятое считается объединением отрезков: две наехавшие встречи занимают

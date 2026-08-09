@@ -460,7 +460,7 @@ class _EventBlockState extends ConsumerState<_EventBlock> {
             id: e.id,
             start: e.start,
             end: e.end,
-            isMultiDay: e.isMultiDay,
+            isSpan: e.isSpan,
           ),
           builder: (clash) {
         final scheme = Theme.of(context).colorScheme;

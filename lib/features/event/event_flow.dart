@@ -312,7 +312,7 @@ class EventFlow {
   Future<VEvent?> _clashWith(VEvent event) async {
     final day = await ref.read(repositoryProvider).eventsOfDay(event.start);
     for (final other in day) {
-      if (other.id == event.id || other.isMultiDay) continue;
+      if (other.id == event.id || other.isSpan) continue;
       if (other.start.isBefore(event.end) && other.end.isAfter(event.start)) {
         return other;
       }
@@ -422,7 +422,7 @@ class EventFlow {
     final day = await repo.eventsOfDay(event.start);
     final tail = [
       for (final e in day)
-        if (!e.isMultiDay && !e.start.isBefore(event.start)) e,
+        if (!e.isSpan && !e.start.isBefore(event.start)) e,
     ];
     if (tail.isEmpty) {
       _say(l.nothingToShift);
@@ -490,7 +490,7 @@ class EventFlow {
     final day = await repo.eventsOfDay(event.start);
     final copies = <VEvent>[];
     for (final e in day) {
-      if (e.isMultiDay) continue;
+      if (e.isSpan) continue;
       final copy = VEvent(
         id: repo.newId(),
         calendarId: e.calendarId,
@@ -531,7 +531,7 @@ class EventFlow {
     final day = await repo.eventsOfDay(event.start);
     final next = [
       for (final e in day)
-        if (!e.isMultiDay && e.start.isAfter(event.start)) e,
+        if (!e.isSpan && e.start.isAfter(event.start)) e,
     ]..sort((a, b) => a.start.compareTo(b.start));
 
     final until = next.isEmpty

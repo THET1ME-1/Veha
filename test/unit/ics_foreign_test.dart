@@ -111,7 +111,7 @@ END:VCALENDAR
     expect(e.start.day, 1);
     // DTEND в формате исключающий: отпуск занимает по восьмое включительно.
     expect(e.end.day, 8);
-    expect(e.isMultiDay, isTrue);
+    expect(e.isSpan, isTrue);
   });
 
   test('Свои поля переживают круг через файл', () {

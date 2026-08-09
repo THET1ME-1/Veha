@@ -183,7 +183,7 @@ class GridDrag {
   /// во что метят: «накладка» с ним была бы выдумкой.
   bool clashesWith(VEventSpan other) =>
       other.id != eventId &&
-      !other.isMultiDay &&
+      !other.isSpan &&
       end.isAfter(start) &&
       other.end.isAfter(other.start) &&
       intervalsOverlap(start, end, other.start, other.end);
@@ -210,13 +210,13 @@ class VEventSpan {
     required this.id,
     required this.start,
     required this.end,
-    this.isMultiDay = false,
+    this.isSpan = false,
   });
 
   final String id;
   final DateTime start;
   final DateTime end;
-  final bool isMultiDay;
+  final bool isSpan;
 }
 
 /// Оболочка блока: пока сосед метит в это время, тело строится подсвеченным.

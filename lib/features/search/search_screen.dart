@@ -326,7 +326,7 @@ class _ResultRow extends StatelessWidget {
   /// Когда это. У полосы на месяц часов нет вовсе, и «00:00 – 00:00» в выдаче
   /// выглядит поломкой: у неё показываем промежуток дат.
   static String _when(VEvent e, String allDayWord) {
-    if (e.isMultiDay || e.isAllDay) {
+    if (e.isSpan || e.isAllDay) {
       final from = DateFormat('d MMMM', 'ru').format(e.start);
       final to = DateFormat('d MMMM', 'ru').format(
         e.end.subtract(const Duration(minutes: 1)),

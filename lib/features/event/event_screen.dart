@@ -95,7 +95,7 @@ class EventScreen extends ConsumerWidget {
           : null,
     ));
 
-    final progress = event.isMultiDay && today != null
+    final progress = event.isSpan && today != null
         ? (today!.difference(event.start).inDays + 1) /
             (event.end.difference(event.start).inDays + 1)
         : null;
@@ -133,7 +133,7 @@ class EventScreen extends ConsumerWidget {
   }
 
   String _subtitle(String locale) {
-    if (event.isMultiDay) {
+    if (event.isSpan) {
       final total = event.end.difference(event.start).inDays + 1;
       final passed =
           today == null ? 0 : today!.difference(event.start).inDays + 1;

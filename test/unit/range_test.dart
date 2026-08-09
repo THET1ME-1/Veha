@@ -66,9 +66,9 @@ void main() {
     );
 
     expect(range.spans, isNotEmpty);
-    expect(range.spans.every((e) => e.isMultiDay), isTrue);
+    expect(range.spans.every((e) => e.isSpan), isTrue);
     expect(
-      range.eventsOn(DateTime(2026, 7, 29)).any((e) => e.isMultiDay),
+      range.eventsOn(DateTime(2026, 7, 29)).any((e) => e.isSpan),
       isFalse,
       reason: 'Абонемент на месяц идёт полосой, а не карточкой в сетке часов',
     );
@@ -98,6 +98,6 @@ void main() {
     );
 
     final empty = range.eventsOn(DateTime(2026, 8, 2));
-    expect(empty.where((e) => e.isMultiDay), isEmpty);
+    expect(empty.where((e) => e.isSpan), isEmpty);
   });
 }

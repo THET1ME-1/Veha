@@ -136,7 +136,7 @@ void main() {
 
       expect(december.where((e) => e.id == 'отпуск'), hasLength(1));
       expect(january.where((e) => e.id == 'отпуск'), hasLength(1));
-      expect(december.single.isMultiDay, isTrue);
+      expect(december.single.isSpan, isTrue);
     });
   });
 }

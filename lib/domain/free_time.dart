@@ -52,7 +52,7 @@ List<TimeSlot> freeSlots(
       // Событие, помеченное «свободен», стоит в календаре отметкой и часов
       // не держит: день рождения не мешает назначить встречу.
       if (e.availability == Availability.busy &&
-          !e.isMultiDay &&
+          !e.isSpan &&
           e.end.isAfter(cursor) &&
           e.busyFrom.isBefore(end))
         e,
@@ -138,7 +138,7 @@ List<VEvent> conflictsOf(VEvent event, List<VEvent> others) =>
         : [
             for (final other in others)
               if (other.id != event.id &&
-                  !other.isMultiDay &&
+                  !other.isSpan &&
                   !other.isOpenEnded &&
                   intervalsOverlap(
                       event.start, event.end, other.start, other.end))

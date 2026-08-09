@@ -405,7 +405,7 @@ class _PreviewSheetState extends State<_PreviewSheet> {
       ];
 
   String _when(BuildContext context, String locale) {
-    if (event.isMultiDay) {
+    if (event.isSpan) {
       return '${DateFormat.MMMd(locale).format(event.start)} – '
           '${DateFormat.MMMd(locale).format(event.end)}';
     }

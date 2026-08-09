@@ -177,7 +177,7 @@ class _Row extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                event.isMultiDay ? '' : eventTimeLabel(context, event),
+                event.isSpan ? '' : eventTimeLabel(context, event),
                 style: TextStyle(
                   fontFamily: AppFonts.body,
                   fontSize: 12,

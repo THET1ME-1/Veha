@@ -100,7 +100,7 @@ WidgetSnapshot buildWidgetSnapshot({
       at: e.start,
       line: WidgetLine(
         title: e.title,
-        time: e.isMultiDay || e.isAllDay ? '' : DateFormat.Hm(locale).format(e.start),
+        time: e.isSpan || e.isAllDay ? '' : DateFormat.Hm(locale).format(e.start),
         color: inheritance.colorOfEvent(e).toARGB32(),
       ),
     ));

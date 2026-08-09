@@ -111,7 +111,7 @@ final rangeProvider =
       final spans = <VEvent>[];
 
       for (final e in events) {
-        if (e.isMultiDay) {
+        if (e.isSpan) {
           spans.add(e);
           continue;
         }

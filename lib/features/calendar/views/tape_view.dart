@@ -63,7 +63,7 @@ class TapeView extends ConsumerWidget {
     final perMinute = _perMinute * zoom;
     final timed = [
       for (final e in events)
-        if (!e.isMultiDay) e,
+        if (!e.isSpan) e,
     ]..sort((a, b) => a.start.compareTo(b.start));
 
     // Свободный день показывает часы, а не надпись. Текст посреди экрана не
