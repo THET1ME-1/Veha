@@ -543,7 +543,12 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       CalendarView.month => MonthView(
           month: _selected!,
           eventsOf: range.eventsOn,
-          spans: range.spans,
+          // Полосы своего месяца, а не всего окна базы: окно заглядывает на
+          // две недели вперёд, и чужие полосы висели бы поверх клеток.
+          spans: range.spansBetween(
+            DateTime(_selected!.year, _selected!.month, 1),
+            DateTime(_selected!.year, _selected!.month + 1, 1),
+          ),
           inheritance: inheritance,
           today: today,
           mode: monthMode,
@@ -558,38 +563,46 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           // называет месяц, а окно событий держит нужный кусок базы.
           onMonthChanged: (month) => setState(() => _selected = month),
         ),
-      CalendarView.week => WeekView(
-          // Лента живёт своей прокруткой: экран отдаёт ей первый видимый день
-          // и получает обратно тот, до которого долистали.
-          anchor: _weekAnchor ??
-              ref.watch(weekLayoutProvider).weekStart(_selected!),
-          columns: ref.watch(weekLayoutProvider).weekdays.length,
-          onAnchorChanged: (day) => setState(() {
-            _weekAnchor = day;
-            _selected = day;
-          }),
-          eventsOf: range.eventsOn,
-          spans: range.spans,
-          inheritance: inheritance,
-          today: today,
-          onEventTap: onTap,
-          onEventLongPress: _showEventMenu,
-          selected: _picked.keys.toSet(),
-          // Тап мимо занятий уводит в этот день. В наборе пачки жест молчит:
-          // человек отмечает события, и уход с вида сбил бы отбор.
-          onDayTap: _picking
-              ? null
-              : (day) => setState(() {
-                    _selected = day;
-                    _weekAnchor = null;
-                    _view = CalendarView.day;
-                  }),
-          // В неделе перенос идёт наискосок: и на другой час, и на другой
-          // день одним движением.
-          onEventMoved: _picking
-              ? null
-              : (e, shift) => EventFlow(context, ref).moveBy(e, shift),
-        ),
+      CalendarView.week => () {
+          final layout = ref.watch(weekLayoutProvider);
+          final anchor = _weekAnchor ?? layout.weekStart(_selected!);
+          return WeekView(
+            // Лента живёт своей прокруткой: экран отдаёт ей первый видимый
+            // день и получает обратно тот, до которого долистали.
+            anchor: anchor,
+            columns: layout.weekdays.length,
+            onAnchorChanged: (day) => setState(() {
+              _weekAnchor = day;
+              _selected = day;
+            }),
+            eventsOf: range.eventsOn,
+            // Только полосы показанной недели: окно базы шире видимого, и
+            // без отбора над неделей повисали дни рождения из сентября.
+            spans: range.spansBetween(
+              anchor,
+              anchor.add(Duration(days: layout.weekdays.length)),
+            ),
+            inheritance: inheritance,
+            today: today,
+            onEventTap: onTap,
+            onEventLongPress: _showEventMenu,
+            selected: _picked.keys.toSet(),
+            // Тап мимо занятий уводит в этот день. В наборе пачки жест
+            // молчит: человек отмечает события, и уход с вида сбил бы отбор.
+            onDayTap: _picking
+                ? null
+                : (day) => setState(() {
+                      _selected = day;
+                      _weekAnchor = null;
+                      _view = CalendarView.day;
+                    }),
+            // В неделе перенос идёт наискосок: и на другой час, и на другой
+            // день одним движением.
+            onEventMoved: _picking
+                ? null
+                : (e, shift) => EventFlow(context, ref).moveBy(e, shift),
+          );
+        }(),
     };
   }
 }

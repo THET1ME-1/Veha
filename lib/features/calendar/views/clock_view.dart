@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/brand.dart';
+import '../../../core/veha_theme.dart';
 import '../../../core/event_colors.dart';
 import '../../../core/icon_registry.dart';
 import '../../../data/models.dart';
@@ -108,7 +109,6 @@ class ClockView extends ConsumerWidget {
                   _HourRow(
                     hour: hours[i],
                     top: i * hourHeight,
-                    stripe: i.isEven,
                     gutter: _timeGutter,
                     hourHeight: hourHeight,
                     onTap: onHourTap == null
@@ -191,15 +191,17 @@ class _HourRow extends StatelessWidget {
   const _HourRow({
     required this.hour,
     required this.top,
-    required this.stripe,
     required this.gutter,
     required this.hourHeight,
     this.onTap,
   });
 
+  /// Зазор между часами. Блоки идут подряд, и без него сетка слипается в одну
+  /// сплошную заливку, по которой не прочесть, где кончается час.
+  static const double _gap = 4;
+
   final int hour;
   final double top;
-  final bool stripe;
   final double gutter;
   final double hourHeight;
   final VoidCallback? onTap;
@@ -231,19 +233,18 @@ class _HourRow extends StatelessWidget {
               ),
             ),
           ),
-          // Разлиновка чередованием заливок: линии между часами были бы
-          // обводкой, а её в приложении нет нигде.
+          // Час — залитый блок, а не линия: обводок в приложении нет нигде,
+          // и разлиновка строится заливкой с зазором.
           Expanded(
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: onTap,
               child: Container(
+                margin: const EdgeInsets.only(bottom: _gap),
                 decoration: ShapeDecoration(
-                  color: stripe
-                      ? scheme.surfaceContainerLow
-                      : Colors.transparent,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(14)),
+                  color: scheme.surfaceContainerLow,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: VehaShape.of(context).forHeight(hourHeight),
                   ),
                 ),
               ),

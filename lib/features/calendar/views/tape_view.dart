@@ -6,6 +6,7 @@ import '../../../core/icon_registry.dart';
 import '../../../core/veha_theme.dart';
 import '../../../data/models.dart';
 import '../../../domain/free_time.dart';
+import 'clock_view.dart';
 import '../../../l10n/app_localizations.dart';
 
 /// Лента дня: высота блока равна длительности события.
@@ -58,7 +59,23 @@ class TapeView extends StatelessWidget {
         if (!e.isMultiDay) e,
     ]..sort((a, b) => a.start.compareTo(b.start));
 
-    if (timed.isEmpty) return _Empty(day: day, onTap: onFreeTap);
+    // Свободный день показывает часы, а не надпись. Текст посреди экрана не
+    // отвечает на вопрос «куда ткнуть, чтобы завести дело в три часа», и
+    // вместе с ним уходил щипок, растягивающий час: у ленты нечего было
+    // тянуть. Сетка отвечает на оба вопроса сразу.
+    if (timed.isEmpty) {
+      return ClockView(
+        events: const [],
+        inheritance: inheritance,
+        now: now,
+        onHourTap: onFreeTap == null
+            ? null
+            : (hour) {
+                final at = DateTime(day.year, day.month, day.day, hour);
+                onFreeTap!(TimeSlot(at, at.add(const Duration(hours: 1))));
+              },
+      );
+    }
 
     // Окна берём тем же расчётом, что и подсказки «когда я свободен»: одна
     // правда на всё приложение, иначе лента и быстрый лист разойдутся.
@@ -380,42 +397,6 @@ class _DashedBorder extends CustomPainter {
   @override
   bool shouldRepaint(_DashedBorder old) =>
       old.color != color || old.radius != radius;
-}
-
-class _Empty extends StatelessWidget {
-  const _Empty({required this.day, this.onTap});
-
-  final DateTime day;
-  final void Function(TimeSlot slot)? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final l = L.of(context);
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(28),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              l.dayFreeTitle,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 6),
-            Text(
-              l.dayFreeHint,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: scheme.onSurfaceVariant,
-                  ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 /// Риска «сейчас»: линия во всю ширину и точка на левом краю.

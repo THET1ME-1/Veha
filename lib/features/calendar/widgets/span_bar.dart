@@ -38,7 +38,10 @@ class SpanBar extends StatelessWidget {
     // Обе границы входят в срок: с 16 июля по 14 августа — это 30 дней,
     // а не 29, как выйдет из голой разницы дат.
     final total = event.end.difference(event.start).inDays + 1;
-    final passed = today.difference(event.start).inDays + 1;
+    // Счёт идёт от выбранного дня, а полоса может ещё не начаться или уже
+    // кончиться: разница дат тогда уходит в минус или за длину события, и над
+    // неделей висело «-34-й из 2». Держим номер внутри срока.
+    final passed = (today.difference(event.start).inDays + 1).clamp(1, total);
     final progress = total <= 0 ? 0.0 : (passed / total).clamp(0.0, 1.0);
 
     // Всё, что длиннее месяца, считать «днём из N» бессмысленно — там важнее

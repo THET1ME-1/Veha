@@ -275,7 +275,18 @@ class RangeData {
   /// месяца, а не только над первым.
   List<VEvent> spansOn(DateTime day) {
     final start = DateTime(day.year, day.month, day.day);
-    final end = start.add(const Duration(days: 1));
+    return spansBetween(start, start.add(const Duration(days: 1)));
+  }
+
+  /// Полосы, попавшие в отрезок `[from, to)`.
+  ///
+  /// Окно базы шире видимого: события подгружаются на месяц вокруг, чтобы
+  /// календарь листался без рывков. Виду нужен только его отрезок — иначе над
+  /// неделей повисает всё, что нашлось в окне, включая сентябрьские дни
+  /// рождения, а подпись «день N из 2» уходит в минус.
+  List<VEvent> spansBetween(DateTime from, DateTime to) {
+    final start = DateTime(from.year, from.month, from.day);
+    final end = DateTime(to.year, to.month, to.day);
     return [
       for (final e in spans)
         if (e.start.isBefore(end) && e.end.isAfter(start)) e,

@@ -70,7 +70,7 @@ void main() {
     await shoot(tester, 'day_clock_empty');
   });
 
-  testWidgets('Лента свободного дня говорит, что он свободен',
+  testWidgets('Лента свободного дня показывает часы, а не надпись',
       (tester) async {
     await pumpScreen(
       tester,
@@ -82,7 +82,10 @@ void main() {
       },
     );
 
-    expect(find.text('День свободен'), findsOneWidget);
+    // Надпись «День свободен» ушла: она не отвечала на вопрос «куда ткнуть,
+    // чтобы завести дело в три часа», и вместе с ней у ленты пропадал щипок.
+    expect(find.text('День свободен'), findsNothing);
+    expect(find.text('09:00'), findsWidgets);
 
     await swipeGrid(tester, -260);
     expect(selectedOf(tester).day, 28,
