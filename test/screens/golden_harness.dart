@@ -165,6 +165,12 @@ Future<void> openEventEditor(WidgetTester tester, Finder target) async {
     await tester.pumpAndSettle();
   }
 
+  // Построен ещё не значит виден: лента растягивается щипком и потому лежит
+  // одной колонкой, а не списком с ленивой сборкой. Вечернее занятие такой
+  // колонки находится финдером, но остаётся ниже экрана, и тап по нему
+  // промахивается мимо дерева. Довозим его в кадр.
+  if (target.evaluate().isNotEmpty) await tester.ensureVisible(target.first);
+
   await tester.tap(target.first);
   await tester.pumpAndSettle();
 

@@ -105,11 +105,10 @@ void main() {
       const Scaffold(body: SafeArea(child: CalendarScreen())),
     );
 
-    // Английский стоит вечером: лента ленивая, до него надо доскроллить.
-    for (var i = 0; i < 8 && find.text('Английский').evaluate().isEmpty; i++) {
-      await tester.drag(find.byType(Scrollable).last, const Offset(0, -180));
-      await tester.pumpAndSettle();
-    }
+    // Английский стоит вечером и в кадр не попадает: лента лежит одной
+    // колонкой, поэтому блок построен, но ниже экрана.
+    await tester.ensureVisible(find.text('Английский').first);
+    await tester.pumpAndSettle();
 
     // Вход в режим — из меню долгого нажатия: долгий жест в сетке уже занят
     // перетаскиванием, а тап открывает превью.
@@ -122,10 +121,8 @@ void main() {
 
     // Второе событие дня отмечается обычным тапом. Планёрка идёт утром,
     // поэтому возвращаемся к началу ленты.
-    for (var i = 0; i < 8 && find.text('Планёрка').evaluate().isEmpty; i++) {
-      await tester.drag(find.byType(Scrollable).last, const Offset(0, 180));
-      await tester.pumpAndSettle();
-    }
+    await tester.ensureVisible(find.text('Планёрка').first);
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Планёрка').first);
     await tester.pumpAndSettle();
 

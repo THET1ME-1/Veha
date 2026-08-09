@@ -22,12 +22,11 @@ void main() {
   testWidgets('Календарь из базы · день', (tester) async {
     await openCalendar(tester);
 
-    // Лента ленивая: вечернее занятие строится, только когда до него
-    // доскроллили. Крутим до «Английского» — он и есть развёрнутый ряд.
-    for (var i = 0; i < 8 && find.text('Английский').evaluate().isEmpty; i++) {
-      await tester.drag(find.byType(Scrollable).last, const Offset(0, -180));
-      await tester.pumpAndSettle();
-    }
+    // Лента лежит одной колонкой ради щипка, поэтому вечернее занятие
+    // построено сразу, но лежит ниже экрана. Довозим «Английский» в кадр —
+    // он и есть развёрнутый ряд, ради него снимок и делается.
+    await tester.ensureVisible(find.text('Английский').first);
+    await tester.pumpAndSettle();
     expect(find.text('Английский'), findsWidgets,
         reason: 'Повторяющееся занятие развёрнуто на сегодняшний день');
     await shoot(tester, 'calendar_day_db');

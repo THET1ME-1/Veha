@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/event_colors.dart';
 import '../../../core/icon_registry.dart';
 import '../../../core/veha_theme.dart';
 import '../../../data/models.dart';
+import '../../../data/settings.dart';
 import '../../../domain/free_time.dart';
-import 'clock_view.dart';
 import '../../../l10n/app_localizations.dart';
+import '../widgets/auto_scroll_grid.dart';
+import 'clock_view.dart';
 
 /// Лента дня: высота блока равна длительности события.
 ///
@@ -15,7 +18,7 @@ import '../../../l10n/app_localizations.dart';
 /// четырёхчасовой парой, и по ней нельзя было понять, занят день или свободен.
 /// Здесь занятое и пустое время делят экран в тех же пропорциях, в каких
 /// делят сутки, а окно между делами подписано и работает кнопкой.
-class TapeView extends StatelessWidget {
+class TapeView extends ConsumerWidget {
   const TapeView({
     super.key,
     required this.day,
@@ -52,8 +55,12 @@ class TapeView extends StatelessWidget {
   static const double _perMinute = 1.15;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = L.of(context);
+    // Тот же масштаб, что растягивает сетку часов: щипок обязан работать в
+    // обоих прочтениях дня, а не только в свободном.
+    final zoom = ref.watch(gridZoomProvider);
+    final perMinute = _perMinute * zoom;
     final timed = [
       for (final e in events)
         if (!e.isMultiDay) e,
@@ -91,63 +98,78 @@ class TapeView extends StatelessWidget {
       for (final g in gaps) _Row.gap(g),
     ]..sort((a, b) => a.start.compareTo(b.start));
 
-    return ListView.separated(
-      padding: const EdgeInsets.fromLTRB(14, 6, 14, 14),
-      itemCount: rows.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 6),
-      itemBuilder: (context, i) {
-        final row = rows[i];
-        final minutes = row.end.difference(row.start).inMinutes;
-        final height = row.event != null
-            ? (minutes * _perMinute).clamp(_minEvent, 420.0)
-            : (minutes * _perMinute).clamp(_minGap, 150.0);
-
-        final crossed = _crossedByNow(row);
-
-        final slab = SizedBox(
-          height: height,
-          child: row.event != null
-              ? _EventSlab(
-                  event: row.event!,
-                  inheritance: inheritance,
-                  height: height,
-                  past: now != null && row.end.isBefore(now!),
-                  selected: selected.contains(row.event!.id),
-                  onTap: onEventTap == null ? null : () => onEventTap!(row.event!),
-                  onLongPress: onEventLongPress == null
-                      ? null
-                      : () => onEventLongPress!(row.event!),
-                )
-              : _GapSlab(
-                  slot: row.slot!,
-                  label: l.tapeFree(_span(context, minutes)),
-                  crossedByNow: crossed,
-                  onTap: onFreeTap == null ? null : () => onFreeTap!(row.slot!),
-                ),
-        );
-
-        // Риска «сейчас» лежит на той строке, внутрь которой попал момент, и
-        // на своей доле её высоты: лента отвечает на вопрос «что идёт прямо
-        // сейчас», а без точки отсчёта день читается простым списком.
-        if (!crossed) return slab;
-        final share = row.end.difference(row.start).inMinutes == 0
-            ? 0.0
-            : now!.difference(row.start).inMinutes /
-                row.end.difference(row.start).inMinutes;
-
-        return Stack(
-          clipBehavior: Clip.none,
-          children: [
-            slab,
-            Positioned(
-              left: 0,
-              right: 0,
-              top: (height * share.clamp(0.0, 1.0)) - _NowLine.thickness / 2,
-              child: const _NowLine(key: Key('now-line')),
-            ),
+    return AutoScrollGrid(
+      padding: const EdgeInsets.fromLTRB(14, 6, 14, 120),
+      child: Column(
+        children: [
+          for (var i = 0; i < rows.length; i++) ...[
+            if (i > 0) const SizedBox(height: 6),
+            _row(context, rows, i, l, zoom, perMinute),
           ],
-        );
-      },
+        ],
+      ),
+    );
+  }
+
+  Widget _row(
+    BuildContext context,
+    List<_Row> rows,
+    int i,
+    L l,
+    double zoom,
+    double perMinute,
+  ) {
+    final row = rows[i];
+    final minutes = row.end.difference(row.start).inMinutes;
+    final height = row.event != null
+        ? (minutes * perMinute).clamp(_minEvent, 420.0 * zoom)
+        : (minutes * perMinute).clamp(_minGap, 150.0 * zoom);
+
+    final crossed = _crossedByNow(row);
+
+    final slab = SizedBox(
+      height: height,
+      child: row.event != null
+          ? _EventSlab(
+              key: ValueKey('tape-slab-${row.event!.id}'),
+              event: row.event!,
+              inheritance: inheritance,
+              height: height,
+              past: now != null && row.end.isBefore(now!),
+              selected: selected.contains(row.event!.id),
+              onTap: onEventTap == null ? null : () => onEventTap!(row.event!),
+              onLongPress: onEventLongPress == null
+                  ? null
+                  : () => onEventLongPress!(row.event!),
+            )
+          : _GapSlab(
+              slot: row.slot!,
+              label: l.tapeFree(_span(context, minutes)),
+              crossedByNow: crossed,
+              onTap: onFreeTap == null ? null : () => onFreeTap!(row.slot!),
+            ),
+    );
+
+    // Риска «сейчас» лежит на той строке, внутрь которой попал момент, и
+    // на своей доле её высоты: лента отвечает на вопрос «что идёт прямо
+    // сейчас», а без точки отсчёта день читается простым списком.
+    if (!crossed) return slab;
+    final share = row.end.difference(row.start).inMinutes == 0
+        ? 0.0
+        : now!.difference(row.start).inMinutes /
+            row.end.difference(row.start).inMinutes;
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        slab,
+        Positioned(
+          left: 0,
+          right: 0,
+          top: (height * share.clamp(0.0, 1.0)) - _NowLine.thickness / 2,
+          child: const _NowLine(key: Key('now-line')),
+        ),
+      ],
     );
   }
 
@@ -190,6 +212,7 @@ class _Row {
 
 class _EventSlab extends StatelessWidget {
   const _EventSlab({
+    super.key,
     required this.event,
     required this.inheritance,
     required this.height,
