@@ -7,6 +7,7 @@ import '../../core/icon_registry.dart';
 import '../../data/models.dart';
 import '../../domain/time_label.dart';
 import '../../l10n/app_localizations.dart';
+import '../../domain/card_fields.dart';
 import '../../domain/recurrence_label.dart';
 import '../calendar/widgets/month_header.dart' show AppFonts;
 import '../common/blocks.dart';
@@ -67,12 +68,17 @@ Future<PreviewChoice?> showEventPreview(
   BuildContext context, {
   required VEvent event,
   required Inheritance inheritance,
+  Map<String, VFieldDef> fieldDefs = const {},
 }) {
   return showModalBottomSheet<PreviewChoice>(
     context: context,
     showDragHandle: true,
     isScrollControlled: true,
-    builder: (context) => _PreviewSheet(event: event, inheritance: inheritance),
+    builder: (context) => _PreviewSheet(
+      event: event,
+      inheritance: inheritance,
+      fieldDefs: fieldDefs,
+    ),
   );
 }
 
@@ -84,10 +90,17 @@ Future<PreviewChoice?> showEventPreview(
 /// Остальное живёт под «Ещё» — оно нужно раз в месяц и не должно каждый день
 /// занимать экран.
 class _PreviewSheet extends StatefulWidget {
-  const _PreviewSheet({required this.event, required this.inheritance});
+  const _PreviewSheet({
+    required this.event,
+    required this.inheritance,
+    this.fieldDefs = const {},
+  });
 
   final VEvent event;
   final Inheritance inheritance;
+
+  /// Определения своих полей: по ним лист решает, что показать и как назвать.
+  final Map<String, VFieldDef> fieldDefs;
 
   @override
   State<_PreviewSheet> createState() => _PreviewSheetState();
@@ -113,6 +126,9 @@ class _PreviewSheetState extends State<_PreviewSheet> {
         ? null
         : inheritance.subcategories[event.subcategoryId];
     final repeat = recurrenceLabelOf(l, event, locale: locale);
+    // Поля, отмеченные «в карточке». Человек ставит отметку ровно ради того,
+    // чтобы видеть кабинет, не открывая правку.
+    final shownFields = cardFields(event, widget.fieldDefs);
 
     return SafeArea(
       child: ConstrainedBox(
@@ -219,6 +235,16 @@ class _PreviewSheetState extends State<_PreviewSheet> {
                 ]),
               ),
             VBlock(children: [
+              // Своё поле идёт первой строкой: кабинет нужнее, чем правило
+              // повтора, которое человек и так помнит.
+              for (final value in shownFields) ...[
+                VRow(
+                  icon: widget.fieldDefs[value.fieldId]?.iconName ?? 'tag',
+                  label: widget.fieldDefs[value.fieldId]?.name,
+                  value: value.value,
+                ),
+                const VSep(),
+              ],
               if (repeat != null)
                 VRow(icon: 'repeat', label: l.eventRepeat, value: repeat),
               if (repeat != null) const VSep(),

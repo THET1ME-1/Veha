@@ -100,6 +100,7 @@ class EventFlow {
       context,
       event: event,
       inheritance: inheritance,
+      fieldDefs: ref.read(fieldDefsByIdProvider),
     );
     if (choice == null || !context.mounted) return;
 

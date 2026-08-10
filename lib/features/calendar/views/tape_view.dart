@@ -6,7 +6,9 @@ import '../../../core/event_colors.dart';
 import '../../../core/icon_registry.dart';
 import '../../../core/veha_theme.dart';
 import '../../../data/models.dart';
+import '../../../data/providers.dart';
 import '../../../data/settings.dart';
+import '../../../domain/card_fields.dart';
 import '../../../domain/free_time.dart';
 import '../../../l10n/app_localizations.dart';
 import '../widgets/auto_scroll_grid.dart';
@@ -61,6 +63,7 @@ class TapeView extends ConsumerWidget {
     // обоих прочтениях дня, а не только в свободном.
     final zoom = ref.watch(gridZoomProvider);
     final perMinute = _perMinute * zoom;
+    final fieldDefs = ref.watch(fieldDefsByIdProvider);
     final timed = [
       for (final e in events)
         if (!e.isSpan) e,
@@ -107,7 +110,7 @@ class TapeView extends ConsumerWidget {
         children: [
           for (var i = 0; i < rows.length; i++) ...[
             if (i > 0) const SizedBox(height: 6),
-            _row(context, rows, i, l, zoom, perMinute),
+            _row(context, rows, i, l, zoom, perMinute, fieldDefs),
           ],
         ],
       ),
@@ -121,6 +124,7 @@ class TapeView extends ConsumerWidget {
     L l,
     double zoom,
     double perMinute,
+    Map<String, VFieldDef> fieldDefs,
   ) {
     final row = rows[i];
     final minutes = row.end.difference(row.start).inMinutes;
@@ -140,6 +144,7 @@ class TapeView extends ConsumerWidget {
               height: height,
               past: now != null && row.end.isBefore(now!),
               selected: selected.contains(row.event!.id),
+              fieldDefs: fieldDefs,
               onTap: onEventTap == null ? null : () => onEventTap!(row.event!),
               onLongPress: onEventLongPress == null
                   ? null
@@ -221,12 +226,16 @@ class _EventSlab extends StatelessWidget {
     required this.height,
     required this.past,
     required this.selected,
+    this.fieldDefs = const {},
     this.onTap,
     this.onLongPress,
   });
 
   final VEvent event;
   final Inheritance inheritance;
+
+  /// Определения своих полей: по ним блок решает, что показать под названием.
+  final Map<String, VFieldDef> fieldDefs;
   final double height;
   final bool past;
   final bool selected;
@@ -254,6 +263,15 @@ class _EventSlab extends StatelessWidget {
             ? L.of(context).timeFrom(DateFormat.Hm().format(event.start))
             : '${DateFormat.Hm().format(event.start)} — '
                 '${DateFormat.Hm().format(event.end)}';
+
+    // Отмеченные «в карточке» поля идут вперёд места: их отмечают ради того,
+    // чтобы читать не открывая событие. Место остаётся, когда полей нет.
+    final shown = cardFields(event, fieldDefs, limit: 2);
+    final subtitle = shown.isNotEmpty
+        ? shown.map((v) => v.value).join(' · ')
+        : (event.location?.isNotEmpty ?? false)
+            ? event.location
+            : null;
 
     return Opacity(
       opacity: past ? 0.55 : 1,
@@ -304,12 +322,15 @@ class _EventSlab extends StatelessWidget {
                   ),
                 ],
               ),
-              if (height >= 58 && (event.location?.isNotEmpty ?? false)) ...[
+              // Под названием идут отмеченные поля, а следом место. Кабинет
+              // человек отмечает ровно ради того, чтобы видеть его в ленте, а
+              // не открывать событие; адрес корпуса он и так знает.
+              if (height >= 58 && subtitle != null) ...[
                 const SizedBox(height: 3),
                 Padding(
                   padding: const EdgeInsets.only(left: 26),
                   child: Text(
-                    event.location!,
+                    subtitle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
