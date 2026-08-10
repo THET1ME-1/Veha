@@ -114,7 +114,11 @@ class SyncService {
       applied += await _apply(pulled.changes);
       if (pulled.cursor <= mark) break;
       mark = pulled.cursor;
+      // Строки, ждавшие родителя, пробуем положить после каждой страницы:
+      // событие могло приехать только что.
+      applied += await _applyOrphans();
     }
+    applied += await _applyOrphans();
 
     return SyncOutcome(
       cursor: mark,
@@ -191,6 +195,12 @@ class SyncService {
       if (local == null) continue;
 
       final columns = await _columnsOf(local);
+      // Ключ у таблиц разный. У события он свой (`id`), у значения поля и
+      // пропуска ряда — пара колонок: строка принадлежит событию и отдельного
+      // ключа не имеет. Серверный `id` таким строкам выдан на отправке и в
+      // клиентскую схему не входит — искать приезжее по нему нельзя, иначе
+      // кабинет и вид занятия оседают на сервере и до телефона не доезжают.
+      final key = await _keyOf(local);
       for (final remote in entry.value) {
         final row = <String, Object?>{};
         for (final field in remote.entries) {
@@ -199,24 +209,58 @@ class SyncService {
           if (!columns.contains(column)) continue;
           row[column] = _sqlValue(field.value);
         }
-        if (row['id'] == null) continue;
+        if (key.any((column) => row[column] == null)) continue;
 
         // Конфликт разрешается по времени правки: побеждает более позднее.
         // Без этой проверки версия, сделанная на сервере раньше, затирала
         // свежую местную — человек правил событие без сети, а после синка
         // видел чужой текст и не мог понять, куда делась его правка.
-        if (!await _isNewer(local, row)) continue;
+        if (!await _isNewer(local, row, key)) continue;
+
+        // Мягкое удаление приезжает пометкой в строке. Таблица, которая про
+        // `deleted_at` не знает, обязана убрать строку насовсем: иначе
+        // стёртый кабинет возвращается на телефон живым.
+        if (remote['deletedAt'] != null && !columns.contains('deleted_at')) {
+          final where = key.map((column) => '$column = ?').join(' AND ');
+          await db.customStatement(
+            'DELETE FROM $local WHERE $where',
+            [for (final column in key) row[column]],
+          );
+          count++;
+          continue;
+        }
 
         final names = row.keys.join(', ');
         final marks = List.filled(row.length, '?').join(', ');
-        await db.customStatement(
-          'INSERT OR REPLACE INTO $local ($names) VALUES ($marks)',
-          row.values.toList(),
-        );
+        try {
+          await db.customStatement(
+            'INSERT OR REPLACE INTO $local ($names) VALUES ($marks)',
+            row.values.toList(),
+          );
+        } on Object {
+          // Дочерняя строка обогнала своё событие: сервер режет дельту по
+          // таблицам, и значение поля приезжает страницей раньше занятия.
+          // Внешний ключ такую вставку не пускает — строка ждёт следующей
+          // страницы, а не пропадает.
+          _orphans.putIfAbsent(entry.key, () => []).add(remote);
+          continue;
+        }
         count++;
       }
     }
     return count;
+  }
+
+  /// Строки, не нашедшие родителя. Ключ — имя таблицы на сервере.
+  final Map<String, List<Map<String, Object?>>> _orphans = {};
+
+  /// Второй заход для отложенных строк. Не нашедшие родителя и теперь
+  /// остаются ждать: событие может приехать следующей страницей.
+  Future<int> _applyOrphans() async {
+    if (_orphans.isEmpty) return 0;
+    final waiting = Map.of(_orphans);
+    _orphans.clear();
+    return _apply(waiting);
   }
 
   /// Свежее ли приехавшее, чем то, что уже лежит в базе.
@@ -224,16 +268,23 @@ class SyncService {
   /// Записи без времени правки (пропуски ряда, значения полей) сравнивать не
   /// по чему — их применяем как есть: они принадлежат событию и приезжают
   /// вместе с ним.
-  Future<bool> _isNewer(String table, Map<String, Object?> row) async {
+  Future<bool> _isNewer(
+    String table,
+    Map<String, Object?> row,
+    List<String> key,
+  ) async {
     final incoming = row['updated_at'];
     if (incoming is! int) return true;
 
     final columns = await _columnsOf(table);
     if (!columns.contains('updated_at')) return true;
 
+    final where = key.map((column) => '$column = ?').join(' AND ');
     final found = await db.customSelect(
-      'SELECT updated_at FROM $table WHERE id = ?',
-      variables: [Variable<Object>(row['id']!)],
+      'SELECT updated_at FROM $table WHERE $where',
+      variables: [
+        for (final column in key) Variable<Object>(row[column]!),
+      ],
     ).get();
     if (found.isEmpty) return true;
 
@@ -244,6 +295,7 @@ class SyncService {
   }
 
   final Map<String, Set<String>> _columnCache = {};
+  final Map<String, List<String>> _keyCache = {};
 
   Future<Set<String>> _columnsOf(String table) async {
     final cached = _columnCache[table];
@@ -252,6 +304,21 @@ class SyncService {
     final rows = await db.customSelect('PRAGMA table_info($table)').get();
     final columns = {for (final row in rows) row.read<String>('name')};
     _columnCache[table] = columns;
+    return columns;
+  }
+
+  /// Колонки первичного ключа таблицы, по порядку объявления.
+  Future<List<String>> _keyOf(String table) async {
+    final cached = _keyCache[table];
+    if (cached != null) return cached;
+
+    final rows = await db.customSelect('PRAGMA table_info($table)').get();
+    final key = [
+      for (final row in rows)
+        if (row.read<int>('pk') > 0) (row.read<int>('pk'), row.read<String>('name')),
+    ]..sort((a, b) => a.$1.compareTo(b.$1));
+    final columns = [for (final entry in key) entry.$2];
+    _keyCache[table] = columns;
     return columns;
   }
 

@@ -250,6 +250,198 @@ void main() {
     expect(day.where((e) => e.id == 'e2'), isEmpty);
   });
 
+  test('Значение своего поля приезжает с сервера и видно в событии', () async {
+    // У `field_values` на клиенте ключ составной — пары «событие + поле»
+    // хватает, своей колонки `id` в таблице нет. Строка с сервера приезжает
+    // со своим ключом, и приём обязан узнать её по паре, а не отбросить.
+    api.incoming = {
+      'field_defs': [
+        {
+          'id': 'f-room',
+          'userId': 'u',
+          'version': 4,
+          'name': 'Кабинет',
+          'type': 'text',
+          'scopeType': 'calendar',
+          'scopeId': 'default',
+          'showInCard': true,
+          'sortOrder': 0,
+          'createdAt': 1,
+          'updatedAt': 2,
+          'deletedAt': null,
+        },
+      ],
+      'events': [
+        {
+          'id': 'lesson-1',
+          'userId': 'u',
+          'version': 5,
+          'calendarId': 'default',
+          'title': 'Операционные системы',
+          'start': DateTime(2026, 8, 6, 9, 45).millisecondsSinceEpoch,
+          'end': DateTime(2026, 8, 6, 11, 15).millisecondsSinceEpoch,
+          'timezone': 'UTC',
+          'isAllDay': false,
+          'createdAt': 1,
+          'updatedAt': 2,
+          'deletedAt': null,
+        },
+      ],
+      'field_values': [
+        {
+          'id': 'lesson-1:f-room',
+          'userId': 'u',
+          'version': 6,
+          'eventId': 'lesson-1',
+          'fieldId': 'f-room',
+          'value': '421b/4',
+          'createdAt': 1,
+          'updatedAt': 2,
+          'deletedAt': null,
+        },
+      ],
+    };
+
+    await sync.run(token: 'dev_x', since: 0);
+
+    final day = await repo
+        .watchRange(DateTime(2026, 8, 6), DateTime(2026, 8, 7))
+        .first;
+    final lesson = day.firstWhere((e) => e.id == 'lesson-1');
+    expect(lesson.fields.map((f) => f.value), contains('421b/4'));
+  });
+
+  test('Удаление значения поля с сервера убирает его из события', () async {
+    // Мягкое удаление приезжает пометкой в строке, а колонки `deleted_at` у
+    // значения поля на клиенте нет: строку нужно убрать, а не положить как
+    // живую.
+    Map<String, Object?> value({int? deletedAt}) => {
+          'id': 'lesson-2:f-room',
+          'userId': 'u',
+          'version': 6,
+          'eventId': 'lesson-2',
+          'fieldId': 'f-room',
+          'value': '421b/4',
+          'createdAt': 1,
+          'updatedAt': 2,
+          'deletedAt': deletedAt,
+        };
+
+    api.incoming = {
+      'field_defs': [
+        {
+          'id': 'f-room',
+          'userId': 'u',
+          'version': 4,
+          'name': 'Кабинет',
+          'type': 'text',
+          'scopeType': 'calendar',
+          'scopeId': 'default',
+          'showInCard': true,
+          'sortOrder': 0,
+          'createdAt': 1,
+          'updatedAt': 2,
+          'deletedAt': null,
+        },
+      ],
+      'events': [
+        {
+          'id': 'lesson-2',
+          'userId': 'u',
+          'version': 5,
+          'calendarId': 'default',
+          'title': 'Веб-базы данных',
+          'start': DateTime(2026, 8, 7, 9, 45).millisecondsSinceEpoch,
+          'end': DateTime(2026, 8, 7, 11, 15).millisecondsSinceEpoch,
+          'timezone': 'UTC',
+          'isAllDay': false,
+          'createdAt': 1,
+          'updatedAt': 2,
+          'deletedAt': null,
+        },
+      ],
+      'field_values': [value()],
+    };
+    await sync.run(token: 'dev_x', since: 0);
+
+    api.cursor = 9;
+    api.incoming = {
+      'field_values': [value(deletedAt: 3)],
+    };
+    await sync.run(token: 'dev_x', since: 7);
+
+    final day = await repo
+        .watchRange(DateTime(2026, 8, 7), DateTime(2026, 8, 8))
+        .first;
+    expect(day.firstWhere((e) => e.id == 'lesson-2').fields, isEmpty);
+  });
+
+  test('Значение поля дожидается своего события с другой страницы', () async {
+    // Сервер режет дельту по таблицам, и значение поля приезжает страницей
+    // раньше своего события. Вставить его сразу нельзя — внешний ключ не
+    // пускает, — но и терять нечего: строка ждёт и применяется, когда событие
+    // доехало.
+    api.pages = [
+      PullResult(cursor: 3, changes: {
+        'field_values': [
+          {
+            'id': 'lesson-3:f-room',
+            'userId': 'u',
+            'version': 3,
+            'eventId': 'lesson-3',
+            'fieldId': 'f-room',
+            'value': '247/4',
+            'createdAt': 1,
+            'updatedAt': 2,
+            'deletedAt': null,
+          },
+        ],
+      }),
+      PullResult(cursor: 6, changes: {
+        'field_defs': [
+          {
+            'id': 'f-room',
+            'userId': 'u',
+            'version': 4,
+            'name': 'Кабинет',
+            'type': 'text',
+            'scopeType': 'calendar',
+            'scopeId': 'default',
+            'showInCard': true,
+            'sortOrder': 0,
+            'createdAt': 1,
+            'updatedAt': 2,
+            'deletedAt': null,
+          },
+        ],
+        'events': [
+          {
+            'id': 'lesson-3',
+            'userId': 'u',
+            'version': 5,
+            'calendarId': 'default',
+            'title': 'Backend',
+            'start': DateTime(2026, 8, 10, 11, 30).millisecondsSinceEpoch,
+            'end': DateTime(2026, 8, 10, 13).millisecondsSinceEpoch,
+            'timezone': 'UTC',
+            'isAllDay': false,
+            'createdAt': 1,
+            'updatedAt': 2,
+            'deletedAt': null,
+          },
+        ],
+      }),
+    ];
+
+    await sync.run(token: 'dev_x', since: 0);
+
+    final day = await repo
+        .watchRange(DateTime(2026, 8, 10), DateTime(2026, 8, 11))
+        .first;
+    final lesson = day.firstWhere((e) => e.id == 'lesson-3');
+    expect(lesson.fields.map((f) => f.value), contains('247/4'));
+  });
+
   test('Отклонённые сервером правки видно в ответе', () async {
     api.skipped = 2;
     await repo.upsertEvent(VEvent(
