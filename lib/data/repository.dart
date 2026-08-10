@@ -675,6 +675,7 @@ class VehaRepository {
     List<VEvent> events, {
     required String calendarId,
     List<VFieldDef> fields = const [],
+    Map<String, Set<DateTime>> excluded = const {},
   }) async {
     final known = {
       for (final f in await _fieldDefsQuery().get()) f.id,
@@ -714,8 +715,9 @@ class VehaRepository {
         e.start.millisecondsSinceEpoch,
         e.rrule,
       );
+      final id = seen[key] ?? newId();
       await upsertEvent(VEvent(
-        id: seen[key] ?? newId(),
+        id: id,
         calendarId: calendarId,
         title: e.title,
         start: e.start,
@@ -727,9 +729,39 @@ class VehaRepository {
         location: e.location,
         fields: e.fields,
       ));
+
+      // Отменённые занятия ряда приезжают отдельным списком: у пары, которой
+      // не было, нет своей строки в файле — есть только `EXDATE` у ряда.
+      // Файл — источник правды целиком, поэтому прежние отмены события
+      // заменяются, а не складываются с новыми.
+      final skips = excluded[e.id];
+      await (db.delete(db.recurrenceExceptions)
+            ..where((t) => t.eventId.equals(id)))
+          .go();
+      if (skips != null) {
+        for (final at in skips) {
+          await db.into(db.recurrenceExceptions).insertOnConflictUpdate(
+                RecurrenceExceptionsCompanion.insert(
+                  eventId: id,
+                  excludedDate: at.millisecondsSinceEpoch,
+                ),
+              );
+        }
+      }
       added++;
     }
     return added;
+  }
+
+  /// Отменённые занятия рядов: ключ — событие, значение — даты вхождений.
+  /// Нужны выгрузке: файл без них возвращает пары, которых не было.
+  Future<Map<String, Set<DateTime>>> excludedDates() async {
+    final out = <String, Set<DateTime>>{};
+    for (final row in await db.select(db.recurrenceExceptions).get()) {
+      out.putIfAbsent(row.eventId, () => <DateTime>{}).add(
+          DateTime.fromMillisecondsSinceEpoch(row.excludedDate));
+    }
+    return out;
   }
 
   static String _importKey(String title, int startMs, String? rrule) =>

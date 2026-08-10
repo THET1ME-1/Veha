@@ -64,7 +64,9 @@ class IcsRows extends ConsumerWidget {
     // «veha (3).ics» ничего не говорит.
     final now = DateTime.now();
     final name = 'veha-${now.year}-${_two(now.month)}-${_two(now.day)}.ics';
-    final bytes = utf8.encode(toIcs(events, defs: defs));
+    final bytes = utf8.encode(
+      toIcs(events, defs: defs, excluded: await repo.excludedDates()),
+    );
 
     final path = await FilePicker.platform.saveFile(
       dialogTitle: l.icsSaveTitle,
@@ -159,6 +161,7 @@ class IcsRows extends ConsumerWidget {
       data.events,
       calendarId: calendarId,
       fields: data.fields,
+      excluded: data.excluded,
     );
     if (!context.mounted) return;
     _say(context, L.of(context).icsImported(added));

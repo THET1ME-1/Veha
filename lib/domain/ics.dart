@@ -21,6 +21,7 @@ class IcsData {
     required this.events,
     required this.fields,
     this.calendarName,
+    this.excluded = const {},
   });
 
   final List<VEvent> events;
@@ -34,7 +35,12 @@ class IcsData {
   /// показать негде: строка «312» без подписи «Кабинет» ничего не значит.
   final List<VFieldDef> fields;
 
-  static const empty = IcsData(events: [], fields: []);
+  /// Отменённые занятия ряда (`EXDATE`), по ключу события. Google так
+  /// помечает пару, которой не было: неделя аттестаций, каникулы, перенос.
+  /// Без них приложение рисует занятие там, где его отменили.
+  final Map<String, Set<DateTime>> excluded;
+
+  static const empty = IcsData(events: [], fields: [], excluded: {});
 }
 
 /// События в текст `.ics`.
@@ -46,6 +52,7 @@ String toIcs(
   DateTime? stamp,
   Map<String, VFieldDef> defs = const {},
   String? calendarName,
+  Map<String, Set<DateTime>> excluded = const {},
 }) {
   final out = StringBuffer()
     ..write(_line('BEGIN:VCALENDAR'))
@@ -85,6 +92,15 @@ String toIcs(
     }
 
     if (e.rrule != null) out.write(_line('RRULE:${e.rrule}'));
+    // Отменённые занятия ряда. Без них круг «выгрузил — загрузил» возвращает
+    // пары, которых не было: неделя аттестаций снова полна занятий.
+    final skips = excluded[e.id];
+    if (skips != null && skips.isNotEmpty) {
+      final dates = skips.toList()..sort();
+      out.write(_line(
+        'EXDATE;TZID=${e.timezone}:${dates.map(_dateTime).join(',')}',
+      ));
+    }
     // Занятость — стандартное свойство: чужой календарь тоже поймёт, что
     // день рождения не держит время.
     out.write(_line(
@@ -140,6 +156,8 @@ IcsData parseIcs(String text, {String Function()? newId, String untitled = 'Unti
   final lines = _unfold(text);
   final out = <VEvent>[];
   final defs = <String, VFieldDef>{};
+  final excluded = <String, Set<DateTime>>{};
+  var skips = <DateTime>[];
 
   Map<String, _Prop>? current;
   var fields = <VFieldValue>[];
@@ -156,6 +174,7 @@ IcsData parseIcs(String text, {String Function()? newId, String untitled = 'Unti
     if (line == 'BEGIN:VEVENT') {
       current = {};
       fields = [];
+      skips = [];
       continue;
     }
     if (line == 'END:VEVENT') {
@@ -166,7 +185,10 @@ IcsData parseIcs(String text, {String Function()? newId, String untitled = 'Unti
         id: newId?.call() ?? 'ics-${counter++}',
         untitled: untitled,
       );
-      if (event != null) out.add(event);
+      if (event != null) {
+        out.add(event);
+        if (skips.isNotEmpty) excluded[event.id] = skips.toSet();
+      }
       current = null;
       continue;
     }
@@ -174,6 +196,15 @@ IcsData parseIcs(String text, {String Function()? newId, String untitled = 'Unti
 
     final prop = _Prop.parse(line);
     if (prop == null) continue;
+    // Свойство повторяемое, и значений в нём бывает несколько через запятую:
+    // в общую карту `current` оно не ложится — там каждое имя одно.
+    if (prop.name == 'EXDATE') {
+      for (final part in prop.value.split(',')) {
+        final at = _parseMoment(_Prop(prop.name, prop.params, part.trim()));
+        if (at != null) skips.add(at);
+      }
+      continue;
+    }
     if (prop.name == 'X-VEHA-FIELD') {
       final id = prop.params['X-VEHA-ID'];
       if (id != null) {
@@ -200,6 +231,7 @@ IcsData parseIcs(String text, {String Function()? newId, String untitled = 'Unti
     events: out,
     fields: defs.values.toList(),
     calendarName: calendarName,
+    excluded: excluded,
   );
 }
 
